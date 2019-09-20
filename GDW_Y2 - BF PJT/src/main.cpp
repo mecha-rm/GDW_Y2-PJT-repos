@@ -29,7 +29,7 @@ int main()
 	}
 	// Create a new GLFW window
 	// GLFWwindow * = (width, height, window_name, fullscreen_bool, share_between_monitors)
-	GLFWwindow* window = glfwCreateWindow(300, 300, "Game Development Workshop (Year 2): BONUS FRUIT - CODENAME: ZERO", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(800, 600, "Game Development Workshop (Year 2): BONUS FRUIT - CODENAME: ZERO", nullptr, nullptr);
 	// We want GL commands to be executed for our window, so we make our window's context the current one
 	glfwMakeContextCurrent(window);
 	
@@ -41,6 +41,28 @@ int main()
 	// Display our GPU and OpenGL version
 	std::cout << glGetString(GL_RENDERER) << std::endl;
 	std::cout << glGetString(GL_VERSION) << std::endl;
+
+	glViewport(0, 0, 800, 600);
+
+	// triangle vertex data
+	float vertices[] =	{-0.5f, -0.5f, 0.0f,
+						0.5f, -0.5f, 0.0f,
+						0.0f, 0.5f, 0.0f
+						};
+
+	// get buffer ID
+	unsigned int VBO;
+	glGenBuffers(1, &VBO);
+
+	// bind buffer to GL_ARRAY_BUFFER target
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+
+	// copy vertex data into buffer mem
+	// the last argument tells how often the data is likely to change.
+	// GL_STATIC_DRAW is never or very rarely
+	// GL_DYNAMIC_DRAW is a lot
+	// GL_STREAM_DRAW is every frame
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 	// Run as long as the window is open
 	while (!glfwWindowShouldClose(window)) {
@@ -56,5 +78,6 @@ int main()
 
 	// std::cin.get(); // used to prevent the OpenGL window from closing immediately
 
+	glfwTerminate();
 	return 0;
 }
