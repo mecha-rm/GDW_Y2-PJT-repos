@@ -6,14 +6,16 @@
 	- Nathan Tuck	(100708651)
 	- Spencer Tester (100653129)
 	- Stephane Gagnon (100694227)
-	- Roderick “R.J.” Montague (100701758)
+	- Roderick ï¿½R.J.ï¿½ Montague (100701758)
 	- Ryan Burton (100707511)
  
  * Game: CODENAME-0
  * Date: 09/18/2019
  * Description: file for GDW code. More items will be added from other course materials as needed.
  * References:
-	- Learn OpenGL (https://learnopengl.com/)
+	* Learn OpenGL (https://learnopengl.com/)
+	* GLFW (https://www.glfw.org/)
+		* Window Guide
 */
 
 #include <glad/glad.h>
@@ -64,6 +66,7 @@ int main()
 	// GL_STREAM_DRAW is every frame
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+	// glfwSetWindowSize(window, 1000, 1000);
 	// Run as long as the window is open
 	while (!glfwWindowShouldClose(window)) {
 		// Poll for events from windows (clicks, keypressed, closing, all that)
