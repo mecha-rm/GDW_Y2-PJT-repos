@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <string>
 using namespace std;
 
 class Vec3 {
@@ -20,9 +21,31 @@ private:
 	float z;
 };
 
+class Vec2 {
+public:
+	float getX();
+	float getY();
+	void setX(float newX);
+	void setY(float newY);
+
+	Vec2 operator+ (Vec2& vec);
+	Vec2 operator- (Vec2& vec);
+
+private:
+	float x;
+	float y;
+};
+
 class Object {
 public:
-private:
-	unsigned int numOfVertices;
+	Object(const char* path);
+
 	vector<Vec3> vertices;
+	vector<Vec2> uvs;
+	vector<Vec3> normals;
+	vector<unsigned int> vertexIndices, uvIndices, normalIndices;
+private:
+	vector<Vec3> temp_vertices;
+	vector<Vec2> temp_uvs;
+	vector<Vec3> temp_normals;
 };

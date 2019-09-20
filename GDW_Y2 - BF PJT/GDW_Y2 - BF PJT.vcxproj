@@ -53,6 +53,7 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,11 +77,44 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\engine\Physics.cpp" />
+    <ClCompile Include="src\Engine\Shader.cpp" />
+    <ClCompile Include="src\Engine\stb_image.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\glad\glad.h" />
+    <ClInclude Include="external\GLFW\glfw3.h" />
+    <ClInclude Include="external\GLFW\glfw3native.h" />
+    <ClInclude Include="external\KHR\khrplatform.h" />
     <ClInclude Include="src\engine\Physics.h" />
+    <ClInclude Include="src\Engine\Shader.h" />
+    <ClInclude Include="src\Engine\stb_image.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="x64\Debug\glad.obj" />
+    <Object Include="x64\Debug\main.obj" />
+    <Object Include="x64\Debug\Physics.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.ilk" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.pdb" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.command.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.read.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.write.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\GDW_Y2 - BF PJT.lastbuildstate" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.command.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.read.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.write.1.tlog" />
+    <None Include="x64\Debug\vc142.idb" />
+    <None Include="x64\Debug\vc142.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

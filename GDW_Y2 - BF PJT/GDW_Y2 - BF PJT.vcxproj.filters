@@ -24,10 +24,59 @@
     <ClCompile Include="src\engine\Physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Engine\Shader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Engine\stb_image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\engine\Physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\Engine\Shader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Engine\stb_image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\KHR\khrplatform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\GLFW\glfw3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\GLFW\glfw3native.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="external\glad\glad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="lib\glfw3.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="x64\Debug\glad.obj" />
+    <Object Include="x64\Debug\main.obj" />
+    <Object Include="x64\Debug\Physics.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.ilk" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.pdb" />
+    <None Include="x64\Debug\vc142.idb" />
+    <None Include="x64\Debug\vc142.pdb" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.command.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.read.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\CL.write.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\GDW_Y2 - BF PJT.lastbuildstate" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.command.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.read.1.tlog" />
+    <None Include="x64\Debug\GDW_Y2 - BF PJT.tlog\link.write.1.tlog" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />
   </ItemGroup>
 </Project>

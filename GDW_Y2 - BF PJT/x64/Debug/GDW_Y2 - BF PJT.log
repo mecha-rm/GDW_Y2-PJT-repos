@@ -1,1 +1,4 @@
-﻿  GDW_Y2 - BF PJT.vcxproj -> C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
+﻿  main.cpp
+C:\Users\steph\source\repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\src\main.cpp(69,53): warning C4267:  'initializing': conversion from 'size_t' to 'unsigned int', possible loss of data
+C:\Users\steph\source\repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\src\main.cpp(69,53): warning C4267:  'initializing': conversion from 'size_t' to 'const unsigned int', possible loss of data
+  GDW_Y2 - BF PJT.vcxproj -> C:\Users\steph\source\repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
