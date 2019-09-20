@@ -1,8 +1,1 @@
-<<<<<<< Updated upstream
-﻿  Physics.cpp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  GDW_Y2 - BF PJT.vcxproj -> C:\Users\steph\source\repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
-=======
-﻿  main.cpp
-  GDW_Y2 - BF PJT.vcxproj -> C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
->>>>>>> Stashed changes
+﻿  GDW_Y2 - BF PJT.vcxproj -> C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
