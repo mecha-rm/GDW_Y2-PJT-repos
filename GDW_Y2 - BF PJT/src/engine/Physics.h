@@ -40,6 +40,10 @@ private:
 class Object {
 public:
 	Object(const char* path);
+	~Object();
+
+	void Start();
+	void Update();
 
 	vector<Vec3> vertices;
 	vector<Vec2> uvs;
