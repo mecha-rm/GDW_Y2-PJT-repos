@@ -1,7 +1,0 @@
-﻿  main.cpp
-C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\src\main.cpp(37,21): warning C4244:  'argument': conversion from '__int64' to 'long', possible loss of data
-x64\Debug\glad.obj : warning LNK4042: object specified more than once; extras ignored
-x64\Debug\main.obj : warning LNK4042: object specified more than once; extras ignored
-x64\Debug\Physics.obj : warning LNK4042: object specified more than once; extras ignored
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  GDW_Y2 - BF PJT.vcxproj -> C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - BF PJT\x64\Debug\GDW_Y2 - BF PJT.exe
