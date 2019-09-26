@@ -9,8 +9,8 @@
 	- Roderick "R.J." Montague (100701758)
 	- Ryan Burton (100707511)
  
- * Game: CODENAME-0
- * Date: 09/18/2019
+ * Game: CODENAME: ZERO
+ * Date: 09/26/2019
  * Description: file for GDW code. More items will be added from other course materials as needed.
  * References:
 	* Learn OpenGL (https://learnopengl.com/)

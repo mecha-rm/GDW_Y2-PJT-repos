@@ -1,3 +1,4 @@
+// file for general physics calculation. WIP.
 #include "Physics.h"
 
 float Vec3::getX() {
