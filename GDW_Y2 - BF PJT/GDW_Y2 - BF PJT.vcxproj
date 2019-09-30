@@ -53,11 +53,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imagehlp.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -83,6 +83,8 @@
     <ClCompile Include="external\imgui\imgui_impl_glfw.cpp" />
     <ClCompile Include="external\imgui\imgui_impl_opengl3.cpp" />
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="external\toolkit\Logging.cpp" />
+    <ClCompile Include="external\toolkit\Sys.cpp" />
     <ClCompile Include="src\engine\Game.cpp" />
     <ClCompile Include="src\engine\Physics.cpp" />
     <ClCompile Include="src\Engine\Shader.cpp" />
@@ -250,6 +252,62 @@
     <ClInclude Include="external\imgui\imstb_textedit.h" />
     <ClInclude Include="external\imgui\imstb_truetype.h" />
     <ClInclude Include="external\KHR\khrplatform.h" />
+    <ClInclude Include="external\spdlog\async.h" />
+    <ClInclude Include="external\spdlog\async_logger.h" />
+    <ClInclude Include="external\spdlog\common.h" />
+    <ClInclude Include="external\spdlog\details\async_logger_impl.h" />
+    <ClInclude Include="external\spdlog\details\circular_q.h" />
+    <ClInclude Include="external\spdlog\details\console_globals.h" />
+    <ClInclude Include="external\spdlog\details\file_helper.h" />
+    <ClInclude Include="external\spdlog\details\fmt_helper.h" />
+    <ClInclude Include="external\spdlog\details\logger_impl.h" />
+    <ClInclude Include="external\spdlog\details\log_msg.h" />
+    <ClInclude Include="external\spdlog\details\mpmc_blocking_q.h" />
+    <ClInclude Include="external\spdlog\details\null_mutex.h" />
+    <ClInclude Include="external\spdlog\details\os.h" />
+    <ClInclude Include="external\spdlog\details\pattern_formatter.h" />
+    <ClInclude Include="external\spdlog\details\periodic_worker.h" />
+    <ClInclude Include="external\spdlog\details\registry.h" />
+    <ClInclude Include="external\spdlog\details\thread_pool.h" />
+    <ClInclude Include="external\spdlog\fmt\bin_to_hex.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\chrono.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\color.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\core.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\format-inl.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\format.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\locale.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\ostream.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\posix.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\printf.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\ranges.h" />
+    <ClInclude Include="external\spdlog\fmt\bundled\time.h" />
+    <ClInclude Include="external\spdlog\fmt\fmt.h" />
+    <ClInclude Include="external\spdlog\fmt\ostr.h" />
+    <ClInclude Include="external\spdlog\formatter.h" />
+    <ClInclude Include="external\spdlog\logger.h" />
+    <ClInclude Include="external\spdlog\sinks\android_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\ansicolor_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\base_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\basic_file_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\daily_file_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\dist_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\msvc_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\null_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\ostream_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\rotating_file_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\sink.h" />
+    <ClInclude Include="external\spdlog\sinks\stdout_color_sinks.h" />
+    <ClInclude Include="external\spdlog\sinks\stdout_sinks.h" />
+    <ClInclude Include="external\spdlog\sinks\syslog_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\systemd_sink.h" />
+    <ClInclude Include="external\spdlog\sinks\wincolor_sink.h" />
+    <ClInclude Include="external\spdlog\spdlog.h" />
+    <ClInclude Include="external\spdlog\tweakme.h" />
+    <ClInclude Include="external\spdlog\version.h" />
+    <ClInclude Include="external\toolkit\CerealGLM.h" />
+    <ClInclude Include="external\toolkit\EnumToString.h" />
+    <ClInclude Include="external\toolkit\Logging.h" />
+    <ClInclude Include="external\toolkit\Sys.h" />
     <ClInclude Include="src\engine\Game.h" />
     <ClInclude Include="src\engine\Physics.h" />
     <ClInclude Include="src\Engine\Shader.h" />

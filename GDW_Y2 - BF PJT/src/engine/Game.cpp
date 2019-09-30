@@ -158,7 +158,7 @@ void Game::DrawGui(float deltaTime) {
 	ImGui::End();
 
 	// Creating a Second Window
-	ImGui::Begin("Test 2");
-	ImGui::Text("Hello Cruel World!");
-	ImGui::End();
+	// ImGui::Begin("Test 2");
+	// ImGui::Text("Hello Cruel World!");
+	// ImGui::End();
 }

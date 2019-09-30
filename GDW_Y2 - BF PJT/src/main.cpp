@@ -10,7 +10,7 @@
 	- Ryan Burton (100707511)
  
  * Game: CODENAME: ZERO
- * Date: 09/26/2019
+ * Date: 09/30/2019
  * Description: file for GDW code. More items will be added from other course materials as needed.
  * References:
 	* Learn OpenGL (https://learnopengl.com/)
@@ -19,7 +19,7 @@
 */
 
 #include "engine/Game.h"
-// #include <Logging.h>
+#include <toolkit/Logging.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
