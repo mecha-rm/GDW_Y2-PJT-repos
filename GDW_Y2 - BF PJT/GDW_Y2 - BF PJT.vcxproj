@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -85,12 +85,25 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
+    <ClCompile Include="src\engine\Camera.cpp" />
     <ClCompile Include="src\engine\Game.cpp" />
+    <ClCompile Include="src\engine\Mesh.cpp" />
+    <ClCompile Include="src\engine\Object.cpp" />
     <ClCompile Include="src\engine\Physics.cpp" />
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\stb_image.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\utils\Array.cpp" />
+    <ClCompile Include="src\utils\Color.cpp" />
+    <ClCompile Include="src\utils\math\Collisions.cpp" />
+    <ClCompile Include="src\utils\math\LargeInt.cpp" />
+    <ClCompile Include="src\utils\math\Matrix.cpp" />
+    <ClCompile Include="src\utils\math\Quaternion.cpp" />
+    <ClCompile Include="src\utils\math\Rotation.cpp" />
+    <ClCompile Include="src\utils\math\Object.cpp" />
+    <ClCompile Include="src\utils\math\Vector.cpp" />
+    <ClCompile Include="src\utils\Utils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\glad\glad.h" />
@@ -308,10 +321,26 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
+    <ClInclude Include="src\engine\Camera.h" />
     <ClInclude Include="src\engine\Game.h" />
+    <ClInclude Include="src\engine\Mesh.h" />
+    <ClInclude Include="src\engine\Object.h" />
     <ClInclude Include="src\engine\Physics.h" />
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\stb_image.h" />
+    <ClInclude Include="src\utils\Array.h" />
+    <ClInclude Include="src\utils\Color.h" />
+    <ClInclude Include="src\utils\math\Collisions.h" />
+    <ClInclude Include="src\utils\math\LargeInt.h" />
+    <ClInclude Include="src\utils\math\MathLib.h" />
+    <ClInclude Include="src\utils\math\Matrix.h" />
+    <ClInclude Include="src\utils\math\Quaternion.h" />
+    <ClInclude Include="src\utils\math\Rotation.h" />
+    <ClInclude Include="src\utils\math\Object.h" />
+    <ClInclude Include="src\utils\math\Vector.h" />
+    <ClInclude Include="src\utils\Utils.h" />
+    <ClInclude Include="src\utils\UtilsLib.h" />
+    <ClInclude Include="src\utils\UtilsToolsLib.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />

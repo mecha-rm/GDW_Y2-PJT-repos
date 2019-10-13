@@ -1,54 +1,32 @@
-/*
- * Author: Roderick "R.J." Montague
- * Date: 07/25/2019
- * Description: shader class for reading shaders from the disk, compiling them, linking them, and checking for errors.
-	* HEADER FILE
- * Resources: learn OpenGL - Shaders/Our Own Shader Class (https://learnopengl.com/Getting-started/Shaders)
-*/
-#ifndef  SHADER_H
-#define SHADER_H
+// SHADER CLASS (HEADER)
+#pragma once
+#include <glad/glad.h>
+#include <GLM/glm.hpp>
 
-#include "../..//external/glad/glad.h" // include glad to get all the required OpenGL headers
+#include <memory>
 
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <iostream>
-
-class Shader
-{
+class Shader {
 public:
-	// the proper ID
-	unsigned int ID;
+	typedef std::shared_ptr<Shader> Sptr;
 
-	// constructor reads and builds the shader
-	Shader(const GLchar * vertexPath, const GLchar * fragmentPath);
+	// constructor
+	Shader();
 	
-	// use/activate the shader
-	void use();
-
-	// utility uniform functions
-	void setBool(const std::string &name, bool value) const;
-
-	void setInt(const std::string &name, int value) const;
-
-	void setFloat(const std::string &name, float value) const;
+	// destructor
+	~Shader();
+	
+	// Compiles shaders
+	void Compile(const char* vs_source, const char* fs_source);
+	
+	// Loads a shader program from 2 files. vsFile is the path to the vertex shader, and fsFile is the path to the fragment shader
+	void Load(const char* vsFile, const char* fsFile);
+	
+	void SetUniform(const char* name, const glm::mat4& value);
+	
+	void Bind();
 
 private:
-	// utility function for checking shader compilation/linking errors
-	void checkCompileErrors(unsigned int shader, std::string type);
+	GLuint __CompileShaderPart(const char* source, GLenum type);
+
+	GLuint myShaderHandle;
 };
-
-
-#endif // ! SHADER_H
-
-// Shader Use Example (DO NOT UNCOMMENT)
-//Shader ourShader("path/to/shaders/shader.vs", "path/to/shaders/shader.fs");
-//...
-//while (...)
-//{
-//	ourShader.use();
-//	ourShader.setFloat("someUniform", 1.0f);
-//	DrawStuff();
-//}
-

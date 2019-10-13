@@ -40,13 +40,13 @@ int main()
 	// stbi_image_free(data);
 	// glfwSetWindowSize(window, 1000, 1000);
 
-	// Logger::Init();
+	Logger::Init();
 
 	Game* game = new Game();
 	game->Run();
 	delete game;
 
-	// Logger::Uninitialize();
+	Logger::Uninitialize();
 
 	return 0;
 }
