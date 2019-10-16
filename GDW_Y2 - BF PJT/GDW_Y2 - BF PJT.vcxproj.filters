@@ -21,9 +21,6 @@
     <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\Physics.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\Engine\Shader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,41 +60,56 @@
     <ClCompile Include="src\engine\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Collisions.cpp">
+    <ClCompile Include="src\engine\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\LargeInt.cpp">
+    <ClCompile Include="src\engine\objects\Object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Matrix.cpp">
+    <ClCompile Include="src\engine\objects\Primitive.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Quaternion.cpp">
+    <ClCompile Include="src\engine\objects\PrimitiveCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Rotation.cpp">
+    <ClCompile Include="src\engine\utils\math\Collisions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Vector.cpp">
+    <ClCompile Include="src\engine\utils\math\LargeInt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\Array.cpp">
+    <ClCompile Include="src\engine\utils\math\Matrix.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\Color.cpp">
+    <ClCompile Include="src\engine\utils\math\Quaternion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\Utils.cpp">
+    <ClCompile Include="src\engine\utils\math\Rotation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\utils\math\Object.cpp">
+    <ClCompile Include="src\engine\utils\math\Vector.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\utils\Array.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\utils\Color.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\utils\Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\objects\PrimitiveCylinder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\objects\PrimitiveSphere.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\objects\PrimitivePlane.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\engine\Physics.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\Engine\Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -755,43 +767,64 @@
     <ClInclude Include="src\engine\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Collisions.h">
+    <ClInclude Include="src\engine\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\LargeInt.h">
+    <ClInclude Include="src\engine\objects\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\MathLib.h">
+    <ClInclude Include="src\engine\objects\Primitive.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Matrix.h">
+    <ClInclude Include="src\engine\objects\PrimitiveCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Quaternion.h">
+    <ClInclude Include="src\engine\utils\math\Collisions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Rotation.h">
+    <ClInclude Include="src\engine\utils\math\LargeInt.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Vector.h">
+    <ClInclude Include="src\engine\utils\math\MathLib.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Array.h">
+    <ClInclude Include="src\engine\utils\math\Matrix.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Color.h">
+    <ClInclude Include="src\engine\utils\math\Quaternion.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\Utils.h">
+    <ClInclude Include="src\engine\utils\math\Rotation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\UtilsLib.h">
+    <ClInclude Include="src\engine\utils\math\Vector.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\UtilsToolsLib.h">
+    <ClInclude Include="src\engine\utils\Array.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\utils\math\Object.h">
+    <ClInclude Include="src\engine\utils\Color.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\utils\Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\utils\UtilsLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\utils\UtilsToolsLib.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\objects\PrimitiveSphere.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\objects\PrimitiveCylinder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\objects\PrimitivePlane.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\objects\Primitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

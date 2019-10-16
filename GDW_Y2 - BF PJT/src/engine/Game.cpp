@@ -166,7 +166,11 @@ void Game::LoadContent()
 	// Creating the object, and stroing it in the vector.
 	// objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
-	objects.push_back(new Object("res/monkey.obj")); // monkey
+	
+	// objects.push_back(new Object("res/monkey.obj")); // monkey
+
+	// objects.push_back(new PrimitiveCube());
+	objects.push_back(new PrimitivePlane());
 
 	myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
 

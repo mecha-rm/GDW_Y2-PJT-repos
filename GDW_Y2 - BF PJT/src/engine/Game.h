@@ -9,7 +9,7 @@
 // File Includes
 #include "Shader.h"
 #include "Mesh.h"
-#include "Object.h"
+#include "objects/Primitives.h"
 #include "Camera.h" // camera
 
 // System Library Includes
