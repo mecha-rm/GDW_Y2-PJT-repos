@@ -100,7 +100,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\engine\utils\Array.cpp" />
     <ClCompile Include="src\engine\utils\Color.cpp" />
-    <ClCompile Include="src\engine\utils\math\Collisions.cpp" />
+    <ClCompile Include="src\engine\utils\math\Collision.cpp" />
     <ClCompile Include="src\engine\utils\math\LargeInt.cpp" />
     <ClCompile Include="src\engine\utils\math\Matrix.cpp" />
     <ClCompile Include="src\engine\utils\math\Quaternion.cpp" />
@@ -338,7 +338,7 @@
     <ClInclude Include="src\Engine\stb_image.h" />
     <ClInclude Include="src\engine\utils\Array.h" />
     <ClInclude Include="src\engine\utils\Color.h" />
-    <ClInclude Include="src\engine\utils\math\Collisions.h" />
+    <ClInclude Include="src\engine\utils\math\Collision.h" />
     <ClInclude Include="src\engine\utils\math\LargeInt.h" />
     <ClInclude Include="src\engine\utils\math\MathLib.h" />
     <ClInclude Include="src\engine\utils\math\Matrix.h" />

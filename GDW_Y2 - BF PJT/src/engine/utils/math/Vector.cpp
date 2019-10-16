@@ -8,6 +8,24 @@
 // ostream operator
 std::ostream & util::math::operator<<(std::ostream & os, const Vec & vec) { return os << vec.toString(); }
 
+// calculates the length of the dot product
+template<typename T>
+float util::math::Vec::calculateDotLength(const T& v1, const T& v2, const bool projV2)
+{
+	return v1.dot(v2) / ((projV2) ? v2.length() : v1.length());
+}
+
+// calculates the angle of the dot product
+template<typename T>
+float util::math::Vec::calculateDotAngle(const T& v1, const T& v2, const bool inDegrees)
+{
+	float theta = std::acosf(v1.dot(v2) / (v1.length() * v2.length()));
+
+	if (inDegrees) // if degrees was requested, a conversion occurs.
+		theta *= (180 / 3.14159265358979323846);
+
+	return theta;
+}
 
 //// VECTOR 2 ////////////////////////////////////////////////////////////////////////////////////////
 util::math::Vec2::Vec2(float x, float y) : x(x), y(y) {}
@@ -99,21 +117,21 @@ float util::math::Vec2::dot(Vec2 v2) const
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
 float util::math::Vec2::dotLength(const Vec2 & v2, bool projV2)
 {
-	// return Vec::calculateDotLength(*this, v2, projV2);
-	return dot(v2) / ((projV2) ? v2.length() : length());
+	return Vec::calculateDotLength(*this, v2, projV2);
+	//return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
 float util::math::Vec2::dotAngle(const Vec2 & v2, bool inDegrees) const
 {
-	// return Vec::calculateDotAngle(*this, v2, inDegrees);
+	return Vec::calculateDotAngle(*this, v2, inDegrees);
 
-	float theta = acosf(dot(v2) / (length() * v2.length()));
+	//float theta = acosf(dot(v2) / (length() * v2.length()));
 
-	if (inDegrees) // if degrees was requested, a conversion occurs.
-		theta = util::math::radiansToDegrees(theta);
+	//if (inDegrees) // if degrees was requested, a conversion occurs.
+	//	theta = util::math::radiansToDegrees(theta);
 
-	return theta;
+	//return theta;
 }
 
 // calculates LERP and overrides the values within the current object. The current object is treated as v1, and the passed value is v2.
@@ -210,21 +228,21 @@ float util::math::Vec3::dot(util::math::Vec3 v3) const { return x * v3.x + y * v
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
 float util::math::Vec3::dotLength(const Vec3 & v2, bool projV2)
 { 
-	//  =return Vec::calculateDotLength(*this, v2, projV2);
-	return dot(v2) / ((projV2) ? v2.length() : length());
+	return Vec::calculateDotLength(*this, v2, projV2);
+	//return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
 float util::math::Vec3::dotAngle(const Vec3 & v2, bool inDegrees) const
 {
-	// return Vec::calculateDotAngle(*this, v2, inDegrees);
+	return Vec::calculateDotAngle(*this, v2, inDegrees);
 
-	float theta = acosf(dot(v2) / (length() * v2.length()));
+	//float theta = acosf(dot(v2) / (length() * v2.length()));
 
-	if (inDegrees) // if degrees was requested, a conversion occurs.
-		theta = util::math::radiansToDegrees(theta);
+	//if (inDegrees) // if degrees was requested, a conversion occurs.
+	//	theta = util::math::radiansToDegrees(theta);
 
-	return theta;
+	//return theta;
 }
 
 // cross product
@@ -328,21 +346,21 @@ float util::math::Vec4::dot(Vec4 v2) const { return this->x * v2.x + this->y * v
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
 float util::math::Vec4::dotLength(const Vec4 & v2, bool projV2)
 { 
-	// return Vec::calculateDotLength(*this, v2, projV2);
-	return dot(v2) / ((projV2) ? v2.length() : length());
+	return Vec::calculateDotLength(*this, v2, projV2);
+	// return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
 float util::math::Vec4::dotAngle(const Vec4 & v2, bool inDegrees) const
 {
-	// return Vec::calculateDotAngle(*this, v2, inDegrees);
+	return Vec::calculateDotAngle(*this, v2, inDegrees);
 
-	float theta = acosf(dot(v2) / (length() * v2.length()));
+	//float theta = acosf(dot(v2) / (length() * v2.length()));
 
-	if (inDegrees) // if degrees was requested, a conversion occurs.
-		theta = util::math::radiansToDegrees(theta);
+	//if (inDegrees) // if degrees was requested, a conversion occurs.
+	//	theta = util::math::radiansToDegrees(theta);
 
-	return theta;
+	//return theta;
 }
 
 

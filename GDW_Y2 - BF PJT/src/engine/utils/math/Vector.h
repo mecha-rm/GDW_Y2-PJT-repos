@@ -25,25 +25,17 @@ namespace util
 
 		protected:
 			// Optimizes functions, but ultimately is really messy and fragile if someone inherits this class and uses it. So it has been commented out.
-			//// HELPER FUNCTION: calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon.
-			//// projV2: if true, then the dot product is divided by v2's length. If false, then the dot product is divided by the length of v1 (the object being used to call this function).
-			//// NOTE: ONLY SEND VECTORS TO THIS TEMPLATE FUNCTION
-			//template<typename T>
-			//static float calculateDotLength(const T& v1, const T& v2, const bool projV2) { return v1.dot(v2) / ((projV2) ? v2.length() : v1.length()); }
+			// HELPER FUNCTION: calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon.
+			// projV2: if true, then the dot product is divided by v2's length. If false, then the dot product is divided by the length of v1 (the object being used to call this function).
+			// NOTE: ONLY SEND VECTORS TO THIS TEMPLATE FUNCTION
+			template<typename T>
+			static float calculateDotLength(const T& v1, const T& v2, const bool projV2);
 
-			//// HELPER FUNCTION: calculates the angle of the dot product between two vectors.
-			//// v1 is the first vector, v2 is the second vector, and inDegrees determines whether the angle is returned in degrees, or radians.
-			//// NOTE: ONLY SEND VECTORS OF THE SAME TYPE TO THIS TEMPLATE
-			//template<typename T>
-			//static float calculateDotAngle(const T& v1, const T& v2, const bool inDegrees)
-			//{
-			//	float theta = std::acosf(v1.dot(v2) / (v1.length() * v2.length()));
-
-			//	if (inDegrees) // if degrees was requested, a conversion occurs.
-			//		theta *= (180 / 3.14159265358979323846);
-
-			//	return theta;
-			//}
+			// HELPER FUNCTION: calculates the angle of the dot product between two vectors.
+			// v1 is the first vector, v2 is the second vector, and inDegrees determines whether the angle is returned in degrees, or radians.
+			// NOTE: ONLY SEND VECTORS OF THE SAME TYPE TO THIS TEMPLATE
+			template<typename T>
+			static float calculateDotAngle(const T& v1, const T& v2, const bool inDegrees);
 
 		private:
 		};

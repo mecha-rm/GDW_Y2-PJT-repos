@@ -3,7 +3,9 @@
 PrimitiveCube::PrimitiveCube() : Primitive()
 {
 	// Position and Color (Default Values)
-	vertices = new Vertex[8]{
+	verticesTotal = 8;
+	vertices = new Vertex[verticesTotal]
+	{
 		//  x      y	 z		   r	 g	   b	 a
 		
 		{{ -0.5f, -0.5f,  0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f }}, // bottom left, front corner
@@ -17,6 +19,7 @@ PrimitiveCube::PrimitiveCube() : Primitive()
 		{{ 0.5f,  0.5f, -0.5f }, { 1.0f, 1.0f, 1.0f, 1.0f }} // top right, back corner
 
 	};
+
 
 	// (0/4) (1/5)
 	// (2/6) (3/7)

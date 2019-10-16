@@ -6,7 +6,7 @@
 #ifndef MATH_LIBRARY
 #define MATH_LIBRARY
 
-#include "Collisions.h"
+#include "Collision.h"
 #include "LargeInt.h"
 #include "Matrix.h"
 #include "Quaternion.h"

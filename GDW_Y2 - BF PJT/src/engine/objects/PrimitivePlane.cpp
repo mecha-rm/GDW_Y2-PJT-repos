@@ -4,7 +4,8 @@
 PrimitivePlane::PrimitivePlane() : Primitive()
 {
 	// Position and Colour
-	Vertex vertices[4] = {
+	verticesTotal = 4;
+	vertices = new Vertex [verticesTotal] {
 		//  x      y	 z		   r	 g	   b	 a
 		{{ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }}, // bottom left
 		{{  0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }}, // bottom right
