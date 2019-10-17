@@ -108,6 +108,12 @@
     <ClCompile Include="src\engine\utils\math\Collision.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Engine\Shader.h">
@@ -827,6 +833,12 @@
     <ClInclude Include="src\engine\utils\math\Collision.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\engine\Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\Object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />
@@ -835,6 +847,9 @@
     <Object Include="x64\Debug\glad.obj" />
     <Object Include="x64\Debug\main.obj" />
     <Object Include="x64\Debug\Physics.obj" />
+    <Object Include="res\sphere.obj" />
+    <Object Include="res\cube.obj" />
+    <Object Include="res\monkeyT.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
@@ -1191,6 +1206,8 @@
     <None Include="external\GLM\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\shader.vert.glsl" />
+    <None Include="res\shader.frag.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />
