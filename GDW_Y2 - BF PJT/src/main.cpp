@@ -19,7 +19,7 @@
 */
 
 #include "engine/Game.h"
-#include "../external/toolkit/Logging.h"
+#include <toolkit/Logging.h>
 
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
