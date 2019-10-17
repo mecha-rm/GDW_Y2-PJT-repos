@@ -5,7 +5,8 @@ PrimitivePlane::PrimitivePlane() : Primitive()
 {
 	// Position and Colour
 	verticesTotal = 4;
-	vertices = new Vertex [verticesTotal] {
+	vertices = new Vertex [verticesTotal] 
+	{
 		//  x      y	 z		   r	 g	   b	 a
 		{{ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }}, // bottom left
 		{{  0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }}, // bottom right
@@ -14,12 +15,13 @@ PrimitivePlane::PrimitivePlane() : Primitive()
 	};
 
 	// indices
-	uint32_t indices[6] = {
+	indicesTotal = 6;
+	indices = new uint32_t[indicesTotal] {
 		0, 1, 2,
 		2, 1, 3
 	};
 
 	// Create a new mesh from the data
-	mesh = std::make_shared<Mesh>(vertices, 4, indices, 6);
+	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 
 }

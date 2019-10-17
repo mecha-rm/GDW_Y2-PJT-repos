@@ -25,7 +25,9 @@ PrimitiveCube::PrimitiveCube() : Primitive()
 	// (2/6) (3/7)
 
 	// indices (drawn as triangles)
-	uint32_t indices[24] = {
+	indicesTotal = 24; // 8 * 3
+	indices = new uint32_t[indicesTotal] 
+	{
 		0, 1, 2, // front face - top half
 		2, 1, 3, // front face - bottom half
 		0, 4, 2, // right side-face (box's perspective) - top half
@@ -33,9 +35,9 @@ PrimitiveCube::PrimitiveCube() : Primitive()
 		1, 5, 3, // left side-face - top half
 		3, 5, 7, // left side-face, bottom half
 		4, 5, 6, // back face - top half
-		6, 5, 7, // back face - bottom half
+		6, 5, 7 // back face - bottom half
 	};
 
 	// Create a new mesh from the data
-	mesh = std::make_shared<Mesh>(vertices, 8, indices, 24);
+	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 }

@@ -139,6 +139,7 @@ void Game::LoadContent()
 
 	// sets the camera to perspective mode for the scene.
 	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
+	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(10.0f), 1.0f, 0.01f, 1000.0f));
 
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
@@ -171,6 +172,7 @@ void Game::LoadContent()
 
 	// objects.push_back(new PrimitiveCube());
 	objects.push_back(new PrimitivePlane());
+	// objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
 
