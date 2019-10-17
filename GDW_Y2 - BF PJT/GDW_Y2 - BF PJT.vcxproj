@@ -90,10 +90,14 @@
     <ClCompile Include="src\engine\Camera.cpp" />
     <ClCompile Include="src\engine\Game.cpp" />
     <ClCompile Include="src\engine\Mesh.cpp" />
+<<<<<<< Updated upstream
     <ClCompile Include="src\engine\objects\Object.cpp" />
     <ClCompile Include="src\engine\objects\PrimitiveCylinder.cpp" />
     <ClCompile Include="src\engine\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\engine\objects\PrimitiveSphere.cpp" />
+=======
+    <ClCompile Include="src\engine\Object.cpp" />
+>>>>>>> Stashed changes
     <ClCompile Include="src\Engine\Shader.cpp" />
     <ClCompile Include="src\Engine\stb_image.cpp" />
     <ClCompile Include="src\glad.c" />
@@ -329,11 +333,15 @@
     <ClInclude Include="src\engine\Camera.h" />
     <ClInclude Include="src\engine\Game.h" />
     <ClInclude Include="src\engine\Mesh.h" />
+<<<<<<< Updated upstream
     <ClInclude Include="src\engine\objects\Object.h" />
     <ClInclude Include="src\engine\objects\PrimitiveCylinder.h" />
     <ClInclude Include="src\engine\objects\PrimitivePlane.h" />
     <ClInclude Include="src\engine\objects\Primitives.h" />
     <ClInclude Include="src\engine\objects\PrimitiveSphere.h" />
+=======
+    <ClInclude Include="src\engine\Object.h" />
+>>>>>>> Stashed changes
     <ClInclude Include="src\Engine\Shader.h" />
     <ClInclude Include="src\Engine\stb_image.h" />
     <ClInclude Include="src\engine\utils\Array.h" />
@@ -353,6 +361,9 @@
     <Library Include="lib\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
+    <Object Include="res\cube.obj" />
+    <Object Include="res\monkeyT.obj" />
+    <Object Include="res\sphere.obj" />
     <Object Include="x64\Debug\glad.obj" />
     <Object Include="x64\Debug\main.obj" />
     <Object Include="x64\Debug\Physics.obj" />
@@ -472,6 +483,8 @@
     <None Include="external\GLM\gtx\vector_angle.inl" />
     <None Include="external\GLM\gtx\vector_query.inl" />
     <None Include="external\GLM\gtx\wrap.inl" />
+    <None Include="res\shader.frag.glsl" />
+    <None Include="res\shader.vert.glsl" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.ilk" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.pdb" />
