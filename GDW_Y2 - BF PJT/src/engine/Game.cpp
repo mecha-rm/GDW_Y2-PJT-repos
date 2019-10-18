@@ -62,6 +62,18 @@ void Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_SPACE:
 		game->myCamera->SwitchViewMode();
 		break;
+	case GLFW_KEY_W:
+		game->w = true;
+		break;
+	case GLFW_KEY_S:
+		game->s = true;
+		break;
+	case GLFW_KEY_A:
+		game->a = true;
+		break;
+	case GLFW_KEY_D:
+		game->d = true;
+		break;
 	}
 }
 
@@ -81,6 +93,25 @@ void Game::KeyReleased(GLFWwindow* window, int key)
 
 	if (game == nullptr) // if game is 'null', then it is returned
 		return;
+
+	switch (key)
+	{
+	case GLFW_KEY_SPACE:
+		game->myCamera->SwitchViewMode();
+		break;
+	case GLFW_KEY_W:
+		game->w = false;
+		break;
+	case GLFW_KEY_S:
+		game->s = false;
+		break;
+	case GLFW_KEY_A:
+		game->a = false;
+		break;
+	case GLFW_KEY_D:
+		game->d = false;
+		break;
+	}
 }
 
 // constructor
@@ -134,10 +165,11 @@ void Game::LoadContent()
 {
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
-	myCamera->SetPosition(glm::vec3(5, 5, 5));
+	myCamera->SetPosition(glm::vec3(0, 5, 10));
 	myCamera->LookAt(glm::vec3(0));
 
 	// sets the camera to perspective mode for the scene.
+	//myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(10.0f), 1.0f, 0.01f, 1000.0f));
 
@@ -165,13 +197,13 @@ void Game::LoadContent()
 	myMesh = std::make_shared<Mesh>(vertices, 4, indices, 0);
 
 	// Creating the object, and stroing it in the vector.
-	// objects.push_back(new Object("res/cube.obj")); // cube
+	objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
 	
 	// objects.push_back(new Object("res/monkey.obj")); // monkey
 
 	// objects.push_back(new PrimitiveCube());
-	objects.push_back(new PrimitivePlane());
+	//objects.push_back(new PrimitivePlane());
 	// objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
@@ -191,7 +223,19 @@ void Game::Update(float deltaTime) {
 	float rotate_inc = glm::radians(20.0F); // saves the increment of the rotation in radians.
 
 	// saves rotation to the model matrix.
-	myModelTransform = glm::rotate(myModelTransform, rotate_inc * deltaTime, glm::vec3(0, 0, 1));
+	//myModelTransform = glm::rotate(myModelTransform, rotate_inc * deltaTime, glm::vec3(0, 0, 1));
+	if (w) {
+		testPlayPos.y -= 0.05;
+	}
+	if (s) {
+		testPlayPos.y += 0.05;
+	}
+	if (a) {
+		testPlayPos.x += 0.05;
+	}
+	if (d) {
+		testPlayPos.x -= 0.05;
+	}
 }
 
 void Game::InitImGui() {
@@ -301,9 +345,10 @@ void Game::Draw(float deltaTime) {
 	myShader->Bind();
 
 	glm::mat4 tempModelTransform = glm::mat4(1.0F); // makes a copy of the transform matrix for making another copy of the mesh.
+	tempModelTransform = glm::translate(tempModelTransform, testPlayPos);
 
 	// translates the temporary model matrix
-	tempModelTransform = glm::translate(tempModelTransform, glm::vec3(-4.0F, 0.0F, 0.0F)); // translates the model matrix.
+	//tempModelTransform = glm::translate(tempModelTransform, glm::vec3(-4.0F, 0.0F, 0.0F)); // translates the model matrix.
 
 	// copies the rotation factor from the original matrix into this one so that the two objects both rotate around their origins.
 	tempModelTransform[0] = myModelTransform[0];
@@ -312,13 +357,16 @@ void Game::Draw(float deltaTime) {
 	// draws each mesh
 	for (Mesh::Sptr mesh : myMeshes)
 	{
+		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
+
 		mesh->Draw(); // draws the mesh.
 
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
+		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
+		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
 
 		mesh->Draw(); // re-drawing the mesh so that it shows up twice.
 
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
+		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible. //Moved above first draw because uniform needs to be set before object is redrawn
 		// mesh->Draw();
 	}
 }
@@ -341,6 +389,8 @@ void Game::DrawGui(float deltaTime) {
 		glfwSetWindowTitle(myWindow, myWindowTitle);
 	}
 
+	myCamera->SetPosition(glm::vec3(testPlayPos.x, testPlayPos.y + 5, testPlayPos.z + 10));
+	myCamera->LookAt(testPlayPos); //Looks at player
 	// changing the camera mode
 	std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
 	ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, 32);

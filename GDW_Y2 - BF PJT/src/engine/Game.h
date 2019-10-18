@@ -94,4 +94,7 @@ private:
 
 	// Model transformation matrix
 	glm::mat4 myModelTransform;
+
+	glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
+	bool w, a, s, d = false;
 };
