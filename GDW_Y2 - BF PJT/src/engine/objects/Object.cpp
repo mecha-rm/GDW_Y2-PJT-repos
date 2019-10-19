@@ -82,6 +82,12 @@ std::string Object::getDescription() const { return description; }
 // sets the object description
 void Object::setDescription(std::string newDesc) { description = newDesc; }
 
+// gets the object position
+glm::vec3 Object::getPosition() const { return position; }
+
+// sets the object position
+void Object::setPosition(glm::vec3 newPos) { position = newPos; }
+
 // returns true if the file is safe to use, false if not safe to use.
 bool Object::getSafe() { return safe; }
 

@@ -89,6 +89,12 @@ private:
 	// a vector of the objects created for the game.
 	std::vector<Object*> objects;
 
+	//player mesh
+	Mesh::Sptr playerMesh;
+
+	//player object
+	Object* playerObj;
+
 	// A shared pointer to our shader.
 	Shader::Sptr myShader;
 

@@ -31,6 +31,12 @@ public:
 	// sets the name of the object.
 	void setDescription(std::string newDesc);
 
+	// gets the position of the object.
+	glm::vec3 getPosition() const;
+
+	// sets the position of the object.
+	void setPosition(glm::vec3 newPos);
+
 	// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
 	bool getSafe();
 

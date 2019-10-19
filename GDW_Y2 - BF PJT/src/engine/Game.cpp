@@ -199,6 +199,7 @@ void Game::LoadContent()
 	// Creating the object, and stroing it in the vector.
 	objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
+	playerObj = new Object("res/monkeyT.obj");
 	
 	// objects.push_back(new Object("res/monkey.obj")); // monkey
 
@@ -207,6 +208,7 @@ void Game::LoadContent()
 	// objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
+	playerMesh = playerObj->getMesh();
 
 	// Create and compile shader
 	myShader = std::make_shared<Shader>();
@@ -225,16 +227,16 @@ void Game::Update(float deltaTime) {
 	// saves rotation to the model matrix.
 	//myModelTransform = glm::rotate(myModelTransform, rotate_inc * deltaTime, glm::vec3(0, 0, 1));
 	if (w) {
-		testPlayPos.y -= 0.05;
+		playerObj->setPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y - 0.05, playerObj->getPosition().z));
 	}
 	if (s) {
-		testPlayPos.y += 0.05;
+		playerObj->setPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y + 0.05, playerObj->getPosition().z));
 	}
 	if (a) {
-		testPlayPos.x += 0.05;
+		playerObj->setPosition(glm::vec3(playerObj->getPosition().x + 0.05, playerObj->getPosition().y, playerObj->getPosition().z));
 	}
 	if (d) {
-		testPlayPos.x -= 0.05;
+		playerObj->setPosition(glm::vec3(playerObj->getPosition().x - 0.05, playerObj->getPosition().y, playerObj->getPosition().z));
 	}
 }
 
@@ -344,11 +346,17 @@ void Game::Draw(float deltaTime) {
 
 	myShader->Bind();
 
+	glm::mat4 playerModelTransform = glm::mat4(1.0F);
+	playerModelTransform = glm::translate(playerModelTransform, playerObj->getPosition());
+	myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * playerModelTransform); // transforms the mesh.
+	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	playerMesh->Draw();
+
 	glm::mat4 tempModelTransform = glm::mat4(1.0F); // makes a copy of the transform matrix for making another copy of the mesh.
-	tempModelTransform = glm::translate(tempModelTransform, testPlayPos);
+	//tempModelTransform = glm::translate(tempModelTransform, playerObj->getPosition());
 
 	// translates the temporary model matrix
-	//tempModelTransform = glm::translate(tempModelTransform, glm::vec3(-4.0F, 0.0F, 0.0F)); // translates the model matrix.
+	tempModelTransform = glm::translate(tempModelTransform, glm::vec3(-4.0F, 0.0F, 0.0F)); // translates the model matrix.
 
 	// copies the rotation factor from the original matrix into this one so that the two objects both rotate around their origins.
 	tempModelTransform[0] = myModelTransform[0];
@@ -403,8 +411,8 @@ void Game::DrawGui(float deltaTime) {
 		glfwSetWindowTitle(myWindow, myWindowTitle);
 	}
 
-	myCamera->SetPosition(glm::vec3(testPlayPos.x, testPlayPos.y + 5, testPlayPos.z + 10));
-	myCamera->LookAt(testPlayPos); //Looks at player
+	myCamera->SetPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y + 5, playerObj->getPosition().z + 10));
+	myCamera->LookAt(playerObj->getPosition()); //Looks at player
 	// changing the camera mode
 	std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
 	ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, 32);
