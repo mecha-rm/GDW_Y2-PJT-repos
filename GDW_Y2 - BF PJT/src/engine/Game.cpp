@@ -354,9 +354,23 @@ void Game::Draw(float deltaTime) {
 	tempModelTransform[0] = myModelTransform[0];
 	tempModelTransform[1] = myModelTransform[1];
 
+	// wireframe if needed
+	
+
 	// draws each mesh
 	for (Mesh::Sptr mesh : myMeshes)
 	{
+		if (mesh == myMeshes[myMeshes.size() - 1]) {
+			mesh->enableWireframe();
+		}
+		
+		if (mesh->isWireframe()) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
 		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
 
 		mesh->Draw(); // draws the mesh.

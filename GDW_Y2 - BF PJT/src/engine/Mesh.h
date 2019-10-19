@@ -19,12 +19,22 @@ public:
 	
 	// Creates a new mesh from the given vertices and indices
 	Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices);
+	Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe);
 
 	// destructor
 	~Mesh();
 
 	// Draws this mesh
 	void Draw();
+
+	// Returns wireframe boolean to tell the caller if the mesh is to be drawn in wirframe
+	bool isWireframe();
+
+	// Enables wireframe mode on the mesh
+	void enableWireframe();
+
+	// Disables wireframe mode on the mesh
+	void disableWireframe();
 
 private:
 	// Our GL handle for the Vertex Array Object
@@ -35,4 +45,7 @@ private:
 
 	// The number of vertices and indices in this mesh
 	size_t myVertexCount, myIndexCount;
+
+	// Whether or not the mesh should be drawn in wireframe mode
+	bool wireframe;
 };

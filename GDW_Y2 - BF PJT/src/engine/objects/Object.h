@@ -67,7 +67,14 @@ private:
 	// true if the file is safe to read from, false otherwise.
 	bool safe = false;
 
+	// is mesh in wireframe mode
+	bool isWireframe();
 
+	// enable wireframe on mesh
+	void enableWireframe();
+
+	// disable wireframe on mesh
+	void disableWireframe();
 
 
 protected:

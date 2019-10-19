@@ -116,7 +116,7 @@ void Camera::Rotate(const glm::vec3& rot) { Rotate(glm::quat(rot)); }
 
 // we need to update our cache value of our position for world space.
 void Camera::Move(const glm::vec3& local) {
-
+	
 	// Only update if we have actually moved
 	if (local != glm::vec3(0)) {
 		

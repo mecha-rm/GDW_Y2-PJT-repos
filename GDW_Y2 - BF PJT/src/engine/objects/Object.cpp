@@ -54,6 +54,19 @@ Object::Object(std::string filePath) : position(), vertices(nullptr), indices(nu
 	loadObject();
 }
 
+bool Object::isWireframe()
+{
+	return this->mesh->isWireframe();
+}
+
+void Object::enableWireframe() {
+	this->mesh->enableWireframe();
+}
+
+void Object::disableWireframe() {
+	this->mesh->disableWireframe();
+}
+
 // the protected constructor used for default primitives
 Object::Object() : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr) { filePath = ""; }
 
