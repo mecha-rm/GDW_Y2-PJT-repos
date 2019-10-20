@@ -9,8 +9,8 @@ namespace pc
 {
 	// Vertex Struct - saves vertex position and colour.
 	struct Vertex {
-		glm::vec3 Position;
-		glm::vec4 Color;
+		glm::vec3 Position; // vertex position
+		glm::vec4 Color; // vertex colour
 	};
 
 	// Mesh Class - creates meshes so that objects can appear on screen.
@@ -30,13 +30,16 @@ namespace pc
 		void Draw();
 
 		// Returns wireframe boolean to tell the caller if the mesh is to be drawn in wirframe
-		bool isWireframe();
+		bool isWireframeMode();
+
+		// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
+		void setWireframeMode(bool wf);
 
 		// Enables wireframe mode on the mesh
-		void enableWireframe();
+		void enableWireframeMode();
 
 		// Disables wireframe mode on the mesh
-		void disableWireframe();
+		void disableWireframeMode();
 
 	private:
 		// Our GL handle for the Vertex Array Object

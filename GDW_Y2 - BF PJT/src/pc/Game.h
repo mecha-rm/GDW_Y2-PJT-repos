@@ -32,6 +32,15 @@ namespace pc
 		// handles resizing the window without skewing the objects in the scene.
 		void HandleResize(int width, int height);
 
+		// called when a mouse button has been pressed
+		void MouseButtonPressed(GLFWwindow* window, int button);
+
+		// called when a mouse button has been pressed
+		void MouseButtonReleased(GLFWwindow* window, int button);
+
+		// updates the cursor position variables when callback fuciton is called
+		void UpdateCursorPos(double xpos, double ypos);
+
 		// called when a key has been pressed
 		void KeyPressed(GLFWwindow* window, int key);
 
@@ -41,22 +50,12 @@ namespace pc
 		// called when a key has been released
 		void KeyReleased(GLFWwindow* window, int key);
 
-		// updates the cursor position variables when callback fuciton is called
-		void updateCursorPos(double xpos, double ypos);
-
-		// called when a mouse button has been pressed
-		void MBPressed(GLFWwindow* window, int button);
-
-		// called when a mouse button has been pressed
-		void MBReleased(GLFWwindow* window, int button);
-
 		// if 'true', then the objects keep their scale when the window is resized.
 		// If false, the objects skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
 
 		// the object used for the camera
 		Camera::Sptr myCamera;
-
 		
 
 	protected:
@@ -109,6 +108,7 @@ namespace pc
 
 		// A shared pointer to our shader.
 		Shader::Sptr myShader;
+
 		// a vector of the objects created for the game.
 		std::vector<Object*> objects;
 

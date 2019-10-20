@@ -16,6 +16,9 @@ namespace pc
 		// the name and directory of the .obj file
 		Object(std::string filePath);
 
+		// destructor
+		~Object();
+
 		// std::string getFile() const;
 
 		// sets the file. Make sure to include the file path so that
@@ -33,14 +36,8 @@ namespace pc
 		// sets the name of the object.
 		void setDescription(std::string newDesc);
 
-	// gets the position of the object.
-	glm::vec3 getPosition() const;
-
-	// sets the position of the object.
-	void setPosition(glm::vec3 newPos);
-
-	// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
-	bool getSafe();
+		// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
+		bool getSafe();
 
 		// returns the color as a glm::vec3
 		// this returns only the colour of the first vertex, so if other vertices have different colours, they are not set.
@@ -72,9 +69,27 @@ namespace pc
 
 		//void setVertexColor(unsigned int index, glm::vec4 color);
 
+		// is mesh in wireframe mode
+		bool isWireframeMode();
+
+		// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
+		void setWireframeMode(bool wf);
+
+		// enable wireframe on mesh
+		void enableWireframeMode();
+
+		// disable wireframe on mesh
+		void disableWireframeMode();
+
 		// returns a reference to the mesh.
 		Mesh::Sptr& getMesh();
 		// Mesh::Sptr * getMesh();
+
+		// gets the position
+		glm::vec3 getPosition() const;
+
+		// sets the position
+		void setPosition(glm::vec3 newPos);
 
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
@@ -105,16 +120,6 @@ namespace pc
 
 		// true if the file is safe to read from, false otherwise.
 		bool safe = false;
-
-		// is mesh in wireframe mode
-		bool isWireframe();
-
-		// enable wireframe on mesh
-		void enableWireframe();
-
-		// disable wireframe on mesh
-		void disableWireframe();
-
 
 	protected:
 		// constructor used for default primitives

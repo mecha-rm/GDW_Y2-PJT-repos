@@ -3,13 +3,13 @@
 
 // constructor
 pc::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices) {
-	
+
 	this->wireframe = false;
 
 	myIndexCount = numIndices; // number of indicies
 
 	myVertexCount = numVerts; // number of vertices
-	
+
 	// Create and bind our vertex array
 	glCreateVertexArrays(1, &myVao);
 	glBindVertexArray(myVao);
@@ -124,15 +124,14 @@ void pc::Mesh::Draw() {
 	}
 }
 
-bool pc::Mesh::isWireframe()
-{
-	return this->wireframe;
-}
+// returns 'true' if the mesh is in wireframe mode. False otherwise.
+bool pc::Mesh::isWireframeMode() { return this->wireframe; }
 
-void pc::Mesh::enableWireframe() {
-	this->wireframe = true;
-}
+// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
+void pc::Mesh::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
 
-void pc::Mesh::disableWireframe() {
-	this->wireframe = false;
-}
+// enables wireframe mode.
+void pc::Mesh::enableWireframeMode() { this->wireframe = true; }
+
+// disables wireframe mode.
+void pc::Mesh::disableWireframeMode() { this->wireframe = false; }

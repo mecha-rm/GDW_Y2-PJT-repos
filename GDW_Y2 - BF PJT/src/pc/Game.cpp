@@ -25,65 +25,76 @@ void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 }
 
 // called when a mouse button event is recorded
-void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+void MouseButtomCallback(GLFWwindow* window, int button, int action, int mods) {
 	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
 
+	// returns the function early if this isn't a game class
 	if (game == nullptr) {
 		return;
 	}
 	
 	switch (action) {
 	case GLFW_PRESS:
-		game->MBPressed(window, button);
+		game->MouseButtonPressed(window, button);
 		break;
 	case GLFW_RELEASE:
-		game->MBReleased(window, button);
+		game->MouseButtonReleased(window, button);
 		break;
 	}
 }
 
 // called when a mouse button has been pressed
-void pc::Game::MBPressed(GLFWwindow* window, int button) {
+void pc::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
 	if (game == nullptr) // if game is 'null', then nothing happens
 		return;
 
+	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
 		game->mbLP = true;
 		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		break;
 	}
 }
 
 // called when a mouse button has been pressed
-void pc::Game::MBReleased(GLFWwindow* window, int button) {
+void pc::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
 	if (game == nullptr) // if game is 'null', then nothing happens
 		return;
 
+	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
 		game->mbLR = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
 		break;
 	}
 }
 
 // called when the mouse moves over the screen
-void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
 	
 	if (game == nullptr) {
 		return;
 	}
 	else {
-		game->updateCursorPos(xpos, ypos);
+		game->UpdateCursorPos(xpos, ypos);
 	}
 }
 
 // updates cursor pos variables
-void pc::Game::updateCursorPos(double xpos, double ypos) {
+void pc::Game::UpdateCursorPos(double xpos, double ypos) {
 	this->XcursorPos = xpos;
 	this->YcursorPos = ypos;
 }
@@ -222,10 +233,10 @@ void pc::Game::Initialize() {
 	glfwSetKeyCallback(myWindow, KeyCallback);
 
 	// Setting cursor pos callback function
-	glfwSetCursorPosCallback(myWindow, cursorPosCallback);
+	glfwSetCursorPosCallback(myWindow, CursorPosCallback);
 
 	// Setting mouse button callback function
-	glfwSetMouseButtonCallback(myWindow, mouseButtonCallback);
+	glfwSetMouseButtonCallback(myWindow, MouseButtomCallback);
 }
 
 void pc::Game::Shutdown() {
@@ -273,7 +284,9 @@ void pc::Game::LoadContent()
 	// objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
 	playerObj = new Object("res/monkeyT.obj");
-	
+	playerMesh = playerObj->getMesh();
+	objects.push_back(playerObj);
+
 	// objects.push_back(new Object("res/monkey.obj")); // monkey
 
 	// objects.push_back(new PrimitiveCube());
@@ -282,8 +295,8 @@ void pc::Game::LoadContent()
     // objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	// objects[objects.size() - 1]->setColor(12, 24, 111);
-	myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
-	playerMesh = playerObj->getMesh();
+	// myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
+	
 
 	// Create and compile shader
 	myShader = std::make_shared<Shader>();
@@ -462,7 +475,7 @@ void pc::Game::Draw(float deltaTime) {
 			mesh->enableWireframe();
 		}*/
 		
-		if (mesh->isWireframe()) {
+		if (mesh->isWireframeMode()) {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 		else {
@@ -480,6 +493,34 @@ void pc::Game::Draw(float deltaTime) {
 
 		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible. //Moved above first draw because uniform needs to be set before object is redrawn
 		// mesh->Draw();
+	}
+
+	// goes through each object and gets their meshes.
+	for (pc::Object* obj : objects)
+	{
+		/*if (mesh == myMeshes[myMeshes.size() - 1]) {
+			mesh->enableWireframeMode();
+		}*/
+
+		if (obj->getMesh()->isWireframeMode()) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		}
+		else if (!obj->getMesh()->isWireframeMode()) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+		// std::cout << "Position: (" << playerObj->getPosition().x << ", " << playerObj->getPosition().y << ") " << std::endl;
+
+		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
+
+		obj->getMesh()->Draw(); // draws the mesh.
+
+		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
+		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
+
+		obj->getMesh()->Draw(); // re-drawing the mesh so that it shows up twice.
+
+		
 	}
 }
 
@@ -500,6 +541,14 @@ void pc::Game::DrawGui(float deltaTime) {
 	if (ImGui::Button("Apply")) // adding another button, which allows for the application of the window title.
 	{
 		glfwSetWindowTitle(myWindow, myWindowTitle);
+	}
+	if (ImGui::Button("Wireframe/Fill Toggle"))
+	{
+		for (pc::Mesh::Sptr mesh : myMeshes)
+			mesh->setWireframeMode(!mesh->isWireframeMode());
+
+		for (pc::Object* obj : objects)
+			obj->getMesh()->setWireframeMode(!obj->getMesh()->isWireframeMode());
 	}
 
 	myCamera->SetPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y + 5, playerObj->getPosition().z + 10));

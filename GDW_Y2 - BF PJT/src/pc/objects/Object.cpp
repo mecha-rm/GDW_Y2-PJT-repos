@@ -31,7 +31,7 @@ const unsigned int pc::Object::INDICES_MAX = pow(2, 32);
 pc::Object::Object(std::string filePath) : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr)
 {
 	this->filePath = filePath; // saves the file path
-	
+
 	std::ifstream file(filePath, std::ios::in); // opens the file
 	// file.open(filePath, std::ios::in); // opens file
 
@@ -54,21 +54,16 @@ pc::Object::Object(std::string filePath) : position(), vertices(nullptr), indice
 	loadObject();
 }
 
-bool pc::Object::isWireframe()
-{
-	return this->mesh->isWireframe();
-}
-
-void pc::Object::enableWireframe() {
-	this->mesh->enableWireframe();
-}
-
-void pc::Object::disableWireframe() {
-	this->mesh->disableWireframe();
-}
-
 // the protected constructor used for default primitives
 pc::Object::Object() : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr) { filePath = ""; }
+
+pc::Object::~Object()
+{
+	delete vertices;
+	delete indices;
+	delete vertexTextures;
+	delete vertexNormals;
+}
 
 // gets the name of the object.
 std::string pc::Object::getName() const { return name; }
@@ -81,12 +76,6 @@ std::string pc::Object::getDescription() const { return description; }
 
 // sets the object description
 void pc::Object::setDescription(std::string newDesc) { description = newDesc; }
-
-// gets the object position
-glm::vec3 pc::Object::getPosition() const { return position; }
-
-// sets the object position
-void pc::Object::setPosition(glm::vec3 newPos) { position = newPos; }
 
 // returns true if the file is safe to use, false if not safe to use.
 bool pc::Object::getSafe() { return safe; }
@@ -118,8 +107,20 @@ void pc::Object::setColor(glm::vec3 color) { setColor(color.x, color.y, color.z,
 // sets the color (RGBA [0-1])
 void pc::Object::setColor(glm::vec4 color) { setColor(color.x, color.y, color.z, color.w); }
 
+// checks to see if the object is in wireframe mode.
+bool pc::Object::isWireframeMode() { return mesh->isWireframeMode(); }
+
+// enables or disables wireframe, based on 'bool' passed
+void pc::Object::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
+
+// enables the wireframe
+void pc::Object::enableWireframeMode() { mesh->enableWireframeMode(); }
+
+// disables the wireframe
+void pc::Object::disableWireframeMode() { mesh->disableWireframeMode(); }
+
 // returns a pointer to the mesh.
-pc::Mesh::Sptr & pc::Object::getMesh() { return mesh; }
+pc::Mesh::Sptr& pc::Object::getMesh() { return mesh; }
 
 // creates the object.
 bool pc::Object::loadObject()
@@ -128,7 +129,7 @@ bool pc::Object::loadObject()
 	std::string line = ""; // the current line of the file.
 	std::vector<float> tempVecFlt; // a temporary float vector. Used to save the results of a parsing operation.
 	std::vector<Vertex> vertVec; // a vector of vertices; gets all vertices from the file before putting them in the array.
-	
+
 	std::vector<uint32_t>tempVecUint; // temporary vector for uin32_t data. Saves information from parsing operation.
 	std::vector<uint32_t> indiVec; // a vector of indices; gets all indices from the file before putting them into the array.
 
@@ -214,7 +215,7 @@ bool pc::Object::loadObject()
 			{
 				indiVec.push_back(tempVecUint[i]);
 			}
-			
+
 		}
 	}
 
@@ -227,7 +228,7 @@ bool pc::Object::loadObject()
 	// puts the vertices into the dynamic vertex buffer array.
 	for (int i = 0; i < indiVec.size(); i++)
 		vertices[i] = vertVec[indiVec[i] - 1];
-	
+
 	indicesTotal = indiVec.size(); // gets the total number of indices.
 	indices = new uint32_t[indicesTotal]; // creates the dynamic array
 
@@ -247,6 +248,12 @@ bool pc::Object::loadObject()
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // creates the mesh
 	return (safe = true); // returns whether the object was safely loaded.
 }
+
+// gets the object's position
+glm::vec3 pc::Object::getPosition() const { return position; }
+
+// sets the position
+void pc::Object::setPosition(glm::vec3 newPos) { position = newPos; }
 
 // parses a string to get all the values from it as data type (T).
 template<typename T>
