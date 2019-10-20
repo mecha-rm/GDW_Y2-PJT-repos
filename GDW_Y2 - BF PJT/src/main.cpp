@@ -18,7 +18,7 @@
 		* Window Guide
 */
 
-#include "engine/Game.h"
+#include "pc/Game.h"
 #include <toolkit/Logging.h>
 
 #define _CRTDBG_MAP_ALLOC
@@ -27,6 +27,7 @@
 
 // Object object = Object("C:/Users/steph/source/repos/GDW_Y2-PJT-repos/GDW_Y2 - BF PJT/src/cube.obj");
 // const unsigned int numVerts = object.vertices.size();
+
 
 int main() 
 {
@@ -42,7 +43,8 @@ int main()
 
 	Logger::Init();
 
-	Game* game = new Game();
+
+	pc::Game* game = new pc::Game();
 	game->Run();
 	delete game;
 
