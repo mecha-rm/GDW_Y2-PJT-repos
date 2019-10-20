@@ -2,7 +2,7 @@
 #include "Mesh.h"
 
 // constructor
-pc::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices) {
+cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices) {
 
 	this->wireframe = false;
 
@@ -48,7 +48,7 @@ pc::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numI
 	glBindVertexArray(0);
 }
 
-pc::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe)
+cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe)
 {
 
 	this->wireframe = wireframe; // wireframe mode
@@ -96,7 +96,7 @@ pc::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numI
 }
 
 // destructor
-pc::Mesh::~Mesh()
+cherry::Mesh::~Mesh()
 {
 	// Clean up our buffers
 	glDeleteBuffers(2, myBuffers);
@@ -106,7 +106,7 @@ pc::Mesh::~Mesh()
 }
 
 // drawing function for meshes
-void pc::Mesh::Draw() {
+void cherry::Mesh::Draw() {
 	// Bind the mesh
 	glBindVertexArray(myVao);
 
@@ -125,13 +125,13 @@ void pc::Mesh::Draw() {
 }
 
 // returns 'true' if the mesh is in wireframe mode. False otherwise.
-bool pc::Mesh::isWireframeMode() { return this->wireframe; }
+bool cherry::Mesh::isWireframeMode() { return this->wireframe; }
 
 // if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
-void pc::Mesh::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
+void cherry::Mesh::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
 
 // enables wireframe mode.
-void pc::Mesh::enableWireframeMode() { this->wireframe = true; }
+void cherry::Mesh::enableWireframeMode() { this->wireframe = true; }
 
 // disables wireframe mode.
-void pc::Mesh::disableWireframeMode() { this->wireframe = false; }
+void cherry::Mesh::disableWireframeMode() { this->wireframe = false; }

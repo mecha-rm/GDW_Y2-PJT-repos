@@ -5,7 +5,7 @@
 
 #include <memory>
 
-namespace pc
+namespace cherry
 {
 	class Shader {
 	public:

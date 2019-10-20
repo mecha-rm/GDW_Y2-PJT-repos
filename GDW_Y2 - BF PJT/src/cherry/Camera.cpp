@@ -6,7 +6,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 // constructor
-pc::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projection(glm::mat4(1.0f))
+cherry::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projection(glm::mat4(1.0f))
 {
 	// mat4 used for perspective and orthographic. They are initialized as being empty matrices (i.e. all values are 0).
 	perspective = glm::mat4();
@@ -14,10 +14,10 @@ pc::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projec
 }
 
 // gets the perspective mode matrix.
-glm::mat4 pc::Camera::getPerspectiveMode() const { return perspective; }
+glm::mat4 cherry::Camera::getPerspectiveMode() const { return perspective; }
 
 // sets perspective mode
-void pc::Camera::SetPerspectiveMode(glm::mat4 pspec, bool changeMode)
+void cherry::Camera::SetPerspectiveMode(glm::mat4 pspec, bool changeMode)
 {
 	perspective = pspec; // changing the values of the perspective matrix
 
@@ -29,13 +29,13 @@ void pc::Camera::SetPerspectiveMode(glm::mat4 pspec, bool changeMode)
 }
 
 // sets the perspective mode.
-void pc::Camera::SetPerspectiveMode(float fovRadians, float aspect, float zNear, float zFar, bool changeMode)
+void cherry::Camera::SetPerspectiveMode(float fovRadians, float aspect, float zNear, float zFar, bool changeMode)
 { 
 	SetPerspectiveMode(glm::perspective(fovRadians, aspect, zNear, zFar), changeMode); // calls other function
 }
 
 // sets perspective mode; if true is passed, the camera is switched to perspective mode. If false, it's set to orthographic mode.
-void pc::Camera::SetPerspectiveMode(bool pspec)
+void cherry::Camera::SetPerspectiveMode(bool pspec)
 {
 	// if already in perspective mode, the settings are checked.
 	if (perspectiveMode == pspec)
@@ -53,10 +53,10 @@ void pc::Camera::SetPerspectiveMode(bool pspec)
 }
 
 // gets the orthographic mode
-glm::mat4 pc::Camera::GetOrthographicMode() const { return orthographic; }
+glm::mat4 cherry::Camera::GetOrthographicMode() const { return orthographic; }
 
 // sets the orthographic mode using a matrix.
-void pc::Camera::SetOrthographicMode(glm::mat4 ortho, bool changeMode)
+void cherry::Camera::SetOrthographicMode(glm::mat4 ortho, bool changeMode)
 {
 	orthographic = ortho; // overriding the old matrix
 
@@ -68,43 +68,43 @@ void pc::Camera::SetOrthographicMode(glm::mat4 ortho, bool changeMode)
 }
 
 // sets to orthographic mode; re-uses other function
-void pc::Camera::SetOrthographicMode(float left, float right, float bottom, float top, float zNear, float zFar, bool changeMode)
+void cherry::Camera::SetOrthographicMode(float left, float right, float bottom, float top, float zNear, float zFar, bool changeMode)
 {
 	SetOrthographicMode(glm::ortho(left, right, bottom, top, zNear, zFar), changeMode);
 }
 
 // changes to orthographic mode if 'true' is passed.
 // since it re-uses SetPerspectiveMode(bool), said function needs to be passed the opposite of what the user provided.
-void pc::Camera::SetOrthographicMode(bool ortho) { SetPerspectiveMode(!ortho); }
+void cherry::Camera::SetOrthographicMode(bool ortho) { SetPerspectiveMode(!ortho); }
 
 // switches view mode.
-void pc::Camera::SwitchViewMode() { SetPerspectiveMode(!perspectiveMode); }
+void cherry::Camera::SwitchViewMode() { SetPerspectiveMode(!perspectiveMode); }
 
 // checks if the camera is in perspective mode.
-bool pc::Camera::InPerspectiveMode() { return perspectiveMode; }
+bool cherry::Camera::InPerspectiveMode() { return perspectiveMode; }
 
 // checks if the camera is in orthographic mode
-bool pc::Camera::InOrthographicMode() { return !perspectiveMode; }
+bool cherry::Camera::InOrthographicMode() { return !perspectiveMode; }
 
 
 
 // sets position of the camera.
 // the position in the view matrix is relative to the rotation, so that is accounted for.
-void pc::Camera::SetPosition(const glm::vec3& pos) {
+void cherry::Camera::SetPosition(const glm::vec3& pos) {
 	myView[3] = glm::vec4(-(glm::mat3(myView) * pos), 1.0f);
 	myPosition = pos;
 }
 
 // calculates our rotation component of our view matrix.
 // camera position, where we want to look, and a up vector.
-void pc::Camera::LookAt(const glm::vec3& target, const glm::vec3& up) {
+void cherry::Camera::LookAt(const glm::vec3& target, const glm::vec3& up) {
 	myView = glm::lookAt(myPosition, target, up);
 }
 
 // rotates with quaternions.
 // We make sure it's not (0), as we don't want to keep doing math with a 0 value.
 // we just want to rotate the 3 X 3 portion, so we have mat4_cast(rot) on the left side.
-void pc::Camera::Rotate(const glm::quat& rot) {
+void cherry::Camera::Rotate(const glm::quat& rot) {
 	// Only update if we have an actual value to rotate by
 	if (rot != glm::quat(glm::vec3(0))) {
 		myView = glm::mat4_cast(rot) * myView;
@@ -112,10 +112,10 @@ void pc::Camera::Rotate(const glm::quat& rot) {
 }
 
 // rotates the camera using a vector, which is actually converted to a quaternion.
-void pc::Camera::Rotate(const glm::vec3& rot) { Rotate(glm::quat(rot)); }
+void cherry::Camera::Rotate(const glm::vec3& rot) { Rotate(glm::quat(rot)); }
 
 // we need to update our cache value of our position for world space.
-void pc::Camera::Move(const glm::vec3& local) {
+void cherry::Camera::Move(const glm::vec3& local) {
 	
 	// Only update if we have actually moved
 	if (local != glm::vec3(0)) {

@@ -16,7 +16,7 @@
 #include <iostream>
 #include <vector>
 
-namespace pc
+namespace cherry
 {
 	class Game {
 	public:

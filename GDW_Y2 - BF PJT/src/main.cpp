@@ -18,7 +18,7 @@
 		* Window Guide
 */
 
-#include "pc/Game.h"
+#include "cherry/Game.h"
 #include <toolkit/Logging.h>
 
 #define _CRTDBG_MAP_ALLOC
@@ -44,7 +44,7 @@ int main()
 	Logger::Init();
 
 
-	pc::Game* game = new pc::Game();
+	cherry::Game* game = new cherry::Game();
 	game->Run();
 	delete game;
 

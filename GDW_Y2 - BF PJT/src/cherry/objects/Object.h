@@ -10,7 +10,7 @@
 #include "..\utils\math\Consts.h"
 #include <math.h>
 
-namespace pc
+namespace cherry
 {
 
 	class Object

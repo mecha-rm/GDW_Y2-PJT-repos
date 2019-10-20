@@ -15,7 +15,7 @@
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 
-	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
+	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 
 	if (game != nullptr)
 	{
@@ -26,7 +26,7 @@ void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 
 // called when a mouse button event is recorded
 void MouseButtomCallback(GLFWwindow* window, int button, int action, int mods) {
-	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
+	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 
 	// returns the function early if this isn't a game class
 	if (game == nullptr) {
@@ -44,7 +44,7 @@ void MouseButtomCallback(GLFWwindow* window, int button, int action, int mods) {
 }
 
 // called when a mouse button has been pressed
-void pc::Game::MouseButtonPressed(GLFWwindow* window, int button) {
+void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
 	if (game == nullptr) // if game is 'null', then nothing happens
@@ -63,7 +63,7 @@ void pc::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 }
 
 // called when a mouse button has been pressed
-void pc::Game::MouseButtonReleased(GLFWwindow* window, int button) {
+void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
 	if (game == nullptr) // if game is 'null', then nothing happens
@@ -83,7 +83,7 @@ void pc::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 
 // called when the mouse moves over the screen
 void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
-	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
+	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 	
 	if (game == nullptr) {
 		return;
@@ -94,7 +94,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 }
 
 // updates cursor pos variables
-void pc::Game::UpdateCursorPos(double xpos, double ypos) {
+void cherry::Game::UpdateCursorPos(double xpos, double ypos) {
 	this->XcursorPos = xpos;
 	this->YcursorPos = ypos;
 
@@ -106,7 +106,7 @@ void pc::Game::UpdateCursorPos(double xpos, double ypos) {
 // KeyCallback(Window, Keyboard Key, Platform-Specific Scancode, Key Action, and Modifier Bits)
 void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	pc::Game* game = (pc::Game*)glfwGetWindowUserPointer(window);
+	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 
 	if (game != nullptr)
 	{
@@ -129,7 +129,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 }
 
 // key has been pressed
-void pc::Game::KeyPressed(GLFWwindow* window, int key)
+void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -158,7 +158,7 @@ void pc::Game::KeyPressed(GLFWwindow* window, int key)
 }
 
 // key is being held
-void pc::Game::KeyHeld(GLFWwindow* window, int key)
+void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -167,7 +167,7 @@ void pc::Game::KeyHeld(GLFWwindow* window, int key)
 }
 
 // key hs been released
-void pc::Game::KeyReleased(GLFWwindow* window, int key)
+void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -195,16 +195,16 @@ void pc::Game::KeyReleased(GLFWwindow* window, int key)
 }
 
 // constructor
-pc::Game::Game() :
+cherry::Game::Game() :
 	myWindow(nullptr),
 	myWindowTitle("Bonus Fruit Engine"),
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f))
 { }
 
 // destructor
-pc::Game::~Game() { }
+cherry::Game::~Game() { }
 
-void pc::Game::Initialize() {
+void cherry::Game::Initialize() {
 
 	// Initialize GLFW
 	if (glfwInit() == GLFW_FALSE) {
@@ -242,12 +242,12 @@ void pc::Game::Initialize() {
 	glfwSetMouseButtonCallback(myWindow, MouseButtomCallback);
 }
 
-void pc::Game::Shutdown() {
+void cherry::Game::Shutdown() {
 	glfwTerminate();
 }
 
 // loads the content for the meshes and shaders
-void pc::Game::LoadContent()
+void cherry::Game::LoadContent()
 {
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
@@ -308,10 +308,10 @@ void pc::Game::LoadContent()
 	myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 }
 
-void pc::Game::UnloadContent() {
+void cherry::Game::UnloadContent() {
 }
 
-void pc::Game::Update(float deltaTime) {
+void cherry::Game::Update(float deltaTime) {
 
 	float rotate_inc = glm::radians(20.0F); // saves the increment of the rotation in radians.
 
@@ -348,7 +348,7 @@ void pc::Game::Update(float deltaTime) {
 	//Logger::GetLogger()->info(playerObj->getDegreeAngle());
 }
 
-void pc::Game::InitImGui() {
+void cherry::Game::InitImGui() {
 	// Creates a new ImGUI context
 	ImGui::CreateContext();
 	// Gets our ImGUI input/output
@@ -376,7 +376,7 @@ void pc::Game::InitImGui() {
 	}
 }
 
-void pc::Game::ShutdownImGui() {
+void cherry::Game::ShutdownImGui() {
 	// Cleanup the ImGui implementation
 	ImGui_ImplOpenGL3_Shutdown();
 	ImGui_ImplGlfw_Shutdown();
@@ -384,7 +384,7 @@ void pc::Game::ShutdownImGui() {
 	ImGui::DestroyContext();
 }
 
-void pc::Game::ImGuiNewFrame() {
+void cherry::Game::ImGuiNewFrame() {
 	// Implementation new frame
 	ImGui_ImplOpenGL3_NewFrame();
 	ImGui_ImplGlfw_NewFrame();
@@ -392,7 +392,7 @@ void pc::Game::ImGuiNewFrame() {
 	ImGui::NewFrame();
 }
 
-void pc::Game::ImGuiEndFrame() {
+void cherry::Game::ImGuiEndFrame() {
 	// Make sure ImGui knows how big our window is
 	ImGuiIO& io = ImGui::GetIO();
 	int width{ 0 }, height{ 0 };
@@ -411,7 +411,7 @@ void pc::Game::ImGuiEndFrame() {
 	}
 }
 
-void pc::Game::Run()
+void cherry::Game::Run()
 {
 	Initialize();
 	InitImGui();
@@ -439,7 +439,7 @@ void pc::Game::Run()
 }
 
 // resizes the window without skewing the objects, and changes the cameras accordingly.
-void pc::Game::HandleResize(int width, int height)
+void cherry::Game::HandleResize(int width, int height)
 {
 	// changing the camera modes to adjust for the new window size. 
 	// The camera mode isn't changed, just it's values (i.e. if it's in perspective mode, it stays in perspective mode).
@@ -447,7 +447,7 @@ void pc::Game::HandleResize(int width, int height)
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f * width / (float)height, 5.0f * width / (float)height, -5.0f, 5.0f, 0.0f, 100.0f), myCamera->InOrthographicMode());
 }
 
-void pc::Game::Draw(float deltaTime) {
+void cherry::Game::Draw(float deltaTime) {
 	// Clear our screen every frame
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -500,7 +500,7 @@ void pc::Game::Draw(float deltaTime) {
 	}
 
 	// goes through each object and gets their meshes.
-	for (pc::Object* obj : objects)
+	for (cherry::Object* obj : objects)
 	{
 		/*if (mesh == myMeshes[myMeshes.size() - 1]) {
 			mesh->enableWireframeMode();
@@ -528,7 +528,7 @@ void pc::Game::Draw(float deltaTime) {
 	}
 }
 
-void pc::Game::DrawGui(float deltaTime) {
+void cherry::Game::DrawGui(float deltaTime) {
 	// Open a new ImGui window
 	ImGui::Begin("Colour Picker");
 
@@ -548,10 +548,10 @@ void pc::Game::DrawGui(float deltaTime) {
 	}
 	if (ImGui::Button("Wireframe/Fill Toggle"))
 	{
-		for (pc::Mesh::Sptr mesh : myMeshes)
+		for (cherry::Mesh::Sptr mesh : myMeshes)
 			mesh->setWireframeMode(!mesh->isWireframeMode());
 
-		for (pc::Object* obj : objects)
+		for (cherry::Object* obj : objects)
 			obj->getMesh()->setWireframeMode(!obj->getMesh()->isWireframeMode());
 	}
 

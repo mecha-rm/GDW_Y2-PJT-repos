@@ -1,31 +1,31 @@
 // file for general physics calculation. WIP.
 #include "Physics.h"
 
-float pc::Vec3::getX() {
+float cherry::Vec3::getX() {
 	return this->x;
 }
 
-float pc::Vec3::getY() {
+float cherry::Vec3::getY() {
 	return this->y;
 }
 
-float pc::Vec3::getZ() {
+float cherry::Vec3::getZ() {
 	return this->z;
 }
 
-void pc::Vec3::setX(float newX) {
+void cherry::Vec3::setX(float newX) {
 	this->x = newX;
 }
 
-void pc::Vec3::setY(float newY) {
+void cherry::Vec3::setY(float newY) {
 	this->y = newY;
 }
 
-void pc::Vec3::setZ(float newZ) {
+void cherry::Vec3::setZ(float newZ) {
 	this->z = newZ;
 }
 
-pc::Vec3 pc::Vec3::operator+(Vec3 & vec) {
+cherry::Vec3 cherry::Vec3::operator+(Vec3 & vec) {
 	Vec3 temp;
 	temp.setX(this->getX() + vec.getX());
 	temp.setY(this->getY() + vec.getY());
@@ -33,7 +33,7 @@ pc::Vec3 pc::Vec3::operator+(Vec3 & vec) {
 	return temp;
 }
 
-pc::Vec3 pc::Vec3::operator-(Vec3 & vec) {
+cherry::Vec3 cherry::Vec3::operator-(Vec3 & vec) {
 	Vec3 temp;
 	temp.setX(this->getX() - vec.getX());
 	temp.setY(this->getY() - vec.getY());
@@ -41,37 +41,37 @@ pc::Vec3 pc::Vec3::operator-(Vec3 & vec) {
 	return temp;
 }
 
-float pc::Vec2::getX() {
+float cherry::Vec2::getX() {
 	return this->x;
 }
 
-float pc::Vec2::getY() {
+float cherry::Vec2::getY() {
 	return this->y;
 }
 
-void pc::Vec2::setX(float newX) {
+void cherry::Vec2::setX(float newX) {
 	this->x = newX;
 }
 
-void pc::Vec2::setY(float newY) {
+void cherry::Vec2::setY(float newY) {
 	this->y = newY;
 }
 
-pc::Vec2 pc::Vec2::operator+(Vec2& vec) {
+cherry::Vec2 cherry::Vec2::operator+(Vec2& vec) {
 	Vec2 temp;
 	temp.setX(this->getX() + vec.getX());
 	temp.setY(this->getY() + vec.getY());
 	return temp;
 }
 
-pc::Vec2 pc::Vec2::operator-(Vec2& vec) {
+cherry::Vec2 cherry::Vec2::operator-(Vec2& vec) {
 	Vec2 temp;
 	temp.setX(this->getX() - vec.getX());
 	temp.setY(this->getY() - vec.getY());
 	return temp;
 }
 
-//pc::Object::Object(const char* path) {
+//cherry::Object::Object(const char* path) {
 //	FILE* file = fopen(path, "r");
 //	if (file == NULL) {
 //		printf("Impossible to open the file !\n");

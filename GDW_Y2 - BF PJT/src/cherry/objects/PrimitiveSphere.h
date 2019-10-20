@@ -1,9 +1,9 @@
 #pragma once
 #include "Primitive.h"
 
-namespace pc
+namespace cherry
 {
-	typedef class PrimitiveSphere : public pc::Primitive
+	typedef class PrimitiveSphere : public cherry::Primitive
 	{
 	public:
 		// segRows: the total amount of rows of segments (MUST be greater than 3).

@@ -5,7 +5,7 @@
 #include <cstdint> // Needed for uint32_t
 #include <memory> // Needed for smart pointers
 
-namespace pc
+namespace cherry
 {
 	// Vertex Struct - saves vertex position and colour.
 	struct Vertex {

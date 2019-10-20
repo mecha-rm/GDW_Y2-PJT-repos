@@ -3,7 +3,7 @@
 
 #include "Object.h"
 
-namespace pc
+namespace cherry
 {
 	class Primitive : public Object
 	{

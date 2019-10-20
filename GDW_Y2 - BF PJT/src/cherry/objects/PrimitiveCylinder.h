@@ -1,6 +1,6 @@
 #pragma once
 #include "Primitive.h"
-namespace pc
+namespace cherry
 {
 	class PrimitiveCylinder : public Primitive
 	{

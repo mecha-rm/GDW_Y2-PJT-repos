@@ -1,9 +1,9 @@
 #pragma once
 #include "Primitive.h"
 
-namespace pc
+namespace cherry
 {
-	typedef class PrimitivePlane : public pc::Primitive
+	typedef class PrimitivePlane : public cherry::Primitive
 	{
 	public:
 		PrimitivePlane();

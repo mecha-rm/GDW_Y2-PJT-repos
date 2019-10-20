@@ -1,6 +1,6 @@
 #include "PrimitiveCube.h"
 
-pc::PrimitiveCube::PrimitiveCube() : pc::Primitive()
+cherry::PrimitiveCube::PrimitiveCube() : cherry::Primitive()
 {
 	// Position and Color (Default Values)
 	verticesTotal = 8;

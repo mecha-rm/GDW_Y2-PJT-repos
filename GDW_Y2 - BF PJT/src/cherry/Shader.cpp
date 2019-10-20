@@ -41,13 +41,13 @@ char* readFile(const char* filename) {
 }
 
 // constructor
-pc::Shader::Shader() { myShaderHandle = glCreateProgram(); }
+cherry::Shader::Shader() { myShaderHandle = glCreateProgram(); }
 
 // destructor
-pc::Shader::~Shader()  { glDeleteProgram(myShaderHandle); }
+cherry::Shader::~Shader()  { glDeleteProgram(myShaderHandle); }
 
 // loads the shaders
-void pc::Shader::Load(const char* vsFile, const char* fsFile)
+void cherry::Shader::Load(const char* vsFile, const char* fsFile)
 {
 	// Load in our shaders (read the source)
 	char* vs_source = readFile(vsFile);
@@ -62,7 +62,7 @@ void pc::Shader::Load(const char* vsFile, const char* fsFile)
 }
 
 // gets the first float in the array so that OpenGl knows to grab the values, and where to do so.
-void pc::Shader::SetUniform(const char* name, const glm::mat4& value) {
+void cherry::Shader::SetUniform(const char* name, const glm::mat4& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
 		glProgramUniformMatrix4fv(myShaderHandle, loc, 1, false, &value[0][0]);
@@ -70,13 +70,13 @@ void pc::Shader::SetUniform(const char* name, const glm::mat4& value) {
 }
 
 // uses glUseProgram to use the shader for drawing.
-void pc::Shader::Bind()
+void cherry::Shader::Bind()
 {
 	glUseProgram(myShaderHandle);
 }
 
 // compiling the bits of our shader and checking for errors.
-GLuint pc::Shader::__CompileShaderPart(const char* source, GLenum type) {
+GLuint cherry::Shader::__CompileShaderPart(const char* source, GLenum type) {
 	GLuint result = glCreateShader(type);
 
 	// Load in our shader source and compile it
@@ -118,7 +118,7 @@ GLuint pc::Shader::__CompileShaderPart(const char* source, GLenum type) {
 }
 
 // compiling the shader itself.
-void pc::Shader::Compile(const char* vs_source, const char* fs_source) {
+void cherry::Shader::Compile(const char* vs_source, const char* fs_source) {
 	// Compile our two shader programs
 	GLuint vs = __CompileShaderPart(vs_source, GL_VERTEX_SHADER);
 	GLuint fs = __CompileShaderPart(fs_source, GL_FRAGMENT_SHADER);

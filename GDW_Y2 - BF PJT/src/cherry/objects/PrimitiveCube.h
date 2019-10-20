@@ -1,6 +1,6 @@
 #include "Primitive.h"
 
-namespace pc
+namespace cherry
 {
 	typedef class PrimitiveCube : public Primitive
 	{

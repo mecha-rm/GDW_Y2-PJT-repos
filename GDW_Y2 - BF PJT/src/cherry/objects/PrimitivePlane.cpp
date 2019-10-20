@@ -1,7 +1,7 @@
 #include "PrimitivePlane.h"
 
 // constructor
-pc::PrimitivePlane::PrimitivePlane() : Primitive()
+cherry::PrimitivePlane::PrimitivePlane() : Primitive()
 {
 	// Position and Colour
 	verticesTotal = 4;

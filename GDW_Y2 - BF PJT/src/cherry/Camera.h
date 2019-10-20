@@ -6,7 +6,7 @@
 
 #include <memory>
 
-namespace pc
+namespace cherry
 {
 	class Camera {
 	public:

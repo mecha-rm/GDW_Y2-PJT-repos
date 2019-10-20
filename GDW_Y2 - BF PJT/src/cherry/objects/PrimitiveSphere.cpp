@@ -2,7 +2,7 @@
 #include "..\utils\math\Rotation.h"
 #include <iostream>
 
-pc::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive()
+cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive()
 {
 	// making sure the minimum amount of values were given
 	if (segRows < 3)

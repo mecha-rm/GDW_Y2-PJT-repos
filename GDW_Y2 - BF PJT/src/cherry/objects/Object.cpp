@@ -6,10 +6,10 @@
 #include <sstream>
 
 // the maximum amount of vertices; this value isn't used
-const unsigned int pc::Object::VERTICES_MAX = pow(2, 32);
+const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
 
 // the maximum amount of indices; this value isn't used
-const unsigned int pc::Object::INDICES_MAX = pow(2, 32);
+const unsigned int cherry::Object::INDICES_MAX = pow(2, 32);
 
 // replaces all instances of one substring with another substring
 // this function is for replacing slashes ('/') with spaces (' ') since the sstream operation splits up strings based on their spaces.
@@ -28,7 +28,7 @@ const unsigned int pc::Object::INDICES_MAX = pow(2, 32);
 //}
 
 // constructor - gets the filename and opens it.
-pc::Object::Object(std::string filePath) : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr)
+cherry::Object::Object(std::string filePath) : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr)
 {
 	this->filePath = filePath; // saves the file path
 
@@ -55,9 +55,9 @@ pc::Object::Object(std::string filePath) : position(), vertices(nullptr), indice
 }
 
 // the protected constructor used for default primitives
-pc::Object::Object() : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr) { filePath = ""; }
+cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr), vertexNormals(nullptr) { filePath = ""; }
 
-pc::Object::~Object()
+cherry::Object::~Object()
 {
 	delete vertices;
 	delete indices;
@@ -66,28 +66,28 @@ pc::Object::~Object()
 }
 
 // gets the name of the object.
-std::string pc::Object::getName() const { return name; }
+std::string cherry::Object::getName() const { return name; }
 
 // sets the name of the object.
-void pc::Object::setName(std::string newName) { name = newName; }
+void cherry::Object::setName(std::string newName) { name = newName; }
 
 // gets the object description
-std::string pc::Object::getDescription() const { return description; }
+std::string cherry::Object::getDescription() const { return description; }
 
 // sets the object description
-void pc::Object::setDescription(std::string newDesc) { description = newDesc; }
+void cherry::Object::setDescription(std::string newDesc) { description = newDesc; }
 
 // returns true if the file is safe to use, false if not safe to use.
-bool pc::Object::getSafe() { return safe; }
+bool cherry::Object::getSafe() { return safe; }
 
 // gets the color of the first vertex
-glm::vec4 pc::Object::getColor() const { return vertices->Color; }
+glm::vec4 cherry::Object::getColor() const { return vertices->Color; }
 
 // sets colour based on range of 0 to 255. Alpha (a) still goes from 0 to 1.
-void pc::Object::setColor(int r, int g, int b, float a) { setColor((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a); }
+void cherry::Object::setColor(int r, int g, int b, float a) { setColor((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a); }
 
 // sets the color for all vertices
-void pc::Object::setColor(float r, float g, float b, float a)
+void cherry::Object::setColor(float r, float g, float b, float a)
 {
 	// bounds checking for RGBA
 	r = (r < 0.0F) ? 0.0F : (r > 1.0F) ? 1.0F : r;
@@ -102,28 +102,28 @@ void pc::Object::setColor(float r, float g, float b, float a)
 }
 
 // sets the color, keeping the alpha (a) value from the first vertex.
-void pc::Object::setColor(glm::vec3 color) { setColor(color.x, color.y, color.z, vertices[0].Color.w); }
+void cherry::Object::setColor(glm::vec3 color) { setColor(color.x, color.y, color.z, vertices[0].Color.w); }
 
 // sets the color (RGBA [0-1])
-void pc::Object::setColor(glm::vec4 color) { setColor(color.x, color.y, color.z, color.w); }
+void cherry::Object::setColor(glm::vec4 color) { setColor(color.x, color.y, color.z, color.w); }
 
 // checks to see if the object is in wireframe mode.
-bool pc::Object::isWireframeMode() { return mesh->isWireframeMode(); }
+bool cherry::Object::isWireframeMode() { return mesh->isWireframeMode(); }
 
 // enables or disables wireframe, based on 'bool' passed
-void pc::Object::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
+void cherry::Object::setWireframeMode(bool wf) { (wf) ? enableWireframeMode() : disableWireframeMode(); }
 
 // enables the wireframe
-void pc::Object::enableWireframeMode() { mesh->enableWireframeMode(); }
+void cherry::Object::enableWireframeMode() { mesh->enableWireframeMode(); }
 
 // disables the wireframe
-void pc::Object::disableWireframeMode() { mesh->disableWireframeMode(); }
+void cherry::Object::disableWireframeMode() { mesh->disableWireframeMode(); }
 
 // returns a pointer to the mesh.
-pc::Mesh::Sptr& pc::Object::getMesh() { return mesh; }
+cherry::Mesh::Sptr& cherry::Object::getMesh() { return mesh; }
 
 // creates the object.
-bool pc::Object::loadObject()
+bool cherry::Object::loadObject()
 {
 	std::ifstream file;
 	std::string line = ""; // the current line of the file.
@@ -250,27 +250,27 @@ bool pc::Object::loadObject()
 }
 
 // gets the object's position
-glm::vec3 pc::Object::getPosition() const { return position; }
+glm::vec3 cherry::Object::getPosition() const { return position; }
 
 // sets the position
-void pc::Object::setPosition(glm::vec3 newPos) { position = newPos; }
+void cherry::Object::setPosition(glm::vec3 newPos) { position = newPos; }
 
-float pc::Object::getDegreeAngle()
+float cherry::Object::getDegreeAngle()
 {
 	return this->degreeAngle;
 }
 
-float pc::Object::getRadianAngle()
+float cherry::Object::getRadianAngle()
 {
 	return this->radianAngle;
 }
 
-glm::vec3 pc::Object::getVec3Angle()
+glm::vec3 cherry::Object::getVec3Angle()
 {
 	return this->worldAngle;
 }
 
-void pc::Object::updateAngle(double xpos, double ypos) {
+void cherry::Object::updateAngle(double xpos, double ypos) {
 	float dx = (float)xpos - this->position.x;
 	float dy = (float)ypos - this->position.y;
 	float a = atanf(dy / dx);
@@ -282,7 +282,7 @@ void pc::Object::updateAngle(double xpos, double ypos) {
 }
 
 // sets the angle
-void pc::Object::setAngle(float angle, bool isDegrees) {
+void cherry::Object::setAngle(float angle, bool isDegrees) {
 	if (isDegrees) {
 		this->degreeAngle = angle;
 		this->radianAngle = (this->degreeAngle) * (M_PI / 180.0f);
@@ -295,13 +295,13 @@ void pc::Object::setAngle(float angle, bool isDegrees) {
 	// add code here to convert from screenspace to world space
 }
 
-void pc::Object::setAngle(glm::vec3 angle) {
+void cherry::Object::setAngle(glm::vec3 angle) {
 	this->worldAngle = angle;
 }
 
 // parses a string to get all the values from it as data type (T).
 template<typename T>
-const std::vector<T> pc::Object::parseStringForTemplate(std::string str, bool containsSymbol)
+const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, bool containsSymbol)
 {
 	std::stringstream ss; // the string stream.
 	std::vector<T> vec; // the vector used for the vertex.

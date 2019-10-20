@@ -16,7 +16,7 @@
 */
 
 #include <iostream>
-// #include "..\..\GDW_Y2 - BF PJT\src\pc\Game.h"
+// #include "..\..\GDW_Y2 - BF PJT\src\cherry\Game.h"
 // #include "..\..\GDW_Y2 - BF PJT\external\toolkit\Logging.h"
 
 // #include <toolkit/Logging.h>
@@ -40,7 +40,7 @@ int main()
 	//Logger::Init();
 
 
-	//pc::Game* game = new pc::Game();
+	//cherry::Game* game = new cherry::Game();
 	//game->Run();
 	//delete game;
 

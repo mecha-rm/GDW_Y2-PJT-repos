@@ -5,7 +5,7 @@
 
 using namespace std;
 
-namespace pc
+namespace cherry
 {
 	class Vec3 {
 	public:
