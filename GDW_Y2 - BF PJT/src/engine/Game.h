@@ -39,6 +39,15 @@ public:
 	// called when a key has been released
 	void KeyReleased(GLFWwindow* window, int key);
 
+	// updates the cursor position variables when callback fuciton is called
+	void updateCursorPos(double xpos, double ypos);
+
+	// called when a mouse button has been pressed
+	void MBPressed(GLFWwindow* window, int button);
+
+	// called when a mouse button has been pressed
+	void MBReleased(GLFWwindow* window, int button);
+
 	// if 'true', then the objects keep their scale when the window is resized.
 	// If false, the objects skew with the size of the window.
 	bool changeImageAspectOnWindowResize = true;
@@ -103,4 +112,7 @@ private:
 
 	glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
 	bool w, a, s, d = false;
+	float dashTime;
+	double XcursorPos, YcursorPos;
+	bool mbLP, mbLR = false;
 };

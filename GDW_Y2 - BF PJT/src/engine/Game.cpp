@@ -8,6 +8,7 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui/imgui_impl_glfw.h>
 #include <GLM/gtc/matrix_transform.hpp>
+#include <toolkit/Logging.h>
 
 // call this function to resize the window.
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
@@ -20,6 +21,70 @@ void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 		if (game->changeImageAspectOnWindowResize) // if the aspect ratio should change with the window
 			game->HandleResize(width, height);
 	}
+}
+
+// called when a mouse button event is recorded
+void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) {
+		return;
+	}
+	
+	switch (action) {
+	case GLFW_PRESS:
+		game->MBPressed(window, button);
+		break;
+	case GLFW_RELEASE:
+		game->MBReleased(window, button);
+		break;
+	}
+}
+
+// called when a mouse button has been pressed
+void Game::MBPressed(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		game->mbLP = true;
+		break;
+	}
+}
+
+// called when a mouse button has been pressed
+void Game::MBReleased(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		game->mbLR = true;
+		break;
+	}
+}
+
+// called when the mouse moves over the screen
+void cursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	
+	if (game == nullptr) {
+		return;
+	}
+	else {
+		game->updateCursorPos(xpos, ypos);
+	}
+}
+
+// updates cursor pos variables
+void Game::updateCursorPos(double xpos, double ypos) {
+	this->XcursorPos = xpos;
+	this->YcursorPos = ypos;
 }
 
 // called when a key has been pressed, held down, or released. This function figures out which, and calls the appropriate function to handle it.
@@ -154,6 +219,12 @@ void Game::Initialize() {
 
 	// Setting keyboard callback function
 	glfwSetKeyCallback(myWindow, KeyCallback);
+
+	// Setting cursor pos callback function
+	glfwSetCursorPosCallback(myWindow, cursorPosCallback);
+
+	// Setting mouse button callback function
+	glfwSetMouseButtonCallback(myWindow, mouseButtonCallback);
 }
 
 void Game::Shutdown() {
@@ -237,6 +308,22 @@ void Game::Update(float deltaTime) {
 	}
 	if (d) {
 		playerObj->setPosition(glm::vec3(playerObj->getPosition().x - 0.05, playerObj->getPosition().y, playerObj->getPosition().z));
+	}
+
+	// check if mouse left button is being held down
+	if (this->dashTime >= 1.0f) {
+		// dash code here!
+		this->dashTime = 0.0f;
+	}
+	else if (mbLP == true && mbLR == false) {
+		this->dashTime += 0.01f;
+		Logger::GetLogger()->info(this->dashTime);
+	}
+	else if (mbLP == true && mbLR == true) {
+		this->dashTime = 0.0f;
+		Logger::GetLogger()->info(this->dashTime);
+		this->mbLP = false;
+		this->mbLR = false;
 	}
 }
 
