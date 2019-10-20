@@ -97,6 +97,9 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 void pc::Game::UpdateCursorPos(double xpos, double ypos) {
 	this->XcursorPos = xpos;
 	this->YcursorPos = ypos;
+
+	// update the player object's angle
+	playerObj->updateAngle(xpos, ypos);
 }
 
 // called when a key has been pressed, held down, or released. This function figures out which, and calls the appropriate function to handle it.
@@ -334,14 +337,15 @@ void pc::Game::Update(float deltaTime) {
 	}
 	else if (mbLP == true && mbLR == false) {
 		this->dashTime += 0.01f;
-		Logger::GetLogger()->info(this->dashTime);
+		//Logger::GetLogger()->info(this->dashTime);
 	}
 	else if (mbLP == true && mbLR == true) {
 		this->dashTime = 0.0f;
-		Logger::GetLogger()->info(this->dashTime);
+		//Logger::GetLogger()->info(this->dashTime);
 		this->mbLP = false;
 		this->mbLR = false;
 	}
+	//Logger::GetLogger()->info(playerObj->getDegreeAngle());
 }
 
 void pc::Game::InitImGui() {

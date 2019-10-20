@@ -255,6 +255,50 @@ glm::vec3 pc::Object::getPosition() const { return position; }
 // sets the position
 void pc::Object::setPosition(glm::vec3 newPos) { position = newPos; }
 
+float pc::Object::getDegreeAngle()
+{
+	return this->degreeAngle;
+}
+
+float pc::Object::getRadianAngle()
+{
+	return this->radianAngle;
+}
+
+glm::vec3 pc::Object::getVec3Angle()
+{
+	return this->worldAngle;
+}
+
+void pc::Object::updateAngle(double xpos, double ypos) {
+	float dx = (float)xpos - this->position.x;
+	float dy = (float)ypos - this->position.y;
+	float a = atanf(dy / dx);
+	
+	this->radianAngle = a;
+	this->degreeAngle = a * (180.0f / M_PI);
+
+	// TODO: add code to update world angle
+}
+
+// sets the angle
+void pc::Object::setAngle(float angle, bool isDegrees) {
+	if (isDegrees) {
+		this->degreeAngle = angle;
+		this->radianAngle = (this->degreeAngle) * (M_PI / 180.0f);
+	}
+	else if (!isDegrees) {
+		this->radianAngle = angle;
+		this->degreeAngle = (this->radianAngle) * (180.0f / M_PI);
+	}
+
+	// add code here to convert from screenspace to world space
+}
+
+void pc::Object::setAngle(glm::vec3 angle) {
+	this->worldAngle = angle;
+}
+
 // parses a string to get all the values from it as data type (T).
 template<typename T>
 const std::vector<T> pc::Object::parseStringForTemplate(std::string str, bool containsSymbol)

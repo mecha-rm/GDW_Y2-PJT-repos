@@ -7,9 +7,12 @@
 #include <string>
 #include <fstream> // uses the fstream file reading method.
 #include <vector>
+#include "..\utils\math\Consts.h"
+#include <math.h>
 
 namespace pc
 {
+
 	class Object
 	{
 	public:
@@ -91,6 +94,24 @@ namespace pc
 		// sets the position
 		void setPosition(glm::vec3 newPos);
 
+		// gets object angle in screen space in degrees
+		float getDegreeAngle();
+
+		// gets object angle in screen space in radians
+		float getRadianAngle();
+
+		// gets object angle in world space in vector 3
+		glm::vec3 getVec3Angle();
+
+		// update function to get new angle based on mouse position
+		void updateAngle(double xpos, double ypos);
+
+		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
+		void setAngle(float angle, bool isDegrees);
+
+		// sets object angle in vec3
+		void setAngle(glm::vec3 angle);
+
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
 
@@ -127,6 +148,12 @@ namespace pc
 
 		// the position of the object.
 		glm::vec3 position;
+
+		// object angle in screen space (degrees or radians)
+		float degreeAngle, radianAngle;
+
+		// object angle in world space (vec3, so 3d angle)
+		glm::vec3 worldAngle;
 
 		// a dynamic array of vertices for the 3D model.
 		Vertex* vertices = nullptr;

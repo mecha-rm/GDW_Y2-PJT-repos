@@ -341,6 +341,7 @@
     <ClInclude Include="src\pc\utils\Array.h" />
     <ClInclude Include="src\pc\utils\Color.h" />
     <ClInclude Include="src\pc\utils\math\Collision.h" />
+    <ClInclude Include="src\pc\utils\math\Consts.h" />
     <ClInclude Include="src\pc\utils\math\LargeInt.h" />
     <ClInclude Include="src\pc\utils\math\MathLib.h" />
     <ClInclude Include="src\pc\utils\math\Matrix.h" />
