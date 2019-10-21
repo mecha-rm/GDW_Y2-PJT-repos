@@ -273,10 +273,29 @@ glm::vec3 cherry::Object::getVec3Angle()
 }
 
 void cherry::Object::updateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height) {
-	float dx = (this->position.x) - (float)xpos;
-	float dy = (this->position.y) - (float)ypos;
-	float a = atanf(dy / dx);
+	//float dx = (float)xpos - (this->position.x);
+	//float dy = (float)ypos - (this->position.y);
+	float a = atanf((float)ypos / (float)xpos);
 	
+	if (ypos < 0 && xpos < 0) {
+		a = 90 * (M_PI / 180.0f) - a;
+	}
+
+	if (ypos > 0 && xpos < 0) {
+		a = 90 * (M_PI / 180.0f) - a;
+		//a += 90.0f * (M_PI / 180.0f);
+	}
+
+	if (ypos > 0 && xpos > 0) {
+		a = 90 * (M_PI / 180.0f) - a;
+		a += 180.0f * (M_PI / 180.0f);
+	}
+
+	if (ypos < 0 && xpos > 0) {
+		a = 90 * (M_PI / 180.0f) - a;
+		a += 180.0f * (M_PI / 180.0f);
+	}
+
 	this->radianAngle = a;
 	this->degreeAngle = a * (180.0f / M_PI);
 

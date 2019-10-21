@@ -97,9 +97,13 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 void cherry::Game::UpdateCursorPos(double xpos, double ypos) {
 	Game* game = (Game*)glfwGetWindowUserPointer(myWindow);
 
-	this->XcursorPos = xpos;
-	this->YcursorPos = ypos;
+	//this->XcursorPos = xpos;
+	//this->YcursorPos = ypos;
+	xpos = xpos - this->wX / 2;
+	ypos = ypos - this->wY / 2;
 
+	//Logger::GetLogger()->info(xpos);
+	//Logger::GetLogger()->info(ypos);
 	// update the player object's angle
 	playerObj->updateAngle(*game->myCamera, xpos, ypos, this->wX, this->wY);
 }
@@ -457,8 +461,10 @@ void cherry::Game::Draw(float deltaTime) {
 	myShader->Bind();
 
 	glm::mat4 playerModelTransform = glm::mat4(1.0F);
-	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
+	
 	playerModelTransform = glm::translate(playerModelTransform, playerObj->getPosition());
+	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
+
 	myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * playerModelTransform); // transforms the mesh.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	playerMesh->Draw();
