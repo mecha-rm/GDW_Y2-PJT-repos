@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include <sstream>
+#include <glm/gtc/quaternion.hpp> 
+#include <glm/gtx/quaternion.hpp>
 
 // the maximum amount of vertices; this value isn't used
 const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
@@ -270,15 +272,28 @@ glm::vec3 cherry::Object::getVec3Angle()
 	return this->worldAngle;
 }
 
-void cherry::Object::updateAngle(double xpos, double ypos) {
-	float dx = (float)xpos - this->position.x;
-	float dy = (float)ypos - this->position.y;
+void cherry::Object::updateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height) {
+	float dx = (this->position.x) - (float)xpos;
+	float dy = (this->position.y) - (float)ypos;
 	float a = atanf(dy / dx);
 	
 	this->radianAngle = a;
 	this->degreeAngle = a * (180.0f / M_PI);
 
-	// TODO: add code to update world angle
+	// update world angle
+	glm::mat4 pv = camera.GetViewProjection();
+	pv = glm::inverse(pv);
+	glm::vec4 pos = glm::vec4(xpos/width, ypos/height, 0.0f, 1.0f);
+	pv *= pos;
+
+
+	pos.w = 1.0 / pos.w;
+	pos.x *= pos.w;
+	pos.y *= pos.w;
+	pos.z *= pos.w;
+
+	this->worldAngle = glm::vec3(pos.x, pos.y, pos.z);
+	glm::quat rotation = glm::quat(this->worldAngle);
 }
 
 // sets the angle

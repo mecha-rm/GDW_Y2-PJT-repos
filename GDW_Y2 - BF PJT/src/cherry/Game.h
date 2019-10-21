@@ -125,6 +125,8 @@ namespace cherry
 		float dashTime;
 		double XcursorPos, YcursorPos;
 		bool mbLP, mbLR = false;
+		unsigned int wX = 850;
+		unsigned int wY = 850;
 	};
 
 

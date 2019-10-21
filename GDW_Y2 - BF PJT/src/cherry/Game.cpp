@@ -95,11 +95,13 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 
 // updates cursor pos variables
 void cherry::Game::UpdateCursorPos(double xpos, double ypos) {
+	Game* game = (Game*)glfwGetWindowUserPointer(myWindow);
+
 	this->XcursorPos = xpos;
 	this->YcursorPos = ypos;
 
 	// update the player object's angle
-	playerObj->updateAngle(xpos, ypos);
+	playerObj->updateAngle(*game->myCamera, xpos, ypos, this->wX, this->wY);
 }
 
 // called when a key has been pressed, held down, or released. This function figures out which, and calls the appropriate function to handle it.
@@ -215,7 +217,7 @@ void cherry::Game::Initialize() {
 	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
 
 	// Create a new GLFW window
-	myWindow = glfwCreateWindow(850, 850, myWindowTitle, nullptr, nullptr);
+	myWindow = glfwCreateWindow(this->wX, this->wY, myWindowTitle, nullptr, nullptr);
 
 	// We want GL commands to be executed for our window, so we make our window's context the current one
 	glfwMakeContextCurrent(myWindow);
@@ -345,7 +347,7 @@ void cherry::Game::Update(float deltaTime) {
 		this->mbLP = false;
 		this->mbLR = false;
 	}
-	//Logger::GetLogger()->info(playerObj->getDegreeAngle());
+	Logger::GetLogger()->info(playerObj->getDegreeAngle());
 }
 
 void cherry::Game::InitImGui() {
@@ -455,6 +457,7 @@ void cherry::Game::Draw(float deltaTime) {
 	myShader->Bind();
 
 	glm::mat4 playerModelTransform = glm::mat4(1.0F);
+	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
 	playerModelTransform = glm::translate(playerModelTransform, playerObj->getPosition());
 	myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * playerModelTransform); // transforms the mesh.
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);

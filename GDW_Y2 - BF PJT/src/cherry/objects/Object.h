@@ -9,6 +9,7 @@
 #include <vector>
 #include "..\utils\math\Consts.h"
 #include <math.h>
+#include "..\Camera.h"
 
 namespace cherry
 {
@@ -33,10 +34,10 @@ namespace cherry
 		// sets the name of the object.
 		void setName(std::string newName);
 
-		// gets the name of the object.
+		// gets the desc of the object.
 		std::string getDescription() const;
 
-		// sets the name of the object.
+		// sets the desc of the object.
 		void setDescription(std::string newDesc);
 
 		// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
@@ -104,7 +105,7 @@ namespace cherry
 		glm::vec3 getVec3Angle();
 
 		// update function to get new angle based on mouse position
-		void updateAngle(double xpos, double ypos);
+		void updateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height);
 
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
 		void setAngle(float angle, bool isDegrees);
