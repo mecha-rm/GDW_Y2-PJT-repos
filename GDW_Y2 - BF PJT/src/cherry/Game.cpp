@@ -338,7 +338,7 @@ void cherry::Game::Update(float deltaTime) {
 
 	// check if mouse left button is being held down
 	if (this->dashTime >= 1.0f) {
-		// dash code here!
+		this->dash = true;
 		this->dashTime = 0.0f;
 	}
 	else if (mbLP == true && mbLR == false) {
@@ -351,7 +351,6 @@ void cherry::Game::Update(float deltaTime) {
 		this->mbLP = false;
 		this->mbLR = false;
 	}
-	Logger::GetLogger()->info(playerObj->getDegreeAngle());
 }
 
 void cherry::Game::InitImGui() {
@@ -462,6 +461,14 @@ void cherry::Game::Draw(float deltaTime) {
 
 	glm::mat4 playerModelTransform = glm::mat4(1.0F);
 	
+	if (this->dash) {
+		glm::vec3 dash = playerObj->getDash(0.05f);
+		//Logger::GetLogger()->info(playerObj->getPosition().x);
+		//Logger::GetLogger()->info(playerObj->getPosition().y);
+		//Logger::GetLogger()->info(playerObj->getPosition().z);
+		playerObj->setPosition(playerObj->getPosition() + dash);
+		this->dash = false;
+	}
 	playerModelTransform = glm::translate(playerModelTransform, playerObj->getPosition());
 	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
 

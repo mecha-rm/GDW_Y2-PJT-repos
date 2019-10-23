@@ -127,6 +127,7 @@ namespace cherry
 		bool mbLP, mbLR = false;
 		unsigned int wX = 850;
 		unsigned int wY = 850;
+		bool dash;
 	};
 
 

@@ -113,6 +113,9 @@ namespace cherry
 		// sets object angle in vec3
 		void setAngle(glm::vec3 angle);
 
+		// get dash vector3 from angle and distance to dash
+		glm::vec3 getDash(float dist);
+
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
 

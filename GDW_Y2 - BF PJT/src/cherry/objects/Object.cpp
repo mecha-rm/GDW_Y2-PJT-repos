@@ -273,8 +273,7 @@ glm::vec3 cherry::Object::getVec3Angle()
 }
 
 void cherry::Object::updateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height) {
-	//float dx = (float)xpos - (this->position.x);
-	//float dy = (float)ypos - (this->position.y);
+	
 	float a = atanf((float)ypos / (float)xpos);
 	
 	if (ypos < 0 && xpos < 0) {
@@ -331,6 +330,14 @@ void cherry::Object::setAngle(float angle, bool isDegrees) {
 
 void cherry::Object::setAngle(glm::vec3 angle) {
 	this->worldAngle = angle;
+}
+
+glm::vec3 cherry::Object::getDash(float dist) {
+	glm::vec3 dash;
+	dash.x = dist * glm::degrees(sinf(this->getRadianAngle()));
+	dash.y = -(dist * glm::degrees(cosf(this->getRadianAngle())));
+	dash.z = 0.0f;
+	return dash;
 }
 
 // parses a string to get all the values from it as data type (T).
