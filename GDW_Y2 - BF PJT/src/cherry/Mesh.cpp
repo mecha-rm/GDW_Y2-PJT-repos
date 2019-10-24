@@ -3,17 +3,49 @@
 
 // constructor
 cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices) {
+	//myIndexCount = numIndices;
+	//myVertexCount = numVerts;
+	//// Create and bind our vertex array
+	//glCreateVertexArrays(1, &myVao);
+	//glBindVertexArray(myVao);
+	//// Create 2 buffers, 1 for vertices and the other for indices
+	//glCreateBuffers(2, myBuffers); // generates a name interally so you can use direct state access.
 
-	this->wireframe = false;
+	//// Bind and buffer our vertex data
+	//glBindBuffer(GL_ARRAY_BUFFER, myBuffers[0]);
+	//// upload the number of vertices. We're sticking to static draw for now, which is
+	//glBufferData(GL_ARRAY_BUFFER, numVerts * sizeof(Vertex), vertices, GL_STATIC_DRAW);
 
-	myIndexCount = numIndices; // number of indicies
+	//// Bind and buffer our index data
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, myBuffers[1]);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, numIndices * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 
-	myVertexCount = numVerts; // number of vertices
+	//// Get a null vertex to get member offsets from
+	//Vertex* vert = nullptr;
 
+	//// Enable vertex attribute 0
+	//glEnableVertexAttribArray(0);
+
+	//// Our first attribute is 3 floats, the distance between
+	//// them is the size of our vertex, and they will map to the position in our vertices
+	//// index, three floats, not normalized, size of data
+	//glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), &(vert->Position));
+
+	//// Enable vertex attribute 1
+	//glEnableVertexAttribArray(1);
+
+	//// Our second attribute is 4 floats, the distance between
+	//// them is the size of our vertex, and they will map to the color in our vertices
+	//glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), &(vert->Color));
+
+	//// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
+	//glBindVertexArray(0);
+
+	myIndexCount = numIndices;
+	myVertexCount = numVerts;
 	// Create and bind our vertex array
 	glCreateVertexArrays(1, &myVao);
 	glBindVertexArray(myVao);
-
 	// Create 2 buffers, 1 for vertices and the other for indices
 	glCreateBuffers(2, myBuffers); // generates a name interally so you can use direct state access.
 
@@ -29,7 +61,7 @@ cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t 
 	// Get a null vertex to get member offsets from
 	Vertex* vert = nullptr;
 
-	// Enable vertex attribute 0
+	// Enable vertex attribute 1 (position)
 	glEnableVertexAttribArray(0);
 
 	// Our first attribute is 3 floats, the distance between
@@ -37,12 +69,19 @@ cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t 
 	// index, three floats, not normalized, size of data
 	glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(Vertex), &(vert->Position));
 
-	// Enable vertex attribute 1
+	// Enable vertex attribute 2 (colour)
 	glEnableVertexAttribArray(1);
 
 	// Our second attribute is 4 floats, the distance between
 	// them is the size of our vertex, and they will map to the color in our vertices
 	glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), &(vert->Color));
+
+	// Enable vertex attribute 3 (vertex normal)
+	glEnableVertexAttribArray(2);
+
+	// Our third attribute is 3 floats, the distance between
+	// them is the size of our vertex, and they will map to the color in our vertices
+	glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(Vertex), &(vert->Normal));
 
 	// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
 	glBindVertexArray(0);

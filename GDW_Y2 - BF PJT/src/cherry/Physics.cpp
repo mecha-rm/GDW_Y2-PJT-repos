@@ -1,150 +1,160 @@
-// file for general physics calculation. WIP.
 #include "Physics.h"
+#include "utils/math/Collision.h"
 
-float cherry::Vec3::getX() {
-	return this->x;
+// body at object origin
+// cherry::PhysicsBody::PhysicsBody() : position() {}
+
+// sets position of body
+// cherry::PhysicsBody::PhysicsBody(float x, float y, float z) : position(x, y, z) {}
+
+// position of the body (passed as cherry::Vec3)
+// cherry::PhysicsBody::PhysicsBody(cherry::Vec3 pos) : position(pos) {}
+
+// sets the physics body ID
+cherry::PhysicsBody::PhysicsBody(int id) : id(id), position(cherry::Vec3()) {}
+
+// sets the ID for a specific type of physics body
+cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(pos) {}
+
+
+
+
+/*
+// gets the ID for the physics body
+ *** (0): no specifier
+ *** (1): box
+ *** (2): sphere
+*/
+int cherry::PhysicsBody::getId() const { return id; }
+
+// gets the object this physics body is attachted to
+cherry::Object* cherry::PhysicsBody::getObject() const { return object; }
+
+// sets the object
+void cherry::PhysicsBody::setObject(cherry::Object* obj) { object = obj; }
+
+// attaches to an object
+cherry::PhysicsBody* cherry::PhysicsBody::attachToObject(cherry::Object* newObj)
+{
+	object = newObj;
+	// newObj->addPhysicsBody(this); // adds the physics body if it isn't there already
+	return this;
 }
 
-float cherry::Vec3::getY() {
-	return this->y;
+// gets the model position
+cherry::Vec3 cherry::PhysicsBody::getModelPosition() const { return position; }
+
+// sets the model position
+void cherry::PhysicsBody::setModelPosition(cherry::Vec3 mpos) { position = mpos; }
+
+// returns the world position; objects save their position in world space
+cherry::Vec3 cherry::PhysicsBody::getWorldPosition() const 
+{
+	// TODO : change this to take a cherry::Vec3
+	return (object == nullptr ? position : *cherry::Vec3(object->getPosition()).v + *position.v);
 }
 
-float cherry::Vec3::getZ() {
-	return this->z;
+// sets the world position
+void cherry::PhysicsBody::setWorldPosition(cherry::Vec3 wpos) { position = wpos; }
+
+// calculations collision between objects
+bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
+{
+	// if either object is null.
+	if (p1 == nullptr || p2 == nullptr)
+		return false;
+
+	// no physics body type attachted
+	if (p1->getId() == 0 || p2->getId() == 0)
+		return false;
+
+	// AABB Collision
+	if (p1->getId() == 1 && p2->getId() == 1)
+	{
+		cherry::PhysicsBodyBox * temp1 = (cherry::PhysicsBodyBox*)p1;
+		cherry::PhysicsBodyBox * temp2 = (cherry::PhysicsBodyBox*)p2;
+
+		// origin is the centre of the 
+		// minimum values of A
+		util::math::Vec3 minA (
+			temp1->getWorldPosition().getX() - temp1->getWidth() / 2.0F, 
+			temp1->getWorldPosition().getY() - temp1->getHeight() / 2.0F, 
+			temp1->getWorldPosition().getZ() - temp1->getDepth() / 2.0F
+		);
+
+		// maximum values of A
+		util::math::Vec3 maxA(
+			temp1->getWorldPosition().getX() + temp1->getWidth() / 2.0F,
+			temp1->getWorldPosition().getY() + temp1->getHeight() / 2.0F,
+			temp1->getWorldPosition().getZ() + temp1->getDepth() / 2.0F
+		);
+
+		// minimum values of B
+		util::math::Vec3 minB(
+			temp2->getWorldPosition().getX() - temp2->getWidth() / 2.0F,
+			temp2->getWorldPosition().getY() - temp2->getHeight() / 2.0F,
+			temp2->getWorldPosition().getZ() - temp2->getDepth() / 2.0F
+		);
+
+		// maximum values of B
+		util::math::Vec3 maxB(
+			temp2->getWorldPosition().getX() + temp2->getWidth() / 2.0F,
+			temp2->getWorldPosition().getY() + temp2->getHeight() / 2.0F,
+			temp2->getWorldPosition().getZ() + temp2->getDepth() / 2.0F
+		);
+
+		return util::math::aabbCollision(minA, maxA, minB, maxB);
+	}
+
+	return false;
 }
 
-void cherry::Vec3::setX(float newX) {
-	this->x = newX;
+// PHYSICS BODY BOX
+// constructor
+cherry::PhysicsBodyBox::PhysicsBodyBox(float width, float height, float depth) : 
+	PhysicsBodyBox(cherry::Vec3(), width, height, depth)
+{}
+
+// sets position
+cherry::PhysicsBodyBox::PhysicsBodyBox(float x, float y, float z, float width, float height, float depth) 
+	: PhysicsBodyBox(cherry::Vec3(x, y, z), width, height, depth)
+{}
+
+// location of the physics body (relative to object origin), and dimensions
+cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, float width, float height, float depth)
+	: PhysicsBody(1, position), width(abs(width)), height(abs(height)), depth(abs(depth))// , box(width, height, depth)
+{
+	// box.setColor(255, 0, 0); // RED
 }
 
-void cherry::Vec3::setY(float newY) {
-	this->y = newY;
-}
+// location of the physics body and its dimensions
+cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimensions)
+	: PhysicsBodyBox(position, dimensions.v->x, dimensions.v->y, dimensions.v->z)
+{}
 
-void cherry::Vec3::setZ(float newZ) {
-	this->z = newZ;
-}
+// gets the width
+float cherry::PhysicsBodyBox::getWidth() const { return width; }
 
-cherry::Vec3 cherry::Vec3::operator+(Vec3 & vec) {
-	Vec3 temp;
-	temp.setX(this->getX() + vec.getX());
-	temp.setY(this->getY() + vec.getY());
-	temp.setZ(this->getZ() + vec.getZ());
-	return temp;
-}
+// sets the width
+void cherry::PhysicsBodyBox::setWidth(float newWidth) { width = newWidth; }
 
-cherry::Vec3 cherry::Vec3::operator-(Vec3 & vec) {
-	Vec3 temp;
-	temp.setX(this->getX() - vec.getX());
-	temp.setY(this->getY() - vec.getY());
-	temp.setZ(this->getZ() - vec.getZ());
-	return temp;
-}
+// returns the height
+float cherry::PhysicsBodyBox::getHeight() const { return height; }
 
-float cherry::Vec2::getX() {
-	return this->x;
-}
+// sets the height
+void cherry::PhysicsBodyBox::setHeight(float newHeight) { height = newHeight; }
 
-float cherry::Vec2::getY() {
-	return this->y;
-}
+// returns depth
+float cherry::PhysicsBodyBox::getDepth() const { return depth; }
 
-void cherry::Vec2::setX(float newX) {
-	this->x = newX;
-}
+// sets the depth
+void cherry::PhysicsBodyBox::setDepth(float newDepth) { depth = newDepth; }
 
-void cherry::Vec2::setY(float newY) {
-	this->y = newY;
+// toString
+std::string cherry::PhysicsBodyBox::toString() const
+{
+	return "Model Position: " + getModelPosition().v->toString() +
+		" | Width: " + std::to_string(width) +
+		" | Height: " + std::to_string(height) +
+		" | Depth: " + std::to_string(depth);
 }
-
-cherry::Vec2 cherry::Vec2::operator+(Vec2& vec) {
-	Vec2 temp;
-	temp.setX(this->getX() + vec.getX());
-	temp.setY(this->getY() + vec.getY());
-	return temp;
-}
-
-cherry::Vec2 cherry::Vec2::operator-(Vec2& vec) {
-	Vec2 temp;
-	temp.setX(this->getX() - vec.getX());
-	temp.setY(this->getY() - vec.getY());
-	return temp;
-}
-
-//cherry::Object::Object(const char* path) {
-//	FILE* file = fopen(path, "r");
-//	if (file == NULL) {
-//		printf("Impossible to open the file !\n");
-//	}
-//	else {
-//		while (true) {
-//			char lineHeader[128];
-//			int res = fscanf(file, "%s", lineHeader);
-//			if (res == EOF) {
-//				break;
-//			}
-//
-//			if (strcmp(lineHeader, "v") == 0) {
-//				Vec3 vertex;
-//				float x, y, z;
-//				fscanf(file, "%f %f %f\n", &x, &y, &z);
-//				vertex.setX(x);
-//				vertex.setY(y);
-//				vertex.setZ(z);
-//				temp_vertices.push_back(vertex);
-//			}
-//			else if (strcmp(lineHeader, "vt") == 0) {
-//				Vec2 uv;
-//				float x, y;
-//				fscanf(file, "%f %f\n", &x, &y);
-//				uv.setX(x);
-//				uv.setY(y);
-//				temp_uvs.push_back(uv);
-//			}
-//			else if (strcmp(lineHeader, "vn") == 0) {
-//				Vec3 normal;
-//				float x, y, z;
-//				fscanf(file, "%f %f %f\n", &x, &y, &z);
-//				normal.setX(x);
-//				normal.setY(y);
-//				normal.setZ(z);
-//				temp_normals.push_back(normal);
-//			}
-//			else if (strcmp(lineHeader, "f") == 0) {
-//				std::string vertex1, vertex2, vertex3;
-//				unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-//				int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-//				if (matches != 9) {
-//					printf("oh shit\n");
-//				}
-//				else {
-//					vertexIndices.push_back(vertexIndex[0]);
-//					vertexIndices.push_back(vertexIndex[1]);
-//					vertexIndices.push_back(vertexIndex[2]);
-//					uvIndices.push_back(uvIndex[0]);
-//					uvIndices.push_back(uvIndex[1]);
-//					uvIndices.push_back(uvIndex[2]);
-//					normalIndices.push_back(normalIndex[0]);
-//					normalIndices.push_back(normalIndex[1]);
-//					normalIndices.push_back(normalIndex[2]);
-//				}
-//			}
-//
-//			for (unsigned int i = 0; i < vertexIndices.size(); i++) {
-//				unsigned int vertexIndex = vertexIndices[i];
-//				Vec3 vertex = temp_vertices[vertexIndex - 1];
-//				this->vertices.push_back(vertex);
-//			}
-//			for (unsigned int i = 0; i < uvIndices.size(); i++) {
-//				unsigned int uvIndex = uvIndices[i];
-//				Vec2 uv = temp_uvs[uvIndex - 1];
-//				this->uvs.push_back(uv);
-//			}
-//			for (unsigned int i = 0; i < normalIndices.size(); i++) {
-//				unsigned int normalIndex = normalIndices[i];
-//				Vec3 normal = temp_normals[normalIndex - 1];
-//				this->normals.push_back(normal);
-//			}
-//		}
-//	}
-//}

@@ -54,6 +54,7 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <PreprocessorDefinitions>WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -85,6 +86,9 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
+    <ClCompile Include="src\cherry\Material.cpp" />
+    <ClCompile Include="src\cherry\MeshRenderer.cpp" />
+    <ClCompile Include="src\cherry\Physics.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveCube.cpp" />
     <ClCompile Include="src\cherry\objects\Primitive.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
@@ -94,11 +98,11 @@
     <ClCompile Include="src\cherry\objects\PrimitiveCylinder.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveSphere.cpp" />
-    <ClCompile Include="src\cherry\Physics.cpp" />
+    <ClCompile Include="src\cherry\Scene.cpp" />
+    <ClCompile Include="src\cherry\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
     <ClCompile Include="src\glad.c" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cherry\utils\Array.cpp" />
     <ClCompile Include="src\cherry\utils\Color.cpp" />
     <ClCompile Include="src\cherry\utils\math\Collision.cpp" />
@@ -108,8 +112,11 @@
     <ClCompile Include="src\cherry\utils\math\Rotation.cpp" />
     <ClCompile Include="src\cherry\utils\math\Vector.cpp" />
     <ClCompile Include="src\cherry\utils\Utils.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\cherry\VectorCRY.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\entt\entt.hpp" />
     <ClInclude Include="external\glad\glad.h" />
     <ClInclude Include="external\GLFW\glfw3.h" />
     <ClInclude Include="external\GLFW\glfw3native.h" />
@@ -325,6 +332,9 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
+    <ClInclude Include="src\cherry\Material.h" />
+    <ClInclude Include="src\cherry\MeshRenderer.h" />
+    <ClInclude Include="src\cherry\Physics.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveCube.h" />
     <ClInclude Include="src\cherry\objects\Primitive.h" />
     <ClInclude Include="src\cherry\Camera.h" />
@@ -335,7 +345,8 @@
     <ClInclude Include="src\cherry\objects\PrimitivePlane.h" />
     <ClInclude Include="src\cherry\objects\Primitives.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveSphere.h" />
-    <ClInclude Include="src\cherry\Physics.h" />
+    <ClInclude Include="src\cherry\Scene.h" />
+    <ClInclude Include="src\cherry\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
     <ClInclude Include="src\cherry\utils\Array.h" />
@@ -351,6 +362,7 @@
     <ClInclude Include="src\cherry\utils\Utils.h" />
     <ClInclude Include="src\cherry\utils\UtilsLib.h" />
     <ClInclude Include="src\cherry\utils\UtilsToolsLib.h" />
+    <ClInclude Include="src\cherry\VectorCRY.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />

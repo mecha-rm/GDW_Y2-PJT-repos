@@ -36,29 +36,32 @@ namespace util
 	bool isNum(std::string str);
 
 	template<typename T>
-	void addToVector(std::vector<T *> & vector, T * val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.
+	bool addToVector(std::vector<T *> & vector, T * val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.
 	{
 		for (T * item : vector) // if the vector already contains the pointer, it is not added.
 		{
 			if (item == val)
-				return;
+				return false;
 		}
 
 		vector.push_back(val);
+		return true;
 	}
 
 
 	template<typename T>
-	void removeFromVector(std::vector<T *> & vector, T * val) // removes an element from a vector if it is present. This is placed in the header because it is a template function.
+	bool removeFromVector(std::vector<T *> & vector, T * val) // removes an element from a vector if it is present. This is placed in the header because it is a template function.
 	{
 		for (int i = 0; i < vector.size(); i++)
 		{
 			if (vector.at(i) == val) // if the pointer has been found, it is removed.
 			{
 				vector.erase(vector.begin() + i);
-				return;
+				return true;
 			}
 		}
+
+		return false;
 	}
 
 

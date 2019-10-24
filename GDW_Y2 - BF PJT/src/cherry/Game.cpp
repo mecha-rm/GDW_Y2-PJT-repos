@@ -1,6 +1,10 @@
 // GAME CLASS (SOURCE)
 
 #include "Game.h"
+#include "SceneManager.h"
+#include "MeshRenderer.h"
+
+#include "Physics.h"
 
 #include <stdexcept>
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
@@ -10,6 +14,26 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <toolkit/Logging.h>
 
+#include<functional>
+
+struct TempTransform {
+	glm::vec3 Position = glm::vec3(0.0f);
+	glm::vec3 EulerRotation = glm::vec3(0.0f);
+	glm::vec3 Scale = glm::vec3(1.0f);
+
+	// does our TRS for us.
+	glm::mat4 GetWorldTransform() const {
+		return
+			glm::translate(glm::mat4(1.0f), Position) *
+			glm::mat4_cast(glm::quat(glm::radians(EulerRotation))) *
+			glm::scale(glm::mat4(1.0f), Scale)
+			;
+	}
+};
+
+struct UpdateBehaviour {
+	std::function<void(entt::entity e, float dt)> Function;
+};
 
 // call this function to resize the window.
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
@@ -271,13 +295,14 @@ void cherry::Game::LoadContent()
 
 	// This is leftover code from the tutorials; myMesh isn't drawn to the screen, but it still gets set up.
 	// Create our 4 vertices ~ we're using an initalizer list inside an initializer list to get the data
+	
 	Vertex vertices[4] = {
-		// Position Color
-		//  x      y	 z		   r	 g	   b	 a
-		{{ -0.5f, -0.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }},
-		{{ 0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 0.0f, 1.0f }},
-		{{ -0.5f, 0.5f, 0.0f }, { 1.0f, 0.0f, 1.0f, 1.0f }},
-		{{ 0.5f, 0.5f, 0.0f }, { 0.0f, 1.0f, 0.0f, 1.0f }},
+		// Position				  Color							Normal
+		//  x      y	 z		   r	 g	   b	 a		   x  y  z
+		{{ -2.5f, -2.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, {0, 0, 1}},
+		{{ 2.5f, -2.5f, 0.0f },  { 1.0f, 1.0f, 0.0f, 1.0f }, {0, 0, 1}},
+		{{ -2.5f, 2.5f, 0.0f },  { 1.0f, 0.0f, 1.0f, 1.0f }, {0, 0, 1}},
+		{{ 2.5f, 2.5f, 0.0f },   { 0.0f, 1.0f, 0.0f, 1.0f }, {0, 0, 1}},
 	};
 
 	// Create our 6 indices
@@ -287,25 +312,66 @@ void cherry::Game::LoadContent()
 	};
 
 	// Create a new mesh from the data; as I said, this isn't drawn.
-	myMesh = std::make_shared<Mesh>(vertices, 4, indices, 0);
+	// myMesh = std::make_shared<Mesh>(vertices, 4, indices, 0);
 
 	// Creating the object, and stroing it in the vector.
 	// objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
 	playerObj = new Object("res/monkeyT.obj");
 	playerMesh = playerObj->getMesh();
+	playerObj->addPhysicsBody(new cherry::PhysicsBodyBox(1.0F, 1.0F, 1.0F));
+
 	objects.push_back(playerObj);
 
 	// objects.push_back(new Object("res/monkey.obj")); // monkey
 
 	// objects.push_back(new PrimitiveCube());
-	objects.push_back(new PrimitivePlane());
+	// objects.push_back(new PrimitivePlane());
+	objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
+	objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
+	// objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
+	// objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
 	// objects.push_back(new PrimitiveSphere(10, 5, 5));
     // objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	// objects[objects.size() - 1]->setColor(12, 24, 111);
 	// myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
 	
+	// before the mesh in the original code
+	Shader::Sptr phong = std::make_shared<Shader>();
+	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
+
+	Material::Sptr testMat = std::make_shared<Material>(phong);
+	testMat->Set("a_LightPos", { 0, 0, 1 });
+	testMat->Set("a_LightColor", { 1.0f, 1.0f, 0 });
+	testMat->Set("a_AmbientColor", { 1.0f, 1.0f, 1.0f });
+	testMat->Set("a_AmbientPower", 0.1f); // change this to change the main lighting power (originally value of 0.1F)
+	testMat->Set("a_LightSpecPower", 0.5f);
+	testMat->Set("a_LightShininess", 256);
+	testMat->Set("a_LightAttenuation", 1.0f);
+
+	SceneManager::RegisterScene("Test");
+	SceneManager::RegisterScene("Test2");
+	SceneManager::SetCurrentScene("Test");
+
+	{
+		// adds an entity to one of the scenes.
+		auto& ecs = GetRegistry("Test");
+		entt::entity e1 = ecs.create();
+		MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
+		m1.Material = testMat;
+		m1.Mesh = myMesh;
+
+		auto rotate = [](entt::entity e, float dt) {
+			auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
+			transform.EulerRotation += glm::vec3(0, 0, 90 * dt);
+
+			// does the same thing, except all in one linel.
+			// CurrentRegistry().get_or_assign<TempTransform>(e).EulerRotation += glm::vec3(0, 0, 90 * dt);
+		};
+		auto& up = ecs.get_or_assign<UpdateBehaviour>(e1);
+		up.Function = rotate;
+	}
 
 	// Create and compile shader
 	myShader = std::make_shared<Shader>();
@@ -350,6 +416,64 @@ void cherry::Game::Update(float deltaTime) {
 		//Logger::GetLogger()->info(this->dashTime);
 		this->mbLP = false;
 		this->mbLR = false;
+	}
+
+	// updates each object
+	//for (cherry::Object* obj : objects)
+	//{
+	//	// obj->update();
+	//	obj->setIntersection(false);
+	//}
+		
+	for (int i = 0; i < objects.size(); i++)
+	{
+		objects[i]->update();
+		objects[i]->setIntersection(false);
+		// std::cout << "[" + std::to_string(i) + "] : " << *cherry::Vec3(objects[i]->getPosition()).v << std::endl;
+	}
+
+	// std::cout << std::endl;
+	// collisions
+	mainLoop:
+	for (cherry::Object* obj1 : objects) // object 1
+	{
+		if (obj1 == nullptr)
+			continue;
+		if (obj1->getIntersection() == true) // already colliding with something.
+			continue;
+
+		for (cherry::Object* obj2 : objects) // object 2
+		{
+			if (obj1 == obj2 || obj2 == nullptr) // if the two objects are the same.
+				continue;
+
+			if (obj2->getIntersection() == true) // if the object is already intersecting with something.
+				continue;
+
+			// gets the vectors from both objects
+			std::vector<cherry::PhysicsBody*> pbods1 = obj1->getPhysicsBodies();
+			std::vector<cherry::PhysicsBody*> pbods2 = obj2->getPhysicsBodies();
+
+			// goes through each collision body
+			for (cherry::PhysicsBody* pb1 : pbods1)
+			{
+				for (cherry::PhysicsBody* pb2 : pbods2)
+				{
+					bool col = PhysicsBody::Collision(pb1, pb2);
+					
+					if (col == true) // if collision has occurred.
+					{
+						obj1->setIntersection(true);
+						// obj1->setColor(255, 0, 0);
+						obj2->setIntersection(true);
+						// obj2->setColor(255, 0, 0);
+						// std::cout << "Hit!" << std::endl;
+
+						goto mainLoop; // goes back to the main loop
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -473,7 +597,7 @@ void cherry::Game::Draw(float deltaTime) {
 	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
 
 	myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * playerModelTransform); // transforms the mesh.
-	//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	playerMesh->Draw();
 
 	glm::mat4 tempModelTransform = glm::mat4(1.0F); // makes a copy of the transform matrix for making another copy of the mesh.
@@ -511,7 +635,7 @@ void cherry::Game::Draw(float deltaTime) {
 
 		mesh->Draw(); // re-drawing the mesh so that it shows up twice.
 
-		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible. //Moved above first draw because uniform needs to be set before object is redrawn
+		// myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible. //Moved above first draw because uniform needs to be set before object is redrawn
 		// mesh->Draw();
 	}
 
@@ -531,7 +655,7 @@ void cherry::Game::Draw(float deltaTime) {
 
 		// std::cout << "Position: (" << playerObj->getPosition().x << ", " << playerObj->getPosition().y << ") " << std::endl;
 
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
+		// myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
 
 		obj->getMesh()->Draw(); // draws the mesh.
 
@@ -542,6 +666,66 @@ void cherry::Game::Draw(float deltaTime) {
 
 		
 	}
+	// TODO : finish lighting setup
+	//// We'll grab a reference to the ecs to make things easier
+	//auto& ecs = CurrentRegistry();
+	//// We sort our mesh renderers based on material properties
+	//// This will group all of our meshes based on shader first, then material second
+	//ecs.sort<MeshRenderer>([](const MeshRenderer& lhs, const MeshRenderer& rhs) {
+	//	if (rhs.Material == nullptr || rhs.Mesh == nullptr)
+	//		return false;
+	//	else if (lhs.Material == nullptr || lhs.Mesh == nullptr)
+	//		return true;
+	//	else if (lhs.Material->GetShader() != rhs.Material->GetShader())
+	//		return lhs.Material->GetShader() < rhs.Material->GetShader();
+	//	else
+	//		return lhs.Material < rhs.Material;
+	//	});
+
+	//// These will keep track of the current shader and material that we have bound
+	//Material::Sptr mat = nullptr;
+	//Shader::Sptr boundShader = nullptr;
+	//// A view will let us iterate over all of our entities that have the given component types
+	//auto view = ecs.view<MeshRenderer>();
+
+	//for (const auto& entity : view) {
+	//	// Get our shader
+	//	const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
+	//	// Early bail if mesh is invalid
+	//	if (renderer.Mesh == nullptr || renderer.Material == nullptr)
+	//		continue;
+	//	// If our shader has changed, we need to bind it and update our frame-level uniforms
+	//	if (renderer.Material->GetShader() != boundShader) {
+	//		boundShader = renderer.Material->GetShader();
+	//		boundShader->Bind();
+	//		boundShader->SetUniform("a_CameraPos", myCamera->GetPosition());
+	//	}
+	//	// If our material has changed, we need to apply it to the shader
+	//	if (renderer.Material != mat) {
+	//		mat = renderer.Material;
+	//		mat->Apply();
+	//	}
+
+	//	// We'll need some info about the entities position in the world
+	//	const TempTransform& transform = ecs.get_or_assign<TempTransform>(entity);
+	//	// Get the object's transformation
+	//	glm::mat4 worldTransform = transform.GetWorldTransform();
+	//	// Our normal matrix is the inverse-transpose of our object's world rotation
+	//	// Recall that everything's backwards in GLM
+	//	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
+
+	//	// Update the MVP using the item's transform
+	//	mat->GetShader()->SetUniform(
+	//		"a_ModelViewProjection",
+	//		myCamera->GetViewProjection() *
+	//		worldTransform);
+	//	// Update the model matrix to the item's world transform
+	//	mat->GetShader()->SetUniform("a_Model", worldTransform);
+	//	// Update the model matrix to the item's world transform
+	//	mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
+	//	// Draw the item
+	//	renderer.Mesh->Draw();
+	//}
 }
 
 void cherry::Game::DrawGui(float deltaTime) {
@@ -552,6 +736,8 @@ void cherry::Game::DrawGui(float deltaTime) {
 	// ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
 	ImGui::ColorPicker4("Color", &myClearColor.x); // new version
 	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
+	// ImGui::SetNextWindowCollapsed(false);
+	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
 	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
 	if (ImGui::InputText("Title", myWindowTitle, 31))
 	{

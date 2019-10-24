@@ -11,6 +11,7 @@ namespace cherry
 	struct Vertex {
 		glm::vec3 Position; // vertex position
 		glm::vec4 Color; // vertex colour
+		glm::vec3 Normal = { 0, 0, 1 }; // vertex normal
 	};
 
 	// Mesh Class - creates meshes so that objects can appear on screen.

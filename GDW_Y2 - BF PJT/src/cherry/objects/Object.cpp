@@ -1,6 +1,7 @@
 // OBJECT CLASS (SOURCE)
 #include "Object.h"
 #include "..\utils\Utils.h"
+#include "..\Physics.h"
 
 #include <iostream>
 #include <sstream>
@@ -100,6 +101,7 @@ void cherry::Object::setColor(float r, float g, float b, float a)
 	for (int i = 0; i < verticesTotal; i++)
 		vertices[i].Color = glm::vec4(r, g, b, a);
 
+	// TODO: doing this causes the mesh to screw up for some reason.
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal); // creates the mesh
 }
 
@@ -184,13 +186,13 @@ bool cherry::Object::loadObject()
 			{
 			case 3: // (x, y, z)
 			case 4: // (x, y, z, w) (n/a) ('w' value is ignored)
-				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F} });
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} });
 				break;
 
 			case 6: // (x, y, z, r, g, b)
-				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[3], tempVecFlt[4], tempVecFlt[5], 1.0F} });
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[3], tempVecFlt[4], tempVecFlt[5], 1.0F}, {0.0F, 0.0F, 0.0F} });
 			case 7: // (x, y, z, w, r, g, b) (n/a) ('w' value is ignored)
-				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F} });
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F}, {0.0F, 0.0F, 0.0F} });
 			}
 		}
 		else if (line.substr(0, 2) == "vt") // Texture UV (u, v); not used for anything
@@ -199,6 +201,7 @@ bool cherry::Object::loadObject()
 
 			VtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
 		}
+		// TODO: add vertex normals
 		else if (line.substr(0, 2) == "vn") // Vertex Normals (x, y, z); not used at this stage
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets the values from the line
@@ -253,6 +256,13 @@ bool cherry::Object::loadObject()
 
 // gets the object's position
 glm::vec3 cherry::Object::getPosition() const { return position; }
+
+//cherry::Vec3 cherry::Object::getPosition() const { return cherry::Vec3(position); }
+//
+//// gets the object's position as a glm vector
+//glm::vec3 cherry::Object::getPositionGLM() const { return position; }
+
+void cherry::Object::setPosition(float x, float y, float z) { setPosition(glm::vec3(x, y, z)); }
 
 // sets the position
 void cherry::Object::setPosition(glm::vec3 newPos) { position = newPos; }
@@ -338,6 +348,55 @@ glm::vec3 cherry::Object::getDash(float dist) {
 	dash.y = -(dist * glm::degrees(cosf(this->getRadianAngle())));
 	dash.z = 0.0f;
 	return dash;
+}
+
+// returns true if added successfully.
+bool cherry::Object::addPhysicsBody(cherry::PhysicsBody* body) 
+{ 
+	if (body == nullptr)
+		return false;
+
+	return util::addToVector(bodies, body->attachToObject(this));
+	// body->attachToObject(this);
+}
+
+// returns 'true' if removed, false if not.
+bool cherry::Object::removePhysicsBody(cherry::PhysicsBody* body) 
+{
+	if (body == nullptr)
+		return false;
+
+	return util::removeFromVector(bodies, body); 
+}
+
+// removes physics body based on index
+bool cherry::Object::removePhysicsBody(unsigned int index)
+{
+	if (index >= 0 && index < bodies.size()) // erases the body
+	{
+		bodies.erase(bodies.begin() + index);
+		return true;
+	}
+
+	return false;
+}
+
+// gets the amount of physics bodies
+unsigned int cherry::Object::getPhysicsBodyCount() const { return bodies.size(); }
+
+// returns hte physics bodies
+std::vector<cherry::PhysicsBody*> cherry::Object::getPhysicsBodies() const { return bodies; }
+
+// gets if intersection is happening.
+bool cherry::Object::getIntersection() const { return intersection; }
+
+// sets whether the object is interecting with something or not.
+void cherry::Object::setIntersection(bool inter) { intersection = inter; }
+
+// updates the object
+void cherry::Object::update()
+{
+
 }
 
 // parses a string to get all the values from it as data type (T).

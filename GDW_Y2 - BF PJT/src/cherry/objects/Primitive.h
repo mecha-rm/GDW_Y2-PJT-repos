@@ -5,7 +5,7 @@
 
 namespace cherry
 {
-	class Primitive : public Object
+	class Primitive : public cherry::Object
 	{
 	public:
 		Primitive();

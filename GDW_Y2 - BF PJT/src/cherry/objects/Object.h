@@ -1,18 +1,20 @@
 // OBJECT CLASS (HEADER)
 #pragma once
 
-#include "..\Shader.h"
-#include "..\Mesh.h"
-
 #include <string>
 #include <fstream> // uses the fstream file reading method.
 #include <vector>
-#include "..\utils\math\Consts.h"
 #include <math.h>
+
+#include "..\Shader.h"
+#include "..\Mesh.h"
+#include "..\utils\math\Consts.h"
 #include "..\Camera.h"
+// #include "..\Physics.h"
 
 namespace cherry
 {
+	class PhysicsBody;
 
 	class Object
 	{
@@ -92,6 +94,17 @@ namespace cherry
 		// gets the position
 		glm::vec3 getPosition() const;
 
+		/*
+		// gets hte position
+		cherry::Vec3 getPosition() const;
+
+		// gets the position as a GLM vector
+		glm::vec3 getPositionGLM() const;
+		*/
+
+		// sets the position
+		void setPosition(float x, float y, float z);
+
 		// sets the position
 		void setPosition(glm::vec3 newPos);
 
@@ -115,6 +128,30 @@ namespace cherry
 
 		// get dash vector3 from angle and distance to dash
 		glm::vec3 getDash(float dist);
+
+		// adds a physics body; returns true if added. The same physics body can't be added twice.
+		bool addPhysicsBody(cherry::PhysicsBody * body);
+
+		//// removes a physics body; returns 'true' if successful.
+		bool removePhysicsBody(cherry::PhysicsBody * body);
+
+		//// removes a physics body based on its index.
+		bool removePhysicsBody(unsigned int index);
+
+		// gets the amount of physics bodies
+		unsigned int getPhysicsBodyCount() const;
+
+		// gets the physics bodies
+		std::vector<cherry::PhysicsBody *> getPhysicsBodies() const;
+		
+		// gets whether the object intersects with another object.
+		bool getIntersection() const;
+
+		// sets whether the object is currently intersecting with another object.
+		void setIntersection(bool inter);
+
+		// updates the object
+		void update();
 
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
@@ -145,6 +182,12 @@ namespace cherry
 
 		// true if the file is safe to read from, false otherwise.
 		bool safe = false;
+
+		// a vector of physics bodies
+		std::vector<cherry::PhysicsBody*> bodies;
+
+		// becomes 'true' when an object intersects something.
+		bool intersection = false;
 
 	protected:
 		// constructor used for default primitives

@@ -6,7 +6,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 // constructor
-cherry::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projection(glm::mat4(1.0f))
+cherry::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projection(glm::mat4(100.0f))
 {
 	// mat4 used for perspective and orthographic. They are initialized as being empty matrices (i.e. all values are 0).
 	perspective = glm::mat4();

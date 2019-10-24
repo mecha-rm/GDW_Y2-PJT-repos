@@ -25,6 +25,10 @@ namespace cherry
 
 		void SetUniform(const char* name, const glm::mat4& value);
 
+		void SetUniform(const char* name, const glm::mat3& value);
+		void SetUniform(const char* name, const glm::vec3& value);
+		void SetUniform(const char* name, const float& value);
+
 		void Bind();
 
 	private:

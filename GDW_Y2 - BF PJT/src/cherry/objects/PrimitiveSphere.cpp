@@ -30,6 +30,13 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	uint32_t** indiArr = nullptr;
 	uint32_t val = 0; // a value used to put values into indiArr
 
+	uint32_t indStart = 0;
+
+	// the three indices being used.
+	uint32_t ind0;
+	uint32_t ind1;
+	uint32_t ind2;
+
 	// Position and Color (Default Values)
 	// e.g. to get vertices (row * col), the column number determines how much gets subtracted. For example
 	// 3 x 3 = -1 from segRows * segCols (3 x 3 - 1) (8 vertices)
@@ -63,6 +70,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	// double lines represent a new set of points for dual triangles
 	// 5 x 3
 
+	// DOES NOT WORK
 	// Ver. 1 (Down -> Up and Right -> Down) - just increases linerarly after
 	//	0 (fill)
 	//  --------------------------
@@ -98,7 +106,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	// set up array (
 	// have a set of three points that are moved along said array so that the triangle is always drawn in the right order)
 
-	vertices[0] = { {0.0F, 0.0F, 0.5F}, {1.0F, 1.0F, 1.0F, 1.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, 0.5F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} }; // top vertex
 
 	int x = 0;
 	index = 1;
@@ -116,7 +124,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 
 			tempVec = util::math::rotateZ(tempVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are  correct
 
-			vertices[index] = { {tempVec.x, tempVec.y, tempVec.z}, {1.0F, 1.0F, 1.0F, 1.0F} };
+			vertices[index] = { {tempVec.x, tempVec.y, tempVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 			// starts with vertices at the top of the sphere.
 
@@ -134,7 +142,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -0.5F}, {1.0F, 1.0F, 1.0F, 1.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -0.5F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
 
 	val = 0;
 	// fills first row with all zeroes; recall that there is one extra column to account for connecting the last set of vertices to the first set
@@ -143,81 +151,233 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 
 	// val = 1;
 	// adds all the indice values to the array
-	for (unsigned int row = 0; row < segRows; row++)
+	//for (unsigned int row = 0; row < segRows; row++)
+	//{
+	//	for (unsigned int col = 0; col < segCols + 1; col++)
+	//	{
+	//		indiArr[row][col] = val;
+	//		if(row > 0 && row < segRows - 1) // first row and final row have the same values
+	//			val++;
+	//	}
+	//}
+
+	//for (int i = 0; i < segCols + 1; i++)
+	//	indiArr[0][i] = val;
+	//// fills final row with the greatest value. Recall that there's one extra row.
+	//for (int i = 0; i < segCols + 1; i++)
+	//	indiArr[segRows - 1][i] = val;
+	//
+
+	//// gets values from 2D array and puts them into the indices 1D array
+	//index = 0;
+	//int test = 0;
+	//for (unsigned int row = 1; row < segRows; row++)
+	//{
+	//	for (unsigned int col = 0; col < segCols; col++)
+	//	{
+	//		if (row == 0) // first row
+	//		{
+	//			// (Top Point) -> (Bottom Left Point) -> (Bottom Right Point)
+	//			indices[index] = indiArr[row][col];
+	//			indices[++index] = indiArr[row + 1][col];
+	//			indices[++index] = indiArr[row + 1][col + 1];
+
+	//			test += 3;
+	//		}
+	//		else if (row > 0 && row < segRows - 1)
+	//		{
+	//			// (Top Left Corner) -> RIGHT -> (Top Right Corner) -> DOWN + LEFT -> (Bottom Left Corner)
+	//			indices[index] = indiArr[row][col];
+	//			indices[++index] = indiArr[row][col + 1];
+	//			indices[++index] = indiArr[row + 1][col];
+
+	//			// (Bottom Left Corner) -> LEFT + UP -> (Top Right Corner) -> DOWN -> (Bottom Right Corner)
+	//			indices[++index] = indiArr[row + 1][col];
+	//			indices[++index] = indiArr[row][col + 1];
+	//			indices[++index] = indiArr[row + 1][col + 1];
+
+	//			test += 6;
+	//		}
+	//		else if (row == segRows - 1) // final row
+	//		{
+	//			// uint32_t x = indiArr[row + 1][col];
+	//			// uint32_t y = indiArr[row][col];
+	//			// uint32_t z = indiArr[row][col + 1];
+
+	//			// (Bottom Point) -> (Top Left Point) -> (Bottom Right Point)
+	//			indices[index] = indiArr[row][col];
+	//			indices[++index] = indiArr[row - 1][col];
+	//			indices[++index] = indiArr[row - 1][col + 1];
+
+	//			// x = indices[index];
+	//			// y = indices[index - 1];
+	//			// z = indices[index - 2];
+
+	//			test += 3;
+	//		}
+	//		// setting up index for next loop
+	//		index++;
+	//		
+	//	}
+	//}
+
+
+	// row 1
+	index = 0;
+	for (index = 0; index < segCols; index += 3)
 	{
-		for (unsigned int col = 0; col < segCols + 1; col++)
-		{
-			indiArr[row][col] = val;
-			if(row > 0 && row < segRows - 1) // first row and final row have the same values
-				val++;
-		}
 	}
 
-	for (int i = 0; i < segCols + 1; i++)
-		indiArr[0][i] = val;
-	// fills final row with the greatest value. Recall that there's one extra row.
-	for (int i = 0; i < segCols + 1; i++)
-		indiArr[segRows - 1][i] = val;
-	
-
-	// gets values from 2D array and puts them into the indices 1D array
-	index = 0;
-	int test = 0;
-	for (unsigned int row = 1; row < segRows; row++)
+	// adds together all of the indices
+	for (int i = 0; i < indicesTotal; i += 3)
 	{
-		for (unsigned int col = 0; col < segCols; col++)
+
+		ind0 = 0; // 0
+		ind1 = ind0 + 1; // 1
+		ind2 = ind0 + 2; // 2
+
+		// 0 1 2
+		indices[i] = ind0;
+		indices[i + 1];
+		indices[i + 2];
+
+		uint32_t temp;
+
+		// top row
+		// 2 0 3
+		temp = ind0;
+		ind0 = ind2; // 2
+		ind1 = temp; // 0
+		ind2 = ind2 + 1 ; // 3 
+		
+		// bottom row
+		// 2 1 3
+		ind0 = ind2; // 2
+		ind1 = ind1; // 1
+
+
+		// i1 = 0;
+		// i2 = i1 + 1;
+	}
+
+	index = 0;
+	indStart = 0;
+	ind0 = 0;
+
+	for (int row = 0; row < segRows && index < indicesTotal; row++)
+	{
+		ind0 = indStart;
+
+		// goes through each column
+		for (int col = 0; col < segCols && index < indicesTotal; col++)
 		{
-			if (row == 0) // first row
+			// first row
+			if (row == 0)
 			{
-				// (Top Point) -> (Bottom Left Point) -> (Bottom Right Point)
-				indices[index] = indiArr[row][col];
-				indices[++index] = indiArr[row + 1][col];
-				indices[++index] = indiArr[row + 1][col + 1];
+				if (col == 0) // first triangle
+				{
+					// (0, 1, 2
+					ind0 = ind0; // top point
+					ind1 = ind0 + 1; // bottom left
+					ind2 = ind0 + 2; // bottom right
+				}
+				else // every subsequent triangle
+				{
+					// (0, 1, 2) -> (2, 0, 1)
+					ind0 = ind2; // bottom left
+					ind1 = 0; // top point
+					ind2 = ind0 + 1; // bottom right
+				}
 
-				test += 3;
+				indices[index] = ind0;
+				indices[index++] = ind1;
+				indices[index++] = ind2;
+
 			}
-			else if (row > 0 && row < segRows - 1)
+			// final row
+			else if (row == segRows - 1)
 			{
-				// (Top Left Corner) -> RIGHT -> (Top Right Corner) -> DOWN + LEFT -> (Bottom Left Corner)
-				indices[index] = indiArr[row][col];
-				indices[++index] = indiArr[row][col + 1];
-				indices[++index] = indiArr[row + 1][col];
+				if (col == 0) // first triangle
+				{
+					// (0, 1, 2)
+					// ind0 = ind0; // top left
+					ind1 = ind0 + 1; // bottom point
+					ind2 = ind0 + 2; // top right
+				}
+				else // every subsequent triangle
+				{
+					// (0, 1, 2) -> (2, 1, 3)
+					ind0 = ind2; // top left
+					// ind1 = ind1; // bottom point
+					ind2 = ind0 + 1; // top right
+				}
 
-				// (Bottom Left Corner) -> LEFT + UP -> (Top Right Corner) -> DOWN -> (Bottom Right Corner)
-				indices[++index] = indiArr[row + 1][col];
-				indices[++index] = indiArr[row][col + 1];
-				indices[++index] = indiArr[row + 1][col + 1];
-
-				test += 6;
+				indices[index] = ind0;
+				indices[index++] = ind1;
+				indices[index++] = ind2;
 			}
-			else if (row == segRows - 1) // final row
+			// regular rows
+			else
 			{
-				// uint32_t x = indiArr[row + 1][col];
-				// uint32_t y = indiArr[row][col];
-				// uint32_t z = indiArr[row][col + 1];
+				if (col == 0) // first face ~ first triangle
+				{
+					// (0, 1, 2)
+					// ind0 = ind0; // top left
+					ind1 = ind0 + 1; // top right
+					ind2 = ind0 + 2; // bottom left
+				}
+				else // every subsequent triangle
+				{
+					// (0, 1, 2) -> (2, 1, 3)
+					ind0 = ind2; // bottom left
+					// ind1 = ind1; // top right
+					ind2 = ind0 + 1; // bottom right
+				}
 
-				// (Bottom Point) -> (Top Left Point) -> (Bottom Right Point)
-				indices[index] = indiArr[row][col];
-				indices[++index] = indiArr[row - 1][col];
-				indices[++index] = indiArr[row - 1][col + 1];
+				// (2, 1, 3)
 
-				// x = indices[index];
-				// y = indices[index - 1];
-				// z = indices[index - 2];
+				// (
 
-				test += 3;
+				indices[index] = ind0;
+				indices[index++] = ind1;
+				indices[index++] = ind2;
+
+				// second triangle for given face
+				// (2, 1, 3) - same for start and end
+				//ind0 = ind2; // bottom left
+				//ind1 = ind0 - 1; // top right
+				//ind2 = ind0 + 1; // bottom right
+
+				if (col == 0) // first face ~ second triangle
+				{
+					// (2, 1, 3)
+					ind0 = ind2; // bottom left
+					ind1 = ind0 - 1; // top right
+					ind2 = ind0 + 1; // bottom right
+				}
+				else // every subsequent triangle
+				{
+					// (0, 1, 2) -> (2, 1, 3)
+					ind0 = ind2; // top left
+					// ind1 = ind1; // bottom point
+					ind2 = ind0 + 1; // top right
+				}
+
+				// ind2 = ind1 + 1;
+				
+
+				indices[index] = ind0;
+				indices[index++] = ind1;
+				indices[index++] = ind2;
 			}
-			// setting up index for next loop
-			index++;
-			
 		}
 	}
 
 	// for (int i = 0; i < verticesTotal; i++)
 		// std::cout << "vertices [" << i << "]: " << util::math::Vec3(vertices[i].Position.x, vertices[i].Position.y, vertices[i].Position.z) << std::endl;
 	
-	for (int i = 0; i < indicesTotal; i++)
-		std::cout << "indicies [" << i << "]: " << indices[i] << std::endl;
+	// for (int i = 0; i < indicesTotal; i++)
+		// std::cout << "indicies [" << i << "]: " << indices[i] << std::endl;
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
