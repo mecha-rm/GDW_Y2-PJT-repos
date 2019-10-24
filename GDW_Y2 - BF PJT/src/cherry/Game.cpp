@@ -227,7 +227,7 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 // constructor
 cherry::Game::Game() :
 	myWindow(nullptr),
-	myWindowTitle("Bonus Fruit Engine"),
+	myWindowTitle("Bonus Fruit - Cherry Engine"),
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f))
 { }
 
@@ -317,9 +317,10 @@ void cherry::Game::LoadContent()
 	// Creating the object, and stroing it in the vector.
 	// objects.push_back(new Object("res/cube.obj")); // cube
 	// objects.push_back(new Object("res/sphere.obj")); // sphere
-	playerObj = new Object("res/monkeyT.obj");
+	// playerObj = new Object("res/monkeyT.obj");
+	playerObj = new PrimitiveSphere(3, 5, 5);
 	playerMesh = playerObj->getMesh();
-	playerObj->addPhysicsBody(new cherry::PhysicsBodyBox(1.0F, 1.0F, 1.0F));
+	// playerObj->addPhysicsBody(new cherry::PhysicsBodyBox(1.0F, 1.0F, 1.0F));
 
 	objects.push_back(playerObj);
 
@@ -327,11 +328,12 @@ void cherry::Game::LoadContent()
 
 	// objects.push_back(new PrimitiveCube());
 	// objects.push_back(new PrimitivePlane());
-	objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
-	objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
 	// objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
 	// objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
-	// objects.push_back(new PrimitiveSphere(10, 5, 5));
+	// objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
+	// objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
+	// objects.push_back(new PrimitiveSphere(3, 5, 5));
+	// objects.at(objects.size() - 1)->setPosition(1.5, 0.0, 0.0F);
     // objects.push_back(new PrimitiveSphere(10, 5, 5));
 
 	// objects[objects.size() - 1]->setColor(12, 24, 111);
@@ -628,7 +630,7 @@ void cherry::Game::Draw(float deltaTime) {
 
 		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
 
-		mesh->Draw(); // draws the mesh.
+		// mesh->Draw(); // draws the mesh.
 
 		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
 		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
@@ -657,7 +659,7 @@ void cherry::Game::Draw(float deltaTime) {
 
 		// myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
 
-		obj->getMesh()->Draw(); // draws the mesh.
+		// obj->getMesh()->Draw(); // draws the mesh.
 
 		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
 		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.

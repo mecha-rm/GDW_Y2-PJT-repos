@@ -4,67 +4,65 @@
 
 cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive()
 {
-	// making sure the minimum amount of values were given
+	// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (segRows < 3)
 		segRows = 3;
 	if (segCols < 3)
 		segCols = 3;
 
-	// SETUP ANGLES
+	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
-	// segments are horizontal (i.e. columns)
-
-	// (2) + segRows * segCols
-	// Two is added to account for the vertices at the top and bottom of the sphere respectively.
+	// segments are horizontal portions (i.e. columns)
 	
-	unsigned int index = 1; // the index of the vector
-	float segWidth = radius / (float)segCols; // the width of each segment (should be radius / segCols)
-	float segHeight = radius / (float)segRows; // the height of each segment (should be radius / segHeight)
+	unsigned int index = 1; // the index of a vector. This is used for both setting up vertices and indices.
 
-	float rotateX = 0.0F; // rotation on the x-axis
-	float rotateZ = 0.0F; // rotation on the z-axis
+	float rotateX = 0.0F; // rotation on the x-axis; used for vertex positions
+	float rotateZ = 0.0F; // rotation on the z-axis; used for vertex positions
 
 	float rxInc = glm::radians(180.0F / (float)segRows); // increment for rotations around x-axis
-	float rzInc = glm::radians(360.0F / (float)segCols); // crement for rotations around y-axis
-
-	uint32_t** indiArr = nullptr;
-	uint32_t val = 0; // a value used to put values into indiArr
-
-	uint32_t indStart = 0;
+	float rzInc = glm::radians(360.0F / (float)segCols); // increment for rotations around z-axis
 
 	// the three indices being used.
-	uint32_t ind0;
-	uint32_t ind1;
-	uint32_t ind2;
+	uint32_t ind0 = 0; // used for the triangles at the top and bottom of the sphere.
+	uint32_t ind1 = 0; // used for drawing indices for all triangles.
+	uint32_t ind2 = 0; // used for drawing indices for all triangles.
 
-	// Position and Color (Default Values)
-	// e.g. to get vertices (row * col), the column number determines how much gets subtracted. For example
-	// 3 x 3 = -1 from segRows * segCols (3 x 3 - 1) (8 vertices)
-	// 3 x 4 = -2 from segRows * segCols (3 x 4 - 2) (10 vertices)
-	// 4 x 3 = -1 from segRows * segCols (4 x 3 - 1) (11 vertices)
-	// 4 x 4 = -2 from segRows * segCols (4 x 4 - 2) (14 vertices)
-	// 4 x 5 = -3 from segRows * segCols (4 x 5 - 3) (17 vertices)
-	// 5 x 4 = -2 from segRows * segCols (5 x 4 - 2) (18 vertices)
-	// 5 x 5 = -3 from segRows * segCols (5 x 5 - 3) (22 vertices)
+	/*
+	 * e.g. to get vertices (row * col), the column number determines how much gets subtracted. For example
+	 ***	3 x 3 = -1 from segRows * segCols (3 x 3 - 1) (8 vertices)
+	 ***	3 x 4 = -2 from segRows * segCols (3 x 4 - 2) (10 vertices)
+	 ***	4 x 3 = -1 from segRows * segCols (4 x 3 - 1) (11 vertices)
+	 ***	4 x 4 = -2 from segRows * segCols (4 x 4 - 2) (14 vertices)
+	 ***	4 x 5 = -3 from segRows * segCols (4 x 5 - 3) (17 vertices)
+	 ***	5 x 4 = -2 from segRows * segCols (5 x 4 - 2) (18 vertices)
+	 ***	5 x 5 = -3 from segRows * segCols (5 x 5 - 3) (22 vertices)
+	*/
+	
+
+	// total amount of vertices
+	// (segRows * segCols): calculates the base amount of vertices, which assumes the vertex amount is the same for all rows.
+	// (segCols - 2): accounts for the single vertices at the top and bottom of the sphere, as those "rows" have a different amount from the rest.
+
 	verticesTotal = (segRows * segCols) - ((segCols) - 2); // segRows * segCols - ((segCols) - 2)
 	vertices = new Vertex[verticesTotal];
 
-	// e.g. the top and bottom of the sphere don't double the amount of tris used per face. fOR THIS, WE'RE DOING THE SAME THING
-	// 3 x 3 = (3 + 1) * 3 (12 indices)
-	// 3 x 4 = (3 + 1) * 4 (16 indices)
-	// 4 x 3 = (4 + 2) * 3 (18 indices)
-	// 4 x 4 = (4 + 2) * 4 (24 indices)
-	// 4 x 5 = (4 + 2) * 5 (30 incides)
-	// 5 x 4 = (5 + 3) * 4 (32 indices)
-	// 5 x 5 = (5 + 3) * 5 (40 indices)
-	indicesTotal = (segRows + (segRows - 2)) * segCols; // (segRows + (segRows - 2)) * segCols
+	/*
+	 * e.g. the top and bottom of the sphere don't double the amount of tris used per face.
+	 ***	3 x 3 = (3 * 2 + (3 - 2) * 3 * 2) * 3 = 12 triangles and 36 indices
+	 ***	3 x 4 = (4 * 2 + (3 - 2) * 4 * 2) * 3 = 16 triangles and 48 indices
+	 ***	4 x 3 = (3 * 2 + (4 - 2) * 3 * 2) * 3 = 18 triangles and 54 indices
+	 ***	4 x 4 = (4 * 2 + (4 - 2) * 4 * 2) * 3 = 24 triangles and 72 indices
+	 ***	4 x 5 = (5 * 2 + (4 - 2) * 5 * 2) * 3 = 30 triangles and 90 indices
+	 ***	5 x 4 = (4 * 2 + (5 - 2) * 4 * 2) * 3 = 32 triangles and 96 indices
+	 ***	5 x 5 = (5 * 2 + (5 - 2) * 5 * 2) * 3 = 40 triangles and 120 indices
+	*/
+
+	// segCols * 2: accounts for the triangles at the top and bottom "rows", which all come to a single point on the top and bottom respectively. 
+	// ((segRows - 2) * segCols * 2): gets the triangle total for the rest of the rows. Multiplies by (2) since two tris make a quad.
+	// (...) * 3: multiplies by 3 because three points are used to draw an individual triangle.
+	indicesTotal = (segCols * 2 + ((segRows - 2) * segCols * 2)) * 3; // (segCols * 2 + (segRows - 2) * segCols * 2) * 3 
 	indices = new uint32_t[indicesTotal];
-	
-	// sets amount of rows, then sets each column
-	// the final column is just a repeat of the first column, which exists so the game doesn't have to loop around.
-	indiArr = new uint32_t * [segRows];
-	for(int i = 0; i < segRows; i++)
-		indiArr[i] = new uint32_t[segCols + 1];
+
 
 	// order (allows for simple addition, e.g. (1, 2, 3), (2, 3, 4), (3, 4, 5)
 	// double lines represent a new set of points for dual triangles
@@ -103,12 +101,9 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
-	// set up array (
-	// have a set of three points that are moved along said array so that the triangle is always drawn in the right order)
+	// top vertex
+	vertices[0] = { {0.0F, 0.0F, radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} }; // top vertex
 
-	vertices[0] = { {0.0F, 0.0F, 0.5F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} }; // top vertex
-
-	int x = 0;
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
 	// rotates on the x-axis for the row rotation (z-axis and y-axis positions change)
@@ -116,268 +111,101 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	{
 		for (unsigned int col = 0; col < segCols && index < verticesTotal - 1; col++) // goes through each column
 		{
-			x++;
-			util::math::Vec3 tempVec(0.0F, 0.0F, 0.5F);
+			util::math::Vec3 tempVec(0.0F, 0.0F, radius);
 
 			// also determines radius at the given point on the sphere.
 			tempVec = util::math::rotateX(tempVec, rotateX, false); // rotates around the x-axis so that the z-position is correct
 
-			tempVec = util::math::rotateZ(tempVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are  correct
+			tempVec = util::math::rotateZ(tempVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are correct
 
 			vertices[index] = { {tempVec.x, tempVec.y, tempVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
-			// starts with vertices at the top of the sphere.
-
-			// vertices[index] = { {-0.5F + segWidth * edge, 0.5F - segHeight * row, 0.0F}, {1.0F, 1.0F, 1.0F, 1.0F} };
-			// vertices[index] = { {-0.5F + segWidth * edge, 0.5F - segHeight * row, 0.0F}, {1.0F, 1.0F, 1.0F, 1.0F} };
-
-			//vertices[index] = { {-0.5F + segWidth, 0.5F - segHeight * row, -0.5F + segWidth}, {1.0F, 1.0F, 1.0F, 1.0F} };
-			// vertices[index] = { {-0.5F + segWidth * edge, 0.5F - segHeight * row, -0.5F + segWidth * edge}, {1.0F, 1.0F, 1.0F, 1.0F} };
-
-			rotateZ += rzInc;
+			rotateZ += rzInc; // adding to the z-rotation
 			index++;
 		}
 
-		rotateZ = 0.0F;
+		rotateZ = 0.0F; // resetting the z-rotation
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -0.5F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
-
-	val = 0;
-	// fills first row with all zeroes; recall that there is one extra column to account for connecting the last set of vertices to the first set
-	/*for (int i = 0; i < segCols + 1; i++)
-		indiArr[0][i] = val;*/
-
-	// val = 1;
-	// adds all the indice values to the array
-	//for (unsigned int row = 0; row < segRows; row++)
-	//{
-	//	for (unsigned int col = 0; col < segCols + 1; col++)
-	//	{
-	//		indiArr[row][col] = val;
-	//		if(row > 0 && row < segRows - 1) // first row and final row have the same values
-	//			val++;
-	//	}
-	//}
-
-	//for (int i = 0; i < segCols + 1; i++)
-	//	indiArr[0][i] = val;
-	//// fills final row with the greatest value. Recall that there's one extra row.
-	//for (int i = 0; i < segCols + 1; i++)
-	//	indiArr[segRows - 1][i] = val;
-	//
-
-	//// gets values from 2D array and puts them into the indices 1D array
-	//index = 0;
-	//int test = 0;
-	//for (unsigned int row = 1; row < segRows; row++)
-	//{
-	//	for (unsigned int col = 0; col < segCols; col++)
-	//	{
-	//		if (row == 0) // first row
-	//		{
-	//			// (Top Point) -> (Bottom Left Point) -> (Bottom Right Point)
-	//			indices[index] = indiArr[row][col];
-	//			indices[++index] = indiArr[row + 1][col];
-	//			indices[++index] = indiArr[row + 1][col + 1];
-
-	//			test += 3;
-	//		}
-	//		else if (row > 0 && row < segRows - 1)
-	//		{
-	//			// (Top Left Corner) -> RIGHT -> (Top Right Corner) -> DOWN + LEFT -> (Bottom Left Corner)
-	//			indices[index] = indiArr[row][col];
-	//			indices[++index] = indiArr[row][col + 1];
-	//			indices[++index] = indiArr[row + 1][col];
-
-	//			// (Bottom Left Corner) -> LEFT + UP -> (Top Right Corner) -> DOWN -> (Bottom Right Corner)
-	//			indices[++index] = indiArr[row + 1][col];
-	//			indices[++index] = indiArr[row][col + 1];
-	//			indices[++index] = indiArr[row + 1][col + 1];
-
-	//			test += 6;
-	//		}
-	//		else if (row == segRows - 1) // final row
-	//		{
-	//			// uint32_t x = indiArr[row + 1][col];
-	//			// uint32_t y = indiArr[row][col];
-	//			// uint32_t z = indiArr[row][col + 1];
-
-	//			// (Bottom Point) -> (Top Left Point) -> (Bottom Right Point)
-	//			indices[index] = indiArr[row][col];
-	//			indices[++index] = indiArr[row - 1][col];
-	//			indices[++index] = indiArr[row - 1][col + 1];
-
-	//			// x = indices[index];
-	//			// y = indices[index - 1];
-	//			// z = indices[index - 2];
-
-	//			test += 3;
-	//		}
-	//		// setting up index for next loop
-	//		index++;
-	//		
-	//	}
-	//}
-
-
-	// row 1
+	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
+	
+	// starting values for the indice drawing.
 	index = 0;
-	for (index = 0; index < segCols; index += 3)
-	{
-	}
-
-	// adds together all of the indices
-	for (int i = 0; i < indicesTotal; i += 3)
-	{
-
-		ind0 = 0; // 0
-		ind1 = ind0 + 1; // 1
-		ind2 = ind0 + 2; // 2
-
-		// 0 1 2
-		indices[i] = ind0;
-		indices[i + 1];
-		indices[i + 2];
-
-		uint32_t temp;
-
-		// top row
-		// 2 0 3
-		temp = ind0;
-		ind0 = ind2; // 2
-		ind1 = temp; // 0
-		ind2 = ind2 + 1 ; // 3 
-		
-		// bottom row
-		// 2 1 3
-		ind0 = ind2; // 2
-		ind1 = ind1; // 1
-
-
-		// i1 = 0;
-		// i2 = i1 + 1;
-	}
-
-	index = 0;
-	indStart = 0;
 	ind0 = 0;
+	ind1 = 1;
+	ind2 = 2;
 
+	// For this version, row 0 is increased by 1
+
+	// Drawing Order
+	//	- the indice values increase by 1 per column
+	//	- the indices in the following row are the previous row values plus the amount of columns
+	/*
+	 * e.g. a 4 X 4 sphere
+	 *			  0
+	 *		1	2	3	4
+	 *		5	6	7	8
+	 *			  9
+	*/
+
+	// drawing the indices.
 	for (int row = 0; row < segRows && index < indicesTotal; row++)
 	{
-		ind0 = indStart;
-
-		// goes through each column
 		for (int col = 0; col < segCols && index < indicesTotal; col++)
 		{
 			// first row
 			if (row == 0)
 			{
-				if (col == 0) // first triangle
-				{
-					// (0, 1, 2
-					ind0 = ind0; // top point
-					ind1 = ind0 + 1; // bottom left
-					ind2 = ind0 + 2; // bottom right
-				}
-				else // every subsequent triangle
-				{
-					// (0, 1, 2) -> (2, 0, 1)
-					ind0 = ind2; // bottom left
-					ind1 = 0; // top point
-					ind2 = ind0 + 1; // bottom right
-				}
-
+				// top point -> bottom left -> bottom right
 				indices[index] = ind0;
-				indices[index++] = ind1;
-				indices[index++] = ind2;
+				indices[++index] = ind1;
 
+				// because of the drawing order, an edge ends up not getting drawn, leaving a face missing.
+				// this is just to fix that problem by making sure the indices are all correct for the final top face.
+				// this only happens with the top of the sphere. The bottom of the sphere works fine.
+				if (col == segCols - 1)
+					indices[++index] = ind0 + 1;
+				else
+					indices[++index] = ind2;
+
+				ind1++;
+				ind2++;
+				index++;
 			}
 			// final row
 			else if (row == segRows - 1)
 			{
-				if (col == 0) // first triangle
-				{
-					// (0, 1, 2)
-					// ind0 = ind0; // top left
-					ind1 = ind0 + 1; // bottom point
-					ind2 = ind0 + 2; // top right
-				}
-				else // every subsequent triangle
-				{
-					// (0, 1, 2) -> (2, 1, 3)
-					ind0 = ind2; // top left
-					// ind1 = ind1; // bottom point
-					ind2 = ind0 + 1; // top right
-				}
+				// top left -> bottom point -> top right
+				indices[index] = ind1 - segCols;
+				indices[++index] = ind0;
+				indices[++index] = ind2 - segCols;
 
-				indices[index] = ind0;
-				indices[index++] = ind1;
-				indices[index++] = ind2;
+				ind1++;
+				ind2++;
+				index++;
 			}
-			// regular rows
-			else
+			else // other rows
 			{
-				if (col == 0) // first face ~ first triangle
-				{
-					// (0, 1, 2)
-					// ind0 = ind0; // top left
-					ind1 = ind0 + 1; // top right
-					ind2 = ind0 + 2; // bottom left
-				}
-				else // every subsequent triangle
-				{
-					// (0, 1, 2) -> (2, 1, 3)
-					ind0 = ind2; // bottom left
-					// ind1 = ind1; // top right
-					ind2 = ind0 + 1; // bottom right
-				}
+				// triangle 1 (top left -> top right -> bottom left)
+				indices[index] = ind1 - segCols;
+				indices[++index] = ind2 - segCols;
+				indices[++index] = ind1;
 
-				// (2, 1, 3)
+				// triangle 2 bottom left -> top right -> bottom right)
+				indices[++index] = ind1;
+				indices[++index] = ind2 - segCols;
+				indices[++index] = ind2;
 
-				// (
+				ind1++;
+				ind2++;
+				index++;
 
-				indices[index] = ind0;
-				indices[index++] = ind1;
-				indices[index++] = ind2;
-
-				// second triangle for given face
-				// (2, 1, 3) - same for start and end
-				//ind0 = ind2; // bottom left
-				//ind1 = ind0 - 1; // top right
-				//ind2 = ind0 + 1; // bottom right
-
-				if (col == 0) // first face ~ second triangle
-				{
-					// (2, 1, 3)
-					ind0 = ind2; // bottom left
-					ind1 = ind0 - 1; // top right
-					ind2 = ind0 + 1; // bottom right
-				}
-				else // every subsequent triangle
-				{
-					// (0, 1, 2) -> (2, 1, 3)
-					ind0 = ind2; // top left
-					// ind1 = ind1; // bottom point
-					ind2 = ind0 + 1; // top right
-				}
-
-				// ind2 = ind1 + 1;
-				
-
-				indices[index] = ind0;
-				indices[index++] = ind1;
-				indices[index++] = ind2;
+				if (row == segRows - 2 && col == segCols - 1)
+					ind0 = ind1; // will be used for setting final vertex value.					
 			}
 		}
 	}
-
-	// for (int i = 0; i < verticesTotal; i++)
-		// std::cout << "vertices [" << i << "]: " << util::math::Vec3(vertices[i].Position.x, vertices[i].Position.y, vertices[i].Position.z) << std::endl;
-	
-	// for (int i = 0; i < indicesTotal; i++)
-		// std::cout << "indicies [" << i << "]: " << indices[i] << std::endl;
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
