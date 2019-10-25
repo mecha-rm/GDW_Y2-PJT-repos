@@ -605,6 +605,8 @@ void cherry::Game::Draw(float deltaTime) {
 		//Logger::GetLogger()->info(playerObj->getPosition().x);
 		//Logger::GetLogger()->info(playerObj->getPosition().y);
 		//Logger::GetLogger()->info(playerObj->getPosition().z);
+
+		// may or may not be beneficial to use lerp here to smooth the dash animation since it looks glitchy even though its working as intended
 		playerObj->setPosition(playerObj->getPosition() + dash);
 		this->dash = false;
 	}
