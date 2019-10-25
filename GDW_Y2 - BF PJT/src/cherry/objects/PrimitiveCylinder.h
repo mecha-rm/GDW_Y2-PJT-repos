@@ -2,8 +2,15 @@
 #include "Primitive.h"
 namespace cherry
 {
-	class PrimitiveCylinder : public cherry::Primitive
+	typedef class PrimitiveCylinder : public cherry::Primitive
 	{
-	};
+	public:
+		// creates a cylinder
+		// segments: the amount of segments for the depth of the cylinder
+		PrimitiveCylinder(float radius = 1.0F, float height = 1.0F, unsigned int segments = 10);
+	private:
+	protected:
+	
+	} Cylinder;
 }
 

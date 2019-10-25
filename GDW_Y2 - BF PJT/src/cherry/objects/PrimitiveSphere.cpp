@@ -131,10 +131,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
 	
 	// starting values for the indice drawing.
-	index = 0;
-	ind0 = 0;
-	ind1 = 1;
-	ind2 = 2;
+	
 
 	// For this version, row 0 is increased by 1
 
@@ -149,6 +146,10 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	 *			  9
 	*/
 
+	index = 0;
+	ind0 = 0;
+	ind1 = 1;
+	ind2 = 2;
 	// drawing the indices.
 	for (int row = 0; row < segRows && index < indicesTotal; row++)
 	{

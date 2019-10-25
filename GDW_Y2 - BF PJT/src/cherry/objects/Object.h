@@ -10,6 +10,7 @@
 #include "..\Mesh.h"
 #include "..\utils\math\Consts.h"
 #include "..\Camera.h"
+#include "..\VectorCRY.h"
 // #include "..\Physics.h"
 
 namespace cherry
@@ -86,6 +87,12 @@ namespace cherry
 
 		// disable wireframe on mesh
 		void disableWireframeMode();
+
+		// cherry::Vertex * getVertices();
+
+		
+
+		// uint32_t * getIndices();
 
 		// returns a reference to the mesh.
 		Mesh::Sptr& getMesh();

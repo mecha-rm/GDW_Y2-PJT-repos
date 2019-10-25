@@ -86,8 +86,12 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCapsule.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCircle.cpp" />
     <ClCompile Include="src\cherry\Material.cpp" />
     <ClCompile Include="src\cherry\MeshRenderer.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCone.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveDiamond.cpp" />
     <ClCompile Include="src\cherry\Physics.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveCube.cpp" />
     <ClCompile Include="src\cherry\objects\Primitive.cpp" />
@@ -332,8 +336,12 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCapsule.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCircle.h" />
     <ClInclude Include="src\cherry\Material.h" />
     <ClInclude Include="src\cherry\MeshRenderer.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCone.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveDiamond.h" />
     <ClInclude Include="src\cherry\Physics.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveCube.h" />
     <ClInclude Include="src\cherry\objects\Primitive.h" />
