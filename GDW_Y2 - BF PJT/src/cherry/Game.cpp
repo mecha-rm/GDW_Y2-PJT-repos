@@ -330,8 +330,11 @@ void cherry::Game::LoadContent()
 	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.25);
 	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.75);
 	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 1.0);
-	playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.0);
+	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.0);
 	// playerObj = new PrimitiveDiamond(1.0F, 2.0F, 6);
+	// playerObj = new PrimitiveCapsule(1.0F, 2.5F, 10, 5);
+	playerObj = new PrimitiveCapsule(1.0F, 5.0F, 10, 4);
+	// playerObj = new PrimitiveCapsule(0.8F, 4.0, 5, 1);
 	playerMesh = playerObj->getMesh();
 	// playerObj->addPhysicsBody(new cherry::PhysicsBodyBox(1.0F, 1.0F, 1.0F));
 
