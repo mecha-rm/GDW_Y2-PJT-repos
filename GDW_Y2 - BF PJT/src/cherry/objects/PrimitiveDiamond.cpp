@@ -39,16 +39,20 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	for (int i = 1; i < verticesTotal - 1; i++)
 	{
 
-		// rotates the vector
+		// rotates the position vector
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
-		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, originLoc), rFactor);
-		vertices[i] = { {tempVec.v->x, tempVec.v->y, tempVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, originLoc), rFactor);
+		
+		// rotates the normal vector
+		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(1.0F, 0.0F, 0.0F), rFactor);
+
+		vertices[i] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.getX(), normVec.getY(), normVec.getZ()} };
 
 		rFactor += rInc; // increases the rotation factor
 	}
 
 	// bottom, centre vertex.
-	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} };
 
 	ind0 = 0;
 	ind1 = 1;

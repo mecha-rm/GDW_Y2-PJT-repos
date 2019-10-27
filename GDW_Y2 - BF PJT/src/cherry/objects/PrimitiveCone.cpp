@@ -23,22 +23,27 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 	indicesTotal = segments * 2 * 3; // three indices per triangle, needed for the base and height of the cone.
 	indices = new uint32_t[indicesTotal];
 
-	// top vertex
+	// top vertex. The normal points directly upwards
 	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
 
 	// adds in all the vertices
 	for (int i = 1; i < verticesTotal - 1; i++)
 	{
-		// rotates the vector
+		// rotates the position vector
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
-		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
-		vertices[i] = { {tempVec.v->x, tempVec.v->y, tempVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
+
+		// calculates the normal by rotating it to account for the vertex position, and the angle of the normal itself.
+		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
+		normVec = util::math::rotateX(util::math::Vec3(normVec.getX(), normVec.getY(), normVec.getZ()), glm::radians(45.0F));
+
+		vertices[i] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.getX(), normVec.getY(), normVec.getZ()} };
 
 		rFactor += rInc; // increases the rotation factor
 	}
 
 	// bottom, centre vertex.
-	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} };
 
 	ind0 = 0;
 	ind1 = 1;

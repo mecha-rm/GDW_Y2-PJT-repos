@@ -43,15 +43,23 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 			if (i <= 0) // top
 			{
 				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, height / 2.0F), rFactor);
-				normVec = cherry::Vec3(0.0F, 0.0F, 1.0F);
+
+				// rotating the normal vector so that it's in the right place and angled properly.
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.getX(), normVec.getY(), normVec.getZ()), glm::radians(45.0F));
+
+
 			}
 			else if (i >= 1) // bottom
 			{
 				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
-				normVec = cherry::Vec3(0.0F, 0.0F, -1.0F);
+				
+				// rotating the normal vector so that it's in the right place and angled properly.
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.getX(), normVec.getY(), normVec.getZ()), glm::radians(45.0F));
 			}
 			
-			vertices[index] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.v->x, normVec.v->y, normVec.v->z} };
+			vertices[index] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.getX(), normVec.getY(), normVec.getZ()} };
 			
 			rFactor += rInc; // adds to the rotation factor.
 			index++; // increaes the index.
@@ -60,7 +68,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 		rFactor = 0.0F;
 	}
 
-	// final vertex
+	// final centre vertex
 	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} };
 
 	index = 0;

@@ -117,18 +117,25 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	{
 		for (unsigned int col = 0; col < cylSegments && index < verticesTotal - 1; col++) // goes through each column
 		{
-			util::math::Vec3 tempVec(0.0F, 0.0F, radius);
+			// vector for getting position
+			util::math::Vec3 posVec(0.0F, 0.0F, radius);
+
+			// vector for getting normals
+			util::math::Vec3 normVec(0.0F, 0.0F, 1.0F);
 
 			// also determines radius at the given point on the sphere.
-			tempVec = util::math::rotateX(tempVec, rotateX, false); // rotates around the x-axis so that the z-position is correct
+			posVec = util::math::rotateX(posVec, rotateX, false); // rotates around the x-axis so that the z-position is correct
+			posVec = util::math::rotateZ(posVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are correct
 
-			tempVec = util::math::rotateZ(tempVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are correct
+			// determines the normal position
+			normVec = util::math::rotateX(normVec, rotateX, false); // rotates around the x-axis so that the z-position is correct
+			normVec = util::math::rotateZ(normVec, rotateZ, false); // rotates around the z-axis so that the (x, y) positions are correct
 
 			// adjusts the height on the z-value for the capsule
 			// radius * 2 to account for the top and bottom cap
-			tempVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
+			posVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
 
-			vertices[index] = { {tempVec.x, tempVec.y, tempVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.x, normVec.y, normVec.z} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;

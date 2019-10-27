@@ -7,7 +7,7 @@ cherry::PrimitivePlane::PrimitivePlane() : Primitive()
 	verticesTotal = 4;
 	vertices = new Vertex [verticesTotal] 
 	{
-		//  x      y	 z		   r	 g	   b	 a
+		//  x      y	 z		   r	 g	   b	 a		 // normals
 		{{ -0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // bottom left
 		{{  0.5f, -0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // bottom right
 		{{ -0.5f,  0.5f, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // top left

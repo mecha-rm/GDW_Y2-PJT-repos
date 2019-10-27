@@ -20,7 +20,7 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges)
 	indicesTotal = edges * 3; // three indices per triangle
 	indices = new uint32_t[indicesTotal];
 	
-	// centre vertex
+	// centre vertex (position, colour, and normal)
 	vertices[0] = { { 0.0F, 0.0F, 0.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
 
 	// adds in all the vertices
@@ -30,6 +30,7 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges)
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
 		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, 0.0F), rFactor);
 
+		// vertex (position, colour, and normal)
 		vertices[i] = { {tempVec.v->x, tempVec.v->y, tempVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
 		
 		// centre -> top left -> top right
