@@ -1,0 +1,66 @@
+﻿  pch.cpp
+  Camera.cpp
+  Game.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Camera.cpp(137,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Material.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Game.cpp(784,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Mesh.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Material.cpp(15,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  MeshRenderer.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Mesh.cpp(151,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Object.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\MeshRenderer.cpp(2,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Primitive.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\Object.cpp(503,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveCapsule.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\Primitive.cpp(73,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveCircle.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveCapsule.cpp(244,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveCone.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveCircle.cpp(61,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveCube.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveCone.cpp(117,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveCylinder.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveCube.cpp(77,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveDiamond.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveCylinder.cpp(152,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitivePlane.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveDiamond.cpp(127,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  PrimitiveSphere.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitivePlane.cpp(38,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Physics.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\objects\PrimitiveSphere.cpp(232,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Scene.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Physics.cpp(228,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  SceneManager.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Scene.cpp(4,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Shader.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\SceneManager.cpp(60,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  stb_image.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Shader.cpp(187,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Generating Code...
+  Compiling...
+  Array.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\stb_image.cpp(3,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Color.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\Array.cpp(21,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Collision.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\Color.cpp(51,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  LargeInt.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\Collision.cpp(414,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Matrix.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\LargeInt.cpp(187,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Quaternion.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\Matrix.cpp(853,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Rotation.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\Quaternion.cpp(64,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Vector.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\Rotation.cpp(246,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Utils.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\math\Vector.cpp(364,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  VectorCRY.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\utils\Utils.cpp(212,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  GDW_Y2 - CRY LIB.cpp
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\VectorCRY.cpp(248,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  Generating Code...
+C:\Users\roder\source\year 2 repos\GDW_Y2-PJT-repos\GDW_Y2 - CRY LIB\cherry\Game.h(5,10): fatal error C1083: Cannot open include file: 'glad/glad.h': No such file or directory
