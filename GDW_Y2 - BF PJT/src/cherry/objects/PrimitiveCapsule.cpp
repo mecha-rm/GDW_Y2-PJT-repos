@@ -3,7 +3,11 @@
 #include "..\utils\math\Rotation.h"
 
 cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments)
+	: radius(abs(radius)), height(abs(height))
 {
+	radius = abs(radius);
+	height = abs(height);
+
 	// todo: account for height
 	// PrimitiveSphere tempSphere(cylRadius, (capSegments + 1) * 2, cylSegments);
 
@@ -108,7 +112,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -135,7 +139,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			// radius * 2 to account for the top and bottom cap
 			posVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.x, normVec.y, normVec.z} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -145,7 +149,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 
 	// starting values for the indice drawing.
 
@@ -225,6 +229,15 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 		}
 	}
 
+	// calculating the normals
+	calculateNormals();
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 }
+
+// gets the radius
+float cherry::PrimitiveCapsule::GetRadius() const { return radius; }
+
+// gets the height
+float cherry::PrimitiveCapsule::GetHeight() const { return height; }

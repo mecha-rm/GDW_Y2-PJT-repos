@@ -12,9 +12,11 @@ namespace cherry
 		// at least 3 dges must be provided.
 		PrimitiveCircle(float radius = 1.0F, unsigned int edges = 10);
 
-		// float getRadius();
+		// gets the radius
+		float GetRadius() const;
 
 	private:
+		float radius;
 	protected:
 
 	} Circle;

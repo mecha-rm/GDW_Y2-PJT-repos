@@ -4,7 +4,12 @@
 
 // creates a diamond; same calculation as capsules.
 cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned int segments, float origin)
+	: radius(abs(radius)), height(abs(height))
 {
+	// absolute values
+	radius = abs(radius);
+	height = abs(height);
+
 	if (segments < 3)
 		segments = 3;
 
@@ -33,7 +38,7 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	indices = new uint32_t[indicesTotal];
 
 	// top vertex
-	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 	// adds in all the vertices
 	for (int i = 1; i < verticesTotal - 1; i++)
@@ -46,13 +51,13 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 		// rotates the normal vector
 		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(1.0F, 0.0F, 0.0F), rFactor);
 
-		vertices[i] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.getX(), normVec.getY(), normVec.getZ()} };
+		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 		rFactor += rInc; // increases the rotation factor
 	}
 
 	// bottom, centre vertex.
-	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} };
+	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 	ind0 = 0;
 	ind1 = 1;
@@ -105,9 +110,17 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 		}
 	}
 
+	calculateNormals();
+
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 
 	// setting the position
 	// setPosition(pos.v->x, pos.v->y, pos.v->z);
 }
+
+// gets the radius
+float cherry::PrimitiveDiamond::GetRadius() const { return radius; }
+
+// gets the height
+float cherry::PrimitiveDiamond::GetHeight() const { return height; }

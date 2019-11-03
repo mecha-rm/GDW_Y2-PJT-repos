@@ -31,16 +31,30 @@ namespace cherry
 		void Draw();
 
 		// Returns wireframe boolean to tell the caller if the mesh is to be drawn in wirframe
-		bool isWireframeMode();
+		bool IsWireframe();
 
 		// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
-		void setWireframeMode(bool wf);
+		void SetWireframe(bool wf);
+
+		// toggle's the wireframe mode on/off.
+		void SetWireframe();
 
 		// Enables wireframe mode on the mesh
-		void enableWireframeMode();
+		void enableWireframe();
 
 		// Disables wireframe mode on the mesh
-		void disableWireframeMode();
+		void DisableWireframe();
+
+		// returns 'true' if the mesh is visible, false otherwise.
+		bool IsVisible();
+
+		// toggle's the visibility of the mesh on/off.
+		void SetVisible();
+
+		// sets whether the mesh is visible or not.
+		void SetVisible(bool visible);
+
+		
 
 	private:
 		// Our GL handle for the Vertex Array Object
@@ -53,6 +67,15 @@ namespace cherry
 		size_t myVertexCount, myIndexCount;
 
 		// Whether or not the mesh should be drawn in wireframe mode
-		bool wireframe;
+		bool wireframe = false;
+
+		// boolan for visibility
+		bool visible = true;
+
+		// TODO: implement method of redrawing the mesh in multiple locations
+		// cherry::Vec3 offset; // offset for each draw call
+		// unsigned int arrRows = 1; // y-axis
+		// unsigned int arrCols = 1; // x-axis
+		// unsigned int planes = 1; // z-axis
 	};
 }

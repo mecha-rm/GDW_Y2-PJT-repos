@@ -3,7 +3,11 @@
 
 // creates a cylinder
 cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigned int segments)
+	: radius(abs(radius)), height(abs(height))
 {
+	radius = abs(radius);
+	height = abs(height);
+
 	// minimum amount of segments
 	if (segments < 3)
 		segments = 3;
@@ -27,7 +31,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 	indices = new uint32_t[indicesTotal];
 
 	// centre starting vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 	index = 1;
 
@@ -46,7 +50,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 
 				// rotating the normal vector so that it's in the right place and angled properly.
 				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.getX(), normVec.getY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
 
 
 			}
@@ -56,10 +60,10 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 				
 				// rotating the normal vector so that it's in the right place and angled properly.
 				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.getX(), normVec.getY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
 			}
 			
-			vertices[index] = { {posVec.v->x, posVec.v->y, posVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.getX(), normVec.getY(), normVec.getZ()} };
+			vertices[index] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 			
 			rFactor += rInc; // adds to the rotation factor.
 			index++; // increaes the index.
@@ -69,7 +73,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 	}
 
 	// final centre vertex
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} };
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 	index = 0;
 	ind0 = 0;
@@ -134,6 +138,14 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 		}
 	}
 
+	calculateNormals();
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 }
+
+// returns the radius
+float cherry::PrimitiveCylinder::GetRadius() const { return radius; }
+
+// gets the height
+float cherry::PrimitiveCylinder::GetHeight() const { return height; }

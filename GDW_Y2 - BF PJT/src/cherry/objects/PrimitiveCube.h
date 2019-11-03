@@ -15,11 +15,16 @@ namespace cherry
 		// sets the width, height, and depth
 		PrimitiveCube(float width, float height, float depth);
 
-		
+		// gets the width
+		float GetWidth() const;
 
-		// void setWidth();
+		// gets the height
+		float GetHeight() const;
 
-		// void setHeight(float height);
+		// gets the depth
+		float GetDepth() const;
+
+
 	private:
 		float width; // width of box
 		float height; // height of box

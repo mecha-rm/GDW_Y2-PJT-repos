@@ -6,7 +6,7 @@
 
 //// VECTOR //////////////////////////////////////////////////////////////////////////////////////////
 // ostream operator
-std::ostream & util::math::operator<<(std::ostream & os, const Vec & vec) { return os << vec.toString(); }
+std::ostream& util::math::operator<<(std::ostream& os, const Vec& vec) { return os << vec.toString(); }
 
 // calculates the length of the dot product
 template<typename T>
@@ -31,7 +31,7 @@ float util::math::Vec::calculateDotAngle(const T& v1, const T& v2, const bool in
 util::math::Vec2::Vec2(float x, float y) : x(x), y(y) {}
 
 // istream
-std::istream & util::math::operator>>(std::istream & in, Vec2 & vec)
+std::istream& util::math::operator>>(std::istream& in, Vec2& vec)
 {
 	// in.ignore(); // We use 'ignore' because if the user follows the proper format, we get a bunch of characters we don't want to use.
 
@@ -54,14 +54,14 @@ float& util::math::Vec2::operator[](const int index) // editing
 }
 
 // checking if two vectors are equal
-bool util::math::Vec2::operator==(const Vec2 & v2) const { return (x == v2.x && y == v2.y); }
+bool util::math::Vec2::operator==(const Vec2& v2) const { return (x == v2.x && y == v2.y); }
 
 
 // multiplication
 util::math::Vec2 util::math::Vec2::operator*(float scalar) const { return util::math::Vec2(x * scalar, y * scalar); }
 
 // scalar times vector
-util::math::Vec2 util::math::operator*(float flt, const Vec2 & vec) { return vec * flt; }
+util::math::Vec2 util::math::operator*(float flt, const Vec2& vec) { return vec * flt; }
 
 // division
 util::math::Vec2 util::math::Vec2::operator/(float scalar) const { return *this * std::powf(scalar, -1); }
@@ -115,14 +115,14 @@ float util::math::Vec2::dot(Vec2 v2) const
 }
 
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
-float util::math::Vec2::dotLength(const Vec2 & v2, bool projV2)
+float util::math::Vec2::dotLength(const Vec2& v2, bool projV2)
 {
 	return Vec::calculateDotLength(*this, v2, projV2);
 	//return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
-float util::math::Vec2::dotAngle(const Vec2 & v2, bool inDegrees) const
+float util::math::Vec2::dotAngle(const Vec2& v2, bool inDegrees) const
 {
 	return Vec::calculateDotAngle(*this, v2, inDegrees);
 
@@ -132,15 +132,6 @@ float util::math::Vec2::dotAngle(const Vec2 & v2, bool inDegrees) const
 	//	theta = util::math::radiansToDegrees(theta);
 
 	//return theta;
-}
-
-// calculates LERP and overrides the values within the current object. The current object is treated as v1, and the passed value is v2.
-void util::math::Vec2::LERP(util::math::Vec2& v2, float t) { *this = LERP(*this, v2, t); }
-
-util::math::Vec2 util::math::Vec2::LERP(util::math::Vec2& v1, util::math::Vec2& v2, float t)
-{
-	// Equation: p_cur = (1 - t)p1 + (t)(p2)
-	return ((1.0F - t) * v1 + t * v2);
 }
 
 // gets the vector as a string
@@ -153,10 +144,11 @@ std::string util::math::Vec2::toString() const { return "(" + std::to_string(x) 
 
 util::math::Vec3::Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 
+// z is set to 0.0F by default.
 util::math::Vec3::Vec3(Vec2 vec, float z) : x(vec.x), y(vec.y), z(z) {}
 
 // istream
-std::istream & util::math::operator>>(std::istream & in, Vec3 & vec)
+std::istream& util::math::operator>>(std::istream& in, Vec3& vec)
 {
 	in >> vec.x >> vec.y >> vec.z;
 	return in;
@@ -176,14 +168,14 @@ float& util::math::Vec3::operator[](const int index) // editing
 }
 
 // vector equality
-bool util::math::Vec3::operator==(const Vec3 & v2) const { return (x == v2.x && y == v2.y && z == v2.z); }
+bool util::math::Vec3::operator==(const Vec3& v2) const { return (x == v2.x && y == v2.y && z == v2.z); }
 
 
 // vector times scalar
 util::math::Vec3 util::math::Vec3::operator*(float scalar) const { return Vec3(x * scalar, y * scalar, z * scalar); }
 
 // scalar times vector
-util::math::Vec3 util::math::operator*(float flt, const Vec3 & vec) { return vec * flt; }
+util::math::Vec3 util::math::operator*(float flt, const Vec3& vec) { return vec * flt; }
 
 util::math::Vec3 util::math::Vec3::operator/(float scalar) const { return *this * std::powf(scalar, -1); }
 
@@ -226,14 +218,14 @@ void util::math::Vec3::normalize() { *this = getNormalized(); }
 float util::math::Vec3::dot(util::math::Vec3 v3) const { return x * v3.x + y * v3.y + z * v3.z; }
 
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
-float util::math::Vec3::dotLength(const Vec3 & v2, bool projV2)
-{ 
+float util::math::Vec3::dotLength(const Vec3& v2, bool projV2)
+{
 	return Vec::calculateDotLength(*this, v2, projV2);
 	//return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
-float util::math::Vec3::dotAngle(const Vec3 & v2, bool inDegrees) const
+float util::math::Vec3::dotAngle(const Vec3& v2, bool inDegrees) const
 {
 	return Vec::calculateDotAngle(*this, v2, inDegrees);
 
@@ -245,24 +237,26 @@ float util::math::Vec3::dotAngle(const Vec3 & v2, bool inDegrees) const
 	//return theta;
 }
 
-// cross product
+// cross product (re-uses static cross)
 util::math::Vec3 util::math::Vec3::cross(const Vec3 v2, float i, float j, float k) const
 {
-	return Vec3 (
-		(y * v2.z - z * v2.y) * i,
-		(z * v2.x - x * v2.z) * j,
-		(x * v2.y - y * v2.x) * k
-	);
+	return util::math::Vec3::cross(*this, v2, i, j, k);
 }
 
-// calculates LERP and overrides the values within the current object
-void util::math::Vec3::LERP(util::math::Vec3& v2, float t) { *this = LERP(*this, v2, t); }
-
-// static function for LERP
-util::math::Vec3 util::math::Vec3::LERP(util::math::Vec3& v1, util::math::Vec3& v2, float t)
+// cross product between two vectors.
+util::math::Vec3 util::math::Vec3::cross(const Vec3 v1, const Vec3 v2, float i, float j, float k)
 {
-	// Equation: p_cur = (1 - t)p1 + (t)(p2)
-	return ((1.0F - t) * v1 + t * v2);
+	// calculation
+	// A X B
+	// [AyBz - AzBy] * i
+	// [AzBx - AxBz] * j
+	// [AxBy - AyBx] * k
+
+	return Vec3(
+		(v1.y * v2.z - v1.z * v2.y) * i,
+		(v1.z * v2.x - v1.x * v2.z) * j,
+		(v1.x * v2.y - v1.y * v2.x) * k
+	);
 }
 
 // Returned in the order of (x, y, z)
@@ -276,7 +270,7 @@ util::math::Vec4::Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w
 util::math::Vec4::Vec4(Vec3 vec, float w) : x(vec.x), y(vec.y), z(vec.z), w(w) {}
 
 // istream
-std::istream & util::math::operator>>(std::istream & in, Vec4 & vec)
+std::istream& util::math::operator>>(std::istream& in, Vec4& vec)
 {
 	in >> vec.x >> vec.y >> vec.z >> vec.w;
 	return in;
@@ -295,7 +289,7 @@ float& util::math::Vec4::operator[](const int index) // editing
 }
 
 // compatibility operator
-bool util::math::Vec4::operator==(const Vec4 & v2) const { return ((x == v2.x) && (y == v2.y) && (z == v2.z) && (w == v2.w)); }
+bool util::math::Vec4::operator==(const Vec4& v2) const { return ((x == v2.x) && (y == v2.y) && (z == v2.z) && (w == v2.w)); }
 
 
 // operations
@@ -303,14 +297,14 @@ bool util::math::Vec4::operator==(const Vec4 & v2) const { return ((x == v2.x) &
 util::math::Vec4 util::math::Vec4::operator*(float scalar) const { return Vec4(x * scalar, y * scalar, z * scalar, w * scalar); }
 
 // scalar times vector
-util::math::Vec4 util::math::operator*(float flt, const Vec4 & vec) { return vec * flt; }
+util::math::Vec4 util::math::operator*(float flt, const Vec4& vec) { return vec * flt; }
 
 util::math::Vec4 util::math::Vec4::operator/(const float scalar) const { return *this * (std::powf(scalar, -1)); }
 
-util::math::Vec4 util::math::Vec4::operator+(const Vec4 &vec) const { return Vec4(x + vec.x, y + vec.y, z + vec.z, w + vec.w); }
+util::math::Vec4 util::math::Vec4::operator+(const Vec4& vec) const { return Vec4(x + vec.x, y + vec.y, z + vec.z, w + vec.w); }
 
 // vector - vector
-util::math::Vec4 util::math::Vec4::operator-(const Vec4 &vec) const { return Vec4(x - vec.x, y - vec.y, z - vec.z, w - vec.w); }
+util::math::Vec4 util::math::Vec4::operator-(const Vec4& vec) const { return Vec4(x - vec.x, y - vec.y, z - vec.z, w - vec.w); }
 
 // negation of vector
 util::math::Vec4 util::math::Vec4::operator-() const { return 0.0f - *this; }
@@ -344,14 +338,14 @@ void util::math::Vec4::normalize() { *this = getNormalized(); }
 float util::math::Vec4::dot(Vec4 v2) const { return this->x * v2.x + this->y * v2.y + this->z * v2.z + this->w * v2.w; }
 
 // calculates the length of the dot product. The value of 'projV2' determines what vector is being projected upon (true = v2, false = v1 (i.e. the object))
-float util::math::Vec4::dotLength(const Vec4 & v2, bool projV2)
-{ 
+float util::math::Vec4::dotLength(const Vec4& v2, bool projV2)
+{
 	return Vec::calculateDotLength(*this, v2, projV2);
 	// return dot(v2) / ((projV2) ? v2.length() : length());
 }
 
 // calculates the angle of the dot product
-float util::math::Vec4::dotAngle(const Vec4 & v2, bool inDegrees) const
+float util::math::Vec4::dotAngle(const Vec4& v2, bool inDegrees) const
 {
 	return Vec::calculateDotAngle(*this, v2, inDegrees);
 

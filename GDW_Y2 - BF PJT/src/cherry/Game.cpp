@@ -4,7 +4,8 @@
 #include "SceneManager.h"
 #include "MeshRenderer.h"
 
-#include "Physics.h"
+#include "PhysicsBody.h"
+#include "utils/Utils.h"
 
 #include <stdexcept>
 #define IMGUI_IMPL_OPENGL_LOADER_GLAD
@@ -49,7 +50,7 @@ void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 }
 
 // called when a mouse button event is recorded
-void MouseButtomCallback(GLFWwindow* window, int button, int action, int mods) {
+void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 
 	// returns the function early if this isn't a game class
@@ -67,46 +68,24 @@ void MouseButtomCallback(GLFWwindow* window, int button, int action, int mods) {
 	}
 }
 
-// called when a mouse button has been pressed
-void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
-	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
-	if (game == nullptr) // if game is 'null', then nothing happens
+
+// called when a cursor enters the content area window.
+void CursorEnterCallback(GLFWwindow* window, int enter)
+{
+	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) {
 		return;
-
-	// checks each button
-	switch (button) {
-	case GLFW_MOUSE_BUTTON_LEFT:
-		game->mbLP = true;
-		break;
-	case GLFW_MOUSE_BUTTON_MIDDLE:
-		break;
-	case GLFW_MOUSE_BUTTON_RIGHT:
-		break;
 	}
+
+	// sets whether the mouse cursor is in the window
+	game->SetCursorInWindow(enter);
 }
 
-// called when a mouse button has been pressed
-void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
-	Game* game = (Game*)glfwGetWindowUserPointer(window);
-
-	if (game == nullptr) // if game is 'null', then nothing happens
-		return;
-
-	// checks each button
-	switch (button) {
-	case GLFW_MOUSE_BUTTON_LEFT:
-		game->mbLR = true;
-		break;
-	case GLFW_MOUSE_BUTTON_MIDDLE:
-		break;
-	case GLFW_MOUSE_BUTTON_RIGHT:
-		break;
-	}
-}
-
-// called when the mouse moves over the screen
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
+// called when the mouse moves over the screen, getting the position.
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
+{
 	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
 	
 	if (game == nullptr) {
@@ -117,20 +96,6 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) {
 	}
 }
 
-// updates cursor pos variables
-void cherry::Game::UpdateCursorPos(double xpos, double ypos) {
-	Game* game = (Game*)glfwGetWindowUserPointer(myWindow);
-
-	//this->XcursorPos = xpos;
-	//this->YcursorPos = ypos;
-	xpos = xpos - this->wX / 2;
-	ypos = ypos - this->wY / 2;
-
-	//Logger::GetLogger()->info(xpos);
-	//Logger::GetLogger()->info(ypos);
-	// update the player object's angle
-	playerObj->updateAngle(*game->myCamera, xpos, ypos, this->wX, this->wY);
-}
 
 // called when a key has been pressed, held down, or released. This function figures out which, and calls the appropriate function to handle it.
 // KeyCallback(Window, Keyboard Key, Platform-Specific Scancode, Key Action, and Modifier Bits)
@@ -158,6 +123,127 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	}
 }
 
+
+
+// Game
+// constructor
+cherry::Game::Game() :
+	myWindow(nullptr),
+	myWindowTitle("Bonus Fruit - Cherry Engine"),
+	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f))
+{ }
+
+// creates window with a width, height, and whether or not it's in full screen.
+cherry::Game::Game(float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
+{
+	// setting the values
+	windowWidth = _width;
+	windowHeight = _height;
+	fullScreen = _fullScreen;
+	loadDefaults = _defaults; // loads the engine default values
+	debugMode = _debug; // debug functionality.
+}
+
+// destructor
+cherry::Game::~Game() { }
+
+// gets the window width
+float cherry::Game::GetWindowWidth() const { return windowWidth; }
+
+// gets the window height
+float cherry::Game::GetWindowHeight() const { return windowHeight; }
+
+// shows whether the window is in full screen or not
+bool cherry::Game::IsFullScreen() const { return fullScreen; }
+
+// resizes the window without skewing the objects, and changes the cameras accordingly.
+void cherry::Game::HandleResize(int width, int height)
+{
+	// changing the camera modes to adjust for the new window size. 
+	// The camera mode isn't changed, just it's values (i.e. if it's in perspective mode, it stays in perspective mode).
+	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), width / (float)height, 0.01f, 1000.0f), myCamera->InPerspectiveMode());
+	myCamera->SetOrthographicMode(glm::ortho(-5.0f * width / (float)height, 5.0f * width / (float)height, -5.0f, 5.0f, 0.0f, 100.0f), myCamera->InOrthographicMode());
+}
+
+
+// gets whether the cursor is in the window content or not.
+bool cherry::Game::GetCursorInWindow() const { return mouseEnter; }
+
+// sets whether the cursor is in the window.
+void cherry::Game::SetCursorInWindow(bool inWindow) { mouseEnter = inWindow; }
+
+// updates cursor position variables
+void cherry::Game::UpdateCursorPos(double xpos, double ypos)
+{
+	// Game* game = (Game*)glfwGetWindowUserPointer(myWindow);
+
+	mousePos = cherry::Vec2(xpos - this->windowWidth / 2.0F, ypos - this->windowHeight / 2.0F);
+
+	//this->XcursorPos = xpos;
+	//this->YcursorPos = ypos;
+	// xpos = xpos - this->windowWidth / 2.0F;
+	// ypos = ypos - this->windowHeight / 2.0F;
+
+	//Logger::GetLogger()->info(xpos);
+	//Logger::GetLogger()->info(ypos);
+
+	// Update the player object's angle
+	// playerObj->updateAngle(*game->myCamera, xpos, ypos, this->windowWidth, this->windowHeight);
+}
+
+// gets the cursor position
+cherry::Vec2 cherry::Game::GetCursorPos() const { return mousePos; }
+
+// gets the cursor position as a glm vector
+glm::vec2 cherry::Game::GetCursorPosGLM() const { return glm::vec2(mousePos.v.x, mousePos.v.y); }
+
+float cherry::Game::GetCursorPosX() const {	return mousePos.v.x; }
+
+// returns the cursor position on the y-axis
+float cherry::Game::GetCursorPosY() const { return mousePos.v.y; }
+
+// called when a mouse button has been pressed
+void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
+}
+
+// called when a mouse button has been pressed
+void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
+}
+
 // key has been pressed
 void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 {
@@ -170,19 +256,19 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 	switch (key)
 	{
 	case GLFW_KEY_SPACE:
-		game->myCamera->SwitchViewMode();
+		myCamera->SwitchViewMode();
 		break;
 	case GLFW_KEY_W:
-		game->w = true;
+		w = true;
 		break;
 	case GLFW_KEY_S:
-		game->s = true;
+		s = true;
 		break;
 	case GLFW_KEY_A:
-		game->a = true;
+		a = true;
 		break;
 	case GLFW_KEY_D:
-		game->d = true;
+		d = true;
 		break;
 	}
 }
@@ -194,6 +280,23 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 
 	if (game == nullptr) // if game is 'null', then it is returned
 		return;
+
+	switch (key)
+	{
+	case GLFW_KEY_W:
+		w = true;
+		break;
+	case GLFW_KEY_S:
+		s = true;
+		break;
+	case GLFW_KEY_A:
+		a = true;
+		break;
+	case GLFW_KEY_D:
+		d = true;
+		break;
+	}
+
 }
 
 // key hs been released
@@ -206,33 +309,44 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 
 	switch (key)
 	{
-	// case GLFW_KEY_SPACE:
-		// game->myCamera->SwitchViewMode();
-		// break;
 	case GLFW_KEY_W:
-		game->w = false;
+		w = false;
 		break;
 	case GLFW_KEY_S:
-		game->s = false;
+		s = false;
 		break;
 	case GLFW_KEY_A:
-		game->a = false;
+		a = false;
 		break;
 	case GLFW_KEY_D:
-		game->d = false;
+		d = false;
 		break;
 	}
 }
 
-// constructor
-cherry::Game::Game() :
-	myWindow(nullptr),
-	myWindowTitle("Bonus Fruit - Cherry Engine"),
-	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f))
-{ }
+// adds an object to the scene
+bool cherry::Game::addObject(cherry::Object* obj) { return util::addToVector(objects, obj); }
 
-// destructor
-cherry::Game::~Game() { }
+
+// adds an object to the scene.
+bool cherry::Game::addObject(cherry::Object* obj, std::string scene)
+{
+	// adds the object to the list of objects.
+	bool added = util::addToVector(objects, obj);
+
+	if (added) // if the object was added, then an entity is created.
+		obj->CreateEntity(scene, material);
+
+	return added; // returns 
+}
+
+// removes an object from the objects vector.
+bool cherry::Game::removeObject(cherry::Object* obj) 
+{ 
+	return util::removeFromVector(objects, obj); 
+	delete obj;
+}
+
 
 void cherry::Game::Initialize() {
 
@@ -245,7 +359,11 @@ void cherry::Game::Initialize() {
 	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
 
 	// Create a new GLFW window
-	myWindow = glfwCreateWindow(this->wX, this->wY, myWindowTitle, nullptr, nullptr);
+	if(fullScreen) // if the window is to be put in full screen
+		myWindow = glfwCreateWindow(this->windowWidth, this->windowHeight, myWindowTitle, glfwGetPrimaryMonitor(), nullptr);
+
+	else // no full screen
+		myWindow = glfwCreateWindow(this->windowWidth, this->windowHeight, myWindowTitle, nullptr, nullptr);
 
 	// We want GL commands to be executed for our window, so we make our window's context the current one
 	glfwMakeContextCurrent(myWindow);
@@ -262,14 +380,18 @@ void cherry::Game::Initialize() {
 	// Set our window resized callback
 	glfwSetWindowSizeCallback(myWindow, GlfwWindowResizedCallback);
 
-	// Setting keyboard callback function
-	glfwSetKeyCallback(myWindow, KeyCallback);
 
-	// Setting cursor pos callback function
+	// callback for cursor entering the window
+	glfwSetCursorEnterCallback(myWindow, CursorEnterCallback);
+
+	// Setting cursor position callback function
 	glfwSetCursorPosCallback(myWindow, CursorPosCallback);
 
 	// Setting mouse button callback function
-	glfwSetMouseButtonCallback(myWindow, MouseButtomCallback);
+	glfwSetMouseButtonCallback(myWindow, MouseButtonCallback);
+
+	// Setting keyboard callback function
+	glfwSetKeyCallback(myWindow, KeyCallback);
 }
 
 void cherry::Game::Shutdown() {
@@ -281,7 +403,7 @@ void cherry::Game::LoadContent()
 {
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
-	myCamera->SetPosition(glm::vec3(0, 5, 10));
+	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
 
 	// sets the camera to perspective mode for the scene.
@@ -293,109 +415,72 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
-	// This is leftover code from the tutorials; myMesh isn't drawn to the screen, but it still gets set up.
-	// Create our 4 vertices ~ we're using an initalizer list inside an initializer list to get the data
-	
-	Vertex vertices[4] = {
-		// Position				  Color							Normal
-		//  x      y	 z		   r	 g	   b	 a		   x  y  z
-		{{ -2.5f, -2.5f, 0.0f }, { 1.0f, 0.0f, 0.0f, 1.0f }, {0, 0, 1}},
-		{{ 2.5f, -2.5f, 0.0f },  { 1.0f, 1.0f, 0.0f, 1.0f }, {0, 0, 1}},
-		{{ -2.5f, 2.5f, 0.0f },  { 1.0f, 0.0f, 1.0f, 1.0f }, {0, 0, 1}},
-		{{ 2.5f, 2.5f, 0.0f },   { 0.0f, 1.0f, 0.0f, 1.0f }, {0, 0, 1}},
-	};
-
-	// Create our 6 indices
-	uint32_t indices[6] = {
-	0, 1, 2,
-	2, 1, 3
-	};
-
-	// Create a new mesh from the data; as I said, this isn't drawn.
-	// myMesh = std::make_shared<Mesh>(vertices, 4, indices, 0);
-
-	// Creating the object, and stroing it in the vector.
-	// objects.push_back(new Object("res/cube.obj")); // cube
-	// objects.push_back(new Object("res/sphere.obj")); // sphere
-	// playerObj = new Object("res/monkeyT.obj");
-	// playerObj = new PrimitiveCube(1, 1, 1);
-	// playerObj = new PrimitiveSphere(3, 5, 5);
-	// playerObj = new PrimitiveSphere(3, 1, 1);
-	// playerObj = new PrimitiveCircle(2.0F, 20);
-	// playerObj = new PrimitiveCircle(1.0F, 5);
-	// playerObj = new PrimitiveCylinder(1.0F, 2.0F, 3);
-	// playerObj = new PrimitiveCone(1.0F, 2.0F, 8);
-	// playerObj = new PrimitiveCone();
-	// playerObj = new PrimitiveDiamond(1.0F, 2.0F, 6);
-	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.25);
-	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.75);
-	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 1.0);
-	// playerObj = new PrimitiveDiamond(2.0F, 3.0F, 6, 0.0);
-	// playerObj = new PrimitiveDiamond(1.0F, 2.0F, 6);
-	// playerObj = new PrimitiveCapsule(1.0F, 2.5F, 10, 5);
-	playerObj = new PrimitiveCapsule(1.0F, 5.0F, 10, 4);
-	// playerObj = new PrimitiveCapsule(0.8F, 4.0, 5, 1);
-	playerMesh = playerObj->getMesh();
-	// playerObj->addPhysicsBody(new cherry::PhysicsBodyBox(1.0F, 1.0F, 1.0F));
-
-	objects.push_back(playerObj);
-
-	// objects.push_back(new Object("res/monkey.obj")); // monkey
-
-	// objects.push_back(new PrimitiveCube());
-	// objects.push_back(new PrimitivePlane());
-	// objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
-	// objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
-	// objects.push_back(new PrimitiveCube(2.5, 2.5, 2.5));
-	// objects.at(objects.size() - 1)->setPosition(0.0, 0.0, 0.0F);
-	// objects.push_back(new PrimitiveSphere(3, 5, 5));
-	// objects.at(objects.size() - 1)->setPosition(1.5, 0.0, 0.0F);
-    // objects.push_back(new PrimitiveSphere(10, 5, 5));
-
-	// objects[objects.size() - 1]->setColor(12, 24, 111);
-	// myMeshes.push_back(objects[objects.size() - 1]->getMesh()); // storing the mesh
-	
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
 	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
 
-	Material::Sptr testMat = std::make_shared<Material>(phong);
-	testMat->Set("a_LightPos", { 0, 0, 1 });
-	testMat->Set("a_LightColor", { 1.0f, 1.0f, 0 });
-	testMat->Set("a_AmbientColor", { 1.0f, 1.0f, 1.0f });
-	testMat->Set("a_AmbientPower", 0.1f); // change this to change the main lighting power (originally value of 0.1F)
-	testMat->Set("a_LightSpecPower", 0.5f);
-	testMat->Set("a_LightShininess", 256);
-	testMat->Set("a_LightAttenuation", 1.0f);
+	material = std::make_shared<Material>(phong);
+	material->Set("a_LightPos", { 0, 0, 1 });
+	material->Set("a_LightColor", { 1.0f, 1.0f, 0 });
+	material->Set("a_AmbientColor", { 0.2f, 0.5f, 0.01f });
+	material->Set("a_AmbientPower", 0.9f); // change this to change the main lighting power (originally value of 0.1F)
+	material->Set("a_LightSpecPower", 0.5f);
+	material->Set("a_LightShininess", 256);
+	material->Set("a_LightAttenuation", 1.0f);
 
-	SceneManager::RegisterScene("Test");
-	SceneManager::RegisterScene("Test2");
-	SceneManager::SetCurrentScene("Test");
+	currentScene = "Cherry"; // the name of the scene
+	scenes.push_back(currentScene); // saving the scene
 
-	{
-		// adds an entity to one of the scenes.
-		auto& ecs = GetRegistry("Test");
-		entt::entity e1 = ecs.create();
-		MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
-		m1.Material = testMat;
-		m1.Mesh = myMesh;
+	SceneManager::RegisterScene(currentScene); // registering the scene
+	// SceneManager::RegisterScene("Test2");
+	SceneManager::SetCurrentScene(currentScene);
 
-		auto rotate = [](entt::entity e, float dt) {
-			auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
-			transform.EulerRotation += glm::vec3(0, 0, 90 * dt);
-
-			// does the same thing, except all in one linel.
-			// CurrentRegistry().get_or_assign<TempTransform>(e).EulerRotation += glm::vec3(0, 0, 90 * dt);
-		};
-		auto& up = ecs.get_or_assign<UpdateBehaviour>(e1);
-		up.Function = rotate;
-	}
 
 	// Create and compile shader
 	myShader = std::make_shared<Shader>();
 	myShader->Load("res/shader.vert.glsl", "res/shader.frag.glsl");
 
 	myModelTransform = glm::mat4(1.0f); // initializing the model matrix
+
+		// loads in default objects
+	if (loadDefaults)
+	{
+		float offset = 3.0F; // position offset
+
+		// Creating the objects, storing them, and making them part of the default scene.
+		objects.push_back(new PrimitiveCapsule());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		
+
+		objects.push_back(new PrimitiveCircle());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+
+		objects.push_back(new PrimitiveCone());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+
+		objects.push_back(new PrimitiveCube());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+
+		objects.push_back(new PrimitiveCylinder());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+
+		objects.push_back(new PrimitiveDiamond());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+
+		objects.push_back(new PrimitiveSphere());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+
+		objects.push_back(new PrimitivePlane());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+	}
 }
 
 void cherry::Game::UnloadContent() {
@@ -403,61 +488,46 @@ void cherry::Game::UnloadContent() {
 
 void cherry::Game::Update(float deltaTime) {
 
-	float rotate_inc = glm::radians(20.0F); // saves the increment of the rotation in radians.
+	glm::vec3 camTranslate{}; // movement for the camera this given frame.
+	float camTransInc = 0.05F; // increment for camera movement
 
-	// saves rotation to the model matrix.
-	//myModelTransform = glm::rotate(myModelTransform, rotate_inc * deltaTime, glm::vec3(0, 0, 1));
-	if (w) {
-		playerObj->setPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y - 0.05, playerObj->getPosition().z));
-	}
-	if (s) {
-		playerObj->setPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y + 0.05, playerObj->getPosition().z));
-	}
-	if (a) {
-		playerObj->setPosition(glm::vec3(playerObj->getPosition().x + 0.05, playerObj->getPosition().y, playerObj->getPosition().z));
-	}
-	if (d) {
-		playerObj->setPosition(glm::vec3(playerObj->getPosition().x - 0.05, playerObj->getPosition().y, playerObj->getPosition().z));
+	// called to Update the position and rotation of hte objects.
+	// calling all of our functions for our Update behaviours.
+	auto view = CurrentRegistry().view<UpdateBehaviour>();
+	for (const auto& e : view) {
+		auto& func = CurrentRegistry().get<UpdateBehaviour>(e);
+		if (func.Function) {
+			func.Function(e, deltaTime);
+		}
 	}
 
-	// check if mouse left button is being held down
-	if (this->dashTime >= 1.0f) {
-		this->dash = true;
-		this->dashTime = 0.0f;
-	}
-	else if (mbLP == true && mbLR == false) {
-		this->dashTime += 0.01f;
-		//Logger::GetLogger()->info(this->dashTime);
-	}
-	else if (mbLP == true && mbLR == true) {
-		this->dashTime = 0.0f;
-		//Logger::GetLogger()->info(this->dashTime);
-		this->mbLP = false;
-		this->mbLR = false;
+	// updates the camera
+	if (debugMode) // moves the camera with button presses if in debug mode.
+	{
+		// moving the camera
+		camTranslate.x = (a) ? -camTransInc : (d) ? camTransInc : 0.0F; // x-axis
+		camTranslate.y = (w) ? camTransInc : (s) ? -camTransInc : 0.0F; // y-axis
+
+		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
+		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
 	}
 
-	// updates each object
-	//for (cherry::Object* obj : objects)
-	//{
-	//	// obj->update();
-	//	obj->setIntersection(false);
-	//}
-		
+	// setting intersection to false for all objects
 	for (int i = 0; i < objects.size(); i++)
 	{
-		objects[i]->update();
-		objects[i]->setIntersection(false);
-		// std::cout << "[" + std::to_string(i) + "] : " << *cherry::Vec3(objects[i]->getPosition()).v << std::endl;
+		objects[i]->Update(deltaTime); // calls the Update loop
+		objects[i]->SetIntersection(false); // sets intersection to false for all objects
+		// std::cout << "[" + std::to_string(i) + "] : " << *cherry::Vec3(objects[i]->GetPosition()).v << std::endl;
 	}
 
 	// std::cout << std::endl;
 	// collisions
-	mainLoop:
+mainLoop:
 	for (cherry::Object* obj1 : objects) // object 1
 	{
 		if (obj1 == nullptr)
 			continue;
-		if (obj1->getIntersection() == true) // already colliding with something.
+		if (obj1->GetIntersection() == true) // already colliding with something.
 			continue;
 
 		for (cherry::Object* obj2 : objects) // object 2
@@ -465,12 +535,12 @@ void cherry::Game::Update(float deltaTime) {
 			if (obj1 == obj2 || obj2 == nullptr) // if the two objects are the same.
 				continue;
 
-			if (obj2->getIntersection() == true) // if the object is already intersecting with something.
+			if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
 				continue;
 
 			// gets the vectors from both objects
-			std::vector<cherry::PhysicsBody*> pbods1 = obj1->getPhysicsBodies();
-			std::vector<cherry::PhysicsBody*> pbods2 = obj2->getPhysicsBodies();
+			std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
+			std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
 
 			// goes through each collision body
 			for (cherry::PhysicsBody* pb1 : pbods1)
@@ -478,12 +548,12 @@ void cherry::Game::Update(float deltaTime) {
 				for (cherry::PhysicsBody* pb2 : pbods2)
 				{
 					bool col = PhysicsBody::Collision(pb1, pb2);
-					
+
 					if (col == true) // if collision has occurred.
 					{
-						obj1->setIntersection(true);
+						obj1->SetIntersection(true);
 						// obj1->setColor(255, 0, 0);
-						obj2->setIntersection(true);
+						obj2->SetIntersection(true);
 						// obj2->setColor(255, 0, 0);
 						// std::cout << "Hit!" << std::endl;
 
@@ -564,6 +634,8 @@ void cherry::Game::Run()
 	InitImGui();
 	LoadContent();
 	static float prevFrame = glfwGetTime();
+
+	glEnable(GL_DEPTH_TEST);
 	// Run as long as the window is open
 	while (!glfwWindowShouldClose(myWindow)) {
 		// Poll for events from windows
@@ -585,203 +657,127 @@ void cherry::Game::Run()
 	Shutdown();
 }
 
-// resizes the window without skewing the objects, and changes the cameras accordingly.
-void cherry::Game::HandleResize(int width, int height)
-{
-	// changing the camera modes to adjust for the new window size. 
-	// The camera mode isn't changed, just it's values (i.e. if it's in perspective mode, it stays in perspective mode).
-	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), width / (float)height, 0.01f, 1000.0f), myCamera->InPerspectiveMode());
-	myCamera->SetOrthographicMode(glm::ortho(-5.0f * width / (float)height, 5.0f * width / (float)height, -5.0f, 5.0f, 0.0f, 100.0f), myCamera->InOrthographicMode());
-}
 
 void cherry::Game::Draw(float deltaTime) {
+
+	bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
+
 	// Clear our screen every frame
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
-	glClear(GL_COLOR_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	myShader->Bind();
 
-	glm::mat4 playerModelTransform = glm::mat4(1.0F);
-	
-	if (this->dash) {
-		glm::vec3 dash = playerObj->getDash(0.05f);
-		//Logger::GetLogger()->info(playerObj->getPosition().x);
-		//Logger::GetLogger()->info(playerObj->getPosition().y);
-		//Logger::GetLogger()->info(playerObj->getPosition().z);
 
-		// may or may not be beneficial to use lerp here to smooth the dash animation since it looks glitchy even though its working as intended
-		playerObj->setPosition(playerObj->getPosition() + dash);
-		this->dash = false;
+	// We'll grab a reference to the ecs to make things easier
+	auto& ecs = CurrentRegistry();
+	// We sort our mesh renderers based on material properties
+	// This will group all of our meshes based on shader first, then material second
+	ecs.sort<MeshRenderer>([](const MeshRenderer& lhs, const MeshRenderer& rhs) {
+		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
+			return false;
+		else if (lhs.Material == nullptr || lhs.Mesh == nullptr)
+			return true;
+		else if (lhs.Material->GetShader() != rhs.Material->GetShader())
+			return lhs.Material->GetShader() < rhs.Material->GetShader();
+		else
+			return lhs.Material < rhs.Material;
+		});
+
+	// These will keep track of the current shader and material that we have bound
+	Material::Sptr mat = nullptr;
+	Shader::Sptr boundShader = nullptr;
+	// A view will let us iterate over all of our entities that have the given component types
+	auto view = ecs.view<MeshRenderer>();
+
+	for (const auto& entity : view) {
+		// Get our shader
+		const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
+		// Early bail if mesh is invalid
+		if (renderer.Mesh == nullptr || renderer.Material == nullptr)
+			continue;
+		// If our shader has changed, we need to bind it and Update our frame-level uniforms
+		if (renderer.Material->GetShader() != boundShader) {
+			boundShader = renderer.Material->GetShader();
+			boundShader->Bind();
+			boundShader->SetUniform("a_CameraPos", myCamera->GetPosition());
+		}
+		// If our material has changed, we need to apply it to the shader
+		if (renderer.Material != mat) {
+			mat = renderer.Material;
+			mat->Apply();
+		}
+
+		// We'll need some info about the entities position in the world
+		const TempTransform& transform = ecs.get_or_assign<TempTransform>(entity);
+		// Get the object's transformation
+		glm::mat4 worldTransform = transform.GetWorldTransform();
+		// Our normal matrix is the inverse-transpose of our object's world rotation
+		// Recall that everything's backwards in GLM
+		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
+
+		// Update the MVP using the item's transform
+		mat->GetShader()->SetUniform(
+			"a_ModelViewProjection",
+			myCamera->GetViewProjection() *
+			worldTransform);
+		// Update the model matrix to the item's world transform
+		mat->GetShader()->SetUniform("a_Model", worldTransform);
+		// Update the model matrix to the item's world transform
+		mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
+
+		// Draw the item
+		if (renderer.Mesh->IsVisible())
+		{
+			// if the mesh is in weireframe mode, and the draw call isn't set to that already.
+			if (renderer.Mesh->IsWireframe() != wireframe)
+			{
+				wireframe = !wireframe;
+				
+				// switches between wireframe mode and fill mode.
+				(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+
+			renderer.Mesh->Draw();
+		}
 	}
-	playerModelTransform = glm::translate(playerModelTransform, playerObj->getPosition());
-	playerModelTransform = glm::rotate(playerModelTransform, glm::radians(playerObj->getDegreeAngle()), glm::vec3(0, 1, 0));
-
-	myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * playerModelTransform); // transforms the mesh.
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	playerMesh->Draw();
-
-	glm::mat4 tempModelTransform = glm::mat4(1.0F); // makes a copy of the transform matrix for making another copy of the mesh.
-	//tempModelTransform = glm::translate(tempModelTransform, playerObj->getPosition());
-
-	// translates the temporary model matrix
-	tempModelTransform = glm::translate(tempModelTransform, glm::vec3(-4.0F, 0.0F, 0.0F)); // translates the model matrix.
-
-	// copies the rotation factor from the original matrix into this one so that the two objects both rotate around their origins.
-	tempModelTransform[0] = myModelTransform[0];
-	tempModelTransform[1] = myModelTransform[1];
-
-	// wireframe if needed
-	
-	// draws each mesh
-	for (Mesh::Sptr mesh : myMeshes)
-	{
-		/*if (mesh == myMeshes[myMeshes.size() - 1]) {
-			mesh->enableWireframe();
-		}*/
-		
-		if (mesh->isWireframeMode()) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
-
-		// mesh->Draw(); // draws the mesh.
-
-		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
-
-		mesh->Draw(); // re-drawing the mesh so that it shows up twice.
-
-		// myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible. //Moved above first draw because uniform needs to be set before object is redrawn
-		// mesh->Draw();
-	}
-
-	// goes through each object and gets their meshes.
-	for (cherry::Object* obj : objects)
-	{
-		/*if (mesh == myMeshes[myMeshes.size() - 1]) {
-			mesh->enableWireframeMode();
-		}*/
-
-		if (obj->getMesh()->isWireframeMode()) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else if (!obj->getMesh()->isWireframeMode()) {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-
-		// std::cout << "Position: (" << playerObj->getPosition().x << ", " << playerObj->getPosition().y << ") " << std::endl;
-
-		// myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh.
-
-		// obj->getMesh()->Draw(); // draws the mesh.
-
-		//myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * myModelTransform); // transforms the mesh. //Moved above second draw because uniform needs to be set before object is redrawn
-		myShader->SetUniform("a_ModelViewProjection", myCamera->GetViewProjection() * tempModelTransform); // moving the second drawing so that it's visible.
-
-		obj->getMesh()->Draw(); // re-drawing the mesh so that it shows up twice.
-
-		
-	}
-	// TODO : finish lighting setup
-	//// We'll grab a reference to the ecs to make things easier
-	//auto& ecs = CurrentRegistry();
-	//// We sort our mesh renderers based on material properties
-	//// This will group all of our meshes based on shader first, then material second
-	//ecs.sort<MeshRenderer>([](const MeshRenderer& lhs, const MeshRenderer& rhs) {
-	//	if (rhs.Material == nullptr || rhs.Mesh == nullptr)
-	//		return false;
-	//	else if (lhs.Material == nullptr || lhs.Mesh == nullptr)
-	//		return true;
-	//	else if (lhs.Material->GetShader() != rhs.Material->GetShader())
-	//		return lhs.Material->GetShader() < rhs.Material->GetShader();
-	//	else
-	//		return lhs.Material < rhs.Material;
-	//	});
-
-	//// These will keep track of the current shader and material that we have bound
-	//Material::Sptr mat = nullptr;
-	//Shader::Sptr boundShader = nullptr;
-	//// A view will let us iterate over all of our entities that have the given component types
-	//auto view = ecs.view<MeshRenderer>();
-
-	//for (const auto& entity : view) {
-	//	// Get our shader
-	//	const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
-	//	// Early bail if mesh is invalid
-	//	if (renderer.Mesh == nullptr || renderer.Material == nullptr)
-	//		continue;
-	//	// If our shader has changed, we need to bind it and update our frame-level uniforms
-	//	if (renderer.Material->GetShader() != boundShader) {
-	//		boundShader = renderer.Material->GetShader();
-	//		boundShader->Bind();
-	//		boundShader->SetUniform("a_CameraPos", myCamera->GetPosition());
-	//	}
-	//	// If our material has changed, we need to apply it to the shader
-	//	if (renderer.Material != mat) {
-	//		mat = renderer.Material;
-	//		mat->Apply();
-	//	}
-
-	//	// We'll need some info about the entities position in the world
-	//	const TempTransform& transform = ecs.get_or_assign<TempTransform>(entity);
-	//	// Get the object's transformation
-	//	glm::mat4 worldTransform = transform.GetWorldTransform();
-	//	// Our normal matrix is the inverse-transpose of our object's world rotation
-	//	// Recall that everything's backwards in GLM
-	//	glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
-
-	//	// Update the MVP using the item's transform
-	//	mat->GetShader()->SetUniform(
-	//		"a_ModelViewProjection",
-	//		myCamera->GetViewProjection() *
-	//		worldTransform);
-	//	// Update the model matrix to the item's world transform
-	//	mat->GetShader()->SetUniform("a_Model", worldTransform);
-	//	// Update the model matrix to the item's world transform
-	//	mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
-	//	// Draw the item
-	//	renderer.Mesh->Draw();
-	//}
 }
 
 void cherry::Game::DrawGui(float deltaTime) {
-	// Open a new ImGui window
-	ImGui::Begin("Colour Picker");
-
-	// Draw widgets here
-	// ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
-	ImGui::ColorPicker4("Color", &myClearColor.x); // new version
-	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
-	// ImGui::SetNextWindowCollapsed(false);
-	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
-	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
-	if (ImGui::InputText("Title", myWindowTitle, 31))
+	if (debugMode)
 	{
-		glfwSetWindowTitle(myWindow, myWindowTitle);
+		// Open a new ImGui window
+		ImGui::Begin("Colour Picker");
+
+		// Draw widgets here
+		// ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
+		ImGui::ColorPicker4("Color", &myClearColor.x); // new version
+		// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
+		// ImGui::SetNextWindowCollapsed(false);
+		// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
+		ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
+		if (ImGui::InputText("Title", myWindowTitle, 31))
+		{
+			glfwSetWindowTitle(myWindow, myWindowTitle);
+		}
+
+		if (ImGui::Button("Apply")) // adding another button, which allows for the application of the window title.
+		{
+			glfwSetWindowTitle(myWindow, myWindowTitle);
+		}
+		if (ImGui::Button("Wireframe/Fill Toggle"))
+		{
+			for (cherry::Object* obj : objects)
+				obj->SetWireframeMode();
+		}
+
+		// changing the camera mode
+		std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
+		ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, 32);
+
+		ImGui::End();
 	}
-
-	if (ImGui::Button("Apply")) // adding another button, which allows for the application of the window title.
-	{
-		glfwSetWindowTitle(myWindow, myWindowTitle);
-	}
-	if (ImGui::Button("Wireframe/Fill Toggle"))
-	{
-		for (cherry::Mesh::Sptr mesh : myMeshes)
-			mesh->setWireframeMode(!mesh->isWireframeMode());
-
-		for (cherry::Object* obj : objects)
-			obj->getMesh()->setWireframeMode(!obj->getMesh()->isWireframeMode());
-	}
-
-	myCamera->SetPosition(glm::vec3(playerObj->getPosition().x, playerObj->getPosition().y + 5, playerObj->getPosition().z + 10));
-	myCamera->LookAt(playerObj->getPosition()); //Looks at player
-	// changing the camera mode
-	std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
-	ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, 32);
-
-	ImGui::End();
 }
+
+// returns the current scene
+std::string cherry::Game::getCurrentScene() const { return currentScene; }

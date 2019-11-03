@@ -6,11 +6,14 @@
 #include <vector>
 #include <math.h>
 
+#include <entt/entt.hpp>
+
 #include "..\Shader.h"
 #include "..\Mesh.h"
 #include "..\utils\math\Consts.h"
 #include "..\Camera.h"
 #include "..\VectorCRY.h"
+#include "..\Material.h"
 // #include "..\Physics.h"
 
 namespace cherry
@@ -23,6 +26,12 @@ namespace cherry
 		// the name and directory of the .obj file
 		Object(std::string filePath);
 
+		// sets the file path for the object, the scene it's in, and it's material. 
+		// If called, CreateEntity() does not need to be called after.
+		Object(std::string filePath, std::string scene, cherry::Material::Sptr material);
+
+		// Objects(verts, indices)
+
 		// destructor
 		~Object();
 
@@ -32,37 +41,40 @@ namespace cherry
 		//void setFile(std::string file);
 
 		// gets the name of the object.
-		std::string getName() const;
+		std::string GetName() const;
 
 		// sets the name of the object.
-		void setName(std::string newName);
+		void SetName(std::string newName);
 
 		// gets the desc of the object.
-		std::string getDescription() const;
+		std::string GetDescription() const;
 
 		// sets the desc of the object.
-		void setDescription(std::string newDesc);
+		void SetDescription(std::string newDesc);
 
 		// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
-		bool getSafe();
+		bool GetSafe();
 
 		// returns the color as a glm::vec3
 		// this returns only the colour of the first vertex, so if other vertices have different colours, they are not set.
-		glm::vec4 getColor() const;
+		glm::vec4 GetColor() const;
 
 		// sets the colour based on a range of 0 to 255 for the RGB values. Alpha (a) stll ranges from 0.0 to 1.0
 		// this overrides ALL RGB values for all vertices
-		void setColor(int r, int g, int b, float a = 1.0F);
+		void SetColor(int r, int g, int b, float a = 1.0F);
 
 		// sets the colour based on a range of 0.0 to 1.0 (OpenGL default)
 		// this overrides ALL RGBA values for all vertices
-		void setColor(float r, float g, float b, float a = 1.0F);
+		void SetColor(float r, float g, float b, float a = 1.0F);
 
 		// sets the colour of the mesh. This leaves out the alpha (a) value, which is set to whatever it is for the first vertex.
-		void setColor(glm::vec3 color);
+		void SetColor(glm::vec3 color);
 
 		// sets the colour of the mesh (RGBA [0-1]).
-		void setColor(glm::vec4 color);
+		void SetColor(glm::vec4 color);
+
+		// makes the mesh rainbow
+		// setRainbow()
 
 		// Setting a vertex colour
 		//// gets the colour of a specific vertex
@@ -76,89 +88,140 @@ namespace cherry
 
 		//void setVertexColor(unsigned int index, glm::vec4 color);
 
-		// is mesh in wireframe mode
-		bool isWireframeMode();
+		// object is in wireframe mode.
+		bool IsWireframeMode();
 
 		// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.
-		void setWireframeMode(bool wf);
+		void SetWireframeMode(bool wf);
 
-		// enable wireframe on mesh
-		void enableWireframeMode();
+		// toggles wireframe mode on/off.
+		void SetWireframeMode();
 
-		// disable wireframe on mesh
-		void disableWireframeMode();
+		// enable wireframe on the model.
+		void EnableWireframeMode();
 
-		// cherry::Vertex * getVertices();
+		// disable wireframe on hte model.
+		void DisableWireframeMode();
 
-		
+		// returns the vertices of the mesh in model view.
+		const cherry::Vertex * const GetVertices() const;
 
-		// uint32_t * getIndices();
+		// returns the total amount of vertices
+		unsigned int GetVerticesTotal() const;
+
+		// returns the indices of the mesh in model view.
+		const uint32_t * const GetIndices() const;
+
+		// returns the total amount of indices
+		unsigned int GetIndicesTotal() const;
 
 		// returns a reference to the mesh.
-		Mesh::Sptr& getMesh();
-		// Mesh::Sptr * getMesh();
+		Mesh::Sptr& GetMesh();
 
-		// gets the position
-		glm::vec3 getPosition() const;
+		// creates the entity with the provided scene and material.
+		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
-		/*
-		// gets hte position
-		cherry::Vec3 getPosition() const;
+		
+		// gets the position as an engine vector
+		cherry::Vec3 GetPosition() const;
 
 		// gets the position as a GLM vector
-		glm::vec3 getPositionGLM() const;
-		*/
+		glm::vec3 GetPositionGLM() const;
+		
 
 		// sets the position
-		void setPosition(float x, float y, float z);
+		void SetPosition(float x, float y, float z);
+
+		// setting a new position.
+		void SetPosition(cherry::Vec3 newPos);
 
 		// sets the position
-		void setPosition(glm::vec3 newPos);
+		void SetPosition(glm::vec3 newPos);
 
-		// gets object angle in screen space in degrees
-		float getDegreeAngle();
 
-		// gets object angle in screen space in radians
-		float getRadianAngle();
+		// returns the rotation of the object. The boolean determines if it's returned in degrees or radians
+		cherry::Vec3 GetRotation(bool inDegrees);
 
-		// gets object angle in world space in vector 3
-		glm::vec3 getVec3Angle();
+		// sets the rotation for the object. Bool'InDegrees' determines if the provided values are in degrees or radians.
+		void SetRotation(cherry::Vec3 theta, bool inDegrees);
 
-		// update function to get new angle based on mouse position
-		void updateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height);
+		// gets the rotation in degrees, which is the storage default.
+		cherry::Vec3 GetRotationDegrees() const;
 
-		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
-		void setAngle(float angle, bool isDegrees);
+		// sets the rotation in degrees
+		void SetRotationDegrees(cherry::Vec3 theta);
 
-		// sets object angle in vec3
-		void setAngle(glm::vec3 angle);
+		// gets the rotation in radians
+		cherry::Vec3 GetRotationRadians() const;
 
-		// get dash vector3 from angle and distance to dash
-		glm::vec3 getDash(float dist);
+
+		// sets the rotation in degrees
+		void SetRotationRadians(cherry::Vec3 theta);
+
+		// gets the x-axis rotation in degrees
+		float SetRotationXDegrees();
+
+		// sets the x-axis rotation in degrees
+		void SetRotationXDegrees(float degrees);
+
+		// gets the x-axis rotation in radians
+		float GetRotationXRadians();
+
+		// gets the x-axis rotation in radians
+		void SetRotationXRadians(float radians);
+
+
+		// gets the y-axis rotation in degrees
+		float GetRotationYDegrees();
+
+		// sets the y-axis rotation in degrees
+		void SetRotationYDegrees(float degrees);
+
+		// gets the y-axis rotation in radians
+		float GetRotationYRadians();
+
+		// gets the y-axis rotation in radians
+		void SetRotationYRadians(float radians);
+
+
+		// gets the z-axis rotation in degrees
+		float GetRotationZDegrees();
+
+		// sets the z-axis rotation in degrees
+		void SetRotationZDegrees(float degrees);
+
+		// gets the z-axis rotation in radians
+		float GetRotationZRadians();
+
+		// gets the z-axis rotation in radians
+		void SetRotationZRadians(float radians);
+
 
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
-		bool addPhysicsBody(cherry::PhysicsBody * body);
+		bool AddPhysicsBody(cherry::PhysicsBody * body);
 
-		//// removes a physics body; returns 'true' if successful.
-		bool removePhysicsBody(cherry::PhysicsBody * body);
+		// removes a physics body; returns 'true' if successful.
+		bool RemovePhysicsBody(cherry::PhysicsBody * body);
 
-		//// removes a physics body based on its index.
-		bool removePhysicsBody(unsigned int index);
+		// removes a physics body based on its index.
+		bool RemovePhysicsBody(unsigned int index);
 
 		// gets the amount of physics bodies
-		unsigned int getPhysicsBodyCount() const;
+		unsigned int GetPhysicsBodyCount() const;
 
 		// gets the physics bodies
-		std::vector<cherry::PhysicsBody *> getPhysicsBodies() const;
+		std::vector<cherry::PhysicsBody *> GetPhysicsBodies() const;
 		
 		// gets whether the object intersects with another object.
-		bool getIntersection() const;
+		bool GetIntersection() const;
 
 		// sets whether the object is currently intersecting with another object.
-		void setIntersection(bool inter);
+		void SetIntersection(bool inter);
 
 		// updates the object
-		void update();
+		void Update(float deltaTime);
+
+		virtual std::string ToString() const;
 
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
@@ -170,7 +233,7 @@ namespace cherry
 		// void setMesh(Mesh::sptr);
 
 		// called to load the object
-		bool loadObject();
+		bool LoadObject();
 
 		// parses the line, gets the values as data type T, and stores them in a vector.
 		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.
@@ -181,6 +244,24 @@ namespace cherry
 		// the string for the file path
 		std::string filePath = "";
 
+		// a vector of physics bodies
+		std::vector<cherry::PhysicsBody*> bodies;
+
+		// becomes 'true' when an object intersects something.
+		bool intersection = false;
+
+		// used for object transformations
+		// entt::registry ecs;
+		// the entity for the object
+		// entt::entity entity;
+
+		// saves the rotation on the x, y, and z axis in DEGREES.
+		cherry::Vec3 rotation;
+
+	protected:
+		// constructor used for default primitives
+		Object();
+
 		// object name
 		std::string name = "";
 
@@ -190,24 +271,8 @@ namespace cherry
 		// true if the file is safe to read from, false otherwise.
 		bool safe = false;
 
-		// a vector of physics bodies
-		std::vector<cherry::PhysicsBody*> bodies;
-
-		// becomes 'true' when an object intersects something.
-		bool intersection = false;
-
-	protected:
-		// constructor used for default primitives
-		Object();
-
 		// the position of the object.
-		glm::vec3 position;
-
-		// object angle in screen space (degrees or radians)
-		float degreeAngle, radianAngle;
-
-		// object angle in world space (vec3, so 3d angle)
-		glm::vec3 worldAngle;
+		cherry::Vec3 position;
 
 		// a dynamic array of vertices for the 3D model.
 		Vertex* vertices = nullptr;
@@ -220,18 +285,6 @@ namespace cherry
 
 		// the total number of indices 
 		unsigned int indicesTotal = 0;
-
-		// texture UV array - this doesn't do anything for this assignment
-		glm::vec2* vertexTextures = nullptr;
-
-		// total amount of texture vertices
-		unsigned int vertexTexturesTotal = 0;
-
-		// the array for vertex normals - doesn't do anythin for this project
-		glm::vec3* vertexNormals = nullptr;
-
-		// total amount of vertex normals
-		unsigned int vertexNormalsTotal = 0;
 
 		// the mesh
 		Mesh::Sptr mesh;

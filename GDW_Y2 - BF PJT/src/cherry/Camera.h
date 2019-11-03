@@ -6,6 +6,8 @@
 
 #include <memory>
 
+#include "VectorCRY.h"
+
 namespace cherry
 {
 	class Camera {
@@ -15,7 +17,7 @@ namespace cherry
 		virtual ~Camera() = default;
 
 		// gets the perspective mode matrix set by the user.
-		glm::mat4 getPerspectiveMode() const;
+		glm::mat4 GetPerspectiveMode() const;
 
 		// sets the values for perspective mode. Create a mat4 using glm::perspective(...) and pass it here.
 		// if 'changeMode' is true, the mode is changed to perspective once the perspective matrix is altered.
@@ -75,7 +77,7 @@ namespace cherry
 		// returns true if in orthographic mode. False if not in orthographic mode.
 		bool InOrthographicMode();
 
-		// gets the camera vew
+		// gets the camera view
 		const glm::mat4& GetView() const { return myView; }
 
 		// Gets the camera's view projection
@@ -84,8 +86,14 @@ namespace cherry
 		// gets position
 		const glm::vec3& GetPosition() const { return myPosition; }
 
+		// sets hte position using individual values
+		void SetPosition(float x, float y, float z);
+
 		// sets position
 		void SetPosition(const glm::vec3& pos);
+
+		// sets position using a cherry::Vector 3
+		void SetPosition(const cherry::Vec3& pos);
 
 		// Gets the front facing vector of this camera
 		inline glm::vec3 GetForward() const { return glm::vec3(-BackX, -BackY, -BackZ); }

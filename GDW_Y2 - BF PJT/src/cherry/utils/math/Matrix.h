@@ -15,7 +15,7 @@ namespace util
 		typedef class Mat
 		{
 		public:
-
+			// istream
 			friend std::ostream& operator<<(std::ostream& os, const Mat& mat);
 
 			// adds together all values along the main diagonal.

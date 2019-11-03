@@ -1,7 +1,8 @@
 #ifndef ROTATION_H
 #define ROTATION_H
 
-#include "Vector.h"
+// #include "Vector.h"
+#include "Matrix.h"
 
 namespace util
 {
@@ -22,6 +23,19 @@ namespace util
 
 		// conversion from radians to degrees. 1 radian = 180/pi degrees.
 		float radiansToDegrees(float radians);
+
+		// gets a rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
+		// axis is used to determine what axis to rotate on (x, y, z). If any other symbol is passed, a zero matrix is returned.
+		Mat3 getRotationMatrix(float angle, bool inDegrees, char axis);
+
+		// gets a z-axis rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
+		Mat3 getRotationMatrixZ(float angle, bool inDegrees);
+
+		// gets an x-axis rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
+		Mat3 getRotationMatrixX(float angle, bool inDegrees);
+
+		// gets a y-axis rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
+		Mat3 getRotationMatrixY(float angle, bool inDegrees);
 
 		// rotates the provided point. The value of 'inDegrees' determines whether the provided angle is in degrees, or in radians.
 		// the angle needs to be in radians for the rotation to work, so if it is provided in degrees, a conversion is necessary.

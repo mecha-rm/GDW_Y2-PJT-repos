@@ -14,7 +14,7 @@ cherry::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Pr
 }
 
 // gets the perspective mode matrix.
-glm::mat4 cherry::Camera::getPerspectiveMode() const { return perspective; }
+glm::mat4 cherry::Camera::GetPerspectiveMode() const { return perspective; }
 
 // sets perspective mode
 void cherry::Camera::SetPerspectiveMode(glm::mat4 pspec, bool changeMode)
@@ -87,6 +87,8 @@ bool cherry::Camera::InPerspectiveMode() { return perspectiveMode; }
 bool cherry::Camera::InOrthographicMode() { return !perspectiveMode; }
 
 
+// sets the position
+void cherry::Camera::SetPosition(float x, float y, float z) { SetPosition(glm::vec3(x, y, z)); }
 
 // sets position of the camera.
 // the position in the view matrix is relative to the rotation, so that is accounted for.
@@ -94,6 +96,9 @@ void cherry::Camera::SetPosition(const glm::vec3& pos) {
 	myView[3] = glm::vec4(-(glm::mat3(myView) * pos), 1.0f);
 	myPosition = pos;
 }
+
+// sets the position of the camera using a glm vector
+void cherry::Camera::SetPosition(const cherry::Vec3& pos) { SetPosition(glm::vec3(pos.v.x, pos.v.y, pos.v.z)); }
 
 // calculates our rotation component of our view matrix.
 // camera position, where we want to look, and a up vector.
@@ -105,7 +110,7 @@ void cherry::Camera::LookAt(const glm::vec3& target, const glm::vec3& up) {
 // We make sure it's not (0), as we don't want to keep doing math with a 0 value.
 // we just want to rotate the 3 X 3 portion, so we have mat4_cast(rot) on the left side.
 void cherry::Camera::Rotate(const glm::quat& rot) {
-	// Only update if we have an actual value to rotate by
+	// Only Update if we have an actual value to rotate by
 	if (rot != glm::quat(glm::vec3(0))) {
 		myView = glm::mat4_cast(rot) * myView;
 	}
@@ -114,10 +119,10 @@ void cherry::Camera::Rotate(const glm::quat& rot) {
 // rotates the camera using a vector, which is actually converted to a quaternion.
 void cherry::Camera::Rotate(const glm::vec3& rot) { Rotate(glm::quat(rot)); }
 
-// we need to update our cache value of our position for world space.
+// we need to Update our cache value of our position for world space.
 void cherry::Camera::Move(const glm::vec3& local) {
 	
-	// Only update if we have actually moved
+	// Only Update if we have actually moved
 	if (local != glm::vec3(0)) {
 		
 		// We only need to subtract since we are already in the camera's local space

@@ -50,13 +50,20 @@ namespace cherry
 		cherry::PhysicsBody* attachToObject(cherry::Object * newObj);
 
 		// gets the model position
+		glm::vec3 getModelPositionGLM() const;
+
+		// gets the model position
 		cherry::Vec3 getModelPosition() const;
 
 		// sets the model position
 		void setModelPosition(cherry::Vec3 mpos);
 
-		// void setModelPosition(glm::vec3 mpos);
+		// set model position (GLM version)
+		void setModelPosition(glm::vec3 mpos);
 
+
+		// get the world position as a glm vector
+		glm::vec3 getWorldPositionGLM() const;
 
 		// gets the world position
 		// if no object is attachted, then the model position is returned.
@@ -67,12 +74,9 @@ namespace cherry
 		void setWorldPosition(cherry::Vec3 wpos);
 
 		// sets the world position
-		// void setWorldPosition(glm::vec3 wpos);
+		void setWorldPosition(glm::vec3 wpos);
 
-		// get the world position as a glm vector
-		// glm::vec3 getWorldPositionGLM() const;
-
-		// virtual void getMesh() = 0;
+		// virtual void GetMesh() = 0;
 
 		// bool getVisible();
 		
@@ -143,21 +147,28 @@ namespace cherry
 
 	} BoxBody;
 
-	//// the class for the sphere physics body
-	//typedef class PhysicsBodySphere : public PhysicsBody
-	//{
-	//public:
-	//	PhysicsBodySphere();
+	// the class for the sphere physics body
+	typedef class PhysicsBodySphere : public PhysicsBody
+	{
+	public:
+		// radius of the sphere. The location is the object's origin.
+		PhysicsBodySphere(float radius);
 
-	//	// gets the radius
-	//	float getRadius() const;
+		// position of the sphere (relative to the object), and its radius.
+		PhysicsBodySphere(cherry::Vec3 position, float radius);
 
-	//	// sets the radius; if negative is passed, the absolute value is received.
-	//	void setRadius(float r);
+		// gets the radius
+		float getRadius() const;
 
+		// sets the radius; if negative is passed, the absolute value is received.
+		void setRadius(float r);
 
-	//private:
+		// toString function
+		std::string toString() const;
 
-	//protected:
-	//} SphereBody;
+	private:
+		float radius = 0.0F; // radius of the sphere.
+
+	protected:
+	} SphereBody;
 }

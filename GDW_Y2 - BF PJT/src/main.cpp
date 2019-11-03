@@ -12,10 +12,11 @@
  * Game: CODENAME: ZERO
  * Date: 10/23/2019
  * Description: file for GDW code. More items will be added from other course materials as needed.
- * References:
+ * References: 
 	* Learn OpenGL (https://learnopengl.com/)
 	* GLFW (https://www.glfw.org/)
 		* Window Guide
+	* https://www.khronos.org/opengl/wiki/Calculating_a_Surface_Normal
 */
 
 #include "cherry/Game.h"
@@ -44,7 +45,7 @@ int main()
 	Logger::Init();
 
 
-	cherry::Game* game = new cherry::Game();
+	cherry::Game* game = new cherry::Game(850, 850, false, true, true);
 	game->Run();
 	delete game;
 

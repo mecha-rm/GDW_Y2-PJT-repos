@@ -35,10 +35,20 @@ namespace util
 	// checks if a string is a number. IsInt or IsDecimal should be used instead.
 	bool isNum(std::string str);
 
+	// returns the minimum between two values.
+	// the less than operator (<) must be overloaded for this function to work.
 	template<typename T>
-	bool addToVector(std::vector<T *> & vector, T * val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.
+	T min(T val1, T val2) { return (val1 < val2) ? val1 : val2; }
+
+	// returns the maximum between two values.
+	// the greater than operator (>) must be overloaded for this function to work.
+	template<typename T>
+	T max(T val1, T val2) { return (val1 > val2) ? val1 : val2; }
+
+	template<typename T>
+	bool addToVector(std::vector<T*>& vector, T* val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.
 	{
-		for (T * item : vector) // if the vector already contains the pointer, it is not added.
+		for (T* item : vector) // if the vector already contains the pointer, it is not added.
 		{
 			if (item == val)
 				return false;
@@ -50,7 +60,7 @@ namespace util
 
 
 	template<typename T>
-	bool removeFromVector(std::vector<T *> & vector, T * val) // removes an element from a vector if it is present. This is placed in the header because it is a template function.
+	bool removeFromVector(std::vector<T*>& vector, T* val) // removes an element from a vector if it is present. This is placed in the header because it is a template function.
 	{
 		for (int i = 0; i < vector.size(); i++)
 		{

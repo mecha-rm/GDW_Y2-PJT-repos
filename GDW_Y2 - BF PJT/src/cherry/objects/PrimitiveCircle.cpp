@@ -2,8 +2,10 @@
 #include "..\utils\math\Rotation.h"
 
 // creates a circle
-cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges)
+cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges) : radius(abs(radius))
 {
+	radius = abs(radius);
+
 	if (edges < 3)
 		edges = 3;
 
@@ -31,7 +33,7 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges)
 		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, 0.0F), rFactor);
 
 		// vertex (position, colour, and normal)
-		vertices[i] = { {tempVec.v->x, tempVec.v->y, tempVec.v->z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
+		vertices[i] = { {tempVec.v.x, tempVec.v.y, tempVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} };
 		
 		// centre -> top left -> top right
 		indices[indiIndex] = 0;
@@ -53,3 +55,6 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges)
 	// setting the position
 	// setPosition(pos.v->x, pos.v->y, pos.v->z);
 }
+
+// gets the radius
+float cherry::PrimitiveCircle::GetRadius() const { return radius; }

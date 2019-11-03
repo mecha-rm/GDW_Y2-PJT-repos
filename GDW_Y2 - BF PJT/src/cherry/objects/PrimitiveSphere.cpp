@@ -1,14 +1,19 @@
 #include "PrimitiveSphere.h"
 #include "..\utils\math\Rotation.h"
+#include "..\PhysicsBody.h"
+
 #include <iostream>
 
-cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive()
+cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive(), radius(abs(radius))
 {
 	// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (segRows < 3)
 		segRows = 3;
 	if (segCols < 3)
 		segCols = 3;
+
+	// makes sure the radius has its absolute value.
+	radius = abs(radius);
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
@@ -102,7 +107,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 1.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -125,7 +130,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 			normVec = util::math::rotateX(normVec, rotateX, false);
 			normVec = util::math::rotateZ(normVec, rotateZ, false);
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {normVec.x, normVec.y, normVec.z} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -135,7 +140,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, -1.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 	
 	// starting values for the indice drawing.
 	
@@ -215,6 +220,12 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 		}
 	}
 
+	calculateNormals();
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	AddPhysicsBody(new cherry::PhysicsBodySphere(radius));
 }
+
+// gets the radius
+float cherry::PrimitiveSphere::GetRadius() const { return radius; }

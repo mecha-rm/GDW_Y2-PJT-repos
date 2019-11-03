@@ -11,7 +11,19 @@ namespace cherry
 		// 0.5F origin puts it perfectly between the top and bottom point. The origin is based on the BOTTOM of the diamond.
 		// So < 0.5F puts the origin closer to the bottom, > 0.5F puts the origin closer to the top.
 		PrimitiveDiamond(float radius = 0.5F, float height = 1.0F, unsigned int segments = 4, float origin = 0.5F);
+
+		// gets the radius
+		float GetRadius() const;
+
+		// gets the height
+		float GetHeight() const;
+
 	private:
+		float radius; // radius
+		
+		float height; // height
+
+
 	protected:
 	};
 }

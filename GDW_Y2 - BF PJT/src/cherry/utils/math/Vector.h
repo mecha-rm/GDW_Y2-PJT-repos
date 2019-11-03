@@ -95,12 +95,6 @@ namespace util
 			// calculates the angle of the dot product. The value of 'inDegress' determines whether it's converted to degrees or not
 			float dotAngle(const Vec2& v2, bool inDegrees = false) const;
 
-			// calculates LERP and overrides the values within the current object. The current object is treated as v1, and the passed value is v2.
-			void LERP(util::math::Vec2& v2, float t);
-
-			// calculate LERP using a provided t value.
-			static util::math::Vec2 LERP(util::math::Vec2& v1, util::math::Vec2& v2, float t);
-
 			// gets the vector as a string.
 			std::string toString() const override;
 
@@ -161,15 +155,13 @@ namespace util
 			// angle of dot product. 'inDegrees' determines whether the angle is returned in degrees or radians
 			float dotAngle(const Vec3& v2, bool inDegrees = false) const;
 
-			// cross product.(i, j, k) is multiplied by (x, y, z)
-			Vec3 cross(const Vec3, float i = 1.0F, float j = 1.0F, float k = 1.0F) const;
+			// cross product with this and another vector.(i, j, k) is multiplied by (x, y, z)
+			Vec3 cross(const Vec3 v2, float i = 1.0F, float j = 1.0F, float k = 1.0F) const;
 
-			// calculates LERP and overrides the values within the current object
-			void LERP(util::math::Vec3& v2, float t);
+			// cross product between two vectors. (i, j, k) is multiplied by (x, y, z).
+			static Vec3 cross(const Vec3 v1, const Vec3 v2, float i = 1.0F, float j = 1.0F, float k = 1.0F);
 
-			// calculate LERP using a provided t value.
-			static util::math::Vec3 LERP(util::math::Vec3& v1, util::math::Vec3& v2, float t);
-
+			// toString function.
 			std::string toString() const;
 
 			float x = 0.0F, y = 0.0F, z = 0.0F;

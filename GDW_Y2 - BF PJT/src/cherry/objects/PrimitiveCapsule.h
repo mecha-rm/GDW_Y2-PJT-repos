@@ -15,8 +15,18 @@ namespace cherry
 			* amount of segments per cap
 
 		*/
-		PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSements);
+		PrimitiveCapsule(float radius = 0.5F, float height = 1.0F, unsigned int cylSegments = 8, unsigned int capSements = 8);
+
+		// gets the radius of the capsule.
+		float GetRadius() const;
+
+		// gets the height
+		float GetHeight() const;
+
 	private:
+		float radius;
+		float height;
+
 	protected:
 	};
 }

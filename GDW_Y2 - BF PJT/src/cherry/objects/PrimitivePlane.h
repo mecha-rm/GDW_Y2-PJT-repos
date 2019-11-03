@@ -6,11 +6,18 @@ namespace cherry
 	typedef class PrimitivePlane : public cherry::Primitive
 	{
 	public:
-		PrimitivePlane();
+		PrimitivePlane(float width = 1.0F, float height = 1.0F);
 
-		// PrimitivePlane(float width, float height);
+		// gets the width of the plane.
+		float GetWidth() const;
+
+		// gets the height of the plane.
+		float GetHeight() const;
 
 	private:
+		float width; // width
+		float height; // height
+
 	protected:
 
 	} Plane;

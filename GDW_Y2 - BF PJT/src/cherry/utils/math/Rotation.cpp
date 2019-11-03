@@ -2,7 +2,7 @@
 
 #include "Rotation.h"
 #include "..//Utils.h"
-#include "Matrix.h"
+// #include "Matrix.h"
 #include "Quaternion.h"
 
 // returns the value of pi as a double
@@ -19,6 +19,66 @@ float util::math::degreesToRadians(float degrees) { return degrees * (pif() / 18
 
 // converts from radians to degrees
 float util::math::radiansToDegrees(float radians) { return radians * (180 / pif()); }
+
+// returns a matrix of a given rotation type.
+util::math::Mat3 util::math::getRotationMatrix(float angle, bool inDegrees, char axis)
+{
+	if (inDegrees) // conversion from degrees to radians.
+		angle = util::math::degreesToRadians(angle);
+
+	// calculates a rotation for each axis.
+	switch (axis)
+	{
+	// rotation on the x-axis
+	case 'X':
+	case 'x':
+		// the rotation matrix for going around the x-axis
+		// [ 1, 0, 0 ]
+		// [ 0, cos a, -sin a]
+		// [ 0, sin a, cos a]
+		return Mat3(1.0F, 0.0F, 0.0F,
+					0.0F, cosf(angle), -sinf(angle),
+					0.0F, sinf(angle), cosf(angle)
+		);
+		break;
+
+		// rotation on the y-axis
+	case 'Y':
+	case 'y':
+		// the rotation matrix for going around the y-axis. The negative sin is at the bottom so that the points are rotated where we think they should be.
+		// [ cos  a, 0, sin a]
+		// [ 0, 1, 0]
+		// [ -sin a, 0, cos a]
+		return Mat3(cosf(angle), 0.0F, sinf(angle),
+				    0.0F, 1.0F, 0.0F,
+				    -sinf(angle), 0.0F, cosf(angle));
+		break;
+
+		// rotation on the z-axis
+	case 'Z':
+	case 'z':
+		// the rotation matrix for going around the z-axis
+		// [ cos a, -sin a, 0]
+		// [ sin a, cos a, 0]
+		// [ 0, 0, 1]
+		return Mat3(cosf(angle), -sinf(angle), 0.0F,
+						sinf(angle), cosf(angle), 0.0F,
+						0.0F, 0.0F, 1.0F);
+		break;
+	}
+
+	// returns empty matrix by default.
+	return Mat3();
+}
+
+// gets rotation matrix on the z-axis
+util::math::Mat3 util::math::getRotationMatrixZ(float angle, bool inDegrees) { return Mat3(angle, inDegrees, 'z'); }
+
+// returns a rotation matrix for the x-axis
+util::math::Mat3 util::math::getRotationMatrixX(float angle, bool inDegrees) { return util::math::getRotationMatrix(angle, inDegrees, 'x'); }
+
+// gets a rotation matrix on the y-axis
+util::math::Mat3 util::math::getRotationMatrixY(float angle, bool inDegrees) { return getRotationMatrix(angle, inDegrees, 'y'); }
 
 // a rotation function. While it doesn't use a rotation matrix, it's modeled after how one would be used for a rotation.
 util::math::Vec2 util::math::rotate(const Vec2& vec, float angle, bool inDegrees)
