@@ -1,0 +1,67 @@
+﻿  Logging.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\Logging.cpp(90,20): warning C4244:  'initializing': conversion from 'DWORD64' to 'DWORD', possible loss of data
+  Sys.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\Logging.cpp(93,6): warning C4312:  'type cast': conversion from 'DWORD' to 'HINSTANCE' of greater size
+  Camera.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\Sys.cpp(47,31): warning C4244:  '=': conversion from 'unsigned __int64' to 'double', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\Camera.cpp(21,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+  FontRenderer.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\Camera.cpp(22,16): warning C4244:  'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glad\include\glad\glad.h(37): message :  see previous definition of 'APIENTRY'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(87,50): warning C4244:  'argument': conversion from 'uint32_t' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(163,27): warning C4267:  'initializing': conversion from 'size_t' to 'int', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(218,21): warning C4244:  '=': conversion from 'T' to 'char', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(218,21): warning C4244:         with
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(218,21): warning C4244:         [
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(218,21): warning C4244:             T=float
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(218,21): warning C4244:         ]
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(219,21): warning C4244:  '=': conversion from 'T' to 'char', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(219,21): warning C4244:         with
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(219,21): warning C4244:         [
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(219,21): warning C4244:             T=float
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(219,21): warning C4244:         ]
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(220,21): warning C4244:  '=': conversion from 'T' to 'char', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(220,21): warning C4244:         with
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(220,21): warning C4244:         [
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(220,21): warning C4244:             T=float
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(220,21): warning C4244:         ]
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(221,21): warning C4244:  '=': conversion from 'T' to 'char', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(221,21): warning C4244:         with
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(221,21): warning C4244:         [
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(221,21): warning C4244:             T=float
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(221,21): warning C4244:         ]
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(290,67): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+  GLFWInput.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\FontRenderer.cpp(314,7): warning C4101:  'v': unreferenced local variable
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+  GraphicsUtils.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glfw3\include\GLFW\glfw3.h(104): message :  see previous definition of 'APIENTRY'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\GraphicsUtils.cpp(154,33): warning C4244:  'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\GraphicsUtils.cpp(154,26): warning C4244:  'argument': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\GraphicsUtils.cpp(195,1): warning C4996:  'TTK::Graphics::DrawVector': lineWidth is no longer a supported parameter, see overloads without lineWidth
+  Input.cpp
+  MeshHelper.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\GraphicsUtils.cpp(186): message :  see declaration of 'TTK::Graphics::DrawVector'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+  SpriteSheetQuad.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glad\include\glad\glad.h(37): message :  see previous definition of 'APIENTRY'
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glad\include\glad\glad.h(37): message :  see previous definition of 'APIENTRY'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\SpriteSheetQuad.cpp(109,20): warning C4244:  'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\SpriteSheetQuad.cpp(110,21): warning C4244:  'initializing': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\SpriteSheetQuad.cpp(154,106): warning C4267:  '=': conversion from 'size_t' to 'int', possible loss of data
+  TTKContext.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\SpriteSheetQuad.cpp(213,35): warning C4267:  'return': conversion from 'size_t' to 'int', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glad\include\glad\glad.h(37): message :  see previous definition of 'APIENTRY'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\TTKContext.cpp(38,18): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\TTKContext.cpp(39,19): warning C4244:  '=': conversion from 'int' to 'float', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\TTKContext.cpp(41,34): warning C4244:  'argument': conversion from 'float' to 'GLsizei', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\TTKContext.cpp(41,19): warning C4244:  'argument': conversion from 'float' to 'GLsizei', possible loss of data
+  Texture2D.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\TTK\TTKContext.cpp(204,40): warning C4267:  'argument': conversion from 'size_t' to 'GLsizei', possible loss of data
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\shared\minwindef.h(130,1): warning C4005:  'APIENTRY': macro redefinition
+  Generating Code...
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\glad\include\glad\glad.h(37): message :  see previous definition of 'APIENTRY'
+  Toolkit.vcxproj -> C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\Toolkit\bin\Debug-windows-x86_64\Toolkit\Toolkit.lib

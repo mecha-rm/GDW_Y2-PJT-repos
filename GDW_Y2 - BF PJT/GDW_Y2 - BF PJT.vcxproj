@@ -46,6 +46,7 @@
     <IncludePath>$(ProjectDir)external;$(ProjectDir)src;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)external;$(ProjectDir)src;$(SourcePath)</SourcePath>
+    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -86,27 +87,26 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
-    <ClCompile Include="src\cherry\objects\PrimitiveCapsule.cpp" />
-    <ClCompile Include="src\cherry\objects\PrimitiveCircle.cpp" />
-    <ClCompile Include="src\cherry\Material.cpp" />
-    <ClCompile Include="src\cherry\MeshRenderer.cpp" />
-    <ClCompile Include="src\cherry\objects\PrimitiveCone.cpp" />
-    <ClCompile Include="src\cherry\objects\PrimitiveDiamond.cpp" />
-    <ClCompile Include="src\cherry\Physics.cpp" />
-    <ClCompile Include="src\cherry\objects\PrimitiveCube.cpp" />
-    <ClCompile Include="src\cherry\objects\Primitive.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
     <ClCompile Include="src\cherry\Game.cpp" />
+    <ClCompile Include="src\cherry\Material.cpp" />
     <ClCompile Include="src\cherry\Mesh.cpp" />
+    <ClCompile Include="src\cherry\MeshRenderer.cpp" />
     <ClCompile Include="src\cherry\objects\Object.cpp" />
+    <ClCompile Include="src\cherry\objects\Primitive.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCapsule.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCircle.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCone.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveCube.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveCylinder.cpp" />
+    <ClCompile Include="src\cherry\objects\PrimitiveDiamond.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveSphere.cpp" />
+    <ClCompile Include="src\cherry\PhysicsBody.cpp" />
     <ClCompile Include="src\cherry\Scene.cpp" />
     <ClCompile Include="src\cherry\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
-    <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\cherry\utils\Array.cpp" />
     <ClCompile Include="src\cherry\utils\Color.cpp" />
     <ClCompile Include="src\cherry\utils\math\Collision.cpp" />
@@ -116,8 +116,9 @@
     <ClCompile Include="src\cherry\utils\math\Rotation.cpp" />
     <ClCompile Include="src\cherry\utils\math\Vector.cpp" />
     <ClCompile Include="src\cherry\utils\Utils.cpp" />
-    <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cherry\VectorCRY.cpp" />
+    <ClCompile Include="src\glad.c" />
+    <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -336,23 +337,23 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
-    <ClInclude Include="src\cherry\objects\PrimitiveCapsule.h" />
-    <ClInclude Include="src\cherry\objects\PrimitiveCircle.h" />
-    <ClInclude Include="src\cherry\Material.h" />
-    <ClInclude Include="src\cherry\MeshRenderer.h" />
-    <ClInclude Include="src\cherry\objects\PrimitiveCone.h" />
-    <ClInclude Include="src\cherry\objects\PrimitiveDiamond.h" />
-    <ClInclude Include="src\cherry\Physics.h" />
-    <ClInclude Include="src\cherry\objects\PrimitiveCube.h" />
-    <ClInclude Include="src\cherry\objects\Primitive.h" />
     <ClInclude Include="src\cherry\Camera.h" />
     <ClInclude Include="src\cherry\Game.h" />
+    <ClInclude Include="src\cherry\Material.h" />
     <ClInclude Include="src\cherry\Mesh.h" />
+    <ClInclude Include="src\cherry\MeshRenderer.h" />
     <ClInclude Include="src\cherry\objects\Object.h" />
+    <ClInclude Include="src\cherry\objects\Primitive.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCapsule.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCircle.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCone.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveCube.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveCylinder.h" />
+    <ClInclude Include="src\cherry\objects\PrimitiveDiamond.h" />
     <ClInclude Include="src\cherry\objects\PrimitivePlane.h" />
     <ClInclude Include="src\cherry\objects\Primitives.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveSphere.h" />
+    <ClInclude Include="src\cherry\PhysicsBody.h" />
     <ClInclude Include="src\cherry\Scene.h" />
     <ClInclude Include="src\cherry\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />

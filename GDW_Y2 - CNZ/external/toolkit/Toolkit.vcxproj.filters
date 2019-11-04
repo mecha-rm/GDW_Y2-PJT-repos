@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="TTK">
+      <UniqueIdentifier>{5823880B-C42C-887C-4DA8-9E7CB9B0937C}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CerealGLM.h" />
+    <ClInclude Include="EnumToString.h" />
+    <ClInclude Include="Logging.h" />
+    <ClInclude Include="Sys.h" />
+    <ClInclude Include="TTK\Camera.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\Cube.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\FontRenderer.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\GLFWInput.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\GraphicsUtils.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\Input.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\MeshHelper.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\Sphere.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\SpriteSheetQuad.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\TTKContext.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\Teapot.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+    <ClInclude Include="TTK\Texture2D.h">
+      <Filter>TTK</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Logging.cpp" />
+    <ClCompile Include="Sys.cpp" />
+    <ClCompile Include="TTK\Camera.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\FontRenderer.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\GLFWInput.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\GraphicsUtils.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\Input.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\MeshHelper.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\SpriteSheetQuad.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\TTKContext.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+    <ClCompile Include="TTK\Texture2D.cpp">
+      <Filter>TTK</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
