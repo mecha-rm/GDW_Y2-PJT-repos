@@ -913,6 +913,10 @@
     <Object Include="x64\Debug\glad.obj" />
     <Object Include="x64\Debug\main.obj" />
     <Object Include="x64\Debug\Physics.obj" />
+    <Object Include="res\cube.obj" />
+    <Object Include="res\monkey.obj" />
+    <Object Include="res\monkeyT.obj" />
+    <Object Include="res\sphere.obj" />
   </ItemGroup>
   <ItemGroup>
     <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
@@ -1269,6 +1273,11 @@
     <None Include="external\GLM\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\blinn-phong.fs.glsl" />
+    <None Include="res\lighting.vs.glsl" />
+    <None Include="res\normalView.fs" />
+    <None Include="res\shader.frag.glsl" />
+    <None Include="res\shader.vert.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />
