@@ -130,7 +130,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 // constructor
 cherry::Game::Game() :
 	myWindow(nullptr),
-	myWindowTitle("Bonus Fruit - Codename: ZERO"),
+	myWindowTitle("Bonus Fruit - Cherry Engine"),
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f))
 { }
 
