@@ -660,7 +660,7 @@ void cherry::Game::Run()
 
 void cherry::Game::Draw(float deltaTime) {
 
-	bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
+	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
 
 	// Clear our screen every frame
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);

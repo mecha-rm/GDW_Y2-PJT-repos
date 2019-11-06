@@ -87,6 +87,8 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
+    <ClCompile Include="src\cherry\Light.cpp" />
+    <ClCompile Include="src\cherry\LightManager.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
     <ClCompile Include="src\cherry\Game.cpp" />
     <ClCompile Include="src\cherry\Material.cpp" />
@@ -337,6 +339,8 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
+    <ClInclude Include="src\cherry\Light.h" />
+    <ClInclude Include="src\cherry\LightManager.h" />
     <ClInclude Include="src\cherry\Camera.h" />
     <ClInclude Include="src\cherry\Game.h" />
     <ClInclude Include="src\cherry\Material.h" />
