@@ -26,7 +26,7 @@ namespace cherry
 		// the name and directory of the .obj file
 		Object(std::string filePath);
 
-		// sets the file path for the object, the scene it's in, and it's material. 
+		// sets the file path for the object, the m_Scene it's in, and it's material. 
 		// If called, CreateEntity() does not need to be called after.
 		Object(std::string filePath, std::string scene, cherry::Material::Sptr material);
 
@@ -118,7 +118,7 @@ namespace cherry
 		// returns a reference to the mesh.
 		Mesh::Sptr& GetMesh();
 
-		// creates the entity with the provided scene and material.
+		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
 		
@@ -288,6 +288,12 @@ namespace cherry
 
 		// the mesh
 		Mesh::Sptr mesh;
+
+		// the color of the model.
+		// cherry::Vec4 color;
+
+		// the material of the object.
+		// Material::Sptr material;
 	};
 }
 

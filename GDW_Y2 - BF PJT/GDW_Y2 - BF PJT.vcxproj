@@ -109,6 +109,7 @@
     <ClCompile Include="src\cherry\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
+    <ClCompile Include="src\cherry\Texture2D.cpp" />
     <ClCompile Include="src\cherry\utils\Array.cpp" />
     <ClCompile Include="src\cherry\utils\Color.cpp" />
     <ClCompile Include="src\cherry\utils\math\Collision.cpp" />
@@ -362,6 +363,7 @@
     <ClInclude Include="src\cherry\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
+    <ClInclude Include="src\cherry\Texture2D.h" />
     <ClInclude Include="src\cherry\utils\Array.h" />
     <ClInclude Include="src\cherry\utils\Color.h" />
     <ClInclude Include="src\cherry\utils\math\Collision.h" />
@@ -381,10 +383,6 @@
     <Library Include="lib\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
-    <Object Include="res\cube.obj" />
-    <Object Include="res\monkey.obj" />
-    <Object Include="res\monkeyT.obj" />
-    <Object Include="res\sphere.obj" />
     <Object Include="x64\Debug\glad.obj" />
     <Object Include="x64\Debug\main.obj" />
     <Object Include="x64\Debug\Physics.obj" />
@@ -504,11 +502,6 @@
     <None Include="external\GLM\gtx\vector_angle.inl" />
     <None Include="external\GLM\gtx\vector_query.inl" />
     <None Include="external\GLM\gtx\wrap.inl" />
-    <None Include="res\blinn-phong.fs.glsl" />
-    <None Include="res\lighting.vs.glsl" />
-    <None Include="res\normalView.fs" />
-    <None Include="res\shader.frag.glsl" />
-    <None Include="res\shader.vert.glsl" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.ilk" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.pdb" />
