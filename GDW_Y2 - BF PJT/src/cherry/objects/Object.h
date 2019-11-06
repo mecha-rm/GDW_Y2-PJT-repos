@@ -288,12 +288,6 @@ namespace cherry
 
 		// the mesh
 		Mesh::Sptr mesh;
-
-		// the color of the model.
-		// cherry::Vec4 color;
-
-		// the material of the object.
-		// Material::Sptr material;
 	};
 }
 

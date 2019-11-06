@@ -19,13 +19,13 @@ namespace cherry
 		};
 		static Scene* Current();
 
-		// sets the current m_Scene
+		// sets the current scene
 		static bool SetCurrentScene(const std::string& name);
 
-		// returns 'true' if the m_Scene manager has the given m_Scene
+		// returns 'true' if the scene manager has the given scene
 		static bool HasScene(const std::string& name);
 
-		// gets the m_Scene
+		// gets the scene
 		static Scene* Get(const std::string& name);
 
 		static void RegisterScene(const std::string& name, Scene* scene = nullptr);

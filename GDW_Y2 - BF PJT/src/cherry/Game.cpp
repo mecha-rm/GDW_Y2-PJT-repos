@@ -3,7 +3,6 @@
 #include "Game.h"
 #include "SceneManager.h"
 #include "MeshRenderer.h"
-#include "Texture2D.h"
 
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
@@ -418,12 +417,8 @@ void cherry::Game::LoadContent()
 
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
-	// TODO: make version without UVs?
 	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
 
-	// TODO: change this so that it uses the light manager.
-	// used to make the albedo
-	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/blank.png");
 	material = std::make_shared<Material>(phong);
 	material->Set("a_LightPos", { 0, 0, 1 });
 	material->Set("a_LightColor", { 1.0f, 1.0f, 0 });
@@ -432,14 +427,9 @@ void cherry::Game::LoadContent()
 	material->Set("a_LightSpecPower", 0.5f);
 	material->Set("a_LightShininess", 256);
 	material->Set("a_LightAttenuation", 1.0f);
-	material->Set("s_Albedo", albedo); // objects will just be blank if no texture is set.
 
 	currentScene = "Cherry"; // the name of the m_Scene
 	scenes.push_back(currentScene); // saving the m_Scene
-
-	//lights.push_back(new Light(currentScene, glm::vec3( 0.0F, 0.0F, 1.0F ), glm::vec3( 1.0F, 1.0F, 0.0F ), glm::vec3(0.2F, 0.5F, 0.01F
-	//	), 0.9F, 0.5F, 256, 1.0F));
-	//material = lights[0]->GenerateMaterial();
 
 	SceneManager::RegisterScene(currentScene); // registering the m_Scene
 	// SceneManager::RegisterScene("Test2");

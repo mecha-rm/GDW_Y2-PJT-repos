@@ -173,7 +173,6 @@ bool cherry::Object::LoadObject()
 
 	// Unused
 	std::vector<glm::vec2>VtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
-	
 	std::vector<glm::vec3>VnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
 
 	file.open(filePath, std::ios::in); // opens file

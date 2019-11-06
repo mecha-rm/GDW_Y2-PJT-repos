@@ -11,7 +11,6 @@
 #include "Mesh.h"
 #include "objects/Primitives.h"
 #include "Camera.h" // camera
-#include "Light.h"
 
 // System Library Includes
 #include <iostream>
@@ -174,9 +173,6 @@ namespace cherry
 
 		// a vector of the objects created for the game.
 		std::vector<Object*> objects;
-
-		// the lights in the current scene
-		std::vector<Light*> lights;
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;

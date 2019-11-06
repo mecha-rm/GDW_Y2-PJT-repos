@@ -2,7 +2,6 @@
 #pragma once
 
 #include "VectorCRY.h" // includes cherry::Vectors, and glm::vectors
-#include "Material.h"
 
 namespace cherry
 {
@@ -11,10 +10,10 @@ namespace cherry
 	public:
 
 		// constructor
-		Light(const std::string a_Scene, cherry::Vec3 a_LightColor, cherry::Vec3 a_LightPos, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
+		Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
 
 		// constructor
-		Light(const std::string a_Scene, glm::vec3 a_LightColor, glm::vec3 a_LightPos, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
+		Light(const std::string a_Scene, glm::vec3 a_LightPos, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
 
 		
 		// gets the m_Scene the light is part of.
@@ -99,12 +98,6 @@ namespace cherry
 
 		// sets hte light attenuation
 		void SetLightAttenuation(float attenuation);
-
-		// generates a material with the current values provided. No texture is applied.
-		cherry::Material::Sptr GenerateMaterial() const;
-	
-		// generates a material with the current light values, as well as a texture.
-		cherry::Material::Sptr GenerateMaterial(std::string texturePath) const;
 
 		// toString function for a light
 		std::string ToString() const;

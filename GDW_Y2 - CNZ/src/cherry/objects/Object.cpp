@@ -67,7 +67,7 @@ cherry::Object::Object(std::string filePath) : position(), vertices(nullptr), in
 	LoadObject();
 }
 
-// creates an object with a m_Scene and material.
+// creates an object with a scene and material.
 cherry::Object::Object(std::string filePath, std::string scene, cherry::Material::Sptr material) : Object(filePath)
 {
 	CreateEntity(scene, material);
@@ -173,7 +173,6 @@ bool cherry::Object::LoadObject()
 
 	// Unused
 	std::vector<glm::vec2>VtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
-	
 	std::vector<glm::vec3>VnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
 
 	file.open(filePath, std::ios::in); // opens file
@@ -291,7 +290,7 @@ bool cherry::Object::LoadObject()
 	return (safe = true); // returns whether the object was safely loaded.
 }
 
-// creates an entity with the provided m_Scene.
+// creates an entity with the provided scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
 	// sets up the Update function for the entity. This gets automatically called.

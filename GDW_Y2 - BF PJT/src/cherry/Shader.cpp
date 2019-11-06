@@ -88,13 +88,6 @@ void cherry::Shader::SetUniform(const char* name, const float& value) {
 	}
 }
 
-void cherry::Shader::SetUniform(const char* name, const int& value) {
-	GLint loc = glGetUniformLocation(myShaderHandle, name);
-	if (loc != -1) {
-		glProgramUniform1iv(myShaderHandle, loc, 1, &value);
-	}
-}
-
 // uses glUseProgram to use the shader for drawing.
 void cherry::Shader::Bind()
 {

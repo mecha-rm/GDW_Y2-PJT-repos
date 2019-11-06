@@ -11,7 +11,6 @@
 #include "Mesh.h"
 #include "objects/Primitives.h"
 #include "Camera.h" // camera
-#include "Light.h"
 
 // System Library Includes
 #include <iostream>
@@ -41,7 +40,7 @@ namespace cherry
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
 
-		// handles resizing the window without skewing the objects in the m_Scene.
+		// handles resizing the window without skewing the objects in the scene.
 		void HandleResize(int width, int height);
 
 
@@ -83,14 +82,14 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
-		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
-		// if false is returned, then the object is already in the m_Scene.
+		// adds an object to the scene. Only call this if the object being passed already has a scene registered.
+		// if false is returned, then the object is already in the scene.
 		bool addObject(cherry::Object* obj);
 
 		// adds an object to the current registry of the game.
 		bool addObject(cherry::Object* obj, std::string scene);
 
-		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
+		// removes an object from the game. If a 'false' is returned, then the object was never in the scene.
 		bool removeObject(cherry::Object* obj);
 
 		// runs the game
@@ -127,7 +126,7 @@ namespace cherry
 
 		void DrawGui(float deltaTime);
 
-		// gets the current m_Scene
+		// gets the current scene
 		std::string getCurrentScene() const;
 
 		// set to 'true' for debug functionality.
@@ -136,7 +135,7 @@ namespace cherry
 		// list of scenes
 		std::vector<std::string> scenes;
 
-		// the m_Scene material
+		// the scene material
 		Material::Sptr material;
 
 	private:
@@ -158,7 +157,7 @@ namespace cherry
 		// A shared pointer to our mesh; this is no longer used, and has been replaced with a vector of meshes.
 		// Mesh::Sptr myMesh;
 
-		// a vector of all the meshes in the m_Scene. I'm using a vector for this project so that I can re-use this code later.
+		// a vector of all the meshes in the scene. I'm using a vector for this project so that I can re-use this code later.
 		// std::vector<Mesh::Sptr> myMeshes;
 
 		// player mesh
@@ -170,13 +169,10 @@ namespace cherry
 		// A shared pointer to our shader.
 		Shader::Sptr myShader;
 
-		std::string currentScene = ""; // the current m_Scene
+		std::string currentScene = ""; // the current scene
 
 		// a vector of the objects created for the game.
 		std::vector<Object*> objects;
-
-		// the lights in the current scene
-		std::vector<Light*> lights;
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;

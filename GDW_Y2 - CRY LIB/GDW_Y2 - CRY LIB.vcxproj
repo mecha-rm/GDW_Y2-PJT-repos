@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{8249296C-10DD-4279-BAB7-AEBDF8F5F70B}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GDWY2CRYLIB</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v142</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <LinkIncremental>true</LinkIncremental>
+    <TargetName>cherry</TargetName>
+    <IncludePath>$(ProjectDir)external;$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
+    <SourcePath>$(ProjectDir)external;$(SourcePath)</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WINDOWS;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClInclude Include="cherry\Camera.h" />
+    <ClInclude Include="cherry\Game.h" />
+    <ClInclude Include="cherry\Material.h" />
+    <ClInclude Include="cherry\Mesh.h" />
+    <ClInclude Include="cherry\MeshRenderer.h" />
+    <ClInclude Include="cherry\objects\Object.h" />
+    <ClInclude Include="cherry\objects\Primitive.h" />
+    <ClInclude Include="cherry\objects\PrimitiveCapsule.h" />
+    <ClInclude Include="cherry\objects\PrimitiveCircle.h" />
+    <ClInclude Include="cherry\objects\PrimitiveCone.h" />
+    <ClInclude Include="cherry\objects\PrimitiveCube.h" />
+    <ClInclude Include="cherry\objects\PrimitiveCylinder.h" />
+    <ClInclude Include="cherry\objects\PrimitiveDiamond.h" />
+    <ClInclude Include="cherry\objects\PrimitivePlane.h" />
+    <ClInclude Include="cherry\objects\Primitives.h" />
+    <ClInclude Include="cherry\objects\PrimitiveSphere.h" />
+    <ClInclude Include="cherry\PhysicsBody.h" />
+    <ClInclude Include="cherry\Scene.h" />
+    <ClInclude Include="cherry\SceneManager.h" />
+    <ClInclude Include="cherry\Shader.h" />
+    <ClInclude Include="cherry\stb_image.h" />
+    <ClInclude Include="cherry\utils\Array.h" />
+    <ClInclude Include="cherry\utils\Color.h" />
+    <ClInclude Include="cherry\utils\math\Collision.h" />
+    <ClInclude Include="cherry\utils\math\Consts.h" />
+    <ClInclude Include="cherry\utils\math\LargeInt.h" />
+    <ClInclude Include="cherry\utils\math\MathLib.h" />
+    <ClInclude Include="cherry\utils\math\Matrix.h" />
+    <ClInclude Include="cherry\utils\math\Quaternion.h" />
+    <ClInclude Include="cherry\utils\math\Rotation.h" />
+    <ClInclude Include="cherry\utils\math\Vector.h" />
+    <ClInclude Include="cherry\utils\Utils.h" />
+    <ClInclude Include="cherry\utils\UtilsLib.h" />
+    <ClInclude Include="cherry\utils\UtilsToolsLib.h" />
+    <ClInclude Include="cherry\VectorCRY.h" />
+    <ClInclude Include="framework.h" />
+    <ClInclude Include="pch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cherry\Camera.cpp" />
+    <ClCompile Include="cherry\Game.cpp" />
+    <ClCompile Include="cherry\Material.cpp" />
+    <ClCompile Include="cherry\Mesh.cpp" />
+    <ClCompile Include="cherry\MeshRenderer.cpp" />
+    <ClCompile Include="cherry\objects\Object.cpp" />
+    <ClCompile Include="cherry\objects\Primitive.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveCapsule.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveCircle.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveCone.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveCube.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveCylinder.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveDiamond.cpp" />
+    <ClCompile Include="cherry\objects\PrimitivePlane.cpp" />
+    <ClCompile Include="cherry\objects\PrimitiveSphere.cpp" />
+    <ClCompile Include="cherry\PhysicsBody.cpp" />
+    <ClCompile Include="cherry\Scene.cpp" />
+    <ClCompile Include="cherry\SceneManager.cpp" />
+    <ClCompile Include="cherry\Shader.cpp" />
+    <ClCompile Include="cherry\stb_image.cpp" />
+    <ClCompile Include="cherry\utils\Array.cpp" />
+    <ClCompile Include="cherry\utils\Color.cpp" />
+    <ClCompile Include="cherry\utils\math\Collision.cpp" />
+    <ClCompile Include="cherry\utils\math\LargeInt.cpp" />
+    <ClCompile Include="cherry\utils\math\Matrix.cpp" />
+    <ClCompile Include="cherry\utils\math\Quaternion.cpp" />
+    <ClCompile Include="cherry\utils\math\Rotation.cpp" />
+    <ClCompile Include="cherry\utils\math\Vector.cpp" />
+    <ClCompile Include="cherry\utils\Utils.cpp" />
+    <ClCompile Include="cherry\VectorCRY.cpp" />
+    <ClCompile Include="GDW_Y2 - CRY LIB.cpp" />
+    <ClCompile Include="pch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

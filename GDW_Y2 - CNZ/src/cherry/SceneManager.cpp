@@ -27,7 +27,7 @@ bool cherry::SceneManager::SetCurrentScene(const std::string& name) {
 	if (it != _KnownScenes.end()) {
 		if (_CurrentScene != it->second) {
 			
-			// this would be null if it's the first time we're making the m_Scene. We don't want to close null.
+			// this would be null if it's the first time we're making the scene. We don't want to close null.
 			if (_CurrentScene != nullptr)
 				_CurrentScene->OnClose();
 			_CurrentScene = it->second;
@@ -49,7 +49,7 @@ void cherry::SceneManager::RegisterScene(const std::string& name, Scene* scene) 
 
 cherry::SceneManager::SceneIterator cherry::SceneManager::Each() { return SceneIterator(); }
 
-// interates over every m_Scene and deletes it.
+// interates over every scene and deletes it.
 void cherry::SceneManager::DestroyScenes() {
 	for (auto& kvp : _KnownScenes) {
 		delete kvp.second;

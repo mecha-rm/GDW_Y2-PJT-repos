@@ -1,15 +1,14 @@
 #include "Light.h"
-#include <fstream> // used for checking if the file exists.
 
 
 // constructor
-cherry::Light::Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry::Vec3 a_LightColor, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
-	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_LightColor(a_LightColor), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
+cherry::Light::Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
+	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
 {}
 
 // constructor
-cherry::Light::Light(const std::string a_Scene, glm::vec3 a_LightPos, glm::vec3 a_LightColor, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
-	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_LightColor(a_LightColor), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
+cherry::Light::Light(const std::string a_Scene, glm::vec3 a_LightPos, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
+	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
 {}
 
 
@@ -106,8 +105,8 @@ float cherry::Light::GetLightShiniess() const { return m_LightShininess; }
 // sets the light shininess
 void cherry::Light::SetLightShininess(float shininess) 
 {
-	// this is an exponent, so its value usually ranges rom 2 to 256.
-	m_LightShininess = (shininess > 256.0F) ? 256.0F : (shininess < 2.0F) ? 2.0F : shininess;
+	// TODO: check limits for light shininess
+	m_LightShininess = (shininess > 256.0F) ? 256.0F : (shininess < 0.0F) ? 0.0F : shininess;
 }
 
 // gets the light attenuation
@@ -122,58 +121,10 @@ void cherry::Light::SetLightAttenuation(float attenuation)
 
 }
 
-// generates a material with the current light values
-cherry::Material::Sptr cherry::Light::GenerateMaterial() const { return GenerateMaterial("res/blank.png"); }
-
-// generates a material with the current light values, and a texture.
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath) const
-{
-	// the m_Scene material
-	Material::Sptr material; // the material
-	Shader::Sptr phong = std::make_shared<Shader>();
-	std::ifstream file; // used for checking if the image file exists.
-
-	// used to make the albedo
-	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl"); // the shader
-	material = std::make_shared<Material>(phong); // loads in the shader.
-
-	material->Set("a_LightPos", glm::vec3(m_LightPos.v.x, m_LightPos.v.y, m_LightPos.v.z));
-	material->Set("a_LightColor", glm::vec3(m_LightColor.v.x, m_LightColor.v.y, m_LightColor.v.z));
-	material->Set("a_AmbientColor", glm::vec3(m_AmbientColor.v.x, m_AmbientColor.v.y, m_AmbientColor.v.z));
-	material->Set("a_AmbientPower", m_AmbientPower); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower", m_LightSpecPower);
-	material->Set("a_LightShininess", m_LightShininess);
-	material->Set("a_LightAttenuation", m_LightAttenuation);
-	
-	// if the texture path is not blank.
-	if (texturePath != "")
-	{
-		// opens the file for reading to check if it exists.
-		file.open(texturePath, std::ios::in);
-
-		if (!file) // file read failure
-		{
-			// throw std::runtime_error("Error. Texture image file could not be found.");
-			texturePath = "res/blank.png"; // blanks out the texture.
-		}
-
-		file.close(); // closes the file
-	}
-
-	// Texture2D::Sptr albedo = Texture2D::LoadFromFile("color-grid.png");
-	// material->Set("s_Albedo", albedo);
-
-	// applies the albedo
-	if(texturePath != "")
-		material->Set("s_Albedo", Texture2D::LoadFromFile(texturePath));
-
-	return material;
-}
-
 // to_string function
 std::string cherry::Light::ToString() const
 {
-	return "Scene: " + m_Scene + " | Light Position: " + m_LightPos.ToString() + " | Light Color: " + m_LightColor.ToString() +
+	return "Scene: " + m_Scene + " | Light Position: " + m_LightPos.ToString() + " | Light Color: " + m_LightColor.ToString +
 		" | Ambient Color: " + m_AmbientColor.ToString() + " | Ambient Power: " + std::to_string(m_AmbientPower) +
 		" | Light Specular Power: " + std::to_string(m_LightSpecPower) + " | Light Shininess: " + std::to_string(m_LightShininess) +
 		" | Light Attenuation: " + std::to_string(m_LightAttenuation);
