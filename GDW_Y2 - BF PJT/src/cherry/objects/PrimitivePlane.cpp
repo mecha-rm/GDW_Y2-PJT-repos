@@ -12,10 +12,10 @@ cherry::PrimitivePlane::PrimitivePlane(float width, float height) : Primitive(),
 	vertices = new Vertex [verticesTotal] 
 	{
 		//  x			  y				  z		   r	 g	   b	 a		 // normals
-		{{ -width / 2.0F, -height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // bottom left
-		{{  width / 2.0F, -height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // bottom right
-		{{ -width / 2.0F,  height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // top left
-		{{  width / 2.0F,  height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}}, // top right
+		{{ -width / 2.0F, -height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
+		{{  width / 2.0F, -height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
+		{{ -width / 2.0F,  height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
+		{{  width / 2.0F,  height / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
 	};
 
 	// indices

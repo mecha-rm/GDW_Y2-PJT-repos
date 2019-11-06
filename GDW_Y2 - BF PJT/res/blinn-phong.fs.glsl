@@ -3,6 +3,7 @@
 layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec3 inWorldPos;
+layout (location = 3) in vec2 inUV;
 
 layout (location = 0) out vec4 outColor;
 
@@ -15,6 +16,8 @@ uniform vec3  a_LightPos;
 uniform vec3  a_LightColor;
 uniform float a_LightShininess;
 uniform float a_LightAttenuation;
+
+uniform sampler2D s_Albedo;
 
 void main() {
     // Re-normalize our input, so that it is always length 1
@@ -52,11 +55,13 @@ void main() {
     // by zero errors and allow us to control the light's attenuation via a uniform
     float attenuation = 1.0 / (1.0 + a_LightAttenuation * pow(distToLight, 2));
     
-    // Our result is our lighting multiplied by our object's color
-    vec3 result = (ambientOut + attenuation * (diffuseOut + specOut)) * inColor.xyz;
-
-    // TODO: gamma correction
-
-    // Write the output
-	outColor = vec4(result, inColor.a);// * a_ColorMultiplier;
+    // Below is modified for tutorial 08
+	vec4 albedo = texture(s_Albedo, inUV);
+	
+	// Our result is our lighting multiplied by our object's color
+	vec3 result = (ambientOut + attenuation * (diffuseOut + specOut)) * albedo.xyz * inColor.xyz;
+	// TODO: gamma correction
+	
+	// Write the output
+	outColor = vec4(result, inColor.a * albedo.a); // * a_ColorMultiplier;
 }

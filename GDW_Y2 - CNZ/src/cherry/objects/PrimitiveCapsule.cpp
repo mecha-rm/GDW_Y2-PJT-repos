@@ -2,7 +2,7 @@
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
 
-cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments)
+cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments, cherry::Vec4 clr)
 	: radius(abs(radius)), height(abs(height))
 {
 	radius = abs(radius);
@@ -112,7 +112,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -139,7 +139,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			// radius * 2 to account for the top and bottom cap
 			posVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -149,7 +149,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 
 	// starting values for the indice drawing.
 

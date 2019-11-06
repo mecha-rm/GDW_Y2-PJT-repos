@@ -11,4 +11,12 @@ void cherry::Material::Apply() {
 		myShader->SetUniform(kvp.first.c_str(), kvp.second);
 	for (auto& kvp : myFloats)
 		myShader->SetUniform(kvp.first.c_str(), kvp.second);
+
+	// binding the textures, and then sending hte slot it's bound to.
+	int slot = 0;
+	for (auto& kvp : myTextures) {
+		kvp.second->Bind(slot);
+		myShader->SetUniform(kvp.first.c_str(), slot);
+		slot++;
+	}
 }

@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "SceneManager.h"
 #include "MeshRenderer.h"
+#include "Texture2D.h"
 
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
@@ -324,11 +325,11 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	}
 }
 
-// adds an object to the scene
+// adds an object to the m_Scene
 bool cherry::Game::addObject(cherry::Object* obj) { return util::addToVector(objects, obj); }
 
 
-// adds an object to the scene.
+// adds an object to the m_Scene.
 bool cherry::Game::addObject(cherry::Object* obj, std::string scene)
 {
 	// adds the object to the list of objects.
@@ -406,7 +407,7 @@ void cherry::Game::LoadContent()
 	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
 
-	// sets the camera to perspective mode for the scene.
+	// sets the camera to perspective mode for the m_Scene.
 	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	//myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
@@ -417,8 +418,12 @@ void cherry::Game::LoadContent()
 
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
+	// TODO: make version without UVs?
 	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
 
+	// TODO: change this so that it uses the light manager.
+	// used to make the albedo
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/blank.png");
 	material = std::make_shared<Material>(phong);
 	material->Set("a_LightPos", { 0, 0, 1 });
 	material->Set("a_LightColor", { 1.0f, 1.0f, 0 });
@@ -427,11 +432,16 @@ void cherry::Game::LoadContent()
 	material->Set("a_LightSpecPower", 0.5f);
 	material->Set("a_LightShininess", 256);
 	material->Set("a_LightAttenuation", 1.0f);
+	material->Set("s_Albedo", albedo); // objects will just be blank if no texture is set.
 
-	currentScene = "Cherry"; // the name of the scene
-	scenes.push_back(currentScene); // saving the scene
+	currentScene = "Cherry"; // the name of the m_Scene
+	scenes.push_back(currentScene); // saving the m_Scene
 
-	SceneManager::RegisterScene(currentScene); // registering the scene
+	//lights.push_back(new Light(currentScene, glm::vec3( 0.0F, 0.0F, 1.0F ), glm::vec3( 1.0F, 1.0F, 0.0F ), glm::vec3(0.2F, 0.5F, 0.01F
+	//	), 0.9F, 0.5F, 256, 1.0F));
+	//material = lights[0]->GenerateMaterial();
+
+	SceneManager::RegisterScene(currentScene); // registering the m_Scene
 	// SceneManager::RegisterScene("Test2");
 	SceneManager::SetCurrentScene(currentScene);
 
@@ -447,7 +457,7 @@ void cherry::Game::LoadContent()
 	{
 		float offset = 3.0F; // position offset
 
-		// Creating the objects, storing them, and making them part of the default scene.
+		// Creating the objects, storing them, and making them part of the default m_Scene.
 		objects.push_back(new PrimitiveCapsule());
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
 		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
@@ -779,5 +789,5 @@ void cherry::Game::DrawGui(float deltaTime) {
 	}
 }
 
-// returns the current scene
+// returns the current m_Scene
 std::string cherry::Game::getCurrentScene() const { return currentScene; }

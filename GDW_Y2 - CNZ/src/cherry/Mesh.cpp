@@ -45,6 +45,10 @@ cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t 
 	// them is the size of our vertex, and they will map to the color in our vertices
 	glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(Vertex), &(vert->Normal));
 
+	// UV support
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 2, GL_FLOAT, false, sizeof(Vertex), &(vert->UV));
+
 	// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
 	glBindVertexArray(0);
 }
@@ -91,6 +95,10 @@ cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t 
 	// Our second attribute is 4 floats, the distance between
 	// them is the size of our vertex, and they will map to the color in our vertices
 	glVertexAttribPointer(1, 4, GL_FLOAT, false, sizeof(Vertex), &(vert->Color));
+
+	// UV support
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 2, GL_FLOAT, false, sizeof(Vertex), &(vert->UV));
 
 	// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
 	glBindVertexArray(0);
