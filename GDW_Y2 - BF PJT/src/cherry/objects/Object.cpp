@@ -67,7 +67,7 @@ cherry::Object::Object(std::string filePath) : position(), vertices(nullptr), in
 	LoadObject();
 }
 
-// creates an object with a scene and material.
+// creates an object with a m_Scene and material.
 cherry::Object::Object(std::string filePath, std::string scene, cherry::Material::Sptr material) : Object(filePath)
 {
 	CreateEntity(scene, material);
@@ -290,7 +290,7 @@ bool cherry::Object::LoadObject()
 	return (safe = true); // returns whether the object was safely loaded.
 }
 
-// creates an entity with the provided scene.
+// creates an entity with the provided m_Scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
 	// sets up the Update function for the entity. This gets automatically called.

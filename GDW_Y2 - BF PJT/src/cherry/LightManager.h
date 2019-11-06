@@ -2,7 +2,7 @@
 #pragma once
 
 #include "Light.h"
-// #include "SceneManager" // gets current scene so it can switch automatically
+// #include "SceneManager" // gets current m_Scene so it can switch automatically
 
 namespace cherry
 {
@@ -10,7 +10,7 @@ namespace cherry
 	{
 	public:
 
-		// averageLights(); // averages all lights in the scene
+		// averageLights(); // averages all lights in the m_Scene
 
 	private:
 		std::vector<std::string> scenes; // a vector of scenes

@@ -324,11 +324,11 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	}
 }
 
-// adds an object to the scene
+// adds an object to the m_Scene
 bool cherry::Game::addObject(cherry::Object* obj) { return util::addToVector(objects, obj); }
 
 
-// adds an object to the scene.
+// adds an object to the m_Scene.
 bool cherry::Game::addObject(cherry::Object* obj, std::string scene)
 {
 	// adds the object to the list of objects.
@@ -406,7 +406,7 @@ void cherry::Game::LoadContent()
 	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
 
-	// sets the camera to perspective mode for the scene.
+	// sets the camera to perspective mode for the m_Scene.
 	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	//myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
@@ -428,10 +428,10 @@ void cherry::Game::LoadContent()
 	material->Set("a_LightShininess", 256);
 	material->Set("a_LightAttenuation", 1.0f);
 
-	currentScene = "Cherry"; // the name of the scene
-	scenes.push_back(currentScene); // saving the scene
+	currentScene = "Cherry"; // the name of the m_Scene
+	scenes.push_back(currentScene); // saving the m_Scene
 
-	SceneManager::RegisterScene(currentScene); // registering the scene
+	SceneManager::RegisterScene(currentScene); // registering the m_Scene
 	// SceneManager::RegisterScene("Test2");
 	SceneManager::SetCurrentScene(currentScene);
 
@@ -447,7 +447,7 @@ void cherry::Game::LoadContent()
 	{
 		float offset = 3.0F; // position offset
 
-		// Creating the objects, storing them, and making them part of the default scene.
+		// Creating the objects, storing them, and making them part of the default m_Scene.
 		objects.push_back(new PrimitiveCapsule());
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
 		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
@@ -779,5 +779,5 @@ void cherry::Game::DrawGui(float deltaTime) {
 	}
 }
 
-// returns the current scene
+// returns the current m_Scene
 std::string cherry::Game::getCurrentScene() const { return currentScene; }
