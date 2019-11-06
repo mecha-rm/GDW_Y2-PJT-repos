@@ -13,9 +13,10 @@ namespace cherry
 		 * capSegments: the amount of segments for the caps. These are the horizontal segments. The verticle segmentsare just the cylSegments.
 			* MUST BE AN EVEN NUMBER
 			* amount of segments per cap
+		* clr: the base colour of the primitive.
 
 		*/
-		PrimitiveCapsule(float radius = 0.5F, float height = 1.0F, unsigned int cylSegments = 8, unsigned int capSements = 8);
+		PrimitiveCapsule(float radius = 0.5F, float height = 1.0F, unsigned int cylSegments = 8, unsigned int capSements = 8, cherry::Vec4 clr = { 1.0F, 1.0F, 1.0F, 1.0F});
 
 		// gets the radius of the capsule.
 		float GetRadius() const;

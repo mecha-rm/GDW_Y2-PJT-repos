@@ -3,6 +3,8 @@
 #include <unordered_map>
 #include <memory>
 #include "Shader.h"
+#include "Texture2D.h"
+
 /*
 Represents settings for a shader
 */
@@ -23,6 +25,8 @@ namespace cherry
 		void Set(const std::string& name, const glm::vec4& value) { myVec4s[name] = value; }
 		void Set(const std::string& name, const glm::vec3& value) { myVec3s[name] = value; }
 		void Set(const std::string& name, const float& value) { myFloats[name] = value; }
+		void Set(const std::string& name, const Texture2D::Sptr& value) { myTextures[name] = value; }
+
 	protected:
 		Shader::Sptr myShader;
 
@@ -32,5 +36,6 @@ namespace cherry
 		std::unordered_map<std::string, glm::vec3> myVec3s;
 		std::unordered_map<std::string, glm::vec2> myVec2s;
 		std::unordered_map<std::string, float> myFloats;
+		std::unordered_map<std::string, Texture2D::Sptr> myTextures;
 	};
 }
