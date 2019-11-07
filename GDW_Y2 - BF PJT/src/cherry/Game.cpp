@@ -423,7 +423,7 @@ void cherry::Game::LoadContent()
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
-	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/blank.png");
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
 	material = std::make_shared<Material>(phong);
 	material->Set("a_LightPos", { 0, 0, 3 });
 	material->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});

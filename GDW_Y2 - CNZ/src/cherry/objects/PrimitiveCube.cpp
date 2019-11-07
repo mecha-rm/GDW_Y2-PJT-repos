@@ -17,19 +17,30 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth) :
 
 	// Position and Color (Default Values) // NORMALS ARE WRONG
 	verticesTotal = 8;
+
+	//{ { -width / 2.0F, -height / 2.0F, depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0F, 0.0F, 0.0f }}, // bottom left, front corner
+	//{ { -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // top left, front corner
+	//{ { -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // bottom left, back corner
+	//{ { -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // top left, back corner
+
+	//{ { width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // bottom right, front corner
+	//{ { width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // top right, front corner
+	//{ { width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // bottom right, back corner
+	//{ { width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} } // top right, back corner
+
 	vertices = new Vertex[verticesTotal]
 	{
 		//  x      y	 z									r	 g	   b	 a
 		
-		{{ -width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // bottom left, front corner
-		{{ -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // top left, front corner
-		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // bottom left, back corner
-		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // top left, back corner
+		{{ -width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom left, front corner
+		{{ -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 1}}, // top left, front corner
+		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom left, back corner
+		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top left, back corner
 																									
-		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // bottom right, front corner
-		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // top right, front corner
-		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}}, // bottom right, back corner
-		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}} // top right, back corner
+		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom right, front corner
+		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top right, front corner
+		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom right, back corner
+		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 1}} // top right, back corner
 
 	};
 

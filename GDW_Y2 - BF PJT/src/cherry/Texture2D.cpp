@@ -72,7 +72,7 @@ Texture2D::Sptr Texture2D::LoadFromFile(const std::string& fileName, bool loadAl
 		LOG_WARN("Failed to load image from \"{}\"", fileName);
 
 //#ifndef _DEBUG
-//		return LoadFromFile("res/images/blank.png", loadAlpha);
+//		return LoadFromFile("res/images/default.png", loadAlpha);
 //#endif // !_DEBUG
 
 		return nullptr;

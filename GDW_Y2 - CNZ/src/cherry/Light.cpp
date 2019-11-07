@@ -123,7 +123,7 @@ void cherry::Light::SetLightAttenuation(float attenuation)
 }
 
 // generates a material with the current light values
-cherry::Material::Sptr cherry::Light::GenerateMaterial() const { return GenerateMaterial("res/blank.png"); }
+cherry::Material::Sptr cherry::Light::GenerateMaterial() const { return GenerateMaterial("res/images/default.png"); }
 
 // generates a material with the current light values, and a texture.
 cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath) const
@@ -154,7 +154,7 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath) 
 		if (!file) // file read failure
 		{
 			// throw std::runtime_error("Error. Texture image file could not be found.");
-			texturePath = "res/blank.png"; // blanks out the texture.
+			texturePath = "res/images/default.png"; // blanks out the texture.
 		}
 
 		file.close(); // closes the file
