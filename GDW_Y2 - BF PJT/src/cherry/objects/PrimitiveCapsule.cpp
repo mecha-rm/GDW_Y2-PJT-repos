@@ -9,7 +9,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	height = abs(height);
 
 	// todo: account for height
-	// PrimitiveSphere tempSphere(cylRadius, (capSegments + 1) * 2, cylSegments);
+	// PrimitiveUVSphere tempSphere(cylRadius, (capSegments + 1) * 2, cylSegments);
 
 		// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (cylSegments < 3) // columns

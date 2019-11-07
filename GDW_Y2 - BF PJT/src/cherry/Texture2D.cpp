@@ -70,6 +70,11 @@ Texture2D::Sptr Texture2D::LoadFromFile(const std::string& fileName, bool loadAl
 	else {
 		// not throwing exceptions since we can't use the file, but for now we just have a warning.
 		LOG_WARN("Failed to load image from \"{}\"", fileName);
+
+//#ifndef _DEBUG
+//		return LoadFromFile("res/images/blank.png", loadAlpha);
+//#endif // !_DEBUG
+
 		return nullptr;
 	}
 }

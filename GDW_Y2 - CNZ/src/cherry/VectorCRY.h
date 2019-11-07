@@ -62,6 +62,15 @@ namespace cherry
 		Vec2 operator+=(Vec2); // addition equals
 		Vec2 operator-=(Vec2); // subtraction equals
 
+		// gets the length of the vector.
+		float GetLength() const;
+
+		// normalizes the vector
+		void Normalize();
+
+		// returns a normalized version of the vector
+		cherry::Vec2 GetNormalized() const;
+
 		// gets the vector as a string.
 		std::string ToString() const;
 
@@ -120,6 +129,15 @@ namespace cherry
 		Vec3 operator/=(float);
 		Vec3 operator+=(Vec3);
 		Vec3 operator-=(Vec3);
+
+		// gets the length of the vector.
+		float GetLength() const;
+
+		// normalizes the vector
+		void Normalize();
+
+		// returns a normalized version of the vector
+		cherry::Vec3 GetNormalized() const;
 
 		// gets the vector as a string.
 		std::string ToString() const;
@@ -183,6 +201,15 @@ namespace cherry
 		Vec4 operator/=(float);
 		Vec4 operator+=(Vec4);
 		Vec4 operator-=(Vec4);
+
+		// gets the length of the vector.
+		float GetLength() const;
+
+		// normalizes the vector
+		void Normalize();
+
+		// returns a normalized version of the vector
+		cherry::Vec4 GetNormalized() const;
 
 		// gets the vector as a string.
 		std::string ToString() const;

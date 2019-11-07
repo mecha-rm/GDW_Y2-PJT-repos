@@ -423,15 +423,15 @@ void cherry::Game::LoadContent()
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
-	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/blank.png");
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/blank.png");
 	material = std::make_shared<Material>(phong);
-	material->Set("a_LightPos", { 0, 0, 1 });
-	material->Set("a_LightColor", { 1.0f, 1.0f, 0 });
-	material->Set("a_AmbientColor", { 0.2f, 0.5f, 0.01f });
-	material->Set("a_AmbientPower", 0.9f); // change this to change the main lighting power (originally value of 0.1F)
+	material->Set("a_LightPos", { 0, 0, 3 });
+	material->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});
+	material->Set("a_AmbientColor", { 0.9f, 0.1f, 0.01f });
+	material->Set("a_AmbientPower", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
 	material->Set("a_LightSpecPower", 0.5f);
 	material->Set("a_LightShininess", 256);
-	material->Set("a_LightAttenuation", 1.0f);
+	material->Set("a_LightAttenuation", 0.15f);
 	material->Set("s_Albedo", albedo); // objects will just be blank if no texture is set.
 
 	currentScene = "Cherry"; // the name of the m_Scene
@@ -483,13 +483,16 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
 		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		objects.push_back(new PrimitiveSphere());
+		objects.push_back(new PrimitiveUVSphere());
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
 		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
 		objects.push_back(new PrimitivePlane());
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
 		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+
+		// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+
 	}
 }
 

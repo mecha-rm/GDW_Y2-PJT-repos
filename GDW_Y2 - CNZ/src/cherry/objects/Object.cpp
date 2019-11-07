@@ -78,8 +78,8 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 
 cherry::Object::~Object()
 {
-	delete vertices;
-	delete indices;
+	delete[] vertices;
+	delete[] indices;
 }
 
 // gets the name of the object.
@@ -163,18 +163,23 @@ cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 // creates the object.
 bool cherry::Object::LoadObject()
 {
-	std::ifstream file;
+	std::ifstream file; // file
 	std::string line = ""; // the current line of the file.
+
 	std::vector<float> tempVecFlt; // a temporary float vector. Used to save the results of a parsing operation.
-	std::vector<Vertex> vertVec; // a vector of vertices; gets all vertices from the file before putting them in the array.
-
 	std::vector<uint32_t>tempVecUint; // temporary vector for uin32_t data. Saves information from parsing operation.
-	std::vector<uint32_t> indiVec; // a vector of indices; gets all indices from the file before putting them into the array.
 
-	// Unused
-	std::vector<glm::vec2>VtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
+	// vertex indices
+	std::vector<Vertex> vertVec; // a vector of vertices; gets all vertices from the file before putting them in the array.
+	std::vector<uint32_t> vertIndices; // a vector of indices; gets all indices from the file before putting them into the array.
 	
-	std::vector<glm::vec3>VnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
+	// textures
+	std::vector<glm::vec2>vtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
+	std::vector<unsigned int> textIndicies; // a vector of texture indices.
+
+	// normals
+	std::vector<glm::vec3>vnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
+	std::vector<unsigned int> normIndices; // vector of vertex normal indices
 
 	file.open(filePath, std::ios::in); // opens file
 
@@ -234,14 +239,14 @@ bool cherry::Object::LoadObject()
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets values
 
-			VtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
+			vtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
 		}
 		// TODO: add vertex normals
 		else if (line.substr(0, 2) == "vn") // Vertex Normals (x, y, z); not used at this stage
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets the values from the line
 
-			VnVec.push_back(glm::vec3(tempVecFlt[0], tempVecFlt[1], tempVecFlt[2])); // stores them
+			vnVec.push_back(glm::vec3(tempVecFlt[0], tempVecFlt[1], tempVecFlt[2])); // stores them
 		}
 		// indices
 		else if (line.substr(0, 2) == "f ")
@@ -253,47 +258,68 @@ bool cherry::Object::LoadObject()
 			// We only need every 1st value in a set, which this loop accounts for.
 			for (int i = 0; i < tempVecUint.size(); i += 3)
 			{
-				indiVec.push_back(tempVecUint[i]);
+				// vertex indice/vertex texture indice/vertex normal indice
+				// v1/vt1/vn1
+				vertIndices.push_back(tempVecUint[i]);
+				textIndicies.push_back(tempVecUint[i + 1]);
+				normIndices.push_back(tempVecUint[i + 2]);
 			}
 
 		}
 	}
 
-	verticesTotal = indiVec.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.
+	verticesTotal = vertIndices.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.
 	vertices = new Vertex[verticesTotal]; // making the dynamic array of vertices
 
 	// if (verticesTotal > VERTICES_MAX) // if it exceeds the limit, it is set at the limit; not used
 		// verticesTotal = VERTICES_MAX;
 
 	// puts the vertices into the dynamic vertex buffer array.
-	for (int i = 0; i < indiVec.size(); i++)
-		vertices[i] = vertVec[indiVec[i] - 1];
+	for (int i = 0; i < vertIndices.size(); i++)
+		vertices[i] = vertVec[vertIndices[i] - 1];
 
-	indicesTotal = indiVec.size(); // gets the total number of indices.
+	indicesTotal = vertIndices.size(); // gets the total number of indices.
 	indices = new uint32_t[indicesTotal]; // creates the dynamic array
 
 	// if (indicesTotal > INDICES_MAX) // if it exceeds the limit, it is set at the limit; not used
 		// indicesTotal > INDICES_MAX;
 
-	indices = indiVec.data(); // gets the indices as an array; not being used at this time.
+	indices = vertIndices.data(); // gets the indices as an array; not being used at this time.
 
-	// saving the vertex textures; not being used at this time
-	// vertexTextures = VtVec.data();
-	// vertexTexturesTotal = VtVec.size();
+	// calculating the normals
+	{
+		// vertex normal indicies and vertex indicies are the same size
+		// calculates how many times a given normal is used.
+		for (int i = 0; i < normIndices.size(); i++)
+		{
+			// adding the normal to the vertex
+			vertices[i].Normal = vnVec.at(normIndices[i] - 1);
+		}
+	}
 
-	// saving the vertex normals; not used for this project
-	// vertexNormals = VnVec.data();
-	// vertexNormalsTotal = VnVec.size();
+	// calculating the UVs
+	{
+		// vertex normal indicies and vertex indicies are the same size
+		// calculates how many times a given normal is used.
+		for (int i = 0; i < textIndicies.size(); i++)
+		{
+			// adding the uvs to the designated vertices
+			vertices[i].UV = vtVec.at(textIndicies.at(i) - 1);
+		}
+	}
 
-	// TODO: doesn't load properly with indices. Fix this.
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // creates the mesh
-	// mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal); // creates the mesh
+	// creates the mesh
+	// unlike with the default primitives, the amount of vertices corresponds to how many indicies there are, and the values are set accordingly.
+	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+
 	return (safe = true); // returns whether the object was safely loaded.
 }
 
 // creates an entity with the provided m_Scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
+	this->material = material; // saves the material.
+
 	// sets up the Update function for the entity. This gets automatically called.
 	auto& ecs = GetRegistry(scene);
 	entt::entity entity = ecs.create();

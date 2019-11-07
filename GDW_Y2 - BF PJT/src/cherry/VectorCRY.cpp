@@ -75,8 +75,18 @@ cherry::Vec2 cherry::Vec2::operator*=(float scalar) { return *this = *this * sca
 // division
 cherry::Vec2 cherry::Vec2::operator/=(float scalar) { return *this = *this / scalar; }
 
+// gets the length of the vector.
+float cherry::Vec2::GetLength() const { return v.length(); }
+
+// normalizes the vector
+void cherry::Vec2::Normalize() { v.normalize(); }
+
+// normalizes the vector.
+cherry::Vec2 cherry::Vec2::GetNormalized() const { return v.getNormalized(); }
+
 // toString
 std::string cherry::Vec2::ToString() const { return v.toString(); }
+
 
 // VECTOR 3 //
 // constructor
@@ -156,6 +166,16 @@ cherry::Vec3 cherry::Vec3::operator*=(float scalar) { return *this = *this * sca
 
 // division
 cherry::Vec3 cherry::Vec3::operator/=(float scalar) { return *this = *this / scalar; }
+
+// gets the length of the vector.
+float cherry::Vec3::GetLength() const { return v.length(); }
+
+// normalizes the vector
+void cherry::Vec3::Normalize() { v.normalize(); }
+
+// normalizes the vector.
+cherry::Vec3 cherry::Vec3::GetNormalized() const { return v.getNormalized(); }
+
 
 // toString
 std::string cherry::Vec3::ToString() const { return v.toString(); }
@@ -242,6 +262,15 @@ cherry::Vec4 cherry::Vec4::operator*=(float scalar) { return *this = *this * sca
 
 // division
 cherry::Vec4 cherry::Vec4::operator/=(float scalar) { return *this = *this / scalar; }
+
+// gets the length of the vector.
+float cherry::Vec4::GetLength() const { return v.length(); }
+
+// normalizes the vector
+void cherry::Vec4::Normalize() { v.normalize(); }
+
+// normalizes the vector.
+cherry::Vec4 cherry::Vec4::GetNormalized() const { return v.getNormalized(); }
 
 // toString
 std::string cherry::Vec4::ToString() const { return v.toString(); }

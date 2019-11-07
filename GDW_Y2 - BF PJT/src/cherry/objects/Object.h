@@ -241,6 +241,9 @@ namespace cherry
 		template<typename T>
 		const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
 
+		// template<typename T>
+		// void calculateNormals(std::vector<);
+
 		// the string for the file path
 		std::string filePath = "";
 
@@ -261,6 +264,7 @@ namespace cherry
 	protected:
 		// constructor used for default primitives
 		Object();
+		
 
 		// object name
 		std::string name = "";
@@ -293,7 +297,7 @@ namespace cherry
 		// cherry::Vec4 color;
 
 		// the material of the object.
-		// Material::Sptr material;
+		Material::Sptr material;
 	};
 }
 

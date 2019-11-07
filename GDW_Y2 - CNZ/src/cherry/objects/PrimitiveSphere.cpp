@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive(), radius(abs(radius))
+cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive(), radius(abs(radius))
 {
 	// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (segRows < 3)
@@ -228,4 +228,4 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 }
 
 // gets the radius
-float cherry::PrimitiveSphere::GetRadius() const { return radius; }
+float cherry::PrimitiveUVSphere::GetRadius() const { return radius; }
