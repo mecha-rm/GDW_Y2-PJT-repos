@@ -32,9 +32,6 @@ namespace cnz
 		// returns whether the player is currently dashing. The function getDash() does the same thing.
 		bool IsDashing() const;
 
-		// returns whether the player is dashing or not.
-		bool GetDash() const;
-
 		// sets whether the player is dashing.
 		void SetDash(bool dash);
 

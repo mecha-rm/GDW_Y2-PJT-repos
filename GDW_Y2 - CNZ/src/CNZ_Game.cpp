@@ -14,6 +14,7 @@ void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
+		this->mbLP = true;
 		break;
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
@@ -27,6 +28,7 @@ void cnz::CNZ_Game::MouseButtonReleased(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
+		this->mbLR = true;
 		break;
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
@@ -174,11 +176,12 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	{
 		playerObj->SetDash(true);
 		playerObj->SetDashTime(0.0f);
+		playerObj->SetPosition(playerObj->GetPosition() + playerObj->GetDash(0.1f));
 	}
 	else if (mbLP == true && mbLR == false) 
 	{
-		playerObj->SetDashTime(playerObj->GetDashTime() + 0.01f * deltaTime);
-		//Logger::GetLogger()->info(this->dashTime);
+		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
+		std::cout << playerObj->GetDashTime() << std::endl;
 	}
 	else if (mbLP == true && mbLR == true) {
 		playerObj->SetDashTime(0.0f);
@@ -190,7 +193,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// std::cout << playerObj->GetPosition().toString() << std::endl;
 
 	//myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(-10.0F, 10.0F, 15.0F));
-	myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 15.0F, 15.0F));
+	myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 5.0F, 20.0F));
 	myCamera->LookAt(playerObj->GetPositionGLM());
 
 	// calls the main game Update function to go through every object.

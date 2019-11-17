@@ -56,9 +56,7 @@ cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::
 void cnz::Player::SetDash(bool dash) { this->dash = dash; }
 
 // gets whether the player is currently dashing.
-bool cnz::Player::IsDashing() const { return GetDash(); }
-
-bool cnz::Player::GetDash() const { return dash; }
+bool cnz::Player::IsDashing() const { return dash; }
 
 // gets the dash time.
 float cnz::Player::GetDashTime() const { return dashTime; }
@@ -135,8 +133,8 @@ void cnz::Player::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
 glm::vec3 cnz::Player::GetDash(float dist) {
 	glm::vec3 dash;
-	dash.x = dist * glm::degrees(sinf(this->GetRadianAngle()));
-	dash.y = -(dist * glm::degrees(cosf(this->GetRadianAngle())));
+	dash.x = -(dist * glm::degrees(cosf(this->GetRadianAngle())));
+	dash.y = -(dist * glm::degrees(sinf(this->GetRadianAngle())));
 	dash.z = 0.0f;
 	return dash;
 }
