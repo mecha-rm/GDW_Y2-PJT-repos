@@ -487,8 +487,8 @@ void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 void cherry::Object::Update(float deltaTime)
 {
 	// TODO: remove this for the final version.
-	rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
-	rotation.setZ(rotation.getZ() + 90.0F * deltaTime);
+	//rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	//rotation.setZ(rotation.getZ() + 90.0F * deltaTime);
 }
 
 // returns a string representing the object

@@ -41,6 +41,7 @@ namespace cnz
 	private:
 		
 		cnz::Player * playerObj = nullptr; // object for the player.
+		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;
 
 		glm::vec3 testPlayPos = glm::vec3(0, 0, 0);

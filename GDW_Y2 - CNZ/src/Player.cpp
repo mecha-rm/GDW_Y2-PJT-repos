@@ -74,34 +74,35 @@ float cnz::Player::GetRadianAngle() { return radianAngle; }
 
 glm::vec3 cnz::Player::GetVec3Angle() { return this->worldAngle; }
 
-void cnz::Player::UpdateAngle(cherry::Camera camera, double xpos, double ypos, unsigned int width, unsigned int height) {
+void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height) {
 
 	float a = atanf((float)ypos / (float)xpos);
 
-	if (ypos < 0 && xpos < 0) {
+	if (ypos <= 0 && xpos <= 0) {
 		a = 90 * (M_PI / 180.0f) - a;
+		a += 90.0f * (M_PI / 180.0f);
 	}
 
-	if (ypos > 0 && xpos < 0) {
+	if (ypos > 0 && xpos <= 0) {
 		a = 90 * (M_PI / 180.0f) - a;
-		//a += 90.0f * (M_PI / 180.0f);
+		a += 90.0f * (M_PI / 180.0f);
 	}
 
-	if (ypos > 0 && xpos > 0) {
+	if (ypos >= 0 && xpos >= 0) {
 		a = 90 * (M_PI / 180.0f) - a;
-		a += 180.0f * (M_PI / 180.0f);
+		a += 270.0f * (M_PI / 180.0f);
 	}
 
-	if (ypos < 0 && xpos > 0) {
+	if (ypos < 0 && xpos >= 0) {
 		a = 90 * (M_PI / 180.0f) - a;
-		a += 180.0f * (M_PI / 180.0f);
+		a += 270.0f * (M_PI / 180.0f);
 	}
 
 	this->radianAngle = a;
 	this->degreeAngle = a * (180.0f / M_PI);
 
 	// Update world angle
-	glm::mat4 pv = camera.GetViewProjection();
+	glm::mat4 pv = camera->GetViewProjection();
 	pv = glm::inverse(pv);
 	glm::vec4 pos = glm::vec4(xpos / width, ypos / height, 0.0f, 1.0f);
 	pv *= pos;

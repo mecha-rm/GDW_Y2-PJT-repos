@@ -6,7 +6,7 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 
 // constructor with window size
 // TODO: change 'true' to 'false' so default values aren't used.
-cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) : Game(windowWidth, windowHeight, fullScreen, true, true) {}
+cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) : Game(windowWidth, windowHeight, fullScreen, false, false) {}
 
 // mouse button has been pressed.
 void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)
@@ -125,19 +125,21 @@ void cnz::CNZ_Game::LoadContent()
 	Game::LoadContent(); // calls the load content
 
 	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
+	testObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
 	// playerObj->CreateEntity(getCurrentScene(), material);
+	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	addObject(playerObj);
-
+	addObject(testObj);
 
 	//// setting up the camera
-	//myCamera = std::make_shared<cherry::Camera>();
 	//myCamera->SetPosition(glm::vec3(0, 5, 10));
 	//myCamera->LookAt(glm::vec3(0));
 
 	//// sets the camera to perspective mode for the scene.
 	//// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	////myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
-	//myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
+	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	//// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(10.0f), 1.0f, 0.01f, 1000.0f));
 
 	//// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
@@ -149,7 +151,7 @@ void cnz::CNZ_Game::LoadContent()
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
-	float moveInc = 10.0F; // the movement incrementer.
+	float moveInc = -10.0F; // the movement incrementer.
 
 	// moving the player
 	if (w) { // up
@@ -165,6 +167,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 	}
 
+	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
+	playerObj->SetRotation(cherry::Vec3(0.0f, 0.0f, playerObj->GetDegreeAngle()), true);
 	// check if mouse left button is being held down
 	if (playerObj->GetDashTime() >= 1.0f) 
 	{
@@ -185,7 +189,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	// std::cout << playerObj->GetPosition().toString() << std::endl;
 
-	// myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(-10.0F, -10.0F, -10.0F));
+	//myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(-10.0F, 10.0F, 15.0F));
+	myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 15.0F, 15.0F));
 	myCamera->LookAt(playerObj->GetPositionGLM());
 
 	// calls the main game Update function to go through every object.
