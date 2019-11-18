@@ -90,6 +90,8 @@
     <ClCompile Include="src\cherry\Light.cpp" />
     <ClCompile Include="src\cherry\LightManager.cpp" />
     <ClCompile Include="src\cherry\Texture2D.cpp" />
+    <ClCompile Include="src\cherry\TextureCube.cpp" />
+    <ClCompile Include="src\cherry\TextureSampler.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
     <ClCompile Include="src\cherry\Game.cpp" />
@@ -345,6 +347,9 @@
     <ClInclude Include="src\cherry\Light.h" />
     <ClInclude Include="src\cherry\LightManager.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
+    <ClInclude Include="src\cherry\TextureCube.h" />
+    <ClInclude Include="src\cherry\TextureSampler.h" />
+    <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\cherry\Camera.h" />
     <ClInclude Include="src\cherry\Game.h" />

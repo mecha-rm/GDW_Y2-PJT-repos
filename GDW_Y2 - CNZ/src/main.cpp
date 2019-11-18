@@ -41,6 +41,7 @@ int main()
 	Logger::Init();
 
 
+	// cherry::Game* game = new cherry::Game(850, 850, false);
 	cherry::Game* game = new cnz::CNZ_Game(850, 850, false);
 	game->Run();
 	delete game;

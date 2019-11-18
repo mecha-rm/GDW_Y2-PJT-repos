@@ -37,6 +37,29 @@ struct UpdateBehaviour {
 	std::function<void(entt::entity e, float dt)> Function;
 };
 
+/*
+	Handles debug messages from OpenGL
+	https://www.khronos.org/opengl/wiki/Debug_Output#Message_Components
+	@param source    Which part of OpenGL dispatched the message
+	@param type      The type of message (ex: error, performance issues, deprecated behavior)
+	@param id        The ID of the error or message (to distinguish between different types of errors, like nullref or index out of range)
+	@param severity  The severity of the message (from High to Notification)
+	@param length    The length of the message
+	@param message   The human readable message from OpenGL
+	@param userParam The pointer we set with glDebugMessageCallback (should be the game pointer)
+*/
+void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void* userParam) {
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_LOW:          LOG_INFO(message); break;
+	case GL_DEBUG_SEVERITY_MEDIUM:       LOG_WARN(message); break;
+	case GL_DEBUG_SEVERITY_HIGH:         LOG_ERROR(message); break;
+#ifdef LOG_GL_NOTIFICATIONS
+	case GL_DEBUG_SEVERITY_NOTIFICATION: LOG_INFO(message); break;
+#endif
+	default: break;
+	}
+}
+
 // call this function to resize the window.
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -399,6 +422,25 @@ void cherry::Game::Shutdown() {
 	glfwTerminate();
 }
 
+// makes the faces face outward.
+cherry::Mesh::Sptr MakeInvertedCube() {
+	// Create our 4 vertices
+	cherry::Vertex verts[8] = {
+		// Position
+		// x y z
+		{{ -1.0f, -1.0f, -1.0f }}, {{ 1.0f, -1.0f, -1.0f }}, {{ -1.0f, 1.0f, -1.0f }}, {{ 1.0f, 1.0f, -1.0f }},
+		{{ -1.0f, -1.0f, 1.0f }}, {{ 1.0f, -1.0f, 1.0f }}, {{ -1.0f, 1.0f, 1.0f }}, {{ 1.0f, 1.0f, 1.0f }}
+	};
+	// Create our 6 indices
+	uint32_t indices[36] = {
+	0, 1, 2, 2, 1, 3, 4, 6, 5, 6, 7, 5, // bottom / top
+	0, 1, 4, 4, 1, 5, 2, 3, 6, 6, 3, 7, // front /back
+	2, 4, 0, 2, 6, 4, 3, 5, 1, 3, 7, 5 // left / right
+	};
+	// Create a new mesh from the data
+	return std::make_shared<cherry::Mesh>(verts, 8, indices, 36);
+}
+
 // loads the content for the meshes and shaders
 void cherry::Game::LoadContent()
 {
@@ -416,6 +458,26 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
+	// SAMPLER FOR MIP MAPPING
+	// added for mip mapping. As long as its above the material, it's fine.
+	description = SamplerDesc();
+	description.MinFilter = MinFilter::NearestMipNearest;
+
+	description.MagFilter = MagFilter::Nearest;
+	sampler = std::make_shared<TextureSampler>(description);
+
+	//desc1 = SamplerDesc();
+	//desc1.MinFilter = MinFilter::NearestMipNearest;
+	//desc1.MagFilter = MagFilter::Nearest;
+
+	//desc2 = SamplerDesc();
+	//desc2.MinFilter = MinFilter::LinearMipLinear;
+	//desc2.MagFilter = MagFilter::Linear;
+
+	//samplerEX = std::make_shared<TextureSampler>(desc1);
+
+
+
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
 	// TODO: make version without UVs?
@@ -432,7 +494,7 @@ void cherry::Game::LoadContent()
 	material->Set("a_LightSpecPower", 0.5f);
 	material->Set("a_LightShininess", 256);
 	material->Set("a_LightAttenuation", 0.15f);
-	material->Set("s_Albedo", albedo); // objects will just be blank if no texture is set.
+	material->Set("s_Albedo", albedo, sampler); // objects will just be blank if no texture is set.
 
 	currentScene = "Cherry"; // the name of the m_Scene
 	scenes.push_back(currentScene); // saving the m_Scene
@@ -444,6 +506,34 @@ void cherry::Game::LoadContent()
 	SceneManager::RegisterScene(currentScene); // registering the m_Scene
 	// SceneManager::RegisterScene("Test2");
 	SceneManager::SetCurrentScene(currentScene);
+
+	// SKYBOX
+		// we need to make the scene before we can attach things to it.
+	auto scene = CurrentScene();
+	scene->SkyboxShader = std::make_shared<Shader>();
+	scene->SkyboxShader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
+	scene->SkyboxMesh = MakeInvertedCube();
+
+	// loads in six files out of res, then making them into the cube map.
+	/*std::string files[6] = {
+	std::string("cubemap/graycloud_lf.jpg"),
+	std::string("cubemap/graycloud_rt.jpg"),
+	std::string("cubemap/graycloud_dn.jpg"),
+	std::string("cubemap/graycloud_up.jpg"),
+	std::string("cubemap/graycloud_ft.jpg"),
+	std::string("cubemap/graycloud_bk.jpg")
+	};
+	scene->Skybox = TextureCube::LoadFromFiles(files);*/
+
+	std::string files[6] = {
+	std::string("res/images/cubemap/graycloud_lf.jpg"),
+	std::string("res/images/cubemap/graycloud_rt.jpg"),
+	std::string("res/images/cubemap/graycloud_dn.jpg"),
+	std::string("res/images/cubemap/graycloud_up.jpg"),
+	std::string("res/images/cubemap/graycloud_ft.jpg"),
+	std::string("res/images/cubemap/graycloud_bk.jpg")
+	};
+	scene->Skybox = TextureCube::LoadFromFiles(files);
 
 
 	// Create and compile shader
@@ -674,6 +764,7 @@ void cherry::Game::Run()
 void cherry::Game::Draw(float deltaTime) {
 
 	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
+	bool enableSkybox = false; // enables the skybox. TODO: change for final build.
 
 	// Clear our screen every frame
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
@@ -753,6 +844,38 @@ void cherry::Game::Draw(float deltaTime) {
 
 			renderer.Mesh->Draw();
 		}
+	}
+
+	auto scene = CurrentScene();
+	// Draw the skybox after everything else, if the scene has one
+	if (scene->Skybox && enableSkybox)
+	{
+		// Disable culling
+		glDisable(GL_CULL_FACE); // we disable face culling if the cube map is screwed up.
+		// Set our depth test to less or equal (because we are at 1.0f)
+		glDepthFunc(GL_LEQUAL);
+		// Disable depth writing
+		glDepthMask(GL_FALSE);
+
+		// Make sure no samplers are bound to slot 0
+		TextureSampler::Unbind(0);
+		// Set up the shader
+		scene->SkyboxShader->Bind();
+
+		// casting the mat4 down to a mat3, then putting it back into a mat4, which is done to remove the camera's translation.
+		scene->SkyboxShader->SetUniform("a_View", glm::mat4(glm::mat3(
+			myCamera->GetView()
+		)));
+		scene->SkyboxShader->SetUniform("a_Projection", myCamera->Projection);
+
+		scene->Skybox->Bind(0);
+		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
+		scene->SkyboxMesh->Draw();
+
+		// Restore our state
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glDepthFunc(GL_LESS);
 	}
 }
 

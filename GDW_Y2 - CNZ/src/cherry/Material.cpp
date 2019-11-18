@@ -12,10 +12,23 @@ void cherry::Material::Apply() {
 	for (auto& kvp : myFloats)
 		myShader->SetUniform(kvp.first.c_str(), kvp.second);
 
-	// binding the textures, and then sending hte slot it's bound to.
+	// OLD [ REPLACED]
+	//// binding the textures, and then sending hte slot it's bound to.
+	//int slot = 0;
+	//for (auto& kvp : myTextures) {
+	//	kvp.second->Bind(slot);
+	//	myShader->SetUniform(kvp.first.c_str(), slot);
+	//	slot++;
+	//}
+
+	// updated in tutorial 09
 	int slot = 0;
 	for (auto& kvp : myTextures) {
-		kvp.second->Bind(slot);
+		if (kvp.second.Sampler != nullptr)
+			kvp.second.Sampler->Bind(slot);
+		else
+			TextureSampler::Unbind(slot);
+		kvp.second.Texture->Bind(slot);
 		myShader->SetUniform(kvp.first.c_str(), slot);
 		slot++;
 	}
