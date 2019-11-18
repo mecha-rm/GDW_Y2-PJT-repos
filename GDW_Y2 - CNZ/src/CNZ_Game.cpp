@@ -7,7 +7,7 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 // constructor with window size
 // TODO: change 'true' to 'false' so default values aren't used;
 // TODO: don't use full screen.
-cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) : Game(windowWidth, windowHeight, fullScreen, true, true) {}
+cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) : Game(windowWidth, windowHeight, fullScreen, false, false) {}
 
 // mouse button has been pressed.
 void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)
@@ -173,7 +173,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
 	playerObj->SetRotation(cherry::Vec3(0.0f, 0.0f, playerObj->GetDegreeAngle()), true);
 	// check if mouse left button is being held down
-	if (playerObj->GetDashTime() >= 1.0f) 
+	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) 
 	{
 		playerObj->SetDash(true);
 		playerObj->SetDashTime(0.0f);
