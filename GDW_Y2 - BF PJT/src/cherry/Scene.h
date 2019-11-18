@@ -2,10 +2,18 @@
 
 #include <entt/entt.hpp>
 
+#include "TextureCube.h"
+#include "Shader.h"
+#include "Mesh.h"
+
 namespace cherry
 {
 	class Scene {
 	public:
+		TextureCube::Sptr Skybox;
+		Shader::Sptr SkyboxShader;
+		Mesh::Sptr SkyboxMesh;
+
 		Scene() = default;
 
 		virtual ~Scene() = default;

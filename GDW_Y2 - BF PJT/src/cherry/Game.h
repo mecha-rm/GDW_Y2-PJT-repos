@@ -139,6 +139,9 @@ namespace cherry
 		// the m_Scene material
 		Material::Sptr material;
 
+		SamplerDesc description; // texture description
+		TextureSampler::Sptr sampler; // texture sampler
+
 	private:
 
 		// Stores the main window that the game is running in
@@ -183,6 +186,9 @@ namespace cherry
 
 		// if 'loadDefaults' is true, then default objects will be loaded up
 		bool loadDefaults = false;
+
+		// enables the skybox. TODO: change for final build.
+		bool enableSkybox = false;
 
 		// movement
 		bool w = false, a = false, s = false, d = false;

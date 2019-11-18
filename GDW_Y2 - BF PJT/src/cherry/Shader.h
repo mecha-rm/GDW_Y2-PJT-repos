@@ -2,8 +2,9 @@
 #pragma once
 #include <glad/glad.h>
 #include <GLM/glm.hpp>
-
 #include <memory>
+
+#include "UtilsCRY.h"
 
 namespace cherry
 {

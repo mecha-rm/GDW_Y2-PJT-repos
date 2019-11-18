@@ -110,6 +110,8 @@
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
     <ClCompile Include="src\cherry\Texture2D.cpp" />
+    <ClCompile Include="src\cherry\TextureCube.cpp" />
+    <ClCompile Include="src\cherry\TextureSampler.cpp" />
     <ClCompile Include="src\cherry\utils\Array.cpp" />
     <ClCompile Include="src\cherry\utils\Color.cpp" />
     <ClCompile Include="src\cherry\utils\math\Collision.cpp" />
@@ -364,6 +366,9 @@
     <ClInclude Include="src\cherry\Shader.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
+    <ClInclude Include="src\cherry\TextureCube.h" />
+    <ClInclude Include="src\cherry\TextureSampler.h" />
+    <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\cherry\utils\Array.h" />
     <ClInclude Include="src\cherry\utils\Color.h" />
     <ClInclude Include="src\cherry\utils\math\Collision.h" />

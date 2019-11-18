@@ -5,6 +5,8 @@
 #include <cstdint> // Needed for uint32_t
 #include <memory> // Needed for smart pointers
 
+#include "UtilsCRY.h"
+
 namespace cherry
 {
 	// Vertex Struct - saves vertex position and colour.
@@ -18,6 +20,9 @@ namespace cherry
 	// Mesh Class - creates meshes so that objects can appear on screen.
 	class Mesh {
 	public:
+
+		GraphicsClass(Mesh);
+
 		// Shorthand for shared_ptr
 		typedef std::shared_ptr<Mesh> Sptr;
 
