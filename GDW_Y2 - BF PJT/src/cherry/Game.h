@@ -41,8 +41,7 @@ namespace cherry
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
 
-		// handles resizing the window without skewing the objects in the m_Scene.
-		void HandleResize(int width, int height);
+		// resize has been moved to the bottom of the code to be accurate to where it is in the framework.
 
 
 		// returns 'true' if the cursor is in the window content, and false if it's not.
@@ -96,6 +95,9 @@ namespace cherry
 		// runs the game
 		void Run();
 
+		// handles resizing the window without skewing the objects in the m_Scene.
+		void Resize(int newWidth, int newHeight);
+
 		// if 'true', then the objects keep their scale when the window is resized.
 		// If false, the objects skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
@@ -127,8 +129,12 @@ namespace cherry
 
 		void DrawGui(float deltaTime);
 
+		// used for rendering the scene to multiple viewpoints.
+		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera);
+
 		// gets the current m_Scene
 		std::string getCurrentScene() const;
+
 
 		// set to 'true' for debug functionality.
 		bool debugMode = false;
@@ -141,6 +147,8 @@ namespace cherry
 
 		SamplerDesc description; // texture description
 		TextureSampler::Sptr sampler; // texture sampler
+
+		glm::ivec2 myWindowSize; // saves the window size
 
 	private:
 
@@ -200,8 +208,8 @@ namespace cherry
 		bool mbLeft = false, mbMiddle = false, mbRight = false;
 
 		// window size
-		unsigned int windowWidth = 850;
-		unsigned int windowHeight = 850;
+		// unsigned int windowWidth = 850;
+		// unsigned int windowHeight = 850;
 		
 		// boolean for full screen
 		bool fullScreen;

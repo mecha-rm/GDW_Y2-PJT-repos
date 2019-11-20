@@ -8,28 +8,28 @@ char* readFile(const char* filename) {
 	// Declare and open the file stream
 	std::ifstream file;
 	file.open(filename, std::ios::binary);
-	
+
 	// Only read if the file is open
 	if (file.is_open()) {
 		// Get the starting location in the file
 		uint64_t fileSize = file.tellg();
-		
+
 		// Seek to the end
 		file.seekg(0, std::ios::end);
 		// Calculate the file size from end to beginning
 		fileSize = (uint64_t)file.tellg() - fileSize;
 		// Seek back to the beginning of the file
 		file.seekg(0, std::ios::beg);
-		
+
 		// Allocate space for our entire file, +1 byte at the end for null terminator
 		char* result = new char[fileSize + 1];
-		
+
 		// Read the entire file to our memory
 		file.read(result, fileSize);
-		
+
 		// Make our text null-terminated
 		result[fileSize] = '\0';
-		
+
 		// Close the file before returning
 		file.close();
 		return result;
@@ -55,7 +55,7 @@ void cherry::Shader::Load(const char* vsFile, const char* fsFile)
 
 	// Compile our program
 	Compile(vs_source, fs_source);
-	
+
 	// Clean up our memory
 	delete[] fs_source;
 	delete[] vs_source;
@@ -69,18 +69,32 @@ void cherry::Shader::SetUniform(const char* name, const glm::mat4& value) {
 	}
 }
 
+// mat3 ver.
 void cherry::Shader::SetUniform(const char* name, const glm::mat3& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
 		glProgramUniformMatrix3fv(myShaderHandle, loc, 1, false, &value[0][0]);
 	}
 }
+
+// vec3 ver.
 void cherry::Shader::SetUniform(const char* name, const glm::vec3& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
 		glProgramUniform3fv(myShaderHandle, loc, 1, &value[0]);
 	}
 }
+
+// vec4 ver.
+void cherry::Shader::SetUniform(const char* name, const glm::vec4& value)
+{
+	GLint loc = glGetUniformLocation(myShaderHandle, name);
+	if (loc != -1) {
+		glProgramUniform4fv(myShaderHandle, loc, 1, &value[0]);
+	}
+}
+
+// float ver.
 void cherry::Shader::SetUniform(const char* name, const float& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
@@ -88,6 +102,7 @@ void cherry::Shader::SetUniform(const char* name, const float& value) {
 	}
 }
 
+// int ver.
 void cherry::Shader::SetUniform(const char* name, const int& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
@@ -164,7 +179,6 @@ void cherry::Shader::Compile(const char* vs_source, const char* fs_source) {
 
 	// Get whether the link was successful
 	GLint success = 0;
-
 	glGetProgramiv(myShaderHandle, GL_LINK_STATUS, &success);
 	// If not, we need to grab the log and throw an exception
 	if (success == GL_FALSE) {

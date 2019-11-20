@@ -10,7 +10,9 @@ namespace cherry
 {
 	class Shader {
 	public:
-		typedef std::shared_ptr<Shader> Sptr;
+		GraphicsClass(Shader);
+
+		// typedef std::shared_ptr<Shader> Sptr;
 		Shader();
 		~Shader();
 		void Compile(const char* vs_source, const char* fs_source);
@@ -22,6 +24,7 @@ namespace cherry
 
 		void SetUniform(const char* name, const glm::mat3& value);
 		void SetUniform(const char* name, const glm::vec3& value);
+		void SetUniform(const char* name, const glm::vec4& value);
 		void SetUniform(const char* name, const float& value);
 
 		// sending integers to our shader; you're setting a slot, rather than a texture ID.
