@@ -97,28 +97,28 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		//util::math::Vec3 minA (
 		//	temp1->getWorldPosition().GetX() - temp1->getWidth() / 2.0F, 
 		//	temp1->getWorldPosition().GetY() - temp1->getHeight() / 2.0F, 
-		//	temp1->getWorldPosition().getZ() - temp1->getDepth() / 2.0F
+		//	temp1->getWorldPosition().GetZ() - temp1->getDepth() / 2.0F
 		//);
 
 		//// maximum values of A
 		//util::math::Vec3 maxA(
 		//	temp1->getWorldPosition().GetX() + temp1->getWidth() / 2.0F,
 		//	temp1->getWorldPosition().GetY() + temp1->getHeight() / 2.0F,
-		//	temp1->getWorldPosition().getZ() + temp1->getDepth() / 2.0F
+		//	temp1->getWorldPosition().GetZ() + temp1->getDepth() / 2.0F
 		//);
 
 		//// minimum values of B
 		//util::math::Vec3 minB(
 		//	temp2->getWorldPosition().GetX() - temp2->getWidth() / 2.0F,
 		//	temp2->getWorldPosition().GetY() - temp2->getHeight() / 2.0F,
-		//	temp2->getWorldPosition().getZ() - temp2->getDepth() / 2.0F
+		//	temp2->getWorldPosition().GetZ() - temp2->getDepth() / 2.0F
 		//);
 
 		//// maximum values of B
 		//util::math::Vec3 maxB(
 		//	temp2->getWorldPosition().GetX() + temp2->getWidth() / 2.0F,
 		//	temp2->getWorldPosition().GetY() + temp2->getHeight() / 2.0F,
-		//	temp2->getWorldPosition().getZ() + temp2->getDepth() / 2.0F
+		//	temp2->getWorldPosition().GetZ() + temp2->getDepth() / 2.0F
 		//);
 
 		//return util::math::aabbCollision(minA, maxA, minB, maxB);

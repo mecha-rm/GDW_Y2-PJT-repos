@@ -50,7 +50,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 
 				// rotating the normal vector so that it's in the right place and angled properly.
 				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
 
 
 			}
@@ -60,7 +60,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 				
 				// rotating the normal vector so that it's in the right place and angled properly.
 				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
 			}
 			
 			vertices[index] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };

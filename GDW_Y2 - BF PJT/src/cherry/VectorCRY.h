@@ -103,9 +103,9 @@ namespace cherry
 		void GetY(float y);
 
 		// gets the z-value
-		float getZ() const;
+		float GetZ() const;
 		// sets the z-value
-		void setZ(float z);
+		void SetZ(float z);
 
 		// operators
 		// standard operators

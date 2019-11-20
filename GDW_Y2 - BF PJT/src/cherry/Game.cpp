@@ -16,6 +16,7 @@
 
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
+#include "objects/Image.h"
 
 #include<functional>
 
@@ -679,6 +680,11 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+
+		// images don't need CreateEntity called.
+		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		objects.at(objects.size() - 1)->SetScale(0.1F);
 	}
 
 	// Create and compile shader
@@ -1123,7 +1129,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		// Update the model matrix to the item's world transform
 		mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
 
-
+		// TODO: add ability to turn face culling on and off for a given object
 		// Draw the item
 		if (renderer.Mesh->IsVisible())
 		{

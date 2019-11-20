@@ -153,6 +153,9 @@
     <ClCompile Include="src\cherry\TextureCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cherry\objects\Image.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\KHR\khrplatform.h">
@@ -924,6 +927,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\TextureSampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\objects\Image.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

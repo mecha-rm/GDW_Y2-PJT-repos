@@ -158,7 +158,7 @@ int main()
 //	for (int i = 0; i < object.vertices.size(); i += 8) {
 //		vertices[i] = object.vertices[i].getX();
 //		vertices[i + 1] = object.vertices[i].getY();
-//		vertices[i + 2] = object.vertices[i].getZ();
+//		vertices[i + 2] = object.vertices[i].GetZ();
 //	}
 //
 //	// Controls what vertices to draw

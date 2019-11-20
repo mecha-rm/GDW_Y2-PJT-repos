@@ -105,3 +105,9 @@ cherry::Texture2D::Sptr cherry::Texture2D::LoadFromFile(const std::string& fileN
 		return nullptr;
 	}
 }
+
+// gets the width of the image
+uint32_t cherry::Texture2D::GetWidth() const { return myDescription.Width; }
+
+// gets the height of the image
+uint32_t cherry::Texture2D::GetHeight() const { return myDescription.Height; }

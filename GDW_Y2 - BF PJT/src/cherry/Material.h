@@ -44,6 +44,10 @@ namespace cherry
 			myCubeMaps[name] = { value, sampler };
 		}
 
+		// loads a material from a MaterialTemplateLibrary 
+		// bool LoadMTL();
+
+
 	protected:
 
 		struct Sampler2DInfo {
