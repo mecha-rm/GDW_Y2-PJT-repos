@@ -597,14 +597,6 @@ const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, boo
 
 	ss.str(str); // stores the string in the stream
 
-	while (ss >> var) // while the string stream isn't empty
-	{
-		// if the conversion failed, the string stream moves onto the next item.
-		if (ss.bad())
-			continue;
-
-		vec.push_back(var); // saves in the vector
-	}
-
-	return vec; // returns the vector
+	// returns the string put into a vector
+	return util::splitString<T>(str);
 }
