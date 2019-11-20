@@ -117,10 +117,10 @@ float cherry::Vec3::GetY() const { return v.y; }
 void cherry::Vec3::GetY(float y) { v.y = y; }
 
 // gets the z-value
-float cherry::Vec3::getZ() const { return v.z; }
+float cherry::Vec3::GetZ() const { return v.z; }
 
 // sets the z-value
-void cherry::Vec3::setZ(float z) { v.z = z; }
+void cherry::Vec3::SetZ(float z) { v.z = z; }
 
 // operators
 // operator [] (reading)

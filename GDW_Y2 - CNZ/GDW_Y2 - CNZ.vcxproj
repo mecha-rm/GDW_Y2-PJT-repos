@@ -89,6 +89,7 @@
     <ClCompile Include="external\toolkit\Sys.cpp" />
     <ClCompile Include="src\cherry\Light.cpp" />
     <ClCompile Include="src\cherry\LightManager.cpp" />
+    <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\Texture2D.cpp" />
     <ClCompile Include="src\cherry\TextureCube.cpp" />
     <ClCompile Include="src\cherry\TextureSampler.cpp" />
@@ -346,6 +347,7 @@
     <ClInclude Include="external\toolkit\Sys.h" />
     <ClInclude Include="src\cherry\Light.h" />
     <ClInclude Include="src\cherry\LightManager.h" />
+    <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
     <ClInclude Include="src\cherry\TextureCube.h" />
     <ClInclude Include="src\cherry\TextureSampler.h" />

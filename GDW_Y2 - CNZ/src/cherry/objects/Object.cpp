@@ -160,11 +160,15 @@ unsigned int cherry::Object::GetIndicesTotal() const { return indicesTotal; }
 // returns a pointer to the mesh.
 cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 
+// gets the material
+cherry::Material::Sptr& cherry::Object::GetMaterial() { return material; }
+
 // creates the object.
 bool cherry::Object::LoadObject()
 {
 	std::ifstream file; // file
 	std::string line = ""; // the current line of the file.
+	std::string mtllib = ""; // if 'mtllib' isn't empty, then that means a material was found and can be created.
 
 	std::vector<float> tempVecFlt; // a temporary float vector. Used to save the results of a parsing operation.
 	std::vector<uint32_t>tempVecUint; // temporary vector for uin32_t data. Saves information from parsing operation.
@@ -198,19 +202,24 @@ bool cherry::Object::LoadObject()
 			continue;
 
 		// object name
-		if (line.substr(0, 2) == "o " || line.at(0) == 'o')
+		if(line.substr(0, line.find_first_of(" ")) == "o")
 		{
 			// if the line gotten is the name, it is saved into the name string.
 			name = line.substr(2);
 		}
 		// comment; this is added to the object description
-		else if (line.substr(0, 2) == "# " || line[0] == '#')
+		else if (line.substr(0, line.find_first_of(" ")) == "#")
 		{
 			description += line.substr(2);
 			continue;
 		}
+		// material template library
+		else if (line.substr(0, line.find_first_of(" ")) == "mtllib")
+		{
+			mtllib = line.substr(line.find_first_of(" ") + 1); // saving the material
+		}
 		// vertex
-		else if (line.substr(0, 2) == "v ")
+		else if (line.substr(0, line.find_first_of(" ")) == "v")
 		{
 			/*
 			 * Versions:
@@ -235,21 +244,21 @@ bool cherry::Object::LoadObject()
 				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F}, {0.0F, 0.0F, 0.0F} });
 			}
 		}
-		else if (line.substr(0, 2) == "vt") // Texture UV (u, v); not used for anything
+		else if (line.substr(0, line.find_first_of(" ")) == "vt") // Texture UV (u, v); not used for anything
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets values
 
 			vtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
 		}
 		// TODO: add vertex normals
-		else if (line.substr(0, 2) == "vn") // Vertex Normals (x, y, z); not used at this stage
+		else if (line.substr(0, line.find_first_of(" ")) == "vn") // Vertex Normals (x, y, z); not used at this stage
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets the values from the line
 
 			vnVec.push_back(glm::vec3(tempVecFlt[0], tempVecFlt[1], tempVecFlt[2])); // stores them
 		}
 		// indices
-		else if (line.substr(0, 2) == "f ")
+		else if (line.substr(0, line.find_first_of(" ")) == "f")
 		{
 			// passes the line and replaces all '/' with ' ' so that the string parser can work.
 			// format: (face/texture/normal) (shortened to (v1/vt/vn).
@@ -312,6 +321,13 @@ bool cherry::Object::LoadObject()
 	// unlike with the default primitives, the amount of vertices corresponds to how many indicies there are, and the values are set accordingly.
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
 
+	// TODO: add variable so user can ask for material. Basic primitives don't really need to have materials added, do they?
+	// if the .obj file had a material associated with it.
+	// if (mtllib != "")
+	// {
+	// 
+	// }
+
 	return (safe = true); // returns whether the object was safely loaded.
 }
 
@@ -325,15 +341,16 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	entt::entity entity = ecs.create();
 
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
-	mr.Material = material;
+	mr.Material = this->material;
 	mr.Mesh = mesh;
 
 	auto tform = [&](entt::entity e, float dt) 
 	{
 		auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
 
-		transform.Position = glm::vec3(position.GetX(), position.GetY(), position.getZ()); // udpates the position
-		transform.EulerRotation = glm::vec3(rotation.GetX(), rotation.GetY(), rotation.getZ()); // UPDATES THE ROTATION
+		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // udpates the position
+		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
+		transform.Scale = glm::vec3(scale.v.x, scale.v.y, scale.v.z); // sets the scale
 
 
 		// does the same thing, except all in one line (for rotation)
@@ -365,17 +382,41 @@ void cherry::Object::SetPosition(cherry::Vec3 newPos) { position = newPos; }
 
 // ROTATION FUNCTIONS
 
+// gets the rotation in the requested form as a GLM vector.
+glm::vec3 cherry::Object::GetRotationGLM(bool inDegrees) const { return inDegrees ? GetRotationDegreesGLM() : GetRotationRadiansGLM(); }
+
 // gets the rotation in the requested form.
-cherry::Vec3 cherry::Object::GetRotation(bool inDegrees) { return inDegrees ? GetRotationDegrees() : GetRotationRadians(); }
+cherry::Vec3 cherry::Object::GetRotation(bool inDegrees) const { return inDegrees ? GetRotationDegrees() : GetRotationRadians(); }
+
+// sets the rotation using a glm vector
+void cherry::Object::SetRotation(glm::vec3 theta, bool inDegrees) { SetRotation(cherry::Vec3(theta), inDegrees); }
 
 // sets the rotation in the requested form.
 void cherry::Object::SetRotation(cherry::Vec3 theta, bool inDegrees) { inDegrees ? SetRotationDegrees(theta) : SetRotationRadians(theta); }
+
+
+// gets the rotation in degrees as a GLM vector.
+glm::vec3 cherry::Object::GetRotationDegreesGLM() const 
+{ 
+	cherry::Vec3 rot = GetRotationDegrees();
+	return glm::vec3(rot.v.x, rot.v.y, rot.v.z); 
+}
 
 // returns rotation in degrees, which is the storage default.
 cherry::Vec3 cherry::Object::GetRotationDegrees() const { return rotation; }
 
 // sets the rotation in degrees
+void cherry::Object::SetRotationDegrees(glm::vec3 theta) { SetRotationDegrees(cherry::Vec3(theta)); }
+
+// sets the rotation in degrees
 void cherry::Object::SetRotationDegrees(cherry::Vec3 theta) { rotation = theta; }
+
+// gets the rotation in radians as a GLM vector
+glm::vec3 cherry::Object::GetRotationRadiansGLM() const
+{
+	cherry::Vec3 rot = GetRotationRadians();
+	return glm::vec3(rot.v.x, rot.v.y, rot.v.z);
+}
 
 // gets the rotation in radians
 cherry::Vec3 cherry::Object::GetRotationRadians() const
@@ -387,6 +428,9 @@ cherry::Vec3 cherry::Object::GetRotationRadians() const
 		util::math::degreesToRadians(rotation.v.z)
 	);
 }
+
+// sets the rotation in radians
+void cherry::Object::SetRotationRadians(glm::vec3 theta) { SetRotationRadians(cherry::Vec3(theta)); }
 
 // sets the rotation in degrees
 void cherry::Object::SetRotationRadians(cherry::Vec3 theta)
@@ -400,43 +444,80 @@ void cherry::Object::SetRotationRadians(cherry::Vec3 theta)
 }
 
 // gets the rotation on the x-axis in degrees
-float cherry::Object::SetRotationXDegrees() { return rotation.v.x; }
+float cherry::Object::GetRotationXDegrees() const { return rotation.v.x; }
 
 // sets the rotation on the x-axis in degrees.
 void cherry::Object::SetRotationXDegrees(float degrees) { rotation.v.x = degrees; }
 
 // gets the rotation on the x-axis in radians
-float cherry::Object::GetRotationXRadians() { return util::math::degreesToRadians(rotation.v.x); }
+float cherry::Object::GetRotationXRadians() const { return util::math::degreesToRadians(rotation.v.x); }
 
 // sets the rotation on the x-axis in radians.
 void cherry::Object::SetRotationXRadians(float radians) { rotation.v.x = util::math::radiansToDegrees(radians); }
 
 
 // gets the rotation on the y-axis in degrees
-float cherry::Object::GetRotationYDegrees() { return rotation.v.y; }
+float cherry::Object::GetRotationYDegrees() const { return rotation.v.y; }
 
 // sets the rotation on the y-axis in degrees.
 void cherry::Object::SetRotationYDegrees(float degrees) { rotation.v.y = degrees; }
 
 // gets the rotation on the y-axis in radians
-float cherry::Object::GetRotationYRadians() { return util::math::degreesToRadians(rotation.v.y); }
+float cherry::Object::GetRotationYRadians() const { return util::math::degreesToRadians(rotation.v.y); }
 
 // sets the rotation on the y-axis in radians.
 void cherry::Object::SetRotationYRadians(float radians) { rotation.v.y = util::math::radiansToDegrees(radians); }
 
 
 // gets the rotation on the z-axis in degrees
-float cherry::Object::GetRotationZDegrees() { return rotation.v.z; }
+float cherry::Object::GetRotationZDegrees() const { return rotation.v.z; }
 
 // sets the rotation on the z-axis in degrees.
 void cherry::Object::SetRotationZDegrees(float degrees) { rotation.v.z = degrees; }
 
 // gets the rotation on the z-axis in radians
-float cherry::Object::GetRotationZRadians() { return util::math::degreesToRadians(rotation.v.z); }
+float cherry::Object::GetRotationZRadians() const { return util::math::degreesToRadians(rotation.v.z); }
 
 // sets the rotation on the z-axis in radians.
 void cherry::Object::SetRotationZRadians(float radians) { rotation.v.y = util::math::radiansToDegrees(radians); }
 
+
+
+// gets the scale as a glm vector
+glm::vec3 cherry::Object::GetScaleGLM() const { return glm::vec3(scale.v.x, scale.v.y, scale.v.z); }
+
+// gets the scale of the object
+cherry::Vec3 cherry::Object::GetScale() const { return scale; }
+
+// sets the scale
+void cherry::Object::SetScale(float scl) { scale = { scl, scl, scl }; }
+
+// sets scale
+void cherry::Object::SetScale(float scaleX, float scaleY, float scaleZ) { scale = { scaleX, scaleY, scaleZ }; }
+
+// sets the scale
+void cherry::Object::SetScale(glm::vec3 newScale) { scale = newScale; }
+
+// sets the scale
+void cherry::Object::SetScale(cherry::Vec3 newScale) { scale = newScale; }
+
+// gets the scale on the x-axis
+float cherry::Object::GetScaleX() const { return scale.v.x; }
+
+// sets the scale on the x-axis
+void cherry::Object::SetScaleX(float scaleX) { scale.v.x = scaleX; }
+
+// gets the y-axis scale
+float cherry::Object::GetScaleY() const { return scale.v.y; }
+
+// sets the scale on the y-axis
+void cherry::Object::SetScaleY(float scaleY) { scale.v.y = scaleY; }
+
+// gets the z-axis scale
+float cherry::Object::GetScaleZ() const { return scale.v.z; }
+
+// sets the z-axis scale
+void cherry::Object::SetScaleZ(float scaleZ) { scale.v.z = scaleZ; }
 
 
 
@@ -487,8 +568,8 @@ void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 void cherry::Object::Update(float deltaTime)
 {
 	// TODO: remove this for the final version.
-	//rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
-	//rotation.setZ(rotation.getZ() + 90.0F * deltaTime);
+	rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
 }
 
 // returns a string representing the object

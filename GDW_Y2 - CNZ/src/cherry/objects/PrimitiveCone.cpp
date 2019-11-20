@@ -39,7 +39,7 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 
 		// calculates the normal by rotating it to account for the vertex position, and the angle of the normal itself.
 		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-		normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
+		normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
 
 		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
 

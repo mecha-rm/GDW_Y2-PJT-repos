@@ -79,6 +79,12 @@ namespace cherry
 		// loading from the file so that we don't have to manually apply a texture.
 		static Sptr LoadFromFile(const std::string& fileName, bool loadAlpha = true);
 
+		// gets the width of the image
+		uint32_t GetWidth() const;
+
+		// gets the height of the image
+		uint32_t GetHeight() const;
+
 	protected:
 		GLuint myTextureHandle; // what we'll wrap around.
 		Texture2DDescription myDescription;

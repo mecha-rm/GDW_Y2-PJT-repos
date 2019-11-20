@@ -118,6 +118,9 @@ namespace cherry
 		// returns a reference to the mesh.
 		Mesh::Sptr& GetMesh();
 
+		// gets the material for the object.
+		Material::Sptr& GetMaterial();
+
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
@@ -139,62 +142,120 @@ namespace cherry
 		void SetPosition(glm::vec3 newPos);
 
 
+
+		// gets the rotation as a GLM vector
+		glm::vec3 GetRotationGLM(bool inDegrees) const;
+
 		// returns the rotation of the object. The boolean determines if it's returned in degrees or radians
-		cherry::Vec3 GetRotation(bool inDegrees);
+		cherry::Vec3 GetRotation(bool inDegrees) const;
+
+		// sets the rotation for the object. Bool'InDegrees' determines if the provided values are in degrees or radians.
+		void SetRotation(glm::vec3 theta, bool inDegrees);
 
 		// sets the rotation for the object. Bool'InDegrees' determines if the provided values are in degrees or radians.
 		void SetRotation(cherry::Vec3 theta, bool inDegrees);
+
+		// gets the rotation in degrees as a GLM vector.
+		glm::vec3 GetRotationDegreesGLM() const;
 
 		// gets the rotation in degrees, which is the storage default.
 		cherry::Vec3 GetRotationDegrees() const;
 
 		// sets the rotation in degrees
+		void SetRotationDegrees(glm::vec3 theta);
+
+		// sets the rotation in degrees
 		void SetRotationDegrees(cherry::Vec3 theta);
+
+		
+		// gets the rotation in degrees as a GLM vector.
+		glm::vec3 GetRotationRadiansGLM() const;
 
 		// gets the rotation in radians
 		cherry::Vec3 GetRotationRadians() const;
 
+		// sets the rotation in radians
+		void SetRotationRadians(glm::vec3 theta);
 
 		// sets the rotation in degrees
 		void SetRotationRadians(cherry::Vec3 theta);
 
+
 		// gets the x-axis rotation in degrees
-		float SetRotationXDegrees();
+		float GetRotationXDegrees() const;
 
 		// sets the x-axis rotation in degrees
 		void SetRotationXDegrees(float degrees);
 
 		// gets the x-axis rotation in radians
-		float GetRotationXRadians();
+		float GetRotationXRadians() const;
 
 		// gets the x-axis rotation in radians
 		void SetRotationXRadians(float radians);
 
 
 		// gets the y-axis rotation in degrees
-		float GetRotationYDegrees();
+		float GetRotationYDegrees() const;
 
 		// sets the y-axis rotation in degrees
 		void SetRotationYDegrees(float degrees);
 
 		// gets the y-axis rotation in radians
-		float GetRotationYRadians();
+		float GetRotationYRadians() const;
 
 		// gets the y-axis rotation in radians
 		void SetRotationYRadians(float radians);
 
 
 		// gets the z-axis rotation in degrees
-		float GetRotationZDegrees();
+		float GetRotationZDegrees() const;
 
 		// sets the z-axis rotation in degrees
 		void SetRotationZDegrees(float degrees);
 
 		// gets the z-axis rotation in radians
-		float GetRotationZRadians();
+		float GetRotationZRadians() const;
 
 		// gets the z-axis rotation in radians
 		void SetRotationZRadians(float radians);
+
+
+		// gets the scale of the object as a GLM vector
+		glm::vec3 GetScaleGLM() const;
+
+		// gets the scale of the object
+		cherry::Vec3 GetScale() const;
+
+		// sets the scale on all axes with a single value
+		void SetScale(float scl);
+		
+		// sets the scale on all axes with a single value
+		void SetScale(float scaleX, float scaleY, float scaleZ);
+
+		// sets the scale with an individual scale per axis
+		void SetScale(glm::vec3 newScale);
+
+		// sets the scale with an individual scale per axis
+		void SetScale(cherry::Vec3 newScale);		
+
+
+		// gets the scale on the x-axis
+		float GetScaleX() const;
+
+		// sets the scale on the x-axis
+		void SetScaleX(float scaleX);
+
+		// gets the scale on the y-axis
+		float GetScaleY() const;
+
+		// sets the scale on the y-axis
+		void SetScaleY(float scaleY);
+
+		// gets the scale on the z-axis
+		float GetScaleZ() const;
+
+		// sets the scale on the z-axis
+		void SetScaleZ(float scaleZ);
 
 
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
@@ -259,7 +320,9 @@ namespace cherry
 		// entt::entity entity;
 
 		// saves the rotation on the x, y, and z axis in DEGREES.
-		cherry::Vec3 rotation;
+		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
+
+		
 
 	protected:
 		// constructor used for default primitives
@@ -274,9 +337,6 @@ namespace cherry
 
 		// true if the file is safe to read from, false otherwise.
 		bool safe = false;
-
-		// the position of the object.
-		cherry::Vec3 position;
 
 		// a dynamic array of vertices for the 3D model.
 		Vertex* vertices = nullptr;
@@ -293,11 +353,18 @@ namespace cherry
 		// the mesh
 		Mesh::Sptr mesh;
 
+
 		// the color of the model.
 		// cherry::Vec4 color;
 
 		// the material of the object.
 		Material::Sptr material;
+
+		// the position of the object.
+		cherry::Vec3 position = { 0.0F, 0.0F, 0.0F };
+
+		// the scale of the object
+		cherry::Vec3 scale = { 1.0F, 1.0F, 1.0F };
 	};
 }
 
