@@ -160,11 +160,15 @@ unsigned int cherry::Object::GetIndicesTotal() const { return indicesTotal; }
 // returns a pointer to the mesh.
 cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 
+// gets the material
+cherry::Material::Sptr& cherry::Object::GetMaterial() { return material; }
+
 // creates the object.
 bool cherry::Object::LoadObject()
 {
 	std::ifstream file; // file
 	std::string line = ""; // the current line of the file.
+	std::string mtllib = ""; // if 'mtllib' isn't empty, then that means a material was found and can be created.
 
 	std::vector<float> tempVecFlt; // a temporary float vector. Used to save the results of a parsing operation.
 	std::vector<uint32_t>tempVecUint; // temporary vector for uin32_t data. Saves information from parsing operation.
@@ -198,19 +202,24 @@ bool cherry::Object::LoadObject()
 			continue;
 
 		// object name
-		if (line.substr(0, 2) == "o " || line.at(0) == 'o')
+		if(line.substr(0, line.find_first_of(" ")) == "o")
 		{
 			// if the line gotten is the name, it is saved into the name string.
 			name = line.substr(2);
 		}
 		// comment; this is added to the object description
-		else if (line.substr(0, 2) == "# " || line[0] == '#')
+		else if (line.substr(0, line.find_first_of(" ")) == "#")
 		{
 			description += line.substr(2);
 			continue;
 		}
+		// material template library
+		else if (line.substr(0, line.find_first_of(" ")) == "mtllib")
+		{
+			mtllib = line.substr(line.find_first_of(" ") + 1); // saving the material
+		}
 		// vertex
-		else if (line.substr(0, 2) == "v ")
+		else if (line.substr(0, line.find_first_of(" ")) == "v")
 		{
 			/*
 			 * Versions:
@@ -235,21 +244,21 @@ bool cherry::Object::LoadObject()
 				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F}, {0.0F, 0.0F, 0.0F} });
 			}
 		}
-		else if (line.substr(0, 2) == "vt") // Texture UV (u, v); not used for anything
+		else if (line.substr(0, line.find_first_of(" ")) == "vt") // Texture UV (u, v); not used for anything
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets values
 
 			vtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
 		}
 		// TODO: add vertex normals
-		else if (line.substr(0, 2) == "vn") // Vertex Normals (x, y, z); not used at this stage
+		else if (line.substr(0, line.find_first_of(" ")) == "vn") // Vertex Normals (x, y, z); not used at this stage
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets the values from the line
 
 			vnVec.push_back(glm::vec3(tempVecFlt[0], tempVecFlt[1], tempVecFlt[2])); // stores them
 		}
 		// indices
-		else if (line.substr(0, 2) == "f ")
+		else if (line.substr(0, line.find_first_of(" ")) == "f")
 		{
 			// passes the line and replaces all '/' with ' ' so that the string parser can work.
 			// format: (face/texture/normal) (shortened to (v1/vt/vn).
@@ -311,6 +320,13 @@ bool cherry::Object::LoadObject()
 	// creates the mesh
 	// unlike with the default primitives, the amount of vertices corresponds to how many indicies there are, and the values are set accordingly.
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+
+	// TODO: add variable so user can ask for material. Basic primitives don't really need to have materials added, do they?
+	// if the .obj file had a material associated with it.
+	// if (mtllib != "")
+	// {
+	// 
+	// }
 
 	return (safe = true); // returns whether the object was safely loaded.
 }

@@ -118,6 +118,9 @@ namespace cherry
 		// returns a reference to the mesh.
 		Mesh::Sptr& GetMesh();
 
+		// gets the material for the object.
+		Material::Sptr& GetMaterial();
+
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 

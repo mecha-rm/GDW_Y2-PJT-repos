@@ -1,0 +1,13 @@
+# Blender MTL File: 'Q4_100701758_roderick_montague_hammer_uv_unwrap.blend'
+# Material Count: 1
+
+newmtl Custom_Material
+Ns 225.000000
+Ka 1.000000 1.000000 1.000000
+Kd 0.800000 0.800000 0.800000
+Ks 0.500000 0.500000 0.500000
+Ke 0.0 0.0 0.0
+Ni 1.450000
+d 1.000000
+illum 2
+map_Kd MAS_1 - QIZ04 - Textured Hammer.png

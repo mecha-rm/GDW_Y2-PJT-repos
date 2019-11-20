@@ -4,6 +4,7 @@
 
 #include "math/Matrix.h"
 #include <string>
+#include <sstream>
 
 namespace util
 {
@@ -26,6 +27,34 @@ namespace util
 	// ignoreCase: if false, then the function is case sensitive. If true, then the function ignores cases when looking for oldSubstr.
 	std::string replaceSubstring(std::string str, std::string oldSubstr, std::string newSubstr, bool ignoreCase = false);
 
+	// splits the string into a vector of the provided data type using spaces.
+	template<typename T>
+	const std::vector<T> splitString(std::string str)
+	{
+		std::stringstream ss; // the string stream.
+		std::vector<T> vec; // the vector used for the vertex.
+		T var; // used to store the item from the string.
+
+
+		// if the string is of length 0, then an empty vector is returned.
+		if (str.length() == 0)
+			return std::vector<T>();
+
+		ss.str(str); // stores the string in the stream
+
+		while (ss >> var) // while the string stream isn't empty
+		{
+			// if the conversion failed, the string stream moves onto the next item.
+			if (ss.bad())
+				continue;
+
+			vec.push_back(var); // saves in the vector
+		}
+
+		return vec; // returns the vector
+	}
+
+
 	// checks to see if a string is an integer; this is improved from isNum.
 	bool isInt(std::string str);
 
@@ -34,6 +63,21 @@ namespace util
 
 	// checks if a string is a number. IsInt or IsDecimal should be used instead.
 	bool isNum(std::string str);
+
+	// convets the string to the provided data type. Do note that the value might be truncated if the conversion doesn't make logical sense.
+	template<typename T>
+	T convertString(const std::string& str)
+	{
+		// TODO: do error checking for this function.
+		std::stringstream ss; // the string stream.
+		T val; // used to store the item from the string.
+
+		ss.str(str); // stores the string in the stream
+
+		ss >> val;
+
+		return val;
+	}
 
 	// returns the minimum between two values.
 	// the less than operator (<) must be overloaded for this function to work.
