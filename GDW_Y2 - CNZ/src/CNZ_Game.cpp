@@ -207,6 +207,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	//myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 5.0F, 20.0F));
 
 	if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
+		if (!playerObj->IsDashing()) {
+			goto notDashing;
+		}
+		
 		if (camLerpPercent >= 1.0f) {
 			camLerpPercent = 0.0f;
 		}
@@ -233,6 +237,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	}
 	else {
 		camLerpPercent = 0.0f;
+		playerObj->SetDash(false);
+	notDashing:
+		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
 	}
 	
 	/*if (camLerpPercent >= 1.0f) {
@@ -262,7 +269,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	//std::cout << "Player: " << playerObj->GetPosition().ToString() << std::endl;
 	//std::cout << "Camera: " << cherry::glmToCherry(myCamera->GetPosition()).ToString() << std::endl;
 	//std::cout << "Rotati: " << playerObj->GetRotationZDegrees() << std::endl;
+
 	std::cout << "percent: " << camLerpPercent << std::endl;
+
+
 
 	// calls the main game Update function to go through every object.
 	Game::Update(deltaTime);
