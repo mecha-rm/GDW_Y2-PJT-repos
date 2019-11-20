@@ -8,7 +8,8 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 // TODO: change 'true' to 'false' so default values aren't used;
 // TODO: don't use full screen.
 cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) 
-	: Game("GDW_Y2 - BnsFt - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, false) {}
+	: Game("GDW_Y2 - BnsFt - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, false) {
+}
 
 // mouse button has been pressed.
 void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)
@@ -137,13 +138,15 @@ void cnz::CNZ_Game::LoadContent()
 	addObject(testObj);
 
 	//// setting up the camera
-	//myCamera->SetPosition(glm::vec3(0, 5, 10));
+	myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
 	//myCamera->LookAt(glm::vec3(0));
 
 	//// sets the camera to perspective mode for the scene.
 	//// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	////myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
+	myCamera->LookAt(playerObj->GetPositionGLM());
+
 	//// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(10.0f), 1.0f, 0.01f, 1000.0f));
 
 	//// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
@@ -152,9 +155,16 @@ void cnz::CNZ_Game::LoadContent()
 	
 }
 
+// test func to get angle in xy axes of a vec
+float getXYAngle(cherry::Vec3 vec) {
+	return atanf(vec.GetX() / vec.GetY());
+}
+
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
+	this->playerPrevPos = playerObj->GetPosition();
+
 	float moveInc = -10.0F; // the movement incrementer.
 
 	// moving the player
@@ -183,7 +193,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	else if (mbLP == true && mbLR == false) 
 	{
 		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
-		std::cout << playerObj->GetDashTime() << std::endl;
+		//std::cout << playerObj->GetDashTime() << std::endl;
 	}
 	else if (mbLP == true && mbLR == true) {
 		playerObj->SetDashTime(0.0f);
@@ -194,9 +204,65 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	// std::cout << playerObj->GetPosition().toString() << std::endl;
 
-	//myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(-10.0F, 10.0F, 15.0F));
-	myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 5.0F, 20.0F));
-	myCamera->LookAt(playerObj->GetPositionGLM());
+	//myCamera->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, 5.0F, 20.0F));
+
+	if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
+		if (camLerpPercent >= 1.0f) {
+			camLerpPercent = 0.0f;
+		}
+		camLerpPercent += 0.01f;
+
+		glm::vec3 temp;
+		glm::vec2 xyCam;
+		glm::vec2 xyPla;
+		cherry::Vec2 xyCur;
+
+		xyCam.x = myCamera->GetPosition().x;
+		xyCam.y = myCamera->GetPosition().y;
+
+		xyPla.x = playerObj->GetPosition().GetX();
+		xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
+
+		xyCur = cherry::V2Lerp(xyCam, xyPla, camLerpPercent);
+
+		temp.x = xyCur.GetX();
+		temp.y = xyCur.GetY();
+		temp.z = 20.0f;
+		
+		myCamera->SetPosition(temp);
+	}
+	else {
+		camLerpPercent = 0.0f;
+	}
+	
+	/*if (camLerpPercent >= 1.0f) {
+		camLerpPercent = 0.0f;
+	}
+	else {
+		
+		if (myCamera->GetPosition().x == playerObj->GetPosition().GetX() && myCamera->GetPosition().y == playerObj->GetPosition().GetY() + 5.0f) {
+			std::cout << "it happened" << std::endl;
+
+			goto noChange;
+		}
+
+		camLerpPercent += 0.01f;
+		glm::vec3 temp;
+		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX()) {
+			temp.x = util::lerp(myCamera->GetPosition().x, playerObj->GetPosition().GetX(), camLerpPercent);
+
+		}
+		if (myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
+			temp.y = util::lerp(myCamera->GetPosition().y, playerObj->GetPosition().GetY() + 5.0f, camLerpPercent);
+		}
+		temp.z = playerObj->GetPosition().GetZ() + 20.0f;
+		myCamera->SetPosition(temp);
+	}
+	noChange:*/
+	//std::cout << "Player: " << playerObj->GetPosition().ToString() << std::endl;
+	//std::cout << "Camera: " << cherry::glmToCherry(myCamera->GetPosition()).ToString() << std::endl;
+	//std::cout << "Rotati: " << playerObj->GetRotationZDegrees() << std::endl;
+	std::cout << "percent: " << camLerpPercent << std::endl;
 
 	// calls the main game Update function to go through every object.
 	Game::Update(deltaTime);

@@ -7,6 +7,7 @@
 #include <GLM/vec3.hpp>
 #include <GLM/vec4.hpp>
 #include "utils/math/Vector.h"
+#include "utils/Utils.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// operators
 		// standard operators
@@ -100,7 +101,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
@@ -167,7 +168,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
@@ -217,4 +218,12 @@ namespace cherry
 		// vector
 		util::math::Vec4 v;
 	} Vector4;
+
+	// LERP vector of N dimensions
+	Vec2 V2Lerp(Vec2 a, Vec2 b, float t);
+	Vec3 V3Lerp(Vec3 a, Vec3 b, float t);
+	Vec4 V4Lerp(Vec4 a, Vec4 b, float t);
+
+	// convert glm::vec3 to cherry::Vec3
+	cherry::Vec3 glmToCherry(glm::vec3 bs);
 }

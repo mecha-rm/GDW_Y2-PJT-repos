@@ -27,7 +27,7 @@ void cherry::Vec2::SetX(float x) { v.x = x; }
 float cherry::Vec2::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec2::GetY(float y) { v.y = y; }
+void cherry::Vec2::SetY(float y) { v.y = y; }
 
 
 // operators
@@ -114,7 +114,7 @@ void cherry::Vec3::SetX(float x) { v.x = x; }
 float cherry::Vec3::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec3::GetY(float y) { v.y = y; }
+void cherry::Vec3::SetY(float y) { v.y = y; }
 
 // gets the z-value
 float cherry::Vec3::GetZ() const { return v.z; }
@@ -204,7 +204,7 @@ void cherry::Vec4::SetX(float x) { v.x = x; }
 float cherry::Vec4::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec4::GetY(float y) { v.y = y; }
+void cherry::Vec4::SetY(float y) { v.y = y; }
 
 // gets the z-value
 float cherry::Vec4::GetZ() const { return v.z; }
@@ -249,6 +249,42 @@ cherry::Vec4 cherry::Vec4::operator-() const { return 0.0f - *this; }
 
 // float minus vector
 cherry::Vec4 cherry::operator-(const float a, const cherry::Vec4 b) { return Vec4(a - b.v); }
+
+cherry::Vec2 cherry::V2Lerp(Vec2 a, Vec2 b, float t)
+{
+	Vec2 temp;
+	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
+	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
+	return temp;
+}
+
+cherry::Vec3 cherry::V3Lerp(Vec3 a, Vec3 b, float t)
+{
+	Vec3 temp;
+	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
+	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
+	temp.SetZ(util::lerp(a.GetZ(), b.GetZ(), t));
+	return temp;
+}
+
+cherry::Vec4 cherry::V4Lerp(Vec4 a, Vec4 b, float t)
+{
+	Vec4 temp;
+	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
+	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
+	temp.SetZ(util::lerp(a.GetZ(), b.GetZ(), t));
+	temp.SetW(util::lerp(a.GetW(), b.GetW(), t));
+	return temp;
+}
+
+cherry::Vec3 cherry::glmToCherry(glm::vec3 bs)
+{
+	cherry::Vec3 temp;
+	temp.SetX(bs.x);
+	temp.SetY(bs.y);
+	temp.SetZ(bs.z);
+	return temp;
+}
 
 // equals operators
 // addition
