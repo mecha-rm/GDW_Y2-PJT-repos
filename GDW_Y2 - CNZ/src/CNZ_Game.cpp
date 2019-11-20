@@ -7,7 +7,8 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 // constructor with window size
 // TODO: change 'true' to 'false' so default values aren't used;
 // TODO: don't use full screen.
-cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) : Game(windowWidth, windowHeight, fullScreen, false, false) {}
+cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) 
+	: Game("GDW_Y2 - BnsFt - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, false) {}
 
 // mouse button has been pressed.
 void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)

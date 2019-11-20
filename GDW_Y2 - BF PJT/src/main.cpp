@@ -45,7 +45,7 @@ int main()
 	Logger::Init();
 
 
-	cherry::Game* game = new cherry::Game(850, 850, false, true, true);
+	cherry::Game* game = new cherry::Game("GDW_Y2 - BnsFt - Cherry Engine", 850, 850, false, true, true);
 	game->Run();
 	delete game;
 

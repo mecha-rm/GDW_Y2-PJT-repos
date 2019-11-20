@@ -159,16 +159,17 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 // constructor
 cherry::Game::Game() :
 	myWindow(nullptr),
-	myWindowTitle("GDW_Y2 - BF - Cherry Engine"),
+	myWindowTitle("GDW_Y2 - BnsFt - Cherry Engine"),
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f)), // default clear colour
 	myModelTransform(glm::mat4(1)), // my model transform
 	myWindowSize(600, 600) // window size (default)
 { }
 
 // creates window with a width, height, and whether or not it's in full screen.
-cherry::Game::Game(float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
+cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
 {
 	// setting the values
+	memcpy(myWindowTitle, windowTitle, strlen(windowTitle) + 1);
 	myWindowSize = glm::ivec2(_width, _height);
 	fullScreen = _fullScreen;
 	loadDefaults = _defaults; // loads the engine default values

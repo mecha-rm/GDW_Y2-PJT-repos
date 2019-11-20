@@ -27,7 +27,7 @@ namespace cherry
 		// creates the game with a width, height, and in fullscreen if requested.
 		// _debug is used to start the game in debug mode.
 		// variable '_default' opens the project with default settings for the camera, objects, and more.
-		Game(float _width, float _height, bool _fullScreen, bool _defaults = false, bool _debug = false);
+		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults = false, bool _debug = false);
 
 		// destructor
 		~Game();
