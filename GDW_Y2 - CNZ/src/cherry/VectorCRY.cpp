@@ -1,5 +1,6 @@
 // file for general physics calculation. WIP.
 #include "VectorCRY.h"
+#include "utils/math/Interpolation.h"
 
 // VECTOR 2 //
 // constructor
@@ -83,6 +84,9 @@ void cherry::Vec2::Normalize() { v.normalize(); }
 
 // normalizes the vector.
 cherry::Vec2 cherry::Vec2::GetNormalized() const { return v.getNormalized(); }
+
+// lerp for vector 2
+cherry::Vec2 cherry::Vec2::Lerp(const cherry::Vec2 & a, const cherry::Vec2 & b, float t) { return Vec2(util::math::lerp(a.v, b.v, t)); }
 
 // toString
 std::string cherry::Vec2::ToString() const { return v.toString(); }
@@ -176,6 +180,9 @@ void cherry::Vec3::Normalize() { v.normalize(); }
 // normalizes the vector.
 cherry::Vec3 cherry::Vec3::GetNormalized() const { return v.getNormalized(); }
 
+// lerp for a vector 3.
+cherry::Vec3 cherry::Vec3::Lerp(const Vec3 & a, const Vec3 & b, float t) { return Vec3(util::math::lerp(a.v, b.v, t)); }
+
 
 // toString
 std::string cherry::Vec3::ToString() const { return v.toString(); }
@@ -250,42 +257,6 @@ cherry::Vec4 cherry::Vec4::operator-() const { return 0.0f - *this; }
 // float minus vector
 cherry::Vec4 cherry::operator-(const float a, const cherry::Vec4 b) { return Vec4(a - b.v); }
 
-cherry::Vec2 cherry::V2Lerp(Vec2 a, Vec2 b, float t)
-{
-	Vec2 temp;
-	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
-	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
-	return temp;
-}
-
-cherry::Vec3 cherry::V3Lerp(Vec3 a, Vec3 b, float t)
-{
-	Vec3 temp;
-	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
-	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
-	temp.SetZ(util::lerp(a.GetZ(), b.GetZ(), t));
-	return temp;
-}
-
-cherry::Vec4 cherry::V4Lerp(Vec4 a, Vec4 b, float t)
-{
-	Vec4 temp;
-	temp.SetX(util::lerp(a.GetX(), b.GetX(), t));
-	temp.SetY(util::lerp(a.GetY(), b.GetY(), t));
-	temp.SetZ(util::lerp(a.GetZ(), b.GetZ(), t));
-	temp.SetW(util::lerp(a.GetW(), b.GetW(), t));
-	return temp;
-}
-
-cherry::Vec3 cherry::glmToCherry(glm::vec3 bs)
-{
-	cherry::Vec3 temp;
-	temp.SetX(bs.x);
-	temp.SetY(bs.y);
-	temp.SetZ(bs.z);
-	return temp;
-}
-
 // equals operators
 // addition
 cherry::Vec4 cherry::Vec4::operator+=(cherry::Vec4 v3) { return *this = *this + v3; }
@@ -307,6 +278,15 @@ void cherry::Vec4::Normalize() { v.normalize(); }
 
 // normalizes the vector.
 cherry::Vec4 cherry::Vec4::GetNormalized() const { return v.getNormalized(); }
+
+// lerp for a vector 4.
+cherry::Vec4 cherry::Vec4::Lerp(const cherry::Vec4& a, const cherry::Vec4& b, float t)
+{
+	// using the util::math version caused linker errors, so it's done manually instead.
+	t = (t > 1.0F) ? 1.0F : (t < 0.0F) ? 0.0F : t;
+
+	return ((1.0F - t) * a + t * b);
+}
 
 // toString
 std::string cherry::Vec4::ToString() const { return v.toString(); }

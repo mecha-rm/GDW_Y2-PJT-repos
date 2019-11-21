@@ -1,5 +1,6 @@
 // file for general physics calculation. WIP.
 #include "VectorCRY.h"
+#include "utils/math/Interpolation.h"
 
 // VECTOR 2 //
 // constructor
@@ -27,7 +28,7 @@ void cherry::Vec2::SetX(float x) { v.x = x; }
 float cherry::Vec2::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec2::GetY(float y) { v.y = y; }
+void cherry::Vec2::SetY(float y) { v.y = y; }
 
 
 // operators
@@ -84,6 +85,9 @@ void cherry::Vec2::Normalize() { v.normalize(); }
 // normalizes the vector.
 cherry::Vec2 cherry::Vec2::GetNormalized() const { return v.getNormalized(); }
 
+// lerp for vector 2
+cherry::Vec2 cherry::Vec2::Lerp(const cherry::Vec2 & a, const cherry::Vec2 & b, float t) { return Vec2(util::math::lerp(a.v, b.v, t)); }
+
 // toString
 std::string cherry::Vec2::ToString() const { return v.toString(); }
 
@@ -114,7 +118,7 @@ void cherry::Vec3::SetX(float x) { v.x = x; }
 float cherry::Vec3::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec3::GetY(float y) { v.y = y; }
+void cherry::Vec3::SetY(float y) { v.y = y; }
 
 // gets the z-value
 float cherry::Vec3::GetZ() const { return v.z; }
@@ -176,6 +180,9 @@ void cherry::Vec3::Normalize() { v.normalize(); }
 // normalizes the vector.
 cherry::Vec3 cherry::Vec3::GetNormalized() const { return v.getNormalized(); }
 
+// lerp for a vector 3.
+cherry::Vec3 cherry::Vec3::Lerp(const Vec3 & a, const Vec3 & b, float t) { return Vec3(util::math::lerp(a.v, b.v, t)); }
+
 
 // toString
 std::string cherry::Vec3::ToString() const { return v.toString(); }
@@ -204,7 +211,7 @@ void cherry::Vec4::SetX(float x) { v.x = x; }
 float cherry::Vec4::GetY() const { return v.y; }
 
 // sets the y-value
-void cherry::Vec4::GetY(float y) { v.y = y; }
+void cherry::Vec4::SetY(float y) { v.y = y; }
 
 // gets the z-value
 float cherry::Vec4::GetZ() const { return v.z; }
@@ -271,6 +278,15 @@ void cherry::Vec4::Normalize() { v.normalize(); }
 
 // normalizes the vector.
 cherry::Vec4 cherry::Vec4::GetNormalized() const { return v.getNormalized(); }
+
+// lerp for a vector 4.
+cherry::Vec4 cherry::Vec4::Lerp(const cherry::Vec4& a, const cherry::Vec4& b, float t)
+{
+	// using the util::math version caused linker errors, so it's done manually instead.
+	t = (t > 1.0F) ? 1.0F : (t < 0.0F) ? 0.0F : t;
+
+	return ((1.0F - t) * a + t * b);
+}
 
 // toString
 std::string cherry::Vec4::ToString() const { return v.toString(); }

@@ -227,7 +227,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		xyPla.x = playerObj->GetPosition().GetX();
 		xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
 
-		xyCur = cherry::V2Lerp(xyCam, xyPla, camLerpPercent);
+		xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
 
 		temp.x = xyCur.GetX();
 		temp.y = xyCur.GetY();

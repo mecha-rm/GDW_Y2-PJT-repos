@@ -72,6 +72,9 @@ namespace cherry
 		// returns a normalized version of the vector
 		cherry::Vec2 GetNormalized() const;
 
+		// lerps between two vectors
+		static Vec2 Lerp(const cherry::Vec2 & a, const cherry::Vec2 & b, float t);
+
 		// gets the vector as a string.
 		std::string ToString() const;
 
@@ -139,6 +142,9 @@ namespace cherry
 
 		// returns a normalized version of the vector
 		cherry::Vec3 GetNormalized() const;
+
+		// lerps between two vectors
+		static cherry::Vec3 Lerp(const cherry::Vec3 & a, const cherry::Vec3 & b, float t);
 
 		// gets the vector as a string.
 		std::string ToString() const;
@@ -212,18 +218,13 @@ namespace cherry
 		// returns a normalized version of the vector
 		cherry::Vec4 GetNormalized() const;
 
+		// lerps between two vectors
+		static cherry::Vec4 Lerp(const cherry::Vec4& a, const cherry::Vec4& b, float t);
+
 		// gets the vector as a string.
 		std::string ToString() const;
 
 		// vector
 		util::math::Vec4 v;
 	} Vector4;
-
-	// LERP vector of N dimensions
-	Vec2 V2Lerp(Vec2 a, Vec2 b, float t);
-	Vec3 V3Lerp(Vec3 a, Vec3 b, float t);
-	Vec4 V4Lerp(Vec4 a, Vec4 b, float t);
-
-	// convert glm::vec3 to cherry::Vec3
-	cherry::Vec3 glmToCherry(glm::vec3 bs);
 }

@@ -127,13 +127,6 @@ bool util::isNum(std::string str)
 	return true;
 }
 
-float util::lerp(float a, float b, float t)
-{
-	return (1.0f - t) * a + t * b;
-}
-
-
-
 
 
 

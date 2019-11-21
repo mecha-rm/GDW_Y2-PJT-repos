@@ -7,6 +7,7 @@
 #include <GLM/vec3.hpp>
 #include <GLM/vec4.hpp>
 #include "utils/math/Vector.h"
+#include "utils/Utils.h"
 
 using namespace std;
 
@@ -35,7 +36,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// operators
 		// standard operators
@@ -71,6 +72,9 @@ namespace cherry
 		// returns a normalized version of the vector
 		cherry::Vec2 GetNormalized() const;
 
+		// lerps between two vectors
+		static Vec2 Lerp(const cherry::Vec2 & a, const cherry::Vec2 & b, float t);
+
 		// gets the vector as a string.
 		std::string ToString() const;
 
@@ -100,7 +104,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
@@ -139,6 +143,9 @@ namespace cherry
 		// returns a normalized version of the vector
 		cherry::Vec3 GetNormalized() const;
 
+		// lerps between two vectors
+		static cherry::Vec3 Lerp(const cherry::Vec3 & a, const cherry::Vec3 & b, float t);
+
 		// gets the vector as a string.
 		std::string ToString() const;
 
@@ -167,7 +174,7 @@ namespace cherry
 		// gets the y-value
 		float GetY() const;
 		// sets the y-value
-		void GetY(float y);
+		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
@@ -210,6 +217,9 @@ namespace cherry
 
 		// returns a normalized version of the vector
 		cherry::Vec4 GetNormalized() const;
+
+		// lerps between two vectors
+		static cherry::Vec4 Lerp(const cherry::Vec4& a, const cherry::Vec4& b, float t);
 
 		// gets the vector as a string.
 		std::string ToString() const;

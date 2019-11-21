@@ -79,9 +79,6 @@ namespace util
 		return val;
 	}
 
-	// LERP floats
-	float lerp(float a, float b, float t);
-
 	// returns the minimum between two values.
 	// the less than operator (<) must be overloaded for this function to work.
 	template<typename T>
