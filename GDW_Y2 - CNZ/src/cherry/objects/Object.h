@@ -24,11 +24,16 @@ namespace cherry
 	{
 	public:
 		// the name and directory of the .obj file
-		Object(std::string filePath);
+		// if 'loadMtl' is set to true, then the object loads the texture, which is assumed to be in the section as the .obj file.
+		Object(std::string filePath, bool loadMtl = false);
+
+		// loads in the object with the designated scene.
+		// this AUTOMATICALLY loads in a material, which is presumed to be in the same location as the .obj file.
+		Object(std::string filePath, std::string scene);
 
 		// sets the file path for the object, the m_Scene it's in, and it's material. 
 		// If called, CreateEntity() does not need to be called after.
-		Object(std::string filePath, std::string scene, cherry::Material::Sptr material);
+		Object(std::string filePath, std::string scene, Material::Sptr material);
 
 		// Objects(verts, indices)
 
@@ -294,7 +299,7 @@ namespace cherry
 		// void setMesh(Mesh::sptr);
 
 		// called to load the object
-		bool LoadObject();
+		bool LoadObject(bool loadMtl = false);
 
 		// parses the line, gets the values as data type T, and stores them in a vector.
 		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.

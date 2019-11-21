@@ -79,6 +79,11 @@ bool cherry::Material::LoadMtl(std::string filePath)
 		return false;
 	}
 
+	// default textures
+	Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
+	Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
+	Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
+
 	while (std::getline(file, line))
 	{
 		if (line.length() == 0) // if there was nothing on the line, then it is skipped.
@@ -141,17 +146,26 @@ bool cherry::Material::LoadMtl(std::string filePath)
 		// ambient map (i.e. texture). This is set to Albedo[0] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ka")
 		{
-			Set("s_Albedos[0]", Texture2D::LoadFromFile("res/objects/" + line.substr(line.find_first_of(" ") + 1)));
+			// gets the folder path if there is one.
+			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
+
+			Set("s_Albedos[0]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
 		}
 		// diffuse map (i.e. texture). This is set to Albedo[0] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Kd")
 		{
-			Set("s_Albedos[1]", Texture2D::LoadFromFile("res/objects/" + line.substr(line.find_first_of(" ") + 1)));
+			// gets the folder path if there is one.
+			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
+
+			Set("s_Albedos[1]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
 		}
 		// specular map (i.e. texture). This is set to Albedo[0] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ks")
 		{
-			Set("s_Albedos[2]", Texture2D::LoadFromFile("res/objects/" + line.substr(line.find_first_of(" ") + 1)));
+			// gets the folder path if there is one.
+			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
+
+			Set("s_Albedos[2]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
 		}
 		
 		// Index of Refraction (Optical Density)

@@ -41,7 +41,7 @@ const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
 const unsigned int cherry::Object::INDICES_MAX = pow(2, 32);
 
 // constructor - gets the filename and opens it.
-cherry::Object::Object(std::string filePath) : position(), vertices(nullptr), indices(nullptr)
+cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertices(nullptr), indices(nullptr)
 {
 	this->filePath = filePath; // saves the file path
 
@@ -64,11 +64,17 @@ cherry::Object::Object(std::string filePath) : position(), vertices(nullptr), in
 	file.close();
 
 	// loads the object
-	LoadObject();
+	LoadObject(loadMtl);
+}
+
+// loads an object into the requested scene
+cherry::Object::Object(std::string filePath, std::string scene) : Object(filePath, true)
+{
+	CreateEntity(scene, material);
 }
 
 // creates an object with a m_Scene and material.
-cherry::Object::Object(std::string filePath, std::string scene, cherry::Material::Sptr material) : Object(filePath)
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material) : Object(filePath)
 {
 	CreateEntity(scene, material);
 }
@@ -164,7 +170,7 @@ cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 cherry::Material::Sptr& cherry::Object::GetMaterial() { return material; }
 
 // creates the object.
-bool cherry::Object::LoadObject()
+bool cherry::Object::LoadObject(bool loadMtl)
 {
 	std::ifstream file; // file
 	std::string line = ""; // the current line of the file.
@@ -582,10 +588,6 @@ std::string cherry::Object::ToString() const
 template<typename T>
 const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, bool containsSymbol)
 {
-	std::stringstream ss; // the string stream.
-	std::vector<T> vec; // the vector used for the vertex.
-	T var; // used to store the item from the string.
-
 	// if the string is of length 0, then an empty vector is returned.
 	if (str.length() == 0)
 		return std::vector<T>();
@@ -594,8 +596,6 @@ const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, boo
 	{
 		str.erase(0, str.find_first_of(" ")); // erases the start of the string, which contains the symbol.
 	}
-
-	ss.str(str); // stores the string in the stream
 
 	// returns the string put into a vector
 	return util::splitString<T>(str);
