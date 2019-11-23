@@ -125,7 +125,7 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 }
 
 // returns the physics body of the closest obstacle to the player, in the direction that the player is facing.
-// Used to verify if the player is allowed to dash the full distance in their intended direction
+// Used later to verify if the player is allowed to dash the full distance in their intended direction
 cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 {
 	cherry::PhysicsBody* closestBody = nullptr;
@@ -136,14 +136,14 @@ cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 		delta.SetY(obstaclePBs[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY());
 
 		float angleFromPlayer = getXYAngle(delta);
-		float dAngle = angleFromPlayer - playerObj->GetRadianAngle();
+		float dAngle = angleFromPlayer - getXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
 		
-		if (dAngle <= 0.25) { // if angle difference is less thant ~15 degrees. 
-			if (cbDist == 0.0f) {
+		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
+			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway.
 				closestBody = obstaclePBs[i];
 				cbDist = delta.GetLength();
 			}
-			else if (delta.GetLength() < cbDist) {
+			else if (delta.GetLength() < cbDist) { // if the current pbody is closer than the last.
 				closestBody = obstaclePBs[i];
 				cbDist = delta.GetLength();
 			}
@@ -226,11 +226,11 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	ca = true;
 	cd = true;
 
-	if (playerCollisions.size() != 0) { // allow movement only in directions oposite of the collision
+	if (playerCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
 		std::cout << "There are " << playerCollisions.size() << " collisions this update!" << std::endl;
 		for (int i = 0; i < playerCollisions.size(); i++) {
 			cherry::Vec3 dP = playerCollisions[i]->getWorldPosition() - playerObj->GetPosition();
-			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) {
+			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
 				if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
 					cs = false;
 				}
@@ -238,7 +238,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					cw = false;
 				}
 			}
-			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
+			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
 				if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
 					ca = false;
 				}
@@ -271,6 +271,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	
 	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
 	playerObj->SetRotation(cherry::Vec3(0.0f, 0.0f, playerObj->GetDegreeAngle()), true);
+	
+	
 	// check if mouse left button is being held down
 	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) 
 	{

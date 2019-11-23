@@ -157,18 +157,3 @@ bool cnz::Player::getDrawPBody()
 {
 	return this->drawPBody;
 }
-
-float cnz::Player::getPBodyWidth()
-{
-	return this->getPBodySize().GetX() / 2;
-}
-
-float cnz::Player::getPBodyHeight()
-{
-	return this->getPBodySize().GetY() / 2;
-}
-
-float cnz::Player::getPBodyDepth()
-{
-	return this->getPBodySize().GetZ() / 2;
-}

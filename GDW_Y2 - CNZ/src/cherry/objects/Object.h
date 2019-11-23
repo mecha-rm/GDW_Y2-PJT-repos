@@ -290,6 +290,11 @@ namespace cherry
 		// get pbody size
 		cherry::Vec3 getPBodySize();
 
+		// get pbody width, height and depth.
+		float getPBodyWidth();
+		float getPBodyHeight();
+		float getPBodyDepth();
+
 		virtual std::string ToString() const;
 
 		// the maximum amount of vertices one object can have. This doesn't get used.

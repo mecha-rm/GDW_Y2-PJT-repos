@@ -73,10 +73,7 @@ namespace cnz
 		// get draw pbody
 		bool getDrawPBody();
 
-		// get pbody width, height and depth.
-		float getPBodyWidth();
-		float getPBodyHeight();
-		float getPBodyDepth();
+		
 
 	private:
 		bool dash = false;
