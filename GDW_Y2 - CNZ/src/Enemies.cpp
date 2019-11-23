@@ -29,6 +29,10 @@ cnz::Enemies::Enemies(std::string modelPath, std::string scene, cherry::Material
 	position = pos;
 }
 
+void cnz::Enemies::Update(float dt)
+{
+}
+
 // TODO: holdovers from object class. May not be needed?
 float cnz::Enemies::GetDegreeAngle() { return degreeAngle; }
 
