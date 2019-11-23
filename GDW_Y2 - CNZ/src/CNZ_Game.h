@@ -1,6 +1,7 @@
 #pragma once
 #include "cherry/Game.h"
 #include "Player.h"
+#include "cherry/PhysicsBody.h"
 
 // inherits from the game class.
 namespace cnz
@@ -30,6 +31,10 @@ namespace cnz
 		// called when a key has been released; overloaded from the game's keyReleased
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
+		cherry::PhysicsBody* getClosestObstacle();
+
+		float getXYAngle(cherry::Vec3 vec);
+
 	protected:
 
 		// overwritten function for loading in game content.
@@ -43,6 +48,8 @@ namespace cnz
 		cnz::Player * playerObj = nullptr; // object for the player.
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;
+
+		vector<cherry::PhysicsBody*> obstaclePBs;
 
 		float camLerpPercent = 0.0f;
 

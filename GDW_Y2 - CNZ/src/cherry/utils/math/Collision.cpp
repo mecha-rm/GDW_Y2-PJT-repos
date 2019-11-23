@@ -72,6 +72,15 @@ bool util::math::aabbCollision(Vec3 minA, Vec3 maxA, Vec3 minB, Vec3 maxB)
 	if ((minB.z > minA.z&& minB.z < maxA.z) ^ (minA.z > minB.z&& minA.z < maxB.z) ^ (minA.z == 0.0F && maxA.z == 0.0F && minB.z == 0.0F && maxB.z == 0.0F))
 		zCol = true;
 
+	if (minA.x == minB.x)
+		xCol = true;
+
+	if (minA.y == minB.y)
+		yCol = true;
+
+	if (minA.z == minB.z)
+		zCol = true;
+
 	// returns if all booleans have been set to 'true'. If so, then there is collision.
 	return (xCol && yCol && zCol);
 }

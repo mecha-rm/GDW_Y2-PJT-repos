@@ -133,8 +133,42 @@ void cnz::Player::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
 glm::vec3 cnz::Player::GetDash(float dist) {
 	glm::vec3 dash;
+	// glm is backwards so both need to be negative to dash in the correct direction.
+	// afaik GetDegreeAngle() is not working correctly so we use Radians converted to degrees instead.
 	dash.x = -(dist * glm::degrees(cosf(this->GetRadianAngle())));
 	dash.y = -(dist * glm::degrees(sinf(this->GetRadianAngle())));
 	dash.z = 0.0f;
 	return dash;
+}
+
+bool cnz::Player::setDrawPBody(bool draw)
+{
+	if (this->GetPhysicsBodyCount() == 0) {
+		this->drawPBody = false;
+		return false;
+	}
+	else {
+		this->drawPBody = true;
+		return true;
+	}
+}
+
+bool cnz::Player::getDrawPBody()
+{
+	return this->drawPBody;
+}
+
+float cnz::Player::getPBodyWidth()
+{
+	return this->getPBodySize().GetX() / 2;
+}
+
+float cnz::Player::getPBodyHeight()
+{
+	return this->getPBodySize().GetY() / 2;
+}
+
+float cnz::Player::getPBodyDepth()
+{
+	return this->getPBodySize().GetZ() / 2;
 }

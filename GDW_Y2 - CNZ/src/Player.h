@@ -64,10 +64,29 @@ namespace cnz
 		// get dash vector3 from angle and distance to dash
 		glm::vec3 GetDash(float dist);
 
+		// get dash dist
+		float GetDashDist() { return this->dashDist; };
+
+		// set draw pbody
+		bool setDrawPBody(bool draw);
+
+		// get draw pbody
+		bool getDrawPBody();
+
+		// get pbody width, height and depth.
+		float getPBodyWidth();
+		float getPBodyHeight();
+		float getPBodyDepth();
+
 	private:
 		bool dash = false;
-
+		float dashDist = 0.1f;
 		float dashTime = 0.0F;
+
+		bool cT, cB, cL, cR;
+
+		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
+		bool drawPBody = false;
 
 		// TODO: possibly delete these variables? Object has its own rotation now.
 		// object angle in screen space (degrees or radians)
