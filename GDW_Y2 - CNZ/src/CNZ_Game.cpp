@@ -164,7 +164,7 @@ void cnz::CNZ_Game::LoadContent()
 {
 	Game::LoadContent(); // calls the load content
 
-	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
+	playerObj = new Player("res/objects/enemies/Enemy_Bow.obj", getCurrentScene(), material); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the not player.
 	// playerObj->CreateEntity(getCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
@@ -209,7 +209,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	float moveInc = -10.0F; // the movement incrementer.
 
-	vector<cherry::PhysicsBody*> playerCollisions;
+	vector<cherry::PhysicsBody*> playerCollisions; // TODO: figure out a system so that no all collisions are player - obstacle only
 
 	for (int i = 0; i < obstaclePBs.size(); i++) {
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstaclePBs[i]);
