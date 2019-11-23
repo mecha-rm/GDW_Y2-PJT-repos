@@ -29,7 +29,7 @@ namespace cnz
 		// loads in the Enemies using a default model. The Enemies takes this model's information.
 		// Enemies(const cherry::Primitive * model);
 
-		virtual void Update();
+		virtual void Update(float dt);
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
