@@ -221,24 +221,29 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		}
 	}
 
+	cs = true;
+	cw = true;
+	ca = true;
+	cd = true;
+
 	if (playerCollisions.size() != 0) { // allow movement only in directions oposite of the collision
 		std::cout << "There are " << playerCollisions.size() << " collisions this update!" << std::endl;
 		for (int i = 0; i < playerCollisions.size(); i++) {
 			cherry::Vec3 dP = playerCollisions[i]->getWorldPosition() - playerObj->GetPosition();
 			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) {
 				if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
-					s = false;
+					cs = false;
 				}
 				else if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
-					w = false;
+					cw = false;
 				}
 			}
 			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
 				if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
-					a = false;
+					ca = false;
 				}
 				else if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
-					d = false;
+					cd = false;
 				}
 			}
 		}
@@ -251,16 +256,16 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	//if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
 
 	// moving the player.
-	if (w) { // up
+	if (w && cw) { // up
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, moveInc * deltaTime, 0.0F));
 	}
-	if (s) { // down
+	if (s && cs) { // down
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, -moveInc * deltaTime, 0.0F));
 	}
-	if (a) { // left
+	if (a && ca) { // left
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(-moveInc * deltaTime, 0.0F, 0.0F));
 	}
-	if (d) { // right
+	if (d && cd) { // right
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 	}
 	

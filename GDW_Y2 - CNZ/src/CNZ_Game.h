@@ -1,6 +1,7 @@
 #pragma once
 #include "cherry/Game.h"
 #include "Player.h"
+#include "Enemies.h"
 #include "cherry/PhysicsBody.h"
 
 // inherits from the game class.
@@ -46,6 +47,14 @@ namespace cnz
 	private:
 		
 		cnz::Player * playerObj = nullptr; // object for the player.
+
+		//Load enemies // Create multiple enemies using these with only loading one .obj
+		cnz::Enemies* sentry = nullptr; //Sentry enemy : Bowman
+		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
+		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
+		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
+		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy
+
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;
 
@@ -61,6 +70,10 @@ namespace cnz
 		bool a = false;
 		bool s = false;
 		bool d = false;
+		bool cw = true;
+		bool ca = true;
+		bool cs = true;
+		bool cd = true;
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
