@@ -44,12 +44,13 @@ namespace cherry
 			myCubeMaps[name] = { value, sampler };
 		}
 
-		// loads a material from a MaterialTemplateLibrary 
-		bool LoadMtl(std::string filePath);
+		// loads a material from a MaterialTemplateLibrary. You can also pass the sampler the mateiral uses.
+		bool LoadMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr);
 
 		// generates a material using an MTL file, and reutrns said material. Make sure to set the lighting information.
+		// pass the sampler if you so choose.
 		// also takes in a vertex and fragment shader
-		static cherry::Material::Sptr GenerateMtl(std::string filePath, std::string vs = "res/lighting.vs.glsl", std::string fs = "res/blinn-phong.fs.glsl");
+		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = "res/lighting.vs.glsl", std::string fs = "res/blinn-phong.fs.glsl");
 
 
 	private:

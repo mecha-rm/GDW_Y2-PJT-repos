@@ -63,7 +63,7 @@ void cherry::Material::Apply() {
 // loads from an MTL file
 // Resources:
 
-bool cherry::Material::LoadMtl(std::string filePath)
+bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr& sampler)
 {
 	std::ifstream file(filePath, std::ios::in);
 	std::string line; // a single line form a file
@@ -210,14 +210,14 @@ bool cherry::Material::LoadMtl(std::string filePath)
 }
 
 // creates a material using and MTL file and returns it.
-cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, std::string vs, std::string fs)
+cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler, std::string vs, std::string fs)
 {
 	Shader::Sptr shader = std::make_shared<cherry::Shader>();
 	shader->Load(vs.c_str(), fs.c_str());
 
 	cherry::Material::Sptr tempMat = std::make_shared<cherry::Material>(shader);
 	
-	tempMat->LoadMtl(filePath);
+	tempMat->LoadMtl(filePath, sampler);
 
 	return tempMat;
 }

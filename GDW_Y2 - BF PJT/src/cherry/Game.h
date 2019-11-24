@@ -11,7 +11,7 @@
 #include "Mesh.h"
 #include "objects/Primitives.h"
 #include "Camera.h" // camera
-#include "Light.h"
+#include "LightManager.h"
 
 // System Library Includes
 #include <iostream>
@@ -84,13 +84,22 @@ namespace cherry
 
 		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
 		// if false is returned, then the object is already in the m_Scene.
-		bool addObject(cherry::Object* obj);
+		bool AddObject(cherry::Object* obj);
 
 		// adds an object to the current registry of the game.
-		bool addObject(cherry::Object* obj, std::string scene);
+		bool AddObject(cherry::Object* obj, std::string scene);
 
 		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
-		bool removeObject(cherry::Object* obj);
+		bool RemoveObject(cherry::Object* obj);
+
+		// gets an object from the current scene
+		cherry::Object* GetSceneObject(unsigned int index) const;
+
+		// gets an object from the provided scene
+		cherry::Object * GetSceneObject(unsigned int index, std::string scene) const;
+
+		// gets the total amount of objects
+		unsigned int GetObjectCount() const;
 
 		// runs the game
 		void Run();
@@ -187,7 +196,7 @@ namespace cherry
 		std::vector<Object*> objects;
 
 		// the lights in the current scene
-		std::vector<Light*> lights;
+		std::vector<Light*> * lights;
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;
