@@ -11,10 +11,10 @@ namespace cherry
 	public:
 
 		// constructor
-		Light(const std::string a_Scene, cherry::Vec3 a_LightColor, cherry::Vec3 a_LightPos, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
+		Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry::Vec3 a_LightColor, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
 
 		// constructor
-		Light(const std::string a_Scene, glm::vec3 a_LightColor, glm::vec3 a_LightPos, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
+		Light(const std::string a_Scene, glm::vec3 a_LightPos, glm::vec3 a_LightColor, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation);
 
 		
 		// gets the m_Scene the light is part of.
@@ -68,19 +68,33 @@ namespace cherry
 		void SetLightColor(glm::vec3 clr);
 
 		// gets the ambient color of the light in decimal form [0, 1]
+		// these values are used for textureless objects
 		cherry::Vec3 GetAmbientColor() const;
 
 		// gets the ambient color of the light in decimal form [0, 1]
+		// these values are used for textureless objects
 		glm::vec3 GetAmbientColorGLM() const;
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
+		// these values are used for textureless objects
 		void SetAmbientColor(float x, float y, float z);
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
+		// these values are used for textureless objects
 		void SetAmbientColor(cherry::Vec3 ambientClr);
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
+		// these values are used for textureless objects
 		void SetAmbientColor(glm::vec3 ambientClr);
+
+		// gets the ambient power
+		float GetAmbientPower() const;
+
+		// sets the ambient power; thi cannot be negative.
+		void SetAmbientPower(float ambientPower);
+
+
+
 
 		// gets the light specular power
 		float GetLightSpecularPower() const;
@@ -89,7 +103,7 @@ namespace cherry
 		void SetLightSpecularPower(float specPower);
 
 		// gets the light shininess (ranges from [0 to 256])
-		float GetLightShiniess() const;
+		float GetLightShininess() const;
 
 		// sets the light shininess
 		void SetLightShininess(float shininess);
@@ -99,12 +113,31 @@ namespace cherry
 
 		// sets hte light attenuation
 		void SetLightAttenuation(float attenuation);
+		
+		
+		// void SetSampler(TextureSampler::Sptr sampler);
 
-		// generates a material with the current values provided. No texture is applied.
-		cherry::Material::Sptr GenerateMaterial() const;
+		// generates a material with the current values provided. No texture is applied, and default values are used.
+		cherry::Material::Sptr GenerateMaterial(const TextureSampler::Sptr& sampler = nullptr) const;
 	
-		// generates a material with the current light values, as well as a texture.
-		cherry::Material::Sptr GenerateMaterial(std::string texturePath) const;
+		// generates a material using the lighting setup, and a material template library file.
+		// if a sampler isn't being used, it should just be set to nullptr
+		cherry::Material::Sptr GenerateMaterial(std::string mtllib, const TextureSampler::Sptr & sampler = nullptr);
+
+		// generates a material with the current light values, as well as a texture. Set the weight to 1.0 to make the texture fully 
+		// if a sampler isn't being used, it should just be set to nullptr
+		// the texture path should be an image. Weight ranges from [0, 1]
+		cherry::Material::Sptr GenerateMaterial(std::string texturePath, float weight, const TextureSampler::Sptr& sampler = nullptr) const;
+
+		// generates a material with the current light values, as well as two provided texture.
+		// the weights determine how they're mixed. Weights cannot be greater than 1.
+		// if a sampler isn't being used, it should just be set to nullptr
+		cherry::Material::Sptr GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler = nullptr) const;
+
+		// generates a material with the current light values, as well as two provided texture.
+		// the weights determine how they're mixed. Weights must be in the [0, 1] range.
+		// if a sampler isn't being used, it should just be set to nullptr
+		cherry::Material::Sptr GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler = nullptr) const;
 
 		// toString function for a light
 		std::string ToString() const;
@@ -122,6 +155,7 @@ namespace cherry
 		float m_LightSpecPower; // specular power
 		float m_LightShininess; // ranges from 0 to 256.
 		float m_LightAttenuation; // light area of effect/distance
+
 	protected:
 	};
 }

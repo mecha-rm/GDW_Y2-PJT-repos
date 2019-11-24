@@ -4,12 +4,23 @@
 
 // constructor
 cherry::Light::Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry::Vec3 a_LightColor, cherry::Vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
-	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_LightColor(a_LightColor), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
-{}
+	: m_Scene(a_Scene)
+{
+	// setting the values
+	SetLightPosition(a_LightPos);
+	SetLightColor(a_LightColor);
+
+	SetAmbientColor(a_AmbientColor);
+	SetAmbientPower(a_AmbientPower);
+
+	SetLightSpecularPower(a_LightSpecPower);
+	SetLightShininess(a_LightShininess);
+	SetLightAttenuation(m_LightAttenuation);
+}
 
 // constructor
 cherry::Light::Light(const std::string a_Scene, glm::vec3 a_LightPos, glm::vec3 a_LightColor, glm::vec3 a_AmbientColor, float a_AmbientPower, float a_LightSpecPower, float a_LightShininess, float a_LightAttenuation)
-	: m_Scene(a_Scene), m_LightPos(a_LightPos), m_LightColor(a_LightColor), m_AmbientColor(a_AmbientColor), m_AmbientPower(a_AmbientPower), m_LightSpecPower(a_LightSpecPower), m_LightShininess(a_LightShininess), m_LightAttenuation(a_LightAttenuation)
+	:Light(a_Scene, Vec3(a_LightPos), Vec3(a_LightColor), Vec3(a_AmbientColor), a_AmbientPower, a_LightSpecPower, a_LightShininess, a_LightAttenuation)
 {}
 
 
@@ -90,6 +101,14 @@ void cherry::Light::SetAmbientColor(cherry::Vec3 ambientClr)
 // sets hte ambient color
 void cherry::Light::SetAmbientColor(glm::vec3 ambientClr) { SetAmbientColor(cherry::Vec3(ambientClr)); }
 
+// gets the ambient light power
+float cherry::Light::GetAmbientPower() const { return m_AmbientPower; }
+
+// sets the ambient power of the light
+void cherry::Light::SetAmbientPower(float ambientPower) { m_AmbientPower = (ambientPower < 0.0F) ? 0.0F : ambientPower; }
+
+
+
 // gets hte specular power
 float cherry::Light::GetLightSpecularPower() const { return m_LightSpecPower; }
 
@@ -101,7 +120,7 @@ void cherry::Light::SetLightSpecularPower(float specPower)
 }
 
 // gets the light shininess
-float cherry::Light::GetLightShiniess() const { return m_LightShininess; }
+float cherry::Light::GetLightShininess() const { return m_LightShininess; }
 
 // sets the light shininess
 void cherry::Light::SetLightShininess(float shininess) 
@@ -123,15 +142,40 @@ void cherry::Light::SetLightAttenuation(float attenuation)
 }
 
 // generates a material with the current light values
-cherry::Material::Sptr cherry::Light::GenerateMaterial() const { return GenerateMaterial("res/images/default.png"); }
+cherry::Material::Sptr cherry::Light::GenerateMaterial(const TextureSampler::Sptr& sampler) const { return GenerateMaterial("res/images/default.png", 1.0F); }
 
-// generates a material with the current light values, and a texture.
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath) const
+// generates a material using a material lib file.
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string mtllib, const TextureSampler::Sptr& sampler)
+{
+	// the material
+	Material::Sptr material = GenerateMaterial();
+
+	// loads in the material
+	material->LoadMtl(mtllib);
+
+	return material;
+}
+
+// generates a material with one texture
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath, float weight, const TextureSampler::Sptr& sampler) const
+{
+	return GenerateMaterial(texturePath, weight, "", 0.0F, "", 0.0F, sampler);
+}
+
+// generates a material with two textures
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler) const
+{
+	return GenerateMaterial(txt0, wgt0, txt1, wgt1, "", 0.0F, sampler);
+}
+
+// generates a material using a provided texture and weights
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler) const
 {
 	// the m_Scene material
 	Material::Sptr material; // the material
 	Shader::Sptr phong = std::make_shared<Shader>();
 	std::ifstream file; // used for checking if the image file exists.
+	glm::vec3 texWeights; // the weights of all of the textures.
 
 	// used to make the albedo
 	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl"); // the shader
@@ -144,28 +188,67 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath) 
 	material->Set("a_LightSpecPower", m_LightSpecPower);
 	material->Set("a_LightShininess", m_LightShininess);
 	material->Set("a_LightAttenuation", m_LightAttenuation);
-	
-	// if the texture path is not blank.
-	if (texturePath != "")
+
+	// getting the weights of the textures.
+	texWeights.x = (wgt0 < 0.0F) ? 0.0F : (wgt0 > 1.0F) ? 1.0F : wgt0;
+	texWeights.y = (wgt1 < 0.0F) ? 0.0F : (wgt1 > 1.0F) ? 1.0F : wgt1;
+	texWeights.z = (wgt2 < 0.0F) ? 0.0F : (wgt2 > 1.0F) ? 1.0F : wgt2;
+
+
+	// goes through each texture and sees if it the files can be found.
+	for (int i = 0; i < 3; i++)
 	{
-		// opens the file for reading to check if it exists.
-		file.open(texturePath, std::ios::in);
+		// opening the image file to check for available reading
+		if(i == 0)
+		{
+			// if there is no texture, a default is provided
+			if (txt0 == "")
+				txt0 = "res/images/default.png";
+
+			file.open(txt0, std::ios::in);
+		}
+			
+		else if (i == 1)
+		{
+			// if there is no texture, a default is provided
+			if (txt1 == "")
+				txt1 = "res/images/default.png";
+			file.open(txt1, std::ios::in);
+		}
+		else if (i == 2)
+		{
+			// if there is no texture, a default is provided
+			if (txt2 == "")
+				txt2 = "res/images/default.png";
+			file.open(txt2, std::ios::in);
+		}
 
 		if (!file) // file read failure
 		{
-			// throw std::runtime_error("Error. Texture image file could not be found.");
-			texturePath = "res/images/default.png"; // blanks out the texture.
+//#ifndef _DEBUG
+//			throw std::runtime_error("Error. Texture image file could not be found.");
+//#endif // !_DEBUG
+
+			// sets to default texture
+			if(i == 0)
+				txt0 = "res/images/default.png";
+			else if(i == 1)
+				txt1 = "res/images/default.png";
+			else if (i == 2)
+				txt2 = "res/images/default.png";
+
 		}
 
-		file.close(); // closes the file
+		file.close();
 	}
+	
+	file.close();
 
-	// Texture2D::Sptr albedo = Texture2D::LoadFromFile("color-grid.png");
-	// material->Set("s_Albedo", albedo);
-
-	// applies the albedo
-	if(texturePath != "")
-		material->Set("s_Albedo", Texture2D::LoadFromFile(texturePath));
+	// applies the albedo values
+	material->Set("s_Albedos[0]", Texture2D::LoadFromFile(txt0), sampler);
+	material->Set("s_Albedos[1]", Texture2D::LoadFromFile(txt1), sampler);
+	material->Set("s_Albedos[2]", Texture2D::LoadFromFile(txt2), sampler);
+	
 
 	return material;
 }

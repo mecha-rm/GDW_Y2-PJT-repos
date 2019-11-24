@@ -25,25 +25,36 @@ namespace cherry
 	public:
 		// the name and directory of the .obj file
 		// if 'loadMtl' is set to true, then the object loads the texture, which is assumed to be in the section as the .obj file.
+		// remember to call CreateEntity() to add the entity to a scene
 		Object(std::string filePath, bool loadMtl = false);
 
-		// loads in the object with the designated scene.
-		// this AUTOMATICALLY loads in a material, which is presumed to be in the same location as the .obj file.
-		Object(std::string filePath, std::string scene);
+		// loads an ob file using the filePath provided, and puts it in the provided scene.
+		// Use the bool to load the mtl file as well, which is assumed to be of the same name and be in the same location.
+		// this automatically calls CreateEntity() to add the entity into the scene.
+		Object(std::string filePath, std::string scene, bool loadMtl = false);
 
-		// sets the file path for the object, the m_Scene it's in, and it's material. 
-		// If called, CreateEntity() does not need to be called after.
-		Object(std::string filePath, std::string scene, Material::Sptr material);
+		// loads in the object with the designated scene, and an mtl file.
+		// this automatically calls CreateEntity() to add the entity into the scene.
+		Object(std::string filePath, std::string scene, std::string mtl);
 
-		// Objects(verts, indices)
+		// loads an obj file, and places it in the scene with the provided material
+		// it can also load in an .mtl file after loading in the material, which is applied to be in the same location as the .obj file.
+		// this automatically calls CreateEntity().
+		Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl = false);
+
+		// loads in an obj file, adds to the scene, applies the material, then loads in the mtl file.
+		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
+		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl);
+
+
 
 		// destructor
 		~Object();
 
-		// std::string getFile() const;
+		// gets the file path of the requested object.
+		// if there is no file path, it will return a string with the ("") character inside it.
+		std::string GetFilePath() const;
 
-		// sets the file. Make sure to include the file path so that
-		//void setFile(std::string file);
 
 		// gets the name of the object.
 		std::string GetName() const;
@@ -58,25 +69,25 @@ namespace cherry
 		void SetDescription(std::string newDesc);
 
 		// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
-		bool GetSafe();
+		bool GetSafe() const;
 
-		// returns the color as a glm::vec3
-		// this returns only the colour of the first vertex, so if other vertices have different colours, they are not set.
-		glm::vec4 GetColor() const;
+		//// returns the color as a glm::vec3
+		//// this returns only the colour of the first vertex, so if other vertices have different colours, they are not set.
+		//glm::vec4 GetColor() const;
 
-		// sets the colour based on a range of 0 to 255 for the RGB values. Alpha (a) stll ranges from 0.0 to 1.0
-		// this overrides ALL RGB values for all vertices
-		void SetColor(int r, int g, int b, float a = 1.0F);
+		//// sets the colour based on a range of 0 to 255 for the RGB values. Alpha (a) stll ranges from 0.0 to 1.0
+		//// this overrides ALL RGB values for all vertices
+		//void SetColor(int r, int g, int b, float a = 1.0F);
 
-		// sets the colour based on a range of 0.0 to 1.0 (OpenGL default)
-		// this overrides ALL RGBA values for all vertices
-		void SetColor(float r, float g, float b, float a = 1.0F);
+		//// sets the colour based on a range of 0.0 to 1.0 (OpenGL default)
+		//// this overrides ALL RGBA values for all vertices
+		//void SetColor(float r, float g, float b, float a = 1.0F);
 
-		// sets the colour of the mesh. This leaves out the alpha (a) value, which is set to whatever it is for the first vertex.
-		void SetColor(glm::vec3 color);
+		//// sets the colour of the mesh. This leaves out the alpha (a) value, which is set to whatever it is for the first vertex.
+		//void SetColor(glm::vec3 color);
 
-		// sets the colour of the mesh (RGBA [0-1]).
-		void SetColor(glm::vec4 color);
+		//// sets the colour of the mesh (RGBA [0-1]).
+		//void SetColor(glm::vec4 color);
 
 		// makes the mesh rainbow
 		// setRainbow()
@@ -318,6 +329,11 @@ namespace cherry
 		// template<typename T>
 		// void calculateNormals(std::vector<);
 
+		// parent object
+		Object * parent = nullptr;
+
+		std::vector<Object*> children;
+
 		// the string for the file path
 		std::string filePath = "";
 
@@ -340,7 +356,6 @@ namespace cherry
 	protected:
 		// constructor used for default primitives
 		Object();
-		
 
 		// object name
 		std::string name = "";

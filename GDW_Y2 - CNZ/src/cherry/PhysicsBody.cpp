@@ -23,16 +23,16 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
  *** (1): box
  *** (2): sphere
 */
-int cherry::PhysicsBody::getId() const { return id; }
+int cherry::PhysicsBody::GetId() const { return id; }
 
 // gets the object this physics body is attachted to
-cherry::Object* cherry::PhysicsBody::getObject() const { return object; }
+cherry::Object* cherry::PhysicsBody::GetObject() const { return object; }
 
 // sets the object
-void cherry::PhysicsBody::setObject(cherry::Object* obj) { object = obj; }
+void cherry::PhysicsBody::SetObject(cherry::Object* obj) { object = obj; }
 
 // attaches to an object
-cherry::PhysicsBody* cherry::PhysicsBody::attachToObject(cherry::Object* newObj)
+cherry::PhysicsBody* cherry::PhysicsBody::AttachToObject(cherry::Object* newObj)
 {
 	object = newObj;
 	// newObj->AddPhysicsBody(this); // adds the physics body if it isn't there already
@@ -40,42 +40,42 @@ cherry::PhysicsBody* cherry::PhysicsBody::attachToObject(cherry::Object* newObj)
 }
 
 // gets the model position (glm)
-glm::vec3 cherry::PhysicsBody::getModelPositionGLM() const
+glm::vec3 cherry::PhysicsBody::GetModelPositionGLM() const
 {
-	Vec3 mpos = getModelPosition();
+	Vec3 mpos = GetModelPosition();
 	return glm::vec3(mpos.v.x, mpos.v.y, mpos.v.z);
 }
 
 // gets the model position
-cherry::Vec3 cherry::PhysicsBody::getModelPosition() const { return position; }
+cherry::Vec3 cherry::PhysicsBody::GetModelPosition() const { return position; }
 
 // sets the model position
-void cherry::PhysicsBody::setModelPosition(cherry::Vec3 mpos) { position = mpos; }
+void cherry::PhysicsBody::SetModelPosition(cherry::Vec3 mpos) { position = mpos; }
 
 // sets the model position
-void cherry::PhysicsBody::setModelPosition(glm::vec3 mpos) { position = cherry::Vec3(mpos); }
+void cherry::PhysicsBody::SetModelPosition(glm::vec3 mpos) { 
+	position = cherry::Vec3(mpos);
+}
 
 // gets the world position as a GLM vector
-glm::vec3 cherry::PhysicsBody::getWorldPositionGLM() const
+glm::vec3 cherry::PhysicsBody::GetWorldPositionGLM() const
 {
-	Vec3 wpos = getWorldPosition();
+	Vec3 wpos = GetWorldPosition();
 	return glm::vec3(wpos.v.x, wpos.v.y, wpos.v.z);
 }
 
 // returns the world position; objects save their position in world space
-cherry::Vec3 cherry::PhysicsBody::getWorldPosition() const 
+cherry::Vec3 cherry::PhysicsBody::GetWorldPosition() const 
 {
 	// TODO : change this to take a cherry::Vec3
-	//return (object == nullptr ? position : object->GetPosition() + position);
-	// TODO: undo this temporary change used to debug collisions. IMPORTANT!
-	return position;
+	return (object == nullptr ? position : object->GetPosition() + position);
 }
 
 // sets the world position
-void cherry::PhysicsBody::setWorldPosition(cherry::Vec3 wpos) { position = wpos; }
+void cherry::PhysicsBody::SetWorldPosition(cherry::Vec3 wpos) { position = wpos; }
 
 // sets the world position
-void cherry::PhysicsBody::setWorldPosition(glm::vec3 wpos) { position = cherry::Vec3(wpos); }
+void cherry::PhysicsBody::SetWorldPosition(glm::vec3 wpos) { position = cherry::Vec3(wpos); }
 
 // calculations collision between objects
 bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
@@ -85,11 +85,11 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		return false;
 
 	// no physics body type attachted
-	if (p1->getId() == 0 || p2->getId() == 0)
+	if (p1->GetId() == 0 || p2->GetId() == 0)
 		return false;
 
 	// AABB Collision
-	if (p1->getId() == 1 && p2->getId() == 1)
+	if (p1->GetId() == 1 && p2->GetId() == 1)
 	{
 		cherry::PhysicsBodyBox * temp1 = (cherry::PhysicsBodyBox*)p1;
 		cherry::PhysicsBodyBox * temp2 = (cherry::PhysicsBodyBox*)p2;
@@ -97,52 +97,52 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		//// origin is the centre of the 
 		//// minimum values of A
 		//util::math::Vec3 minA (
-		//	temp1->getWorldPosition().GetX() - temp1->getWidth() / 2.0F, 
-		//	temp1->getWorldPosition().GetY() - temp1->getHeight() / 2.0F, 
-		//	temp1->getWorldPosition().GetZ() - temp1->getDepth() / 2.0F
+		//	temp1->GetWorldPosition().GetX() - temp1->getWidth() / 2.0F, 
+		//	temp1->GetWorldPosition().GetY() - temp1->getHeight() / 2.0F, 
+		//	temp1->GetWorldPosition().GetZ() - temp1->getDepth() / 2.0F
 		//);
 
 		//// maximum values of A
 		//util::math::Vec3 maxA(
-		//	temp1->getWorldPosition().GetX() + temp1->getWidth() / 2.0F,
-		//	temp1->getWorldPosition().GetY() + temp1->getHeight() / 2.0F,
-		//	temp1->getWorldPosition().GetZ() + temp1->getDepth() / 2.0F
+		//	temp1->GetWorldPosition().GetX() + temp1->getWidth() / 2.0F,
+		//	temp1->GetWorldPosition().GetY() + temp1->getHeight() / 2.0F,
+		//	temp1->GetWorldPosition().GetZ() + temp1->getDepth() / 2.0F
 		//);
 
 		//// minimum values of B
 		//util::math::Vec3 minB(
-		//	temp2->getWorldPosition().GetX() - temp2->getWidth() / 2.0F,
-		//	temp2->getWorldPosition().GetY() - temp2->getHeight() / 2.0F,
-		//	temp2->getWorldPosition().GetZ() - temp2->getDepth() / 2.0F
+		//	temp2->GetWorldPosition().GetX() - temp2->getWidth() / 2.0F,
+		//	temp2->GetWorldPosition().GetY() - temp2->getHeight() / 2.0F,
+		//	temp2->GetWorldPosition().GetZ() - temp2->getDepth() / 2.0F
 		//);
 
 		//// maximum values of B
 		//util::math::Vec3 maxB(
-		//	temp2->getWorldPosition().GetX() + temp2->getWidth() / 2.0F,
-		//	temp2->getWorldPosition().GetY() + temp2->getHeight() / 2.0F,
-		//	temp2->getWorldPosition().GetZ() + temp2->getDepth() / 2.0F
+		//	temp2->GetWorldPosition().GetX() + temp2->getWidth() / 2.0F,
+		//	temp2->GetWorldPosition().GetY() + temp2->getHeight() / 2.0F,
+		//	temp2->GetWorldPosition().GetZ() + temp2->getDepth() / 2.0F
 		//);
 
 		//return util::math::aabbCollision(minA, maxA, minB, maxB);
 
-		return util::math::aabbCollision(temp1->getWorldPosition().v, temp1->getWidth(), temp1->getHeight(), temp1->getDepth(),
-										 temp2->getWorldPosition().v, temp2->getWidth(), temp2->getHeight(), temp2->getDepth());
+		return util::math::aabbCollision(temp1->GetWorldPosition().v, temp1->GetWidth(), temp1->GetHeight(), temp1->GetDepth(),
+										 temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
 	}
 	// Sphere Collision
-	else if (p1->getId() == 2 && p2->getId() == 2)
+	else if (p1->GetId() == 2 && p2->GetId() == 2)
 	{
 		// converts to spehre
 		cherry::PhysicsBodySphere* temp1 = (cherry::PhysicsBodySphere*)p1;
 		cherry::PhysicsBodySphere* temp2 = (cherry::PhysicsBodySphere*)p2;
 
-		return util::math::sphereCollision(temp1->getWorldPosition().v, temp1->getRadius(), temp2->getWorldPosition().v, temp2->getRadius());
+		return util::math::sphereCollision(temp1->GetWorldPosition().v, temp1->GetRadius(), temp2->GetWorldPosition().v, temp2->GetRadius());
 	}
 
 	// AABB - Sphere Collision
-	else if ((p1->getId() == 1 && p2->getId() == 2) || (p1->getId() == 2 && p2->getId() == 1))
+	else if ((p1->GetId() == 1 && p2->GetId() == 2) || (p1->GetId() == 2 && p2->GetId() == 1))
 	{
 		// if the first object is an aabb,  meaning that the other object is a sphere
-		if (p1->getId() == 1) // calls the collision function again, but swaps the variables
+		if (p1->GetId() == 1) // calls the collision function again, but swaps the variables
 		{
 			return Collision(p2, p1);
 		}
@@ -151,8 +151,8 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		cherry::PhysicsBodySphere* temp1 = (cherry::PhysicsBodySphere*)p1;
 		cherry::PhysicsBodyBox* temp2 = (cherry::PhysicsBodyBox*)p2;
 
-		return util::math::sphereAABBCollision(temp1->getWorldPosition().v, temp1->getRadius(),
-			temp2->getWorldPosition().v, temp2->getWidth(), temp2->getHeight(), temp2->getDepth());
+		return util::math::sphereAABBCollision(temp1->GetWorldPosition().v, temp1->GetRadius(),
+			temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
 	}
 
 	return false;
@@ -182,27 +182,27 @@ cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimen
 {}
 
 // gets the width
-float cherry::PhysicsBodyBox::getWidth() const { return width; }
+float cherry::PhysicsBodyBox::GetWidth() const { return width; }
 
 // sets the width
-void cherry::PhysicsBodyBox::setWidth(float newWidth) { width = newWidth; }
+void cherry::PhysicsBodyBox::SetWidth(float newWidth) { width = newWidth; }
 
 // returns the height
-float cherry::PhysicsBodyBox::getHeight() const { return height; }
+float cherry::PhysicsBodyBox::GetHeight() const { return height; }
 
 // sets the height
-void cherry::PhysicsBodyBox::setHeight(float newHeight) { height = newHeight; }
+void cherry::PhysicsBodyBox::SetHeight(float newHeight) { height = newHeight; }
 
 // returns depth
-float cherry::PhysicsBodyBox::getDepth() const { return depth; }
+float cherry::PhysicsBodyBox::GetDepth() const { return depth; }
 
 // sets the depth
-void cherry::PhysicsBodyBox::setDepth(float newDepth) { depth = newDepth; }
+void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
 
 // toString
-std::string cherry::PhysicsBodyBox::toString() const
+std::string cherry::PhysicsBodyBox::ToString() const
 {
-	return "Model Position: " + getModelPosition().v.toString() +
+	return "Model Position: " + GetModelPosition().v.toString() +
 		" | Width: " + std::to_string(width) +
 		" | Height: " + std::to_string(height) +
 		" | Depth: " + std::to_string(depth);
@@ -218,12 +218,12 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 	: PhysicsBody(2, position), radius(radius) {}
 
 // gets the radius
-float cherry::PhysicsBodySphere::getRadius() const { return radius; }
+float cherry::PhysicsBodySphere::GetRadius() const { return radius; }
 
-void cherry::PhysicsBodySphere::setRadius(float r) { radius = r; }
+void cherry::PhysicsBodySphere::SetRadius(float r) { radius = r; }
 
 // toString function
-std::string cherry::PhysicsBodySphere::toString() const
+std::string cherry::PhysicsBodySphere::ToString() const
 {
-	return "Model Position: " + getModelPosition().ToString() + " | Radius: " + std::to_string(radius);
+	return "Model Position: " + GetModelPosition().ToString() + " | Radius: " + std::to_string(radius);
 }

@@ -348,11 +348,11 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 }
 
 // adds an object to the m_Scene
-bool cherry::Game::addObject(cherry::Object* obj) { return util::addToVector(objects, obj); }
+bool cherry::Game::AddObject(cherry::Object* obj) { return AddObject(obj, currentScene); }
 
 
 // adds an object to the m_Scene.
-bool cherry::Game::addObject(cherry::Object* obj, std::string scene)
+bool cherry::Game::AddObject(cherry::Object* obj, std::string scene)
 {
 	// adds the object to the list of objects.
 	bool added = util::addToVector(objects, obj);
@@ -364,11 +364,27 @@ bool cherry::Game::addObject(cherry::Object* obj, std::string scene)
 }
 
 // removes an object from the objects vector.
-bool cherry::Game::removeObject(cherry::Object* obj) 
+bool cherry::Game::RemoveObject(cherry::Object* obj) 
 { 
 	return util::removeFromVector(objects, obj); 
 	delete obj;
 }
+
+// gets an object from the current scene
+cherry::Object* cherry::Game::GetSceneObject(unsigned int index) const { return GetSceneObject(index, currentScene); }
+
+// gets an object from the provided scene
+cherry::Object* cherry::Game::GetSceneObject(unsigned int index, std::string scene) const
+{
+	// TODO: check for proper scene
+	if (index > objects.size())
+		return nullptr;
+	else
+		return objects.at(index);
+}
+
+// gets the total amount of objects
+unsigned int cherry::Game::GetObjectCount() const { return objects.size(); }
 
 
 void cherry::Game::Initialize() {

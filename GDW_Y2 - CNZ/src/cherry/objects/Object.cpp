@@ -327,12 +327,17 @@ bool cherry::Object::LoadObject(bool loadMtl)
 	// unlike with the default primitives, the amount of vertices corresponds to how many indicies there are, and the values are set accordingly.
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
 
-	// TODO: add variable so user can ask for material. Basic primitives don't really need to have materials added, do they?
+	// the object loader has a material associated with it, and said material should be loaded
 	// if the .obj file had a material associated with it.
-	// if (mtllib != "")
-	// {
-	// 
-	// }
+	if (mtllib != "" && loadMtl)
+	{
+		// adds the file path to the material
+		std::string fpStr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
+		mtllib = fpStr + mtllib;
+
+		// generates the material
+		material = Material::GenerateMtl(mtllib);
+	}
 
 	return (safe = true); // returns whether the object was safely loaded.
 }

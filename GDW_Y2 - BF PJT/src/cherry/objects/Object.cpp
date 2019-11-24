@@ -67,7 +67,9 @@ cherry::Object::Object(std::string filePath, std::string scene, std::string mtl)
 cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl) : Object(filePath, false)
 {
 	// gets the .obj file name, but replaces the file extension to find the .mtl file.
-	material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
+	if(loadMtl)
+		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
+
 	CreateEntity(scene, material);
 }
 
@@ -543,8 +545,8 @@ bool cherry::Object::AddPhysicsBody(cherry::PhysicsBody* body)
 	if (body == nullptr)
 		return false;
 
-	return util::addToVector(bodies, body->attachToObject(this));
-	// body->attachToObject(this);
+	return util::addToVector(bodies, body->AttachToObject(this));
+	// body->AttachToObject(this);
 }
 
 // returns 'true' if removed, false if not.

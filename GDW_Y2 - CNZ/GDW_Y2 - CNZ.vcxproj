@@ -360,6 +360,7 @@
     <ClInclude Include="src\cherry\TextureSampler.h" />
     <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\cherry\utils\math\Interpolation.h" />
+    <ClInclude Include="src\cherry\WorldTransform.h" />
     <ClInclude Include="src\Enemies.h" />
     <ClInclude Include="src\EnemyTypes\Bastion.h" />
     <ClInclude Include="src\EnemyTypes\Marauder.h" />

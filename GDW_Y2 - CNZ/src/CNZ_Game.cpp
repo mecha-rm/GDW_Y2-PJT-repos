@@ -1,6 +1,7 @@
 #include "CNZ_Game.h"
 #include <GLM/gtc/matrix_transform.hpp> // camera modes
 
+
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
 
@@ -132,8 +133,8 @@ cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 	float cbDist = 0.0f;
 	for (int i = 0; i < obstaclePBs.size(); i++) {
 		cherry::Vec3 delta;
-		delta.SetX(obstaclePBs[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX());
-		delta.SetY(obstaclePBs[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY());
+		delta.SetX(obstaclePBs[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX());
+		delta.SetY(obstaclePBs[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY());
 
 		float angleFromPlayer = getXYAngle(delta);
 		float dAngle = angleFromPlayer - getXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
@@ -174,10 +175,10 @@ void cnz::CNZ_Game::LoadContent()
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
 
-	testObj->GetPhysicsBodies()[0]->setModelPosition(testObj->GetPosition());
+	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
-	addObject(playerObj);
-	addObject(testObj);
+	AddObject(playerObj);
+	AddObject(testObj);
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
@@ -229,20 +230,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	if (playerCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
 		std::cout << "There are " << playerCollisions.size() << " collisions this update!" << std::endl;
 		for (int i = 0; i < playerCollisions.size(); i++) {
-			cherry::Vec3 dP = playerCollisions[i]->getWorldPosition() - playerObj->GetPosition();
+			cherry::Vec3 dP = playerCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
 			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
-				if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+				if ((playerCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
 					cs = false;
 				}
-				else if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+				else if ((playerCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
 					cw = false;
 				}
 			}
 			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
-				if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+				if ((playerCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
 					ca = false;
 				}
-				else if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+				else if ((playerCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
 					cd = false;
 				}
 			}
@@ -250,10 +251,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	}
 	
 	// side checks
-	//if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) // right of the object
-	//if ((playerCollisions[i]->getWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) // left of the object
-	//if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
-	//if ((playerCollisions[i]->getWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
+	//if ((playerCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) // right of the object
+	//if ((playerCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) // left of the object
+	//if ((playerCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
+	//if ((playerCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
 
 	// moving the player.
 	if (w && cw) { // up
@@ -285,15 +286,15 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			playerObj->SetPosition(playerObj->GetPosition() + dashVec);
 		}
 		else {
-			cherry::Vec3 dP = closestObstacle->getWorldPosition() - playerObj->GetPosition();
+			cherry::Vec3 dP = closestObstacle->GetWorldPosition() - playerObj->GetPosition();
 			cherry::Vec3 dPN;
 			if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
 				float tempX = 0;
 				if (dP.GetX() < 0) {
-					tempX = dP.GetX() + ((playerObj->getPBodySize().GetX() + closestObstacle->getObject()->getPBodySize().GetX()) / 2);
+					tempX = dP.GetX() + ((playerObj->getPBodySize().GetX() + closestObstacle->GetObject()->getPBodySize().GetX()) / 2);
 				}
 				else {
-					tempX = dP.GetX() - ((playerObj->getPBodySize().GetX() + closestObstacle->getObject()->getPBodySize().GetX()) / 2);
+					tempX = dP.GetX() - ((playerObj->getPBodySize().GetX() + closestObstacle->GetObject()->getPBodySize().GetX()) / 2);
 				}
 				float angle = getXYAngle(dP);
 				float tempY = tempX / tanf(angle);
@@ -303,10 +304,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			else {
 				float tempY = 0;
 				if (dP.GetY() < 0) {
-					tempY = dP.GetY() + ((playerObj->getPBodySize().GetY() + closestObstacle->getObject()->getPBodySize().GetY()) / 2);
+					tempY = dP.GetY() + ((playerObj->getPBodySize().GetY() + closestObstacle->GetObject()->getPBodySize().GetY()) / 2);
 				}
 				else {
-					tempY = dP.GetY() - ((playerObj->getPBodySize().GetY() + closestObstacle->getObject()->getPBodySize().GetY()) / 2);
+					tempY = dP.GetY() - ((playerObj->getPBodySize().GetY() + closestObstacle->GetObject()->getPBodySize().GetY()) / 2);
 				}
 				float angle = getXYAngle(dP);
 				float tempX = tempY * tanf(angle);
@@ -336,14 +337,14 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	}
 
 	// update physics bodies
-	playerObj->GetPhysicsBodies()[0]->setModelPosition(playerObj->GetPosition());
+	playerObj->GetPhysicsBodies()[0]->SetModelPosition(playerObj->GetPosition());
 
 	//cherry::Vec3 dPpb = playerObj->GetPhysicsBodies()[0]->getModelPosition() - playerObj->GetPosition();
-	//std::cout << "PBPos: " << playerObj->GetPhysicsBodies()[0]->getWorldPosition().ToString() << std::endl;
-	//std::cout << "P2Pos: " << testObj->GetPhysicsBodies()[0]->getWorldPosition().ToString() << std::endl;
+	//std::cout << "PBPos: " << playerObj->GetPhysicsBodies()[0]->GetWorldPosition().ToString() << std::endl;
+	//std::cout << "P2Pos: " << testObj->GetPhysicsBodies()[0]->GetWorldPosition().ToString() << std::endl;
 	//std::cout << "PWPos: " << playerObj->GetPosition().ToString() << std::endl;
 	//std::cout << "x: " << playerObj->GetPosition().GetX() << "	y: " << playerObj->GetPosition().GetY() << std::endl;
-	//std::cout << "x: " << playerObj->GetPhysicsBodies()[0]->getWorldPosition().GetX() << "	y: " << playerObj->GetPhysicsBodies()[0]->getWorldPosition().GetY() << std::endl;
+	//std::cout << "x: " << playerObj->GetPhysicsBodies()[0]->GetWorldPosition().GetX() << "	y: " << playerObj->GetPhysicsBodies()[0]->GetWorldPosition().GetY() << std::endl;
 
 
 	if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {

@@ -1,6 +1,10 @@
 #include "LightManager.h"
 #include "utils/Utils.h"
 
+// instantiation
+std::vector<std::string> cherry::LightManager::scenes;
+
+std::vector<std::vector<cherry::Light>*> cherry::LightManager::sceneLights;
 
 // adds a scene to the light manager.
 bool cherry::LightManager::AddScene(const std::string sceneName)
@@ -12,18 +16,20 @@ bool cherry::LightManager::AddScene(const std::string sceneName)
 	}
 	else // if the scene doesn't exist in the list.
 	{
+		// adds a scene, and an associated list of lights.
 		scenes.push_back(sceneName);
+		sceneLights.push_back(new std::vector<cherry::Light>());
 		return true;
 	}
 }
 
 // checks if a scene name has been taken.
-bool cherry::LightManager::SceneExists(const std::string scene)
+bool cherry::LightManager::SceneExists(const std::string sceneName)
 {
 	// checks if the scene name has been used.
 	for (std::string scn : scenes)
 	{
-		if (scn == scene)
+		if (scn == sceneName)
 			return true;
 	}
 
@@ -56,7 +62,7 @@ bool cherry::LightManager::AddLight(const std::string sceneName, const cherry::L
 }
 
 // returns a light list for a scene.
-std::vector<cherry::Light>* cherry::LightManager::GetLightList(std::string sceneName) const
+std::vector<cherry::Light>* cherry::LightManager::GetLightList(std::string sceneName)
 {
 	// finds if a scene exists
 	for (int i = 0; i < scenes.size(); i++)
@@ -69,4 +75,49 @@ std::vector<cherry::Light>* cherry::LightManager::GetLightList(std::string scene
 	}
 
 	return nullptr;
+}
+
+// gets all lights in the scene as a single light.
+cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
+{
+	Light* sceneLight = nullptr;
+	std::vector<Light> * lights = GetLightList(sceneName); // the list of lights
+
+
+	cherry::Vec3 lightPos; // light position
+	cherry::Vec3 lightClr; // colour
+
+	cherry::Vec3 ambiClr; // ambient colour
+	float ambiPwr = 0; // ambient power
+
+	float lightSpecPwr = 0; // specular power
+	float lightShine = 0; // shininess
+	float lightAtten = 0; // attenuation
+
+	// adds together all the values for each light
+	for (int i = 0; i < lights->size(); i++)
+	{
+		lightPos += lights->at(i).GetLightPosition();
+		lightClr += lights->at(i).GetLightColor();
+
+		ambiClr += lights->at(i).GetAmbientColor();
+		ambiPwr += lights->at(i).GetAmbientPower();
+
+		lightSpecPwr += lights->at(i).GetLightSpecularPower();
+		lightShine += lights->at(i).GetLightShininess();
+		lightAtten += lights->at(i).GetLightAttenuation();
+	}
+
+	// creates the light for the whole scene
+	sceneLight = new Light(sceneName,
+		lightPos / lights->size(),
+		lightClr / lights->size(),
+		ambiClr / lights->size(),
+		ambiPwr / lights->size(),
+		lightSpecPwr / lights->size(),
+		lightShine / lights->size(),
+		lightAtten / lights->size()
+	);
+
+	return sceneLight;
 }

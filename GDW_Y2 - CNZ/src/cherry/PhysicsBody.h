@@ -37,44 +37,44 @@ namespace cherry
 		 *** (1): box
 		 *** (2): sphere
 		*/
-		int getId() const;
+		int GetId() const;
 
 		// gets the object this physics body is attachted to
-		cherry::Object* getObject() const;
+		cherry::Object* GetObject() const;
 
 		// sets the object the physics body is attachted to
-		void setObject(cherry::Object * obj);
+		void SetObject(cherry::Object * obj);
 
 		// attachs the physics body to an object, returning itself.
 		// NOTE: this does not save the body to the object's list.
-		cherry::PhysicsBody* attachToObject(cherry::Object * newObj);
+		cherry::PhysicsBody* AttachToObject(cherry::Object * newObj);
 
 		// gets the model position
-		glm::vec3 getModelPositionGLM() const;
+		glm::vec3 GetModelPositionGLM() const;
 
 		// gets the model position
-		cherry::Vec3 getModelPosition() const;
+		cherry::Vec3 GetModelPosition() const;
 
 		// sets the model position
-		void setModelPosition(cherry::Vec3 mpos);
+		void SetModelPosition(cherry::Vec3 mpos);
 
 		// set model position (GLM version)
-		void setModelPosition(glm::vec3 mpos);
+		void SetModelPosition(glm::vec3 mpos);
 
 
 		// get the world position as a glm vector
-		glm::vec3 getWorldPositionGLM() const;
+		glm::vec3 GetWorldPositionGLM() const;
 
 		// gets the world position
 		// if no object is attachted, then the model position is returned.
-		cherry::Vec3 getWorldPosition() const;
+		cherry::Vec3 GetWorldPosition() const;
 
 		// sets the world position
 		// if no object is attachted, then the model position is returned.
-		void setWorldPosition(cherry::Vec3 wpos);
+		void SetWorldPosition(cherry::Vec3 wpos);
 
 		// sets the world position
-		void setWorldPosition(glm::vec3 wpos);
+		void SetWorldPosition(glm::vec3 wpos);
 
 		// virtual void GetMesh() = 0;
 
@@ -86,7 +86,7 @@ namespace cherry
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
 
 		// the toString function for physics bodies. This is basically here just so that this is an abstract class.
-		virtual std::string toString() const = 0;
+		virtual std::string ToString() const = 0;
 
 	private:
 		cherry::Vec3 position; // position
@@ -118,25 +118,25 @@ namespace cherry
 		PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimensions);
 
 		// gets the width (size on x-axis)
-		float getWidth() const;
+		float GetWidth() const;
 
 		// sets width
-		void setWidth(float newWidth);
+		void SetWidth(float newWidth);
 
 		// gets the height (size on y-axis)
-		float getHeight() const;
+		float GetHeight() const;
 
 		// sets height (size on y-axis)
-		void setHeight(float newHeight);
+		void SetHeight(float newHeight);
 
 		// gets the depth (size on z-axis)
-		float getDepth() const;
+		float GetDepth() const;
 
 		// sets depth (size on z-axis)
-		void setDepth(float newDepth);
+		void SetDepth(float newDepth);
 
 		// toString
-		virtual std::string toString() const;
+		virtual std::string ToString() const;
 
 	private:
 		float width = 0, height = 0, depth = 0;
@@ -158,13 +158,13 @@ namespace cherry
 		PhysicsBodySphere(cherry::Vec3 position, float radius);
 
 		// gets the radius
-		float getRadius() const;
+		float GetRadius() const;
 
 		// sets the radius; if negative is passed, the absolute value is received.
-		void setRadius(float r);
+		void SetRadius(float r);
 
-		// toString function
-		std::string toString() const;
+		// ToString function
+		std::string ToString() const;
 
 	private:
 		float radius = 0.0F; // radius of the sphere.
