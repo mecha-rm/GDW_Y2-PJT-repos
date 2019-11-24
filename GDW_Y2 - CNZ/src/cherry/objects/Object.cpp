@@ -602,7 +602,6 @@ float cherry::Object::getPBodyDepth()
 	return this->getPBodySize().GetZ() / 2;
 }
 
-
 // updates the object
 void cherry::Object::Update(float deltaTime)
 {

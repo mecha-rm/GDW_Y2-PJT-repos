@@ -56,6 +56,9 @@ namespace cnz
 		// get draw pbody
 		bool getDrawPBody();
 
+		// get pbody size
+		cherry::Vec3 getPBodySize();
+
 		// get pbody width, height and depth.
 		float getPBodyWidth();
 		float getPBodyHeight();

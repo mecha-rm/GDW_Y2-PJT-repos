@@ -116,6 +116,11 @@ bool cnz::Enemies::getDrawPBody()
 	return this->drawPBody;
 }
 
+cherry::Vec3 cnz::Enemies::getPBodySize()
+{
+	return this->pBodySize;
+}
+
 float cnz::Enemies::getPBodyWidth()
 {
 	return this->getPBodySize().GetX() / 2;
