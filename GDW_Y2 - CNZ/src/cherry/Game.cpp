@@ -17,27 +17,9 @@
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
 #include "objects/Image.h"
+#include "WorldTransform.h"
 
 #include<functional>
-
-struct TempTransform {
-	glm::vec3 Position = glm::vec3(0.0f);
-	glm::vec3 EulerRotation = glm::vec3(0.0f);
-	glm::vec3 Scale = glm::vec3(1.0f);
-
-	// does our TRS for us.
-	glm::mat4 GetWorldTransform() const {
-		return
-			glm::translate(glm::mat4(1.0f), Position) *
-			glm::mat4_cast(glm::quat(glm::radians(EulerRotation))) *
-			glm::scale(glm::mat4(1.0f), Scale)
-			;
-	}
-};
-
-struct UpdateBehaviour {
-	std::function<void(entt::entity e, float dt)> Function;
-};
 
 /*
 	Handles debug messages from OpenGL
@@ -383,6 +365,7 @@ cherry::Object* cherry::Game::GetSceneObject(unsigned int index, std::string sce
 		return objects.at(index);
 }
 
+
 // gets the total amount of objects
 unsigned int cherry::Game::GetObjectCount() const { return objects.size(); }
 
@@ -559,6 +542,8 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
+
+
 	// SAMPLER FOR MIP MAPPING
 	// added for mip mapping. As long as its above the material, it's fine.
 	
@@ -656,9 +641,22 @@ void cherry::Game::LoadContent()
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 
+	// TODO: add sampler
+	LightManager::AddScene(currentScene);
+	LightManager::AddLight(currentScene, Light(currentScene, Vec3(-30.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+		Vec3(0.9F, 0.1F, 0.01F), 0.4F, 0.5F, 256.0F, 0.15F));
+
+	LightManager::AddLight(currentScene, Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1F, 0.2F, 1.0F),
+		Vec3(0.2F, 0.7F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
+
+	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
+	material = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler);
+
+
 		// loads in default objects
 	if (loadDefaults)
 	{
+		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
 		// Creating the objects, storing them, and making them part of the default m_Scene.
@@ -702,15 +700,17 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
 		objects.at(objects.size() - 1)->SetScale(0.1F);
 
-		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj"));
-		Material::Sptr objMat = std::make_shared<Material>(phong);
+		// version 1 (finds .mtl file automatically)
+		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
+			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
 
-		objMat->LoadMtl("res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl"); // material
-		objMat->Set("a_LightPos", { 0, 0, 3 });
-		objMat->Set("a_LightColor", { 0.5f, 0.1f, 0.9f });
-		objMat->Set("a_LightShininess", 256.0f); // MUST be a float
-		objMat->Set("a_LightAttenuation", 0.15f);
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
+		// version 2 (.mtl file manually added)
+		// objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
+		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler),
+		// 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl"));
+		
+
+		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
 		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
 		objects.at(objects.size() - 1)->SetScale(2.0F);
 	}

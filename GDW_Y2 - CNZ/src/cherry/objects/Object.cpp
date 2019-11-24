@@ -3,6 +3,7 @@
 #include "..\utils\Utils.h"
 #include "..\utils\math\Rotation.h"
 #include "..\PhysicsBody.h"
+#include "..\WorldTransform.h"
 
 #include "..\SceneManager.h"
 #include "..\MeshRenderer.h"
@@ -12,26 +13,6 @@
 #include <glm/gtc/quaternion.hpp> 
 #include <glm/gtx/quaternion.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
-
-// used for transforming the mesh
-struct TempTransform {
-	glm::vec3 Position = glm::vec3(0.0f);
-	glm::vec3 EulerRotation = glm::vec3(0.0f);
-	glm::vec3 Scale = glm::vec3(1.0f);
-
-	// does our TRS for us.
-	glm::mat4 GetWorldTransform() const {
-		return
-			glm::translate(glm::mat4(1.0f), Position) *
-			glm::mat4_cast(glm::quat(glm::radians(EulerRotation))) *
-			glm::scale(glm::mat4(1.0f), Scale)
-			;
-	}
-};
-
-struct UpdateBehaviour {
-	std::function<void(entt::entity e, float dt)> Function;
-};
 
 
 // the maximum amount of vertices; this value isn't used
@@ -67,15 +48,36 @@ cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertice
 	LoadObject(loadMtl);
 }
 
-// loads an object into the requested scene
-cherry::Object::Object(std::string filePath, std::string scene) : Object(filePath, true)
+// loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
+cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl) : 
+	Object(filePath, loadMtl)
 {
 	CreateEntity(scene, material);
 }
 
-// creates an object with a m_Scene and material.
-cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material) : Object(filePath)
+// creates an object, puts it in the provided scene, and loads in the mtl file.
+cherry::Object::Object(std::string filePath, std::string scene, std::string mtl)
+	: Object(filePath, false)
 {
+	// creates the entity, and loads in the mtl file.
+	CreateEntity(scene, Material::GenerateMtl(mtl));
+}
+
+// creates an obj file, puts it in a scene, and then applies the material.
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl) : Object(filePath, false)
+{
+	// gets the .obj file name, but replaces the file extension to find the .mtl file.
+	if (loadMtl)
+		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
+
+	CreateEntity(scene, material);
+}
+
+// loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl)
+	:Object(filePath, false)
+{
+	material->LoadMtl(mtl);
 	CreateEntity(scene, material);
 }
 
@@ -87,6 +89,10 @@ cherry::Object::~Object()
 	delete[] vertices;
 	delete[] indices;
 }
+
+
+// gets the file path for the object file.
+std::string cherry::Object::GetFilePath() const { return filePath; }
 
 // gets the name of the object.
 std::string cherry::Object::GetName() const { return name; }
@@ -101,40 +107,40 @@ std::string cherry::Object::GetDescription() const { return description; }
 void cherry::Object::SetDescription(std::string newDesc) { description = newDesc; }
 
 // returns true if the file is safe to use, false if not safe to use.
-bool cherry::Object::GetSafe() { return safe; }
+bool cherry::Object::GetSafe() const { return safe; }
 
-// gets the color of the first vertex
-glm::vec4 cherry::Object::GetColor() const { return vertices->Color; }
-
-// sets colour based on range of 0 to 255. Alpha (a) still goes from 0 to 1.
-void cherry::Object::SetColor(int r, int g, int b, float a) { SetColor((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a); }
-
-// sets the color for all vertices
-void cherry::Object::SetColor(float r, float g, float b, float a)
-{
-	// bounds checking for RGBA
-	r = (r < 0.0F) ? 0.0F : (r > 1.0F) ? 1.0F : r;
-	g = (g < 0.0F) ? 0.0F : (g > 1.0F) ? 1.0F : g;
-	b = (b < 0.0F) ? 0.0F : (b > 1.0F) ? 1.0F : b;
-	a = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
-
-	for (int i = 0; i < verticesTotal; i++)
-		vertices[i].Color = glm::vec4(r, g, b, a);
-
-	// TODO: doing this causes the mesh to screw up for some reason.
-	bool wf = mesh->IsWireframe(); // copying over values
-	bool vis = mesh->IsVisible(); // copying over values
-
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal); // creates the mesh
-	mesh->SetWireframe(wf);
-	mesh->SetVisible(vis);
-}
-
-// sets the color, keeping the alpha (a) value from the first vertex.
-void cherry::Object::SetColor(glm::vec3 color) { SetColor(color.x, color.y, color.z, vertices[0].Color.w); }
-
-// sets the color (RGBA [0-1])
-void cherry::Object::SetColor(glm::vec4 color) { SetColor(color.x, color.y, color.z, color.w); }
+//// gets the color of the first vertex
+//glm::vec4 cherry::Object::GetColor() const { return vertices->Color; }
+//
+//// sets colour based on range of 0 to 255. Alpha (a) still goes from 0 to 1.
+//void cherry::Object::SetColor(int r, int g, int b, float a) { SetColor((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a); }
+//
+//// sets the color for all vertices
+//void cherry::Object::SetColor(float r, float g, float b, float a)
+//{
+//	// bounds checking for RGBA
+//	r = (r < 0.0F) ? 0.0F : (r > 1.0F) ? 1.0F : r;
+//	g = (g < 0.0F) ? 0.0F : (g > 1.0F) ? 1.0F : g;
+//	b = (b < 0.0F) ? 0.0F : (b > 1.0F) ? 1.0F : b;
+//	a = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
+//
+//	for (int i = 0; i < verticesTotal; i++)
+//		vertices[i].Color = glm::vec4(r, g, b, a);
+//
+//	// TODO: doing this causes the mesh to screw up for some reason.
+//	bool wf = mesh->IsWireframe(); // copying over values
+//	bool vis = mesh->IsVisible(); // copying over values
+//
+//	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal); // creates the mesh
+//	mesh->SetWireframe(wf);
+//	mesh->SetVisible(vis);
+//}
+//
+//// sets the color, keeping the alpha (a) value from the first vertex.
+//void cherry::Object::SetColor(glm::vec3 color) { SetColor(color.x, color.y, color.z, vertices[0].Color.w); }
+//
+//// sets the color (RGBA [0-1])
+//void cherry::Object::SetColor(glm::vec4 color) { SetColor(color.x, color.y, color.z, color.w); }
 
 // checks to see if the object is in wireframe mode.
 bool cherry::Object::IsWireframeMode() { return mesh->IsWireframe(); }
@@ -157,7 +163,7 @@ const cherry::Vertex* const cherry::Object::GetVertices() const { return vertice
 // returns the total amount of vertices
 unsigned int cherry::Object::GetVerticesTotal() const { return verticesTotal; }
 
-// returns the indicies for a given mesh.
+// returns the Indices for a given mesh.
 const uint32_t* const cherry::Object::GetIndices() const { return indices; }
 
 // returns the total amount of indices
@@ -185,7 +191,7 @@ bool cherry::Object::LoadObject(bool loadMtl)
 	
 	// textures
 	std::vector<glm::vec2>vtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
-	std::vector<unsigned int> textIndicies; // a vector of texture indices.
+	std::vector<unsigned int> textIndices; // a vector of texture indices.
 
 	// normals
 	std::vector<glm::vec3>vnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
@@ -276,7 +282,7 @@ bool cherry::Object::LoadObject(bool loadMtl)
 				// vertex indice/vertex texture indice/vertex normal indice
 				// v1/vt1/vn1
 				vertIndices.push_back(tempVecUint[i]);
-				textIndicies.push_back(tempVecUint[i + 1]);
+				textIndices.push_back(tempVecUint[i + 1]);
 				normIndices.push_back(tempVecUint[i + 2]);
 			}
 
@@ -303,7 +309,7 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 	// calculating the normals
 	{
-		// vertex normal indicies and vertex indicies are the same size
+		// vertex normal Indices and vertex Indices are the same size
 		// calculates how many times a given normal is used.
 		for (int i = 0; i < normIndices.size(); i++)
 		{
@@ -314,21 +320,21 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 	// calculating the UVs
 	{
-		// vertex normal indicies and vertex indicies are the same size
+		// vertex normal Indices and vertex Indices are the same size
 		// calculates how many times a given normal is used.
-		for (int i = 0; i < textIndicies.size(); i++)
+		for (int i = 0; i < textIndices.size(); i++)
 		{
 			// adding the uvs to the designated vertices
-			vertices[i].UV = vtVec.at(textIndicies.at(i) - 1);
+			vertices[i].UV = vtVec.at(textIndices.at(i) - 1);
 		}
 	}
 
 	// creates the mesh
-	// unlike with the default primitives, the amount of vertices corresponds to how many indicies there are, and the values are set accordingly.
+	// unlike with the default primitives, the amount of vertices corresponds to how many Indices there are, and the values are set accordingly.
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
 
 	// the object loader has a material associated with it, and said material should be loaded
-	// if the .obj file had a material associated with it.
+// if the .obj file had a material associated with it.
 	if (mtllib != "" && loadMtl)
 	{
 		// adds the file path to the material
@@ -353,6 +359,7 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
 	mr.Material = this->material;
+	// compute animation here?
 	mr.Mesh = mesh;
 
 	auto tform = [&](entt::entity e, float dt) 
@@ -538,8 +545,8 @@ bool cherry::Object::AddPhysicsBody(cherry::PhysicsBody* body)
 	if (body == nullptr)
 		return false;
 
-	return util::addToVector(bodies, body->attachToObject(this));
-	// body->attachToObject(this);
+	return util::addToVector(bodies, body->AttachToObject(this));
+	// body->AttachToObject(this);
 }
 
 // returns 'true' if removed, false if not.
@@ -575,14 +582,6 @@ bool cherry::Object::GetIntersection() const { return intersection; }
 // sets whether the object is interecting with something or not.
 void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 
-// updates the object
-void cherry::Object::Update(float deltaTime)
-{
-	// TODO: remove this for the final version.
-	rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
-	rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
-}
-
 cherry::Vec3 cherry::Object::getPBodySize()
 {
 	return this->pBodySize;
@@ -601,6 +600,15 @@ float cherry::Object::getPBodyHeight()
 float cherry::Object::getPBodyDepth()
 {
 	return this->getPBodySize().GetZ() / 2;
+}
+
+
+// updates the object
+void cherry::Object::Update(float deltaTime)
+{
+	// TODO: remove this for the final version.
+	rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
 }
 
 // returns a string representing the object

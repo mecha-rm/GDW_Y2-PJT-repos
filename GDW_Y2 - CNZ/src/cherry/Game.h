@@ -11,7 +11,7 @@
 #include "Mesh.h"
 #include "objects/Primitives.h"
 #include "Camera.h" // camera
-#include "Light.h"
+#include "LightManager.h"
 
 // System Library Includes
 #include <iostream>
@@ -96,7 +96,7 @@ namespace cherry
 		cherry::Object* GetSceneObject(unsigned int index) const;
 
 		// gets an object from the provided scene
-		cherry::Object* GetSceneObject(unsigned int index, std::string scene) const;
+		cherry::Object * GetSceneObject(unsigned int index, std::string scene) const;
 
 		// gets the total amount of objects
 		unsigned int GetObjectCount() const;
@@ -196,7 +196,7 @@ namespace cherry
 		std::vector<Object*> objects;
 
 		// the lights in the current scene
-		std::vector<Light*> lights;
+		std::vector<Light*> * lights;
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;
