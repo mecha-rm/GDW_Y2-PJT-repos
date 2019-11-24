@@ -66,7 +66,9 @@ glm::vec3 cherry::PhysicsBody::getWorldPositionGLM() const
 cherry::Vec3 cherry::PhysicsBody::getWorldPosition() const 
 {
 	// TODO : change this to take a cherry::Vec3
-	return (object == nullptr ? position : object->GetPosition() + position);
+	//return (object == nullptr ? position : object->GetPosition() + position);
+	// TODO: undo this temporary change used to debug collisions. IMPORTANT!
+	return position;
 }
 
 // sets the world position

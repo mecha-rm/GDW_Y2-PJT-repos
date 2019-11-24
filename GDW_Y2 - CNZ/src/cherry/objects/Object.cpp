@@ -578,6 +578,26 @@ void cherry::Object::Update(float deltaTime)
 	rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
 }
 
+cherry::Vec3 cherry::Object::getPBodySize()
+{
+	return this->pBodySize;
+}
+
+float cherry::Object::getPBodyWidth()
+{
+	return this->getPBodySize().GetX() / 2;
+}
+
+float cherry::Object::getPBodyHeight()
+{
+	return this->getPBodySize().GetY() / 2;
+}
+
+float cherry::Object::getPBodyDepth()
+{
+	return this->getPBodySize().GetZ() / 2;
+}
+
 // returns a string representing the object
 std::string cherry::Object::ToString() const
 {

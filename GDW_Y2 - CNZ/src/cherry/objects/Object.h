@@ -287,6 +287,14 @@ namespace cherry
 		// updates the object
 		void Update(float deltaTime);
 
+		// get pbody size
+		cherry::Vec3 getPBodySize();
+
+		// get pbody width, height and depth.
+		float getPBodyWidth();
+		float getPBodyHeight();
+		float getPBodyDepth();
+
 		virtual std::string ToString() const;
 
 		// the maximum amount of vertices one object can have. This doesn't get used.
@@ -370,6 +378,8 @@ namespace cherry
 
 		// the scale of the object
 		cherry::Vec3 scale = { 1.0F, 1.0F, 1.0F };
+
+		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
 	};
 }
 
