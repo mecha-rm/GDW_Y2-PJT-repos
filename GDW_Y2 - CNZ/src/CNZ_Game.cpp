@@ -125,6 +125,7 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 	}
 }
 
+//////////////////TODO: Why is this defined in here??????????????????????? Should it not be in some sort of PhysicsBody file or something?////////////////////////
 // returns the physics body of the closest obstacle to the player, in the direction that the player is facing.
 // Used later to verify if the player is allowed to dash the full distance in their intended direction
 cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
@@ -167,10 +168,19 @@ void cnz::CNZ_Game::LoadContent()
 
 	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the not player.
+	testEnemy = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
+	testSentry = new Sentry(testEnemy, getCurrentScene());
+	testSentry2 = new Sentry(testEnemy, getCurrentScene());
+	testSentry3 = new Sentry(testEnemy, getCurrentScene());
+
 	// playerObj->CreateEntity(getCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	testSentry2->SetRotation(cherry::Vec3(0, 0, 0), true);
+	testSentry3->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
+	testSentry2->SetPosition(cherry::Vec3(-5, 2.5, 0));
+	testSentry3->SetPosition(cherry::Vec3(5, 2.5, 0));
 
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
@@ -179,6 +189,9 @@ void cnz::CNZ_Game::LoadContent()
 
 	AddObject(playerObj);
 	AddObject(testObj);
+	AddObject(testSentry);
+	AddObject(testSentry2);
+	AddObject(testSentry3);
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;

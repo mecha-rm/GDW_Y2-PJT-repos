@@ -2,6 +2,20 @@
 #include "cherry/objects/Primitive.h"
 #include "cherry/PhysicsBody.h"
 
+cnz::Enemies::Enemies()
+{
+}
+
+cnz::Enemies::Enemies(Enemies* obj, std::string scene)
+	: Object(obj, scene)
+{
+	pBodySize = obj->getPBodySize();
+	drawPBody = obj->getDrawPBody();
+	degreeAngle = obj->GetDegreeAngle();
+	radianAngle = obj->GetRadianAngle();
+	worldAngle = obj->GetVec3Angle();
+}
+
 // creates an Enemies with 
 cnz::Enemies::Enemies(std::string modelFile) : Enemies(modelFile, cherry::Vec3()) {}
 

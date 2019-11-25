@@ -4,6 +4,13 @@
 #include "Enemies.h"
 #include "cherry/PhysicsBody.h"
 
+//Enemy Sub-classes
+#include "EnemyTypes/Bastion.h"
+#include "EnemyTypes/Marauder.h"
+#include "EnemyTypes/Mechaspider.h"
+#include "EnemyTypes/Oracle.h"
+#include "EnemyTypes/Sentry.h"
+
 // inherits from the game class.
 namespace cnz
 {
@@ -54,6 +61,11 @@ namespace cnz
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy
+
+		cnz::Enemies* testEnemy = nullptr;
+		cnz::Sentry* testSentry = nullptr;
+		cnz::Sentry* testSentry2 = nullptr;
+		cnz::Sentry* testSentry3 = nullptr;
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;

@@ -5,7 +5,8 @@
 namespace cnz {
 	class Sentry : public cnz::Enemies
 	{
-		Sentry(cnz::Enemies obj);
+	public:
+		Sentry(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
 	};
 }
 

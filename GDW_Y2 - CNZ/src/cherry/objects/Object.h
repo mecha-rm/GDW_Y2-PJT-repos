@@ -46,6 +46,8 @@ namespace cherry
 		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
 		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl);
 
+		Object(Object* obj, std::string scene);
+
 
 
 		// destructor

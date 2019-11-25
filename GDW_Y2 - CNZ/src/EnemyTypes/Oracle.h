@@ -5,7 +5,8 @@
 namespace cnz {
 	class Oracle : public cnz::Enemies
 	{
-		Oracle(cnz::Enemies obj);
+	public:
+		Oracle(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
 	};
 }
 

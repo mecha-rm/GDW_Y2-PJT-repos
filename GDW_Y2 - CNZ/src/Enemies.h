@@ -8,8 +8,11 @@ namespace cnz
 	class Enemies : public cherry::Object
 	{
 	public:
-		// creates an Enemies object. A cube is used to represent the Enemies
-		// Enemies();
+		//Default Contructor
+		Enemies();
+
+		//Copy Constructor
+		Enemies(Enemies* obj, std::string scene);
 
 		// creates an Enemies, and the file path of the user.
 		Enemies(std::string modelFile);
@@ -70,7 +73,7 @@ namespace cnz
 
 		// TODO: possibly delete these variables? Object has its own rotation now.
 		// object angle in screen space (degrees or radians)
-		float degreeAngle, radianAngle;
+		float degreeAngle = 0, radianAngle = 0;
 
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
