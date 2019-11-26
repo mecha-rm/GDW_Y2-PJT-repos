@@ -1,4 +1,5 @@
 #include "Vector.h"
+#include "Vector.h"
 #include "Rotation.h"
 #include "../Utils.h"
 
@@ -55,6 +56,10 @@ float& util::math::Vec2::operator[](const int index) // editing
 
 // checking if two vectors are equal
 bool util::math::Vec2::operator==(const Vec2& v2) const { return (x == v2.x && y == v2.y); }
+
+bool util::math::Vec2::operator>=(const Vec2& v2) const { return (x >= v2.x && y >= v2.y); }
+
+bool util::math::Vec2::operator<=(const Vec2& v2) const { return (x <= v2.x && y <= v2.y); }
 
 
 // multiplication
@@ -169,6 +174,10 @@ float& util::math::Vec3::operator[](const int index) // editing
 
 // vector equality
 bool util::math::Vec3::operator==(const Vec3& v2) const { return (x == v2.x && y == v2.y && z == v2.z); }
+
+bool util::math::Vec3::operator>=(const Vec3& v2) const { return (x >= v2.x && y >= v2.y && z >= v2.z); }
+
+bool util::math::Vec3::operator<=(const Vec3& v2) const { return (x <= v2.x && y <= v2.y && z <= v2.z); }
 
 
 // vector times scalar

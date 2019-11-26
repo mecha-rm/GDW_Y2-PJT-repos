@@ -47,6 +47,10 @@ void cnz::Enemies::Update(float dt)
 {
 }
 
+void cnz::Enemies::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
+{
+}
+
 // TODO: holdovers from object class. May not be needed?
 float cnz::Enemies::GetDegreeAngle() { return degreeAngle; }
 

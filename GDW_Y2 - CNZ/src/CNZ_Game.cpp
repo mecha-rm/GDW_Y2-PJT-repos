@@ -215,11 +215,12 @@ void cnz::CNZ_Game::LoadContent()
 	marauder = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
 	bastion = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
 	mechaspider = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
+	arrowBase = new cherry::Object("res/objects/arrow.obj");
 
 	enemyGroups.push_back(std::vector<Enemies*>());
 	enemyGroups[0].push_back(new Marauder(marauder, getCurrentScene()));
-	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene()));
-	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene(), arrowBase));
+	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene(), arrowBase));
 	
 	enemyGroups.push_back(std::vector<Enemies*>());
 	enemyGroups[1].push_back(new Bastion(bastion, getCurrentScene()));
@@ -242,7 +243,7 @@ void cnz::CNZ_Game::LoadContent()
 	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
 	//Number corresponds with enemygroups first index
-	spawnEnemyGroup(2);
+	spawnEnemyGroup(0);
 	AddObject(playerObj);
 	AddObject(testObj);
 
@@ -458,6 +459,16 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		this->mbLR = false;
 	}
 
+	//Update enemies
+	for (int i = 0; i < enemyGroups.size(); i++) {
+		for (int j = 0; j < enemyGroups[i].size(); j++) {
+			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
+				enemyGroups[i][j]->Attack(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
+				AddObject(enemyGroups[i][j]->arrow);
+			}
+			enemyGroups[i][j]->Update(deltaTime);
+		}
+	}
 	//// update physics bodies
 	// player PB
 	playerObj->GetPhysicsBodies()[0]->SetModelPosition(playerObj->GetPosition());

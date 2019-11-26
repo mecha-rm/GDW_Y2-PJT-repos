@@ -71,6 +71,7 @@ namespace cnz
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
+		cherry::Object* arrowBase = nullptr;
 
 		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
