@@ -62,14 +62,9 @@ namespace cnz
 		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
-		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy
+		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
 
-		std::vector<std::vector<Enemies*>> enemyGroups;
-
-		cnz::Enemies* testEnemy = nullptr;
-		cnz::Sentry* testSentry = nullptr;
-		cnz::Sentry* testSentry2 = nullptr;
-		cnz::Sentry* testSentry3 = nullptr;
+		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;

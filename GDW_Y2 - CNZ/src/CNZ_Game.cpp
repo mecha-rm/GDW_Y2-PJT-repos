@@ -181,7 +181,6 @@ void cnz::CNZ_Game::LoadContent()
 
 	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the not player.
-	testEnemy = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
 
 	sentry = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
 	oracle = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
@@ -204,18 +203,10 @@ void cnz::CNZ_Game::LoadContent()
 	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 
-	testSentry = new Sentry(testEnemy, getCurrentScene());
-	testSentry2 = new Sentry(testEnemy, getCurrentScene());
-	testSentry3 = new Sentry(testEnemy, getCurrentScene());
-
 	// playerObj->CreateEntity(getCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-	testSentry2->SetRotation(cherry::Vec3(0, 0, 0), true);
-	testSentry3->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
-	testSentry2->SetPosition(cherry::Vec3(-5, 2.5, 0));
-	testSentry3->SetPosition(cherry::Vec3(5, 2.5, 0));
 
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
@@ -226,9 +217,6 @@ void cnz::CNZ_Game::LoadContent()
 	spawnEnemyGroup(2);
 	AddObject(playerObj);
 	AddObject(testObj);
-	//AddObject(testSentry);
-	//AddObject(testSentry2);
-	//AddObject(testSentry3);
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
