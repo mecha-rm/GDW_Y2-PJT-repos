@@ -188,6 +188,19 @@ float cnz::CNZ_Game::getXYAngle(cherry::Vec3 vec)
 	return atanf(vec.GetX() / vec.GetY());
 }
 
+void cnz::CNZ_Game::spawnEnemyGroup(int i)
+{
+	int n = enemyGroups[i].size();
+
+	for (int j = 0; j < n; j++) {
+		enemyGroups[i][j]->SetRotation(cherry::Vec3(0, 0, 0), true);
+		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + j * 5, 0 + j * 5, 0));
+		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->getPBodySize()));
+
+		AddObject(enemyGroups[i][j]);
+	}
+}
+
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
@@ -195,20 +208,32 @@ void cnz::CNZ_Game::LoadContent()
 
 	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the not player.
-	testEnemy = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
-	testSentry = new Sentry(testEnemy, getCurrentScene());
-	testSentry2 = new Sentry(testEnemy, getCurrentScene());
-	testSentry3 = new Sentry(testEnemy, getCurrentScene());
+
+	sentry = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
+	oracle = new Enemies("res/objects/cube.obj", getCurrentScene(), material);
+	marauder = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
+	bastion = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
+	mechaspider = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
+
+	enemyGroups.push_back(std::vector<Enemies*>());
+	enemyGroups[0].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene()));
+	
+	enemyGroups.push_back(std::vector<Enemies*>());
+	enemyGroups[1].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[1].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[1].push_back(new Oracle(oracle, getCurrentScene()));
+	
+	enemyGroups.push_back(std::vector<Enemies*>());
+	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 
 	// playerObj->CreateEntity(getCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-	testSentry2->SetRotation(cherry::Vec3(0, 0, 0), true);
-	testSentry3->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
-	testEnemy->SetPosition(cherry::Vec3(-5, 0, 0));
-	testSentry2->SetPosition(cherry::Vec3(-5, 2.5, 0));
-	testSentry3->SetPosition(cherry::Vec3(5, 2.5, 0));
 
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
@@ -216,12 +241,10 @@ void cnz::CNZ_Game::LoadContent()
 
 	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
+	//Number corresponds with enemygroups first index
+	spawnEnemyGroup(2);
 	AddObject(playerObj);
 	AddObject(testObj);
-	AddObject(testEnemy);
-	//AddObject(testSentry);
-	//AddObject(testSentry2);
-	//AddObject(testSentry3);
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
