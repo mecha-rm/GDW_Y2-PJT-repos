@@ -196,6 +196,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i)
 		enemyGroups[i][j]->SetRotation(cherry::Vec3(0, 0, 0), true);
 		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + j * 5, 0 + j * 5, 0));
 		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->getPBodySize()));
+		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
 
 		AddObject(enemyGroups[i][j]);
 	}
@@ -237,7 +238,6 @@ void cnz::CNZ_Game::LoadContent()
 
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
-	testEnemy->AddPhysicsBody(new cherry::PhysicsBodyBox(testEnemy->GetPosition(), testEnemy->getPBodySize()));
 
 	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
@@ -250,8 +250,8 @@ void cnz::CNZ_Game::LoadContent()
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
 	}
 
+	// enemy PBs are added to the list in spawnEnemyGroup.
 	obstaclePBs.push_back(testObj->GetPhysicsBodies()[0]);
-	enemyPBs.push_back(testEnemy->GetPhysicsBodies()[0]);
 
 	//// setting up the camera
 	myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
