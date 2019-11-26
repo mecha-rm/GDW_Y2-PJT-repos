@@ -39,8 +39,16 @@ namespace cnz
 		// called when a key has been released; overloaded from the game's keyReleased
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
+		// get closest obstacle within a certain degrees of where the player is facing
 		cherry::PhysicsBody* getClosestObstacle();
 
+		// gets a list of enemies within a certain degrees of where the player is facing
+		// we require the dash vector so that we can use a smaller one if the player is dashing towards an obstacle that
+		// would case the dash to end when they collide with that obstacle.
+		vector<cherry::Object*> getEnemiesInDash(cherry::Vec3 dashVec);
+
+		// get the angle at which a Vec3 is facing in X and Y axis. 
+		// can also be used to find the angle between two positions by getting passing in their difference
 		float getXYAngle(cherry::Vec3 vec);
 
 	protected:
@@ -71,6 +79,7 @@ namespace cnz
 		bool mbLP = false, mbLR = false;
 
 		vector<cherry::PhysicsBody*> obstaclePBs;
+		vector<cherry::PhysicsBody*> enemyPBs;
 
 		float camLerpPercent = 0.0f;
 
