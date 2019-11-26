@@ -43,6 +43,8 @@ namespace cnz
 
 		float getXYAngle(cherry::Vec3 vec);
 
+		void spawnEnemyGroup(int i);
+
 	protected:
 
 		// overwritten function for loading in game content.
@@ -61,6 +63,8 @@ namespace cnz
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy
+
+		std::vector<std::vector<Enemies*>> enemyGroups;
 
 		cnz::Enemies* testEnemy = nullptr;
 		cnz::Sentry* testSentry = nullptr;
