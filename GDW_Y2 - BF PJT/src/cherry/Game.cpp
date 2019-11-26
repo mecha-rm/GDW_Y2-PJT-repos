@@ -644,7 +644,7 @@ void cherry::Game::LoadContent()
 	// TODO: add sampler
 	LightManager::AddScene(currentScene);
 	LightManager::AddLight(currentScene, Light(currentScene, Vec3(-30.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.9F, 0.1F, 0.01F), 0.4F, 0.5F, 256.0F, 0.15F));
+		Vec3(0.8F, 0.5F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
 
 	LightManager::AddLight(currentScene, Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1F, 0.2F, 1.0F),
 		Vec3(0.2F, 0.7F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
@@ -659,50 +659,52 @@ void cherry::Game::LoadContent()
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
-		// Creating the objects, storing them, and making them part of the default m_Scene.
-		objects.push_back(new PrimitiveCapsule());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		
+		//// Creating the objects, storing them, and making them part of the default m_Scene.
+		//objects.push_back(new PrimitiveCapsule());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		//
 
-		objects.push_back(new PrimitiveCircle());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		//objects.push_back(new PrimitiveCircle());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		objects.push_back(new PrimitiveCone());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		//objects.push_back(new PrimitiveCone());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		objects.push_back(new PrimitiveCube());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		//objects.push_back(new PrimitiveCube());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		objects.push_back(new PrimitiveCylinder());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		//objects.push_back(new PrimitiveCylinder());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		objects.push_back(new PrimitiveDiamond());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		//objects.push_back(new PrimitiveDiamond());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		objects.push_back(new PrimitiveUVSphere());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		//objects.push_back(new PrimitiveUVSphere());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		objects.push_back(new PrimitivePlane());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		//objects.push_back(new PrimitivePlane());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
+		//objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
-		// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
-		// images don't need CreateEntity called.
-		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		objects.at(objects.size() - 1)->SetScale(0.1F);
+		//// images don't need CreateEntity called.
+		//objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		//objects.at(objects.size() - 1)->SetScale(0.1F);
 
-		// version 1 (finds .mtl file automatically)
-		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
-			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
+		//// version 1 (finds .mtl file automatically)
+		//objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
+		//	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
+
+		// objects.push_back();
 
 		// version 2 (.mtl file manually added)
 		// objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
@@ -711,8 +713,16 @@ void cherry::Game::LoadContent()
 		
 
 		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
-		objects.at(objects.size() - 1)->SetScale(2.0F);
+		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
+		// objects.at(objects.size() - 1)->SetScale(2.0F);
+
+		objects.push_back(new Object("res/objects/cube_target_0.obj", currentScene, material, false));
+		MorphAnimation* mph = new MorphAnimation();
+		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_1.obj", 5.0F));
+		mph->SetInfiniteLoop(true);
+		mph->Play();
+		objects.at(objects.size() - 1)->AddAnimation(mph);
+
 	}
 
 	// Create and compile shader

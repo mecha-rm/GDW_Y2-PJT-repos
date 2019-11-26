@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <string>
+#include "..\Mesh.h"
 
 namespace cherry
 {
@@ -13,18 +14,24 @@ namespace cherry
 	{
 	public:
 		// animation constructor
+		// TODO: require object to be sent?
 		Animation();
 		// Animation(bool bones);
 
 		// destructor
 		~Animation();
+		
+		// animation object
+		// 0 = generic
+		// 1 = morph targets
+		int GetId() const;
 
 		// gets the object the animation applies to.
 		cherry::Object* GetObject() const; // gets the object the animation applies to.
 
 		// sets the object the animation applies to.
 		// set to 'nullptr' to remove the object.
-		void SetObject(cherry::Object * obj);
+		virtual void SetObject(cherry::Object * obj);
 
 		// gets the name of the animation.
 		std::string GetName() const;
@@ -44,6 +51,10 @@ namespace cherry
 		
 		// gets a frame based on its tag.
 		AnimationFrame * GetFrame(std::string tag) const;
+
+		// gets the current animation frame.
+		AnimationFrame* GetCurrentFrame() const;
+
 
 		// adds a frame to the list. If 'true' is passed, then the frame was added successfully.
 		// the same frame cannot be put into the list twice.
@@ -97,12 +108,10 @@ namespace cherry
 		void SetReverse(bool rvs);
 
 		// updates the animation
-		void Update(float deltaTime);
+		virtual void Update(float deltaTime);
 		
 
 	private:
-		// sets the object the animation is attached to.
-		cherry::Object* object = nullptr;
 
 		// the name of the animation
 		std::string name = "";
@@ -135,6 +144,15 @@ namespace cherry
 		bool reverse = false; 
 
 	protected:
+		// for inherited classes to specify their derived type.
+		// 0: generic
+		// 1: morph target
+		Animation(int id);
+
+		int id = 0;
+
+		// sets the object the animation is attached to.
+		cherry::Object* object = nullptr;
 	};
 
 	// a frame of animation
@@ -142,6 +160,7 @@ namespace cherry
 	{
 	public:
 		// creates the animation frame. The amount of 'units' determines how long (in milliseconds) the frame stays on for.
+		// a pose can also be set for the animation if you want.
 		AnimationFrame(float units = 0);
 
 		// length of time in milliseconds the frame lasts for.
@@ -158,9 +177,12 @@ namespace cherry
 
 
 		// update for an animation frame; functionality varies based on type.
-		virtual void Update(float deltaTime);
+		// virtual void Update(float deltaTime);
 
 	private:
+
+		// the pose for the given frame.
+		Mesh::Sptr pose;
 
 		float delayUnits = 0; // the delay units (in milliseconds) between this frame and the following frame.
 

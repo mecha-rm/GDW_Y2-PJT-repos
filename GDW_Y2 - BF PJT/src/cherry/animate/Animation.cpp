@@ -2,10 +2,11 @@
 #include "..\utils\Utils.h"
 #include "..\objects\Object.h"
 
-cherry::Animation::Animation()
-{
+// constructor
+cherry::Animation::Animation() {}
 
-}
+// constructor
+cherry::Animation::Animation(int id) : id(id) {}
 
 cherry::Animation::~Animation()
 {
@@ -16,6 +17,9 @@ cherry::Animation::~Animation()
 	// clears out the animations.
 	frames.clear();
 }
+
+// gets the ID for the animation
+int cherry::Animation::GetId() const { return id; }
 
 // gets the object the animation is attachted to
 cherry::Object* cherry::Animation::GetObject() const { return object; }
@@ -61,6 +65,10 @@ cherry::AnimationFrame* cherry::Animation::GetFrame(std::string tag) const
 
 	return nullptr;
 }
+
+// gets hte current animation frame.
+cherry::AnimationFrame* cherry::Animation::GetCurrentFrame() const { return frames.at(currentFrame); }
+
 
 // adds a frame to the list
 bool cherry::Animation::AddFrame(AnimationFrame* frame) { return util::addToVector(frames, frame); }
@@ -153,9 +161,10 @@ void cherry::Animation::Update(float deltaTime)
 	}
 
 	// updates the frame
-	if (play && currentFrame < frames.size())
-		frames.at(currentFrame)->Update(deltaTime);
+	/*if (play && currentFrame < frames.size())
+		frames.at(currentFrame)->Update(deltaTime);*/
 }
+
 
 ////////////////////////////////////////////////
 // Animation Frame
@@ -181,6 +190,6 @@ std::string cherry::AnimationFrame::GetTag() const { return tag; }
 void cherry::AnimationFrame::SetTag(std::string newTag) { tag = newTag; }
 
 // update for an animation frame.
-void cherry::AnimationFrame::Update(float deltaTime)
-{
-}
+//void cherry::AnimationFrame::Update(float deltaTime)
+//{
+//}

@@ -44,6 +44,9 @@ cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertice
 	// closes the file since it was only opened for this check.
 	file.close();
 
+	// default world transform
+	// worldTransform = TempTransform().GetWorldTransform();
+
 	// loads the object
 	LoadObject(loadMtl);
 }
@@ -86,8 +89,9 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 
 cherry::Object::~Object()
 {
-	delete[] vertices;
-	delete[] indices;
+	// TODO: add back deletions
+	// delete[] vertices;
+	// delete[] indices;
 }
 
 
@@ -331,7 +335,8 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 	// creates the mesh
 	// unlike with the default primitives, the amount of vertices corresponds to how many Indices there are, and the values are set accordingly.
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	// mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // original 
+	mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
 
 	// the object loader has a material associated with it, and said material should be loaded
 // if the .obj file had a material associated with it.
@@ -369,8 +374,8 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // udpates the position
 		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
 		transform.Scale = glm::vec3(scale.v.x, scale.v.y, scale.v.z); // sets the scale
-
-
+		
+		worldTransform = transform.GetWorldTransform();
 		// does the same thing, except all in one line (for rotation)
 		// CurrentRegistry().get_or_assign<TempTransform>(e).EulerRotation += glm::vec3(0, 0, 90 * dt);
 	};
@@ -378,6 +383,9 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	auto& up = ecs.get_or_assign<UpdateBehaviour>(entity);
 	up.Function = tform;
 }
+
+// gets the transformation into world space.
+glm::mat4 cherry::Object::GetWorldTransformation() const { return worldTransform; }
 
 // gets the entity of the object
 // entt::entity& cherry::Object::getEntity() { return entity; }
@@ -582,12 +590,38 @@ bool cherry::Object::GetIntersection() const { return intersection; }
 // sets whether the object is interecting with something or not.
 void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 
+// adds an animation
+bool cherry::Object::AddAnimation(Animation * anime)
+{
+	// TODO: change to pointer?
+	animate = anime;
+
+	// sets the object.
+	if (anime->GetObject() != this)
+		anime->SetObject(this);
+
+	// if using morph targets
+	//if (anime->GetId() == 1)
+	//{
+	//	// material->GetShader()->Load("res/lighting.morph.vs.glsl", "res/blinn-phong.morph.fs.glsl");
+	//	mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
+	//}
+
+	return true;
+}
+
 // updates the object
 void cherry::Object::Update(float deltaTime)
 {
 	// TODO: remove this for the final version.
-	rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
-	rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
+	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
+	
+	// if the animation is playing
+	if (animate->isPlaying())
+	{
+		animate->Update(deltaTime);
+	}
 }
 
 // returns a string representing the object

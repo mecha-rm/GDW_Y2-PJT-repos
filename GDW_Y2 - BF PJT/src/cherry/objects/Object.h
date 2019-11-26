@@ -14,6 +14,7 @@
 #include "..\Camera.h"
 #include "..\VectorCRY.h"
 #include "..\Material.h"
+#include "..\animate\MorphAnimation.h"
 // #include "..\Physics.h"
 
 namespace cherry
@@ -139,6 +140,9 @@ namespace cherry
 
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
+
+		// gets the transformation from local space to world space.
+		glm::mat4 GetWorldTransformation() const;
 
 		
 		// gets the position as an engine vector
@@ -295,6 +299,13 @@ namespace cherry
 		// sets whether the object is currently intersecting with another object.
 		void SetIntersection(bool inter);
 
+
+		// ANIMATION //
+		
+		// adds an animation to the object. This comes the object for the animation if it isn't already.
+		bool AddAnimation(Animation * anime);
+
+
 		// updates the object
 		void Update(float deltaTime);
 
@@ -328,6 +339,9 @@ namespace cherry
 
 		// the string for the file path
 		std::string filePath = "";
+
+		// transformation into world coordinate space.
+		glm::mat4 worldTransform;
 
 		// a vector of physics bodies
 		std::vector<cherry::PhysicsBody*> bodies;
@@ -385,6 +399,10 @@ namespace cherry
 
 		// the scale of the object
 		cherry::Vec3 scale = { 1.0F, 1.0F, 1.0F };
+
+		// the animation
+		// TODO: repalce with an animation manager
+		cherry::Animation * animate;
 	};
 }
 

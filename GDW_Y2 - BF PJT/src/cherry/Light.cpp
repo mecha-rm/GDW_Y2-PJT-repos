@@ -177,8 +177,8 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float w
 	std::ifstream file; // used for checking if the image file exists.
 	glm::vec3 texWeights; // the weights of all of the textures.
 
-	// used to make the albedo
-	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl"); // the shader
+	// used to make the albedo // TODO: fix shaders
+	phong->Load("res/lighting.morph.vs.glsl", "res/blinn-phong.morph.fs.glsl"); // the shader
 	material = std::make_shared<Material>(phong); // loads in the shader.
 
 	material->Set("a_LightPos", glm::vec3(m_LightPos.v.x, m_LightPos.v.y, m_LightPos.v.z));
