@@ -550,7 +550,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		playerObj->SetDashTime(0.0f);
 
 		cherry::PhysicsBody* closestObstacle = getClosestObstacle();
-		if (closestObstacle == nullptr) {
+		if (closestObstacle == nullptr) { // if there is no obstacle in the direction the player is facing when dashing
 			vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dashVec);
 			for (int i = 0; i < enemiesInRange.size(); i++) {
 				cherry::Object* curEnemy = enemiesInRange[i];
@@ -614,6 +614,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 					enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
 					RemoveObject(enemiesInRange[i]);
+					kills++;
+					cout << kills << endl;
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
