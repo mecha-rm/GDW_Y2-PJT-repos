@@ -717,12 +717,27 @@ void cherry::Game::LoadContent()
 		// objects.at(objects.size() - 1)->SetScale(2.0F);
 
 		objects.push_back(new Object("res/objects/cube_target_0.obj", currentScene, material, false));
+		
+
 		MorphAnimation* mph = new MorphAnimation();
-		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_1.obj", 5.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_1.obj", 4.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 4.0F));
 		mph->SetInfiniteLoop(true);
 		mph->Play();
 		objects.at(objects.size() - 1)->AddAnimation(mph);
 
+		/*Path* path = new Path();
+		path->AddNode(8.0F, 0.0F, 0.0F);
+		path->AddNode(-8.0F, 8.0F, 0.0F);
+		path->AddNode(8.0F, 8.0F, 8.0F);
+		path->AddNode(8.0F, -8.0F, -8.0F);
+		path->SetIncrementer(0.5);
+
+		path->SetInterpolationMode(1);
+
+		objects.at(objects.size() - 1)->SetPath(path, true);
+		
+		objects.at(objects.size() - 1)->SetScale(0.7);*/
 	}
 
 	// Create and compile shader

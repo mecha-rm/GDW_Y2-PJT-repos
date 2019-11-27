@@ -1,32 +1,5 @@
 #include "Interpolation.h"
 
-// matrix for bezier
-util::math::Mat4 M_BEZIER = util::math::Mat4
-	( 
-	  -1, 3, -3, 1,
-	   3, -6, 3, 0,
-	  -3, 3, 0, 0,
-	   1, 0, 0, 0
-	);
-
-// matrix for catmull rom (half scalar applied)
-util::math::Mat4 M_CATMULL_ROM = util::math::Mat4
-(
-	0.5F * -1.0F, 0.5F * 3.0F,  0.5F * -3.0F, 0.5F * 1.0F,
-	0.5F * 2.0F,  0.5F * -5.0F, 0.5F * 4.0F,  0.5F * -1.0F,
-	0.5F * -1.0F, 0.5F * 0.0F,  0.5F * 1.0F,  0.5F * 0.0F,
-	0.5F * 0.0F,  0.5F * 2.0F,  0.5F * 0.0F,  0.5F * 0.0F
-);
-
-// matrix for catmull rom (no half scalar applied)
-util::math::Mat4 M_CATMULL_ROM_DBL = util::math::Mat4
-(
-	-1, 3, -3, 1,
-	2, -5, 4, -1,
-	-1, 0, 1, 0,
-	0, 2, 0, 0
-);
-
 // lerps between two values
 float util::math::lerp(float a, float b, float t) { return (1.0f - t) * a + t * b; }
 
@@ -237,13 +210,20 @@ util::math::Vec2 util::math::pointOnCurve(const util::math::Vec2 p0, const util:
 // calculates a point on a spline (vec3).
 util::math::Vec3 util::math::pointOnCurve(const util::math::Vec3 p0, const util::math::Vec3 p1, const util::math::Vec3 p2, const util::math::Vec3 p3, float u, bool catmullRom)
 {
-	u = (u < 0.0F) ? 0.0F : (u > 1.0F) ? 1.0F : u; // bounds checking
+	u = (u < 0.0F) ? 0.0F : (u > 1.0F) ? 1.0F : u; // bounds checking 
 
 	const Mat4 M = (catmullRom) ? M_CATMULL_ROM : M_BEZIER; // the constant matrix. Checks if using catmull-rom or bezier.
 
+
 	// these use mat4 since there isn't a multiplication function setup for matrices of different sizes
 	// the matrix of 'u', which is 1 X 4
-	Mat4 u1x4(powf(u, 3), powf(u, 2), powf(u, 1), 0.0F);
+	Mat4 u1x4;
+
+	// sets the rows. It needs to be done this way because the vec4 constructor gets called by accident during initialization.
+	u1x4[0][0] = powf(u, 3);
+	u1x4[0][1] = powf(u, 2);
+	u1x4[0][2] = powf(u, 1);
+	u1x4[0][3] = powf(u, 0);
 
 	// the matrix of points, which is 4 X 2
 	Mat4 p4x2(

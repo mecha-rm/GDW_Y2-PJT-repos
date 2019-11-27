@@ -55,6 +55,9 @@ namespace cnz
 		// Update function to get new angle based on mouse position
 		void UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height);
 
+		// Update
+		void Update(float deltaTime);
+
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
 		void SetAngle(float angle, bool isDegrees);
 

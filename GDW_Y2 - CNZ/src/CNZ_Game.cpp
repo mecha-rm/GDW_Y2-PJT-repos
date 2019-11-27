@@ -414,6 +414,22 @@ void cnz::CNZ_Game::LoadContent()
 
 	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
+	// Path stuff
+	cherry::Path* testPath = new cherry::Path();
+	testPath->AddNode(1.0f, 1.0f, 0.0f);
+	testPath->AddNode(0.0f, 5.0f, 0.0f);
+	testPath->AddNode(-2.0f, 5.0f, 0.0f);
+	testPath->AddNode(-3.0f, 7.0f, 0.0f);
+	testPath->AddNode(-6.0f, 8.0f, 0.0f);
+	testPath->AddNode(-6.0f, 6.0f, 0.0f);
+	testPath->AddNode(-2.0f, 4.0f, 0.0f);
+	testPath->AddNode(1.0f, 1.0f, 0.0f);
+
+	testPath->SetIncrementer(0.5f);
+	testPath->SetInterpolationMode(1);
+
+	testObj->SetPath(testPath, true);
+
 	//Number corresponds with enemygroups first index
 	spawnEnemyGroup();
 	AddObject(playerObj);
@@ -631,6 +647,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		this->mbLR = false;
 	}
 
+	// Path update
+	testObj->Update(deltaTime);
+	
 	//Update enemies
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
@@ -641,6 +660,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			enemyGroups[i][j]->Update(deltaTime);
 		}
 	}
+
 	//// update physics bodies
 	// player PB
 	playerObj->GetPhysicsBodies()[0]->SetModelPosition(playerObj->GetPosition());

@@ -1,6 +1,9 @@
 #include "Path.h"
 #include "..\utils\math\Interpolation.h"
 
+// creates a path with a starting position of (0, 0, 0)
+cherry::Path::Path() : p0(0, 0, 0) {}
+
 // sets the start position
 cherry::Path::Path(cherry::Vec3 startPos) : p0(startPos) {}
 
@@ -24,6 +27,12 @@ void cherry::Path::AddNode(Vec3 node, unsigned int index)
 	else
 		nodes.push_back(node);
 }
+
+// adds a node
+void cherry::Path::AddNode(float x, float y, float z) { AddNode(Vec3(x, y, z)); }
+
+// adds a node at the provided index
+void cherry::Path::AddNode(float x, float y, float z, unsigned int index) { AddNode(Vec3(x, y, z), index); }
 
 // removes a node at the provided index.
 // if the index is out of range, no node is removed.
@@ -54,10 +63,13 @@ void cherry::Path::SetReverse(bool rvs)
 	u = 1.0F - u; // reverses placement
 }
 
+// reverses the direction on the path
+void cherry::Path::Reverse() { direc = (direc >= 0.0F) ? -1.0F : 1.0F; }
+
 // updates the object's placement on the path, returning the new position.
 cherry::Vec3 cherry::Path::Run(float deltaTime)
 {
-	cherry::Vec3 p2; // the result of the calcualtion
+	cherry::Vec3 p2 = p0; // the result of the calcualtion
 
 	// doesn't run if there aren't enough nodes.
 	if (nodes.size() < 2)
@@ -71,7 +83,6 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 
 	// bounds checking
 	u = (u > 1.0F) ? 1.0F : (u < 0.0F) ? 0.0F : u;
-
 	// interpolation modes
 	switch (mode)
 	{
@@ -81,42 +92,59 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 		break;
 
 	case 1: // spline
-		// the indexes for p0, p2, and p3
-		// t0 is for the control point before the start.
-		// ind1 is for the control point after the end.
-		int t0 = 0, t1 = 0;
+		// the indexes for pt0, pt2, and pt3
+		// pt0 is for the control point before the start.
+		// pt1 is the start point. The value of p0 is used instead.
+		// pt2 is the point on the line.
+		// pt3 is for the control point after the end.
+		int pt0 = 0, pt1 = 0, pt2 = 0, pt3 = 0;
 
 		// spline values
 		// p0 = index - 2, p1 = index - 1, p2 = index, p3 = index + 1
-		t0 = index - 2; //  index - 2 (or nodes.size() - 1)
-		t1 = index + 1; // index + 1 
+		// TODO: take out pt1 and pt2
+		pt0 = index - 2; //  index - 2 (or nodes.size() - 1)
+		pt1 = index - 1;
+		pt2 = index;
+		pt3 = index + 1; // index + 1 
 
 		// if the index is out of range
-		if (t0 < 0)
+		if (pt0 < 0)
 		{
 			// offsetting the values
-			t0 = nodes.size() + t0;
+			pt0 = nodes.size() + pt0;
 
 			// if still less than 0, ind0 is set to 0.
-			if (t0 < 0)
-				t0 = 0;
-			
+			if (pt0 < 0)
+				pt0 = 0;
+		}
+
+		// index out of range for pt1
+		if (pt1 < 0)
+		{
+			// offsetting the values
+			pt1 = nodes.size() + pt1;
+
+			// if still less than 0, ind0 is set to 0.
+			if (pt1 < 0)
+				pt1 = 0;
+
 		}
 
 		// if p3 is greater than the amount of nodes, it's set to 0.
-		if (t1 > nodes.size())
-			t1 = 0;
+		if (pt3 >= nodes.size())
+			pt3 = 0;
 
 		if (direc >= 0) // forward
 		{
 			p2 = util::math::catmullRom(
-				nodes.at(t0).v, p0.v, p1.v, nodes.at(t1).v, u);
+				nodes.at(pt0).v, p0.v, p1.v, nodes.at(pt3).v, u);
 		}
 		else if (direc < 0) // backward
 		{
 			p2 = util::math::catmullRom(
-				nodes.at(t1).v, p1.v, p0.v, nodes.at(t0).v, u);
+				nodes.at(pt3).v, p1.v, p0.v, nodes.at(pt0).v, u);
 		}
+
 
 		break;
 	}
@@ -129,7 +157,7 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 		{
 			index++;
 
-			if (index > nodes.size()) // bounds
+			if (index >= nodes.size()) // bounds
 				index = 0;
 		}
 		else // going backwards
@@ -146,4 +174,5 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 		u = 0;
 	}
 	
+	return p2;
 }

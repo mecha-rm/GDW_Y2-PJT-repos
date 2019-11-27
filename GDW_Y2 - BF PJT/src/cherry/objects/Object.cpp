@@ -547,6 +547,14 @@ void cherry::Object::SetScaleZ(float scaleZ) { scale.v.z = scaleZ; }
 
 
 
+// translates the object
+void cherry::Object::Translate(Vec3 translation) { position += translation; }
+
+// translates the object
+void cherry::Object::Translate(float x, float y, float z) { Translate(Vec3(x, y, z)); }
+
+
+
 // returns true if added successfully.
 bool cherry::Object::AddPhysicsBody(cherry::PhysicsBody* body) 
 { 
@@ -603,12 +611,38 @@ bool cherry::Object::AddAnimation(Animation * anime)
 	// if using morph targets
 	//if (anime->GetId() == 1)
 	//{
-	//	// material->GetShader()->Load("res/lighting.morph.vs.glsl", "res/blinn-phong.morph.fs.glsl");
-	//	mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
+	// material->GetShader()->Load("res/lighting.morph.vs.glsl", "res/blinn-phong.morph.fs.glsl");
+	// Mesh::Sptr mesh2 = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
+	// mesh = mesh2;
 	//}
 
 	return true;
 }
+
+
+// gets the path
+cherry::Path* cherry::Object::GetPath() const { return path; }
+
+// sets the path the object follows.
+void cherry::Object::SetPath(Path* newPath) 
+{ 
+	// if a path is being set, then the starting point is set for the object at its current position.
+	if (newPath != nullptr)
+		newPath->SetStartingPoint(position);
+	
+	path = newPath; 
+}
+
+// attaching a path.
+void cherry::Object::SetPath(Path* newPath, bool attachPath)
+{
+	SetPath(newPath);
+
+	followPath = attachPath;
+}
+
+// determines whether the object should use the path.
+void cherry::Object::UsePath(bool follow) { followPath = follow; }
 
 // updates the object
 void cherry::Object::Update(float deltaTime)
@@ -616,7 +650,11 @@ void cherry::Object::Update(float deltaTime)
 	// TODO: remove this for the final version.
 	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
 	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
-	
+
+	// runs the path and sets the new position
+	if (followPath && path != nullptr)
+		position = path->Run(deltaTime);
+
 	// if the animation is playing
 	if (animate->isPlaying())
 	{

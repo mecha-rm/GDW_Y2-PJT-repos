@@ -10,13 +10,31 @@ namespace util
 	namespace math
 	{
 		// the constant matrix for bezier curves
-		static const util::math::Mat4 M_BEZIER;
+		static const util::math::Mat4 M_BEZIER
+		(
+			-1, 3, -3, 1,
+			3, -6, 3, 0,
+			-3, 3, 0, 0,
+			1, 0, 0, 0
+		);
 
 		// the constant matrix for catmull-rom curves. This has already had the (1/2) scalar applied.
-		static const util::math::Mat4 M_CATMULL_ROM;
+		static const util::math::Mat4 M_CATMULL_ROM
+		(
+			0.5F * -1.0F, 0.5F * 3.0F, 0.5F * -3.0F, 0.5F * 1.0F,
+			0.5F * 2.0F, 0.5F * -5.0F, 0.5F * 4.0F, 0.5F * -1.0F,
+			0.5F * -1.0F, 0.5F * 0.0F, 0.5F * 1.0F, 0.5F * 0.0F,
+			0.5F * 0.0F, 0.5F * 2.0F, 0.5F * 0.0F, 0.5F * 0.0F
+		);
 
 		// the matrix for catmull-rom, which has not had the (1/2) scalar applied.
-		static const util::math::Mat4 M_CATMULL_ROM_DBL; 
+		static const util::math::Mat4 M_CATMULL_ROM_DBL
+		(
+			-1, 3, -3, 1,
+			2, -5, 4, -1,
+			-1, 0, 1, 0,
+			0, 2, 0, 0
+		);
 
 		// lerps between two values. If (t) is greater than 1, then it is set to 1. And if it's less than 0, it is set to 0.
 		inline float lerp(float a, float b, float t);
