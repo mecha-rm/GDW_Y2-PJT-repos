@@ -43,8 +43,8 @@ cnz::Enemies::Enemies(std::string modelPath, std::string scene, cherry::Material
 	position = pos;
 }
 
-void cnz::Enemies::Update(float dt)
-{
+void cnz::Enemies::Update(float dt) {
+	Object::Update(dt);
 }
 
 void cnz::Enemies::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)

@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Enemies.h"
 #include "cherry/PhysicsBody.h"
+#include "cherry/animate/Path.h"
 
 //Enemy Sub-classes
 #include "EnemyTypes/Bastion.h"
