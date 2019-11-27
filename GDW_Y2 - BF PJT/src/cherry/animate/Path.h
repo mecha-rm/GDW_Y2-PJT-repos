@@ -9,6 +9,9 @@ namespace cherry
 	class Path
 	{
 	public:
+		// creates a path with a starting position of (0, 0, 0)
+		Path();
+
 		// sets the start position
 		Path(cherry::Vec3 startPos);
 		
@@ -28,6 +31,13 @@ namespace cherry
 		// adds a node at the provided index. 
 		// If the index is greater than the size of the vector by more than 1, it is added to the end of the list. 
 		void AddNode(Vec3 node, unsigned int index);
+
+		// adds a node to the path.
+		void AddNode(float x, float y, float z);
+
+		// adds a node at the provided index. 
+		// If the index is greater than the size of the vector by more than 1, it is added to the end of the list. 
+		void AddNode(float x, float y, float z, unsigned int index);
 
 		// removes a node at the provided index.
 		// if the index is out of range, no node is removed.
@@ -51,6 +61,9 @@ namespace cherry
 		// if 'true' is passed, the path is travelled backwards
 		void SetReverse(bool rvs);
 
+		// reverses the direction on the path.
+		void Reverse();
+
 		// updates the object's placement on the path, returning the new position.
 		// the vector returned is the new position for the object along the path.
 		// do note that you cannot use this function if there are less than 2 nodes.
@@ -60,7 +73,7 @@ namespace cherry
 
 	private:
 		
-		short int mode = 1;
+		short int mode = 0;
 		const unsigned int MODES_TOTAL = 2;
 		
 		// the nodes on the path

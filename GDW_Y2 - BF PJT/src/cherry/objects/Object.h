@@ -15,6 +15,7 @@
 #include "..\VectorCRY.h"
 #include "..\Material.h"
 #include "..\animate\MorphAnimation.h"
+#include "..\animate\Path.h"
 // #include "..\Physics.h"
 
 namespace cherry
@@ -26,6 +27,7 @@ namespace cherry
 	public:
 		// the name and directory of the .obj file
 		// if 'loadMtl' is set to true, then the object loads the texture, which is assumed to be in the section as the .obj file.
+		// 'dynamicObj' determines if the object is static or dynamic. If it's dynamic, then the object has deformation animation.
 		// remember to call CreateEntity() to add the entity to a scene
 		Object(std::string filePath, bool loadMtl = false);
 
@@ -278,6 +280,13 @@ namespace cherry
 		void SetScaleZ(float scaleZ);
 
 
+		// translates the object
+		void Translate(Vec3 translation);
+
+		// translates the object by the provided values.
+		void Translate(float x, float y, float z);
+
+
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
 		bool AddPhysicsBody(cherry::PhysicsBody * body);
 
@@ -305,6 +314,21 @@ namespace cherry
 		// adds an animation to the object. This comes the object for the animation if it isn't already.
 		bool AddAnimation(Animation * anime);
 
+		/// PATH ///
+		// gets the path that the object is locked to. If 'nullptr' is returned, then the object has no path.
+		Path * GetPath() const;
+
+		// sets the path the object follows. Set to 'nullptr' if the object shouldn't follow a path.
+		void SetPath(Path* newPath = nullptr);
+
+		// sets the path for the object. If 'attachPath' is true, then the object starts moving via this path.
+		void SetPath(Path* newPath, bool attachPath);
+
+		// if 'true' is passed, the object follows the path, if it exists.
+		void UsePath(bool follow);
+
+		// void AttachPath();
+
 
 		// updates the object
 		void Update(float deltaTime);
@@ -316,6 +340,12 @@ namespace cherry
 
 		// the maximum amount of indices one object can have. This doesn't get used.
 		const static unsigned int INDICES_MAX;
+
+		// the path the object follows
+		Path* path = nullptr;
+
+		// following the path
+		bool followPath = false;
 
 	private:
 		// void setMesh(Mesh::sptr);
