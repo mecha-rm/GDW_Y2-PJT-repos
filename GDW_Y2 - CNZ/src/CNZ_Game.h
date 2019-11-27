@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Enemies.h"
 #include "cherry/PhysicsBody.h"
+#include <ctime>
 
 //Enemy Sub-classes
 #include "EnemyTypes/Bastion.h"
@@ -63,6 +64,8 @@ namespace cnz
 
 	private:
 		
+		int curWave = 0; //Current enemy wave
+
 		cnz::Player * playerObj = nullptr; // object for the player.
 
 		//Load enemies // Create multiple enemies using these with only loading one .obj
