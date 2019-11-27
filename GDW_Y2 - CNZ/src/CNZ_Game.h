@@ -100,6 +100,8 @@ namespace cnz
 		bool cs = true;
 		bool cd = true;
 
+		int kills = 0;
+
 		// camera
 		bool debugMode = true; // allows for debug mode.
 

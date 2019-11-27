@@ -564,6 +564,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				
 				enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
 				RemoveObject(enemiesInRange[i]);
+				kills++;
+				cout << kills << endl;
 			}
 			playerObj->SetPosition(playerObj->GetPosition() + dashVec);
 		}
