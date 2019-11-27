@@ -188,23 +188,53 @@ float cnz::CNZ_Game::getXYAngle(cherry::Vec3 vec)
 	return atanf(vec.GetX() / vec.GetY());
 }
 
-void cnz::CNZ_Game::spawnEnemyGroup(int i)
+void cnz::CNZ_Game::spawnEnemyGroup(int i = 0)
 {
+	int percent = rand() % 100;
+	
+	int count = 0;
+
+	if (percent < 50) {
+		i = rand() % 6;
+	}
+	else if (percent < 80) {
+		i = rand() % 13;
+	}
+	else if (percent < 96 && curWave > 5) {
+		i = rand() % 18;
+	}
+	else if (percent < 100 && curWave > 8) {
+		i = rand() % 20;
+	}
+	else {
+		i = rand() % 13;
+	}
+	
+	cout << i << endl;
+
 	int n = enemyGroups[i].size();
 
 	for (int j = 0; j < n; j++) {
+
 		enemyGroups[i][j]->SetRotation(cherry::Vec3(0, 0, 0), true);
-		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + j * 5, 0 + j * 5, 0));
+		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + count * 5, -10 + abs(count) * -5, 0));
 		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->getPBodySize()));
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
-
+		
 		AddObject(enemyGroups[i][j]);
+
+		if (j % 2 == 0) {
+			count++;
+		}
+		count *= -1;
 	}
 }
 
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	srand(time(NULL));
+
 	Game::LoadContent(); // calls the load content
 
 	playerObj = new Player("res/objects/monkey.obj", getCurrentScene(), material); // creates the player.
@@ -217,20 +247,162 @@ void cnz::CNZ_Game::LoadContent()
 	mechaspider = new Enemies("res/objects/sphere.obj", getCurrentScene(), material);
 	arrowBase = new cherry::Object("res/objects/arrow.obj");
 
-	enemyGroups.push_back(std::vector<Enemies*>());
+	for (int i = 0; i < 20; i++) {
+		enemyGroups.push_back(std::vector<Enemies*>());
+	}
+
+	//Easy
 	enemyGroups[0].push_back(new Marauder(marauder, getCurrentScene()));
-	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene(), arrowBase));
-	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene(), arrowBase));
-	
-	enemyGroups.push_back(std::vector<Enemies*>());
-	enemyGroups[1].push_back(new Bastion(bastion, getCurrentScene()));
-	enemyGroups[1].push_back(new Oracle(oracle, getCurrentScene()));
-	enemyGroups[1].push_back(new Oracle(oracle, getCurrentScene()));
-	
-	enemyGroups.push_back(std::vector<Enemies*>());
+	enemyGroups[0].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[0].push_back(new Sentry(sentry, getCurrentScene()));
+
+	//Easy
+	enemyGroups[1].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[1].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[1].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[1].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[1].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Easy
+	enemyGroups[2].push_back(new Bastion(bastion, getCurrentScene()));
 	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 	enemyGroups[2].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Easy
+	enemyGroups[3].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[3].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[3].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[3].push_back(new Oracle(oracle, getCurrentScene()));
+
+	//Easy
+	enemyGroups[4].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[4].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[4].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[4].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[4].push_back(new Marauder(marauder, getCurrentScene()));
+
+	//Easy
+	enemyGroups[5].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[5].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Medium
+	enemyGroups[6].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[6].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[6].push_back(new Oracle(oracle, getCurrentScene()));
+
+	//Medium
+	enemyGroups[7].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[7].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[7].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[7].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Medium
+	enemyGroups[8].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[8].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[8].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[8].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Medium
+	enemyGroups[9].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[9].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[9].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Medium
+	enemyGroups[10].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[10].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[10].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[10].push_back(new Oracle(oracle, getCurrentScene()));
+
+	//Medium
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[11].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Medium
+	enemyGroups[12].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[12].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[12].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[12].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[12].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Hard
+	enemyGroups[13].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[13].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[13].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[13].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[13].push_back(new Sentry(sentry, getCurrentScene()));
+
+	//Hard
+	enemyGroups[14].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[14].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[14].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[14].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[14].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Hard
+	enemyGroups[15].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[15].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[15].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[15].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[15].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[15].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[15].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[15].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Hard
+	enemyGroups[16].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[16].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[16].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+
+	//Hard
+	enemyGroups[17].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[17].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[17].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[17].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[17].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[17].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[17].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[17].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[17].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Insane
+	enemyGroups[18].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[18].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[18].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[18].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[18].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[18].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[18].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[18].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[18].push_back(new Bastion(bastion, getCurrentScene()));
+
+	//Insane
+	enemyGroups[19].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[19].push_back(new Marauder(marauder, getCurrentScene()));
+	enemyGroups[19].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[19].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[19].push_back(new Sentry(sentry, getCurrentScene()));
+	enemyGroups[19].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[19].push_back(new Oracle(oracle, getCurrentScene()));
+	enemyGroups[19].push_back(new Bastion(bastion, getCurrentScene()));
+	enemyGroups[19].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[19].push_back(new Mechaspider(mechaspider, getCurrentScene()));
+	enemyGroups[19].push_back(new Mechaspider(mechaspider, getCurrentScene()));
 
 	// playerObj->CreateEntity(getCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
@@ -242,8 +414,24 @@ void cnz::CNZ_Game::LoadContent()
 
 	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
+	// Path stuff
+	cherry::Path* testPath = new cherry::Path();
+	testPath->AddNode(1.0f, 1.0f, 0.0f);
+	testPath->AddNode(0.0f, 5.0f, 0.0f);
+	testPath->AddNode(-2.0f, 5.0f, 0.0f);
+	testPath->AddNode(-3.0f, 7.0f, 0.0f);
+	testPath->AddNode(-6.0f, 8.0f, 0.0f);
+	testPath->AddNode(-6.0f, 6.0f, 0.0f);
+	testPath->AddNode(-2.0f, 4.0f, 0.0f);
+	testPath->AddNode(1.0f, 1.0f, 0.0f);
+
+	testPath->SetIncrementer(0.5f);
+	testPath->SetInterpolationMode(1);
+
+	testObj->SetPath(testPath, true);
+
 	//Number corresponds with enemygroups first index
-	spawnEnemyGroup(0);
+	spawnEnemyGroup();
 	AddObject(playerObj);
 	AddObject(testObj);
 
@@ -459,16 +647,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		this->mbLR = false;
 	}
 
+	// Path update
+	testObj->Update(deltaTime);
+	
 	//Update enemies
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
 			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
-				enemyGroups[i][j]->Attack(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
-				AddObject(enemyGroups[i][j]->arrow);
+				//enemyGroups[i][j]->Attack(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
+				//AddObject(enemyGroups[i][j]->arrow);
 			}
 			enemyGroups[i][j]->Update(deltaTime);
 		}
 	}
+
 	//// update physics bodies
 	// player PB
 	playerObj->GetPhysicsBodies()[0]->SetModelPosition(playerObj->GetPosition());

@@ -115,6 +115,10 @@ void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double y
 	glm::quat rotation = glm::quat(this->worldAngle);
 }
 
+void cnz::Player::Update(float deltaTime) {
+	Object::Update(deltaTime);
+}
+
 // sets the angle
 void cnz::Player::SetAngle(float angle, bool isDegrees) {
 	if (isDegrees) {

@@ -6,7 +6,7 @@ namespace cnz {
 	class Sentry : public cnz::Enemies
 	{
 	public:
-		Sentry(cnz::Enemies* obj, std::string scene, cherry::Object* arrow) : cnz::Enemies(obj, scene) { this->arrow = arrow; description = "Sentry"; };
+		Sentry(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) { description = "Sentry"; };
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
