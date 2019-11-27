@@ -135,6 +135,7 @@
     <ClCompile Include="src\CNZ_Game.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Projectile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -406,6 +407,7 @@
     <ClInclude Include="src\cherry\utils\UtilsToolsLib.h" />
     <ClInclude Include="src\cherry\VectorCRY.h" />
     <ClInclude Include="src\CNZ_Game.h" />
+    <ClInclude Include="src\Projectile.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\GLM\detail\func_common.inl" />
