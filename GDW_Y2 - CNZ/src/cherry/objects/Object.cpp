@@ -52,7 +52,7 @@ cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertice
 cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl) : 
 	Object(filePath, loadMtl)
 {
-	CreateEntity(scene, material);
+	//CreateEntity(scene, material);
 }
 
 // creates an object, puts it in the provided scene, and loads in the mtl file.
@@ -60,7 +60,7 @@ cherry::Object::Object(std::string filePath, std::string scene, std::string mtl)
 	: Object(filePath, false)
 {
 	// creates the entity, and loads in the mtl file.
-	CreateEntity(scene, Material::GenerateMtl(mtl));
+	//CreateEntity(scene, Material::GenerateMtl(mtl));
 }
 
 // creates an obj file, puts it in a scene, and then applies the material.
@@ -70,7 +70,7 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 	if (loadMtl)
 		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
 
-	CreateEntity(scene, material);
+	//CreateEntity(scene, material);
 }
 
 // loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
@@ -78,7 +78,23 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 	:Object(filePath, false)
 {
 	material->LoadMtl(mtl);
+	//CreateEntity(scene, material);
+}
+
+cherry::Object::Object(Object* obj, std::string scene)
+{
+	name = obj->GetName();
+	description = obj->GetDescription();
+	safe = obj->GetSafe();
+
+	mesh = obj->GetMesh();
+	material = obj->GetMaterial();
+
+	position = obj->GetPosition();
+	scale = obj->GetScale();
+
 	CreateEntity(scene, material);
+
 }
 
 // the protected constructor used for default primitives
@@ -601,7 +617,6 @@ float cherry::Object::getPBodyDepth()
 {
 	return this->getPBodySize().GetZ() / 2;
 }
-
 
 // updates the object
 void cherry::Object::Update(float deltaTime)

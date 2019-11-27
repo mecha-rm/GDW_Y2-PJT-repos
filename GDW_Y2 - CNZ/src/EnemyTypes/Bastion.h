@@ -5,7 +5,8 @@
 namespace cnz {
 	class Bastion : public cnz::Enemies
 	{
-		Bastion(cnz::Enemies obj);
+	public:
+		Bastion(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
 	};
 }
 

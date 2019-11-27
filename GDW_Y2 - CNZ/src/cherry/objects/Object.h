@@ -46,6 +46,8 @@ namespace cherry
 		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
 		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl);
 
+		Object(Object* obj, std::string scene);
+
 
 
 		// destructor
@@ -295,16 +297,16 @@ namespace cherry
 		// sets whether the object is currently intersecting with another object.
 		void SetIntersection(bool inter);
 
-		// updates the object
-		void Update(float deltaTime);
-
 		// get pbody size
-		cherry::Vec3 getPBodySize();
+		virtual cherry::Vec3 getPBodySize();
 
 		// get pbody width, height and depth.
-		float getPBodyWidth();
-		float getPBodyHeight();
-		float getPBodyDepth();
+		virtual float getPBodyWidth();
+		virtual float getPBodyHeight();
+		virtual float getPBodyDepth();
+
+		// updates the object
+		void Update(float deltaTime);
 
 		virtual std::string ToString() const;
 
@@ -342,6 +344,9 @@ namespace cherry
 
 		// becomes 'true' when an object intersects something.
 		bool intersection = false;
+
+		// needs to be overwritten by inherited class or whatever its called
+		cherry::Vec3 pBodySize;
 
 		// used for object transformations
 		// entt::registry ecs;
@@ -393,8 +398,6 @@ namespace cherry
 
 		// the scale of the object
 		cherry::Vec3 scale = { 1.0F, 1.0F, 1.0F };
-
-		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
 	};
 }
 

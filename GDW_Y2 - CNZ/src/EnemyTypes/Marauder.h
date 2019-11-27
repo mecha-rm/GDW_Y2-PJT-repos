@@ -5,7 +5,8 @@
 namespace cnz {
 	class Marauder : public cnz::Enemies
 	{
-		Marauder(cnz::Enemies obj);
+	public:
+		Marauder(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
 	};
 }
 

@@ -14,7 +14,7 @@ cnz::Player::Player(std::string modelFile, cherry::Vec3 pos) : Object(modelFile)
 {
 	position = pos;
 	// TODO: replace with a more accurate hitbox
-	AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
+	//AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
 }
 
 // creates the player at the world's origin
@@ -156,4 +156,24 @@ bool cnz::Player::setDrawPBody(bool draw)
 bool cnz::Player::getDrawPBody()
 {
 	return this->drawPBody;
+}
+
+cherry::Vec3 cnz::Player::getPBodySize()
+{
+	return this->pBodySize;
+}
+
+float cnz::Player::getPBodyWidth()
+{
+	return this->getPBodySize().GetX() / 2;
+}
+
+float cnz::Player::getPBodyHeight()
+{
+	return this->getPBodySize().GetY() / 2;
+}
+
+float cnz::Player::getPBodyDepth()
+{
+	return this->getPBodySize().GetZ() / 2;
 }

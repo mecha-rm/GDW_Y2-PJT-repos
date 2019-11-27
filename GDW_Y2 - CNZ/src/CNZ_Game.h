@@ -4,6 +4,13 @@
 #include "Enemies.h"
 #include "cherry/PhysicsBody.h"
 
+//Enemy Sub-classes
+#include "EnemyTypes/Bastion.h"
+#include "EnemyTypes/Marauder.h"
+#include "EnemyTypes/Mechaspider.h"
+#include "EnemyTypes/Oracle.h"
+#include "EnemyTypes/Sentry.h"
+
 // inherits from the game class.
 namespace cnz
 {
@@ -32,9 +39,19 @@ namespace cnz
 		// called when a key has been released; overloaded from the game's keyReleased
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
+		// get closest obstacle within a certain degrees of where the player is facing
 		cherry::PhysicsBody* getClosestObstacle();
 
+		// gets a list of enemies within a certain degrees of where the player is facing
+		// we require the dash vector so that we can use a smaller one if the player is dashing towards an obstacle that
+		// would case the dash to end when they collide with that obstacle.
+		vector<cherry::Object*> getEnemiesInDash(cherry::Vec3 dashVec);
+
+		// get the angle at which a Vec3 is facing in X and Y axis. 
+		// can also be used to find the angle between two positions by getting passing in their difference
 		float getXYAngle(cherry::Vec3 vec);
+
+		void spawnEnemyGroup(int i);
 
 	protected:
 
@@ -53,12 +70,16 @@ namespace cnz
 		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
-		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy
+		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
+		cherry::Object* arrowBase = nullptr;
+
+		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;
 
 		vector<cherry::PhysicsBody*> obstaclePBs;
+		vector<cherry::PhysicsBody*> enemyPBs;
 
 		float camLerpPercent = 0.0f;
 

@@ -5,7 +5,8 @@
 namespace cnz {
 	class Mechaspider : public cnz::Enemies
 	{
-		Mechaspider(cnz::Enemies obj);
+	public:
+		Mechaspider(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
 	};
 }
 

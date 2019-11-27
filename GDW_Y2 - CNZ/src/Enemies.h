@@ -8,8 +8,11 @@ namespace cnz
 	class Enemies : public cherry::Object
 	{
 	public:
-		// creates an Enemies object. A cube is used to represent the Enemies
-		// Enemies();
+		//Default Contructor
+		Enemies();
+
+		//Copy Constructor
+		Enemies(Enemies* obj, std::string scene);
 
 		// creates an Enemies, and the file path of the user.
 		Enemies(std::string modelFile);
@@ -30,6 +33,13 @@ namespace cnz
 		// Enemies(const cherry::Primitive * model);
 
 		virtual void Update(float dt);
+
+		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
+		virtual std::string WhoAmI() { return description; }
+
+		std::string description = "Enemy";
+		bool attacking = false;
+		cherry::Object* arrow = nullptr;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
@@ -56,6 +66,9 @@ namespace cnz
 		// get draw pbody
 		bool getDrawPBody();
 
+		// get pbody size
+		cherry::Vec3 getPBodySize();
+
 		// get pbody width, height and depth.
 		float getPBodyWidth();
 		float getPBodyHeight();
@@ -67,7 +80,7 @@ namespace cnz
 
 		// TODO: possibly delete these variables? Object has its own rotation now.
 		// object angle in screen space (degrees or radians)
-		float degreeAngle, radianAngle;
+		float degreeAngle = 0, radianAngle = 0;
 
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
