@@ -15,6 +15,7 @@
 #include "..\VectorCRY.h"
 #include "..\Material.h"
 // #include "..\Physics.h"
+#include "..\animate\Path.h"
 
 namespace cherry
 {
@@ -276,6 +277,13 @@ namespace cherry
 		void SetScaleZ(float scaleZ);
 
 
+		// translates the object
+		void Translate(Vec3 translation);
+
+		// translates the object by the provided values.
+		void Translate(float x, float y, float z);
+
+
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
 		bool AddPhysicsBody(cherry::PhysicsBody * body);
 
@@ -297,6 +305,22 @@ namespace cherry
 		// sets whether the object is currently intersecting with another object.
 		void SetIntersection(bool inter);
 
+
+		/// PATH ///
+		// gets the path that the object is locked to. If 'nullptr' is returned, then the object has no path.
+		Path* GetPath() const;
+
+		// sets the path the object follows. Set to 'nullptr' if the object shouldn't follow a path.
+		void SetPath(Path* newPath = nullptr);
+
+		// sets the path for the object. If 'attachPath' is true, then the object starts moving via this path.
+		void SetPath(Path* newPath, bool attachPath);
+
+		// if 'true' is passed, the object follows the path, if it exists.
+		void UsePath(bool follow);
+
+		
+
 		// get pbody size
 		virtual cherry::Vec3 getPBodySize();
 
@@ -315,6 +339,12 @@ namespace cherry
 
 		// the maximum amount of indices one object can have. This doesn't get used.
 		const static unsigned int INDICES_MAX;
+
+		// the path the object follows
+		Path* path = nullptr;
+
+		// following the path
+		bool followPath = false;
 
 	private:
 		// void setMesh(Mesh::sptr);
