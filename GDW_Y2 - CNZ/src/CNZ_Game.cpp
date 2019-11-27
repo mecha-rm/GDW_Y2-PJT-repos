@@ -668,6 +668,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	for (int i = 0; i < enemyPBs.size(); i++) {
 		enemyPBs[i]->SetModelPosition(enemyPBs[i]->GetObject()->GetPosition());
 	}
+	// test PB
+	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
 
 	// camera position update code
