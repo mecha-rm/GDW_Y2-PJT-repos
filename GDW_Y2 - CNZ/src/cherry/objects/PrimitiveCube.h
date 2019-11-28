@@ -10,10 +10,11 @@ namespace cherry
 		PrimitiveCube();
 
 		// sets a single side length for width, height, and depth
-		PrimitiveCube(float sideLength);
+		// colour ranges from 0 to 1 for RGBA
+		PrimitiveCube(float sideLength, Vec4 color = Vec4(1.0F, 1.0F, 1.0F, 1.0F));
 
 		// sets the width, height, and depth
-		PrimitiveCube(float width, float height, float depth);
+		PrimitiveCube(float width, float height, float depth, Vec4 color = Vec4(1.0F, 1.0F, 1.0F, 1.0F));
 
 		// gets the width
 		float GetWidth() const;

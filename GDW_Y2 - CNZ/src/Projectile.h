@@ -14,7 +14,7 @@ public:
 	{
 		position = pos;
 		// TODO: replace with a more accurate hitbox
-		AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
+		//AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
 	}
 
 	void SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos);

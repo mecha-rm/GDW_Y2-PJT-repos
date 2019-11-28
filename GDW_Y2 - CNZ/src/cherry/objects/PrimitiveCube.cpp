@@ -1,12 +1,12 @@
 #include "PrimitiveCube.h"
 #include "..\PhysicsBody.h"
 
-cherry::PrimitiveCube::PrimitiveCube() : PrimitiveCube(1.0F, 1.0F, 1.0F) {}
+cherry::PrimitiveCube::PrimitiveCube() : PrimitiveCube(1.0F, 1.0F, 1.0F, Vec4(1.0F, 1.0F, 1.0F, 1.0F)) {}
 
 // sets a single side length
-cherry::PrimitiveCube::PrimitiveCube(float sideLength) : PrimitiveCube(sideLength, sideLength, sideLength) {}
+cherry::PrimitiveCube::PrimitiveCube(float sideLength, Vec4 colour) : PrimitiveCube(sideLength, sideLength, sideLength, colour) {}
 
-cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth) : 
+cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec4 color) : 
 	cherry::Primitive(), width(abs(width)), height(abs(height)), depth(abs(depth))
 {
 	// making sure both are positive.
@@ -14,6 +14,15 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth) :
 	height = abs(height);
 	depth = abs(depth);
 	
+	// colour of the primitive cube.
+	glm::vec4 clr = glm::vec4(
+		(color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x,
+		(color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y,
+		(color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z,
+		(color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w
+	);
+
+	baseColor = clr;
 
 	// Position and Color (Default Values) // NORMALS ARE WRONG
 	verticesTotal = 8;
@@ -30,17 +39,17 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth) :
 
 	vertices = new Vertex[verticesTotal]
 	{
-		//  x      y	 z									r	 g	   b	 a
+		//  x      y	 z									rgba
 		
-		{{ -width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom left, front corner
-		{{ -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 1}}, // top left, front corner
-		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom left, back corner
-		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top left, back corner
+		{{ -width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom left, front corner
+		{{ -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}}, // top left, front corner
+		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom left, back corner
+		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top left, back corner
 																									
-		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom right, front corner
-		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top right, front corner
-		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom right, back corner
-		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f}, {1, 1}} // top right, back corner
+		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom right, front corner
+		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top right, front corner
+		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom right, back corner
+		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}} // top right, back corner
 
 	};
 
@@ -74,7 +83,7 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth) :
 	
 	// TODO: LOOPS INFINITELY
 	// PhysicsBody* temp = new cherry::PhysicsBodyBox(width, height, depth);
-	AddPhysicsBody(new cherry::PhysicsBodyBox(width, height, depth));
+	// AddPhysicsBody(new cherry::PhysicsBodyBox(width, height, depth));
 }
 
 // gets the width
