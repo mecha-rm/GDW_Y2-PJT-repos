@@ -253,11 +253,14 @@ void cnz::CNZ_Game::LoadContent()
 	arrowBase = new Projectile("res/objects/weapons/arrow.obj");
 
 	// arena obstacles
-	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
-	obstacles.push_back(wall1);
-	//Obstacle* wall2 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
-	//Obstacle* wall3 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
-	//Obstacle* wall4 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(10, 2, 2));
+	Obstacle* wall2 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall3 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall4 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall5 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall6 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall7 = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
+	
 
 	bow = new Obstacle("res/objects/weapons/bow.obj", GetCurrentScene(), false);
 	katana = new Obstacle("res/objects/weapons/katana.obj", GetCurrentScene(), false);
@@ -440,27 +443,62 @@ void cnz::CNZ_Game::LoadContent()
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 
+	// big wall bois
+	obstacles.push_back(wall1);
+	obstacles.push_back(wall2);
+	obstacles.push_back(wall3);
+	obstacles.push_back(wall4);
+	obstacles.push_back(wall5);
+	obstacles.push_back(wall6);
+	obstacles.push_back(wall7);
+
 	// rotations
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	playerObj->SetRotationXDegrees(90);
 	playerObj->SetRotationZDegrees(180);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	
+	wall1->SetRotation(cherry::Vec3(90, 0, 180), true); // top wall
+	wall2->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
+	wall3->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
+	wall4->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
+	wall5->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
+	wall6->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
+	wall7->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
+	
 	// positions
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
-	wall1->SetPosition(cherry::Vec3(-5, 0, 0));
+	wall1->SetPosition(cherry::Vec3(15, -1, 0));
+	wall2->SetPosition(cherry::Vec3(15, 14, 0));
+	wall3->SetPosition(cherry::Vec3(8, 14, 0));
+	wall4->SetPosition(cherry::Vec3(4, 10, 0));
+	wall5->SetPosition(cherry::Vec3(4, 3, 0));
+	wall6->SetPosition(cherry::Vec3(19, 10, 0));
+	wall7->SetPosition(cherry::Vec3(19, 3, 0));
 
 	// scale. if needed.
-	wall1->SetScale(5.0f);
+	
 
 	// attach pbody
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
 	wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->getPBodySize()));
+	wall2->AddPhysicsBody(new cherry::PhysicsBodyBox(wall2->GetPosition(), wall2->getPBodySize()));
+	wall3->AddPhysicsBody(new cherry::PhysicsBodyBox(wall3->GetPosition(), wall3->getPBodySize()));
+	wall4->AddPhysicsBody(new cherry::PhysicsBodyBox(wall4->GetPosition(), wall4->getPBodySize()));
+	wall5->AddPhysicsBody(new cherry::PhysicsBodyBox(wall5->GetPosition(), wall5->getPBodySize()));
+	wall6->AddPhysicsBody(new cherry::PhysicsBodyBox(wall6->GetPosition(), wall6->getPBodySize()));
+	wall7->AddPhysicsBody(new cherry::PhysicsBodyBox(wall7->GetPosition(), wall7->getPBodySize()));
 
 	// set pbody pos and maybe rotation for static objects
 	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 	wall1->GetPhysicsBodies()[0]->SetModelPosition(wall1->GetPosition());
+	wall2->GetPhysicsBodies()[0]->SetModelPosition(wall2->GetPosition());
+	wall3->GetPhysicsBodies()[0]->SetModelPosition(wall3->GetPosition());
+	wall4->GetPhysicsBodies()[0]->SetModelPosition(wall4->GetPosition());
+	wall5->GetPhysicsBodies()[0]->SetModelPosition(wall5->GetPosition());
+	wall6->GetPhysicsBodies()[0]->SetModelPosition(wall6->GetPosition());
+	wall7->GetPhysicsBodies()[0]->SetModelPosition(wall7->GetPosition());
 
 	// Path stuff
 	cherry::Path* testPath = new cherry::Path();
@@ -560,6 +598,19 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyPBs[i]);
 		if (collision) {
 			playerEnemyCollisions.push_back(enemyPBs[i]);
+		}
+	}
+
+	// find all projectiles that player is colliding with
+	for (int i = 0; i < projectilePBs.size(); i++) {
+		projectilePBs[i]->SetModelPosition(projectilePBs[i]->GetObject()->GetPosition()); // update pb
+
+		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projectilePBs[i]);
+		if (collision) { // check for collision and delete
+			auto tempObj = projectilePBs[i]->GetObject();
+			tempObj->RemovePhysicsBody(projectilePBs[i]);
+			tempObj->SetPosition(1000, 1000, 1000);
+			RemoveObject(projectilePBs[i]->GetObject());
 		}
 	}
 
