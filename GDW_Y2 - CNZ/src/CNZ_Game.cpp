@@ -637,8 +637,6 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					cout << kills << endl;
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec);
-				kills++;
-				cout << kills << endl;
 			}
 		}
 		
