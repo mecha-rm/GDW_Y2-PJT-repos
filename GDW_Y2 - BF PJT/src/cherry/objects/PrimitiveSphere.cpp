@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive(), radius(abs(radius))
+cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows, unsigned int segCols, Vec4 color) : Primitive(), radius(abs(radius))
 {
 	// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (segRows < 3)
@@ -14,6 +14,16 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 
 	// makes sure the radius has its absolute value.
 	radius = abs(radius);
+
+	// colour of the sphere
+	glm::vec4 clr = glm::vec4(
+		(color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x,
+		(color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y,
+		(color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z,
+		(color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w
+	);
+
+	baseColor = clr; // saving the base colour
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
@@ -107,7 +117,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, radius}, {clr}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -130,7 +140,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 			normVec = util::math::rotateX(normVec, rotateX, false);
 			normVec = util::math::rotateZ(normVec, rotateZ, false);
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {clr}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -140,7 +150,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -radius}, {clr}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 	
 	// starting values for the indice drawing.
 	
@@ -224,7 +234,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
-	AddPhysicsBody(new cherry::PhysicsBodySphere(radius));
+	// AddPhysicsBody(new cherry::PhysicsBodySphere(radius));
 }
 
 // gets the radius

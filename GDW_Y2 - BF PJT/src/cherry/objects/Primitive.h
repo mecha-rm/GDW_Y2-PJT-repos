@@ -32,5 +32,6 @@ namespace cherry
 		// ONLY CALL THIS IF THE VERTICES AND INDICES ARE SET.
 		void calculateNormals();
 
+		cherry::Vec4 baseColor{ 1.0F, 1.0F, 1.0F, 1.0F }; // the base color of the object.
 	};
 }
