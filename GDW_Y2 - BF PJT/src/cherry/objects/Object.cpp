@@ -743,6 +743,10 @@ void cherry::Object::Update(float deltaTime)
 		if(animate->isPlaying())
 			animate->Update(deltaTime);
 	}
+
+	// updating the physics bodies
+	for (cherry::PhysicsBody* body : bodies)
+		body->Update(deltaTime);
 }
 
 // returns a string representing the object

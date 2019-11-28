@@ -661,45 +661,45 @@ void cherry::Game::LoadContent()
 		float offset = 3.0F; // position offset
 
 		// Creating the objects, storing them, and making them part of the default m_Scene.
-		objects.push_back(new PrimitiveCapsule());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		
+		//objects.push_back(new PrimitiveCapsule());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		//
 
-		objects.push_back(new PrimitiveCircle());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		//objects.push_back(new PrimitiveCircle());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		objects.push_back(new PrimitiveCone());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		//objects.push_back(new PrimitiveCone());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		objects.push_back(new PrimitiveCube());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		//objects.push_back(new PrimitiveCube());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		objects.push_back(new PrimitiveCylinder());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		//objects.push_back(new PrimitiveCylinder());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		objects.push_back(new PrimitiveDiamond());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		//objects.push_back(new PrimitiveDiamond());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		objects.push_back(new PrimitiveUVSphere());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		//objects.push_back(new PrimitiveUVSphere());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		objects.push_back(new PrimitivePlane());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		//objects.push_back(new PrimitivePlane());
+		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		//objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
-		// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
-		// images don't need CreateEntity called.
-		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		objects.at(objects.size() - 1)->SetScale(0.1F);
+		//// images don't need CreateEntity called.
+		//objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		//objects.at(objects.size() - 1)->SetScale(0.1F);
 
 		// version 1 (finds .mtl file automatically)
 		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
@@ -708,14 +708,13 @@ void cherry::Game::LoadContent()
 		// objects.push_back();
 
 		// version 2 (.mtl file manually added)
-		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
-		 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
-		 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
+		//objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
+		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
+		// 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
 
-		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(50.0F, 50.0F, 50.0F));
-		objects.at(objects.size() - 1)->GetPhysicsBodies().at(0)->GetMesh();
-		// objects.at(objects.size() - 1)->GetPhysicsBodies().at(0)->GetMesh();
+		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(2.0F, 2.0F, 2.0F));
+		objects.at(objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(true);
 
 		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
 		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
@@ -736,18 +735,18 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->AddAnimation(mph);
 		objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
 
-		//Path* path = new Path();
-		//path->AddNode(8.0F, 0.0F, 0.0F);
-		//path->AddNode(-8.0F, 8.0F, 0.0F);
-		//path->AddNode(8.0F, 8.0F, 8.0F);
-		//path->AddNode(8.0F, -8.0F, -8.0F);
-		//path->SetIncrementer(0.5);
+		Path* path = new Path();
+		path->AddNode(8.0F, 0.0F, 0.0F);
+		path->AddNode(-8.0F, 8.0F, 0.0F);
+		path->AddNode(8.0F, 8.0F, 8.0F);
+		path->AddNode(8.0F, -8.0F, -8.0F);
+		path->SetIncrementer(0.5);
 
-		//path->SetInterpolationMode(1);
+		path->SetInterpolationMode(1);
 
-		//objects.at(objects.size() - 1)->SetPath(path, true);
-		//
-		//objects.at(objects.size() - 1)->SetScale(0.7);
+		objects.at(objects.size() - 2)->SetPath(path, true);
+		
+		objects.at(objects.size() - 2)->SetScale(0.7);
 	}
 
 	// Create and compile shader

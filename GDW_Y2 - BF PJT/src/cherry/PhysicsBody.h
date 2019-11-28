@@ -74,6 +74,26 @@ namespace cherry
 		// sets the world position
 		void SetWorldPosition(glm::vec3 wpos);
 
+
+		// gets the rotation of the body
+		cherry::Vec3 GetRotationDegrees() const;
+
+		// sets the rotation in degrees
+		void SetRotationDegrees(Vec3 degrees);
+		
+		// gets rotation in radians
+		cherry::Vec3 GetRotationRadians() const;
+
+		// sets rotation in radians
+		void SetRotationRadians(Vec3 radians);
+
+
+		// gets the scale of the body
+		cherry::Vec3 GetScale() const;
+
+		// sets the scale of the body.
+		void SetScale(cherry::Vec3 newScale);
+
 		// virtual void GetMesh() = 0;
 
 		// bool getVisible();
@@ -83,8 +103,17 @@ namespace cherry
 		// calculates collision between two physics bodies if is available.
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
 
-		// draws the collision body
-		virtual Mesh::Sptr & GetMesh() = 0;
+		// states whether the body is visible.
+		bool IsVisible() const;
+
+		// toggle visibility
+		void SetVisible();
+
+		// sets visibility
+		void SetVisible(bool visible);
+
+		// update loop for physics bodies
+		virtual void Update(float deltaTime);
 
 		// the toString function for physics bodies. This is basically here just so that this is an abstract class.
 		virtual std::string ToString() const = 0;
@@ -92,15 +121,30 @@ namespace cherry
 	private:
 		int id = 0; // identifier
 
+		// bool visible = false; // checks for visibility in reference to if the object is visible.
+
+		// rotation
+		cherry::Vec3 rotation;
 
 	protected:
+		// the colour of the physics bodies (RGBA)
+		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 0.45F };
+
 		// doesn't get deleted since the object it's attachted to isn't necessarily unused.
 		cherry::Object* object = nullptr; // the object the body is attachted to.
+
+		// a matrix that holds the node's transformation to the parent.
+		// glm::mat4 nodeParentTransform;
 
 		cherry::Vec3 position; // position
 
 		// used to draw the body
 		cherry::Primitive* body = nullptr;
+
+		cherry::Vec3 scale{ 1.0F, 1.0F, 1.0F };
+
+		// material for primitives
+		Material::Sptr material;
 	};
 
 	// the object for a rectange physics body
@@ -139,8 +183,7 @@ namespace cherry
 		// sets depth (size on z-axis)
 		void SetDepth(float newDepth);
 
-		// draws the collision body
-		Mesh::Sptr& GetMesh();
+		void Update(float deltaTime);
 
 		// toString
 		virtual std::string ToString() const;
@@ -169,8 +212,7 @@ namespace cherry
 		// sets the radius; if negative is passed, the absolute value is received.
 		void SetRadius(float r);
 
-		// draws the collision body
-		Mesh::Sptr& GetMesh();
+		void Update(float deltaTime);
 
 		// ToString function
 		std::string ToString() const;
