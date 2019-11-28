@@ -550,7 +550,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		playerObj->SetDashTime(0.0f);
 
 		cherry::PhysicsBody* closestObstacle = getClosestObstacle();
-		if (closestObstacle == nullptr) { // if there is no obstacle in the direction the player is facing when dashing
+		if (closestObstacle == nullptr) {
 			vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dashVec);
 			for (int i = 0; i < enemiesInRange.size(); i++) {
 				cherry::Object* curEnemy = enemiesInRange[i];
@@ -573,7 +573,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			cherry::Vec3 dP = closestObstacle->GetModelPosition() - playerObj->GetPosition();
 			cherry::Vec3 dPN;
 			
-			if (dP.GetLength() < tempDist) { // there is an obstacle preventing the full dash length
+			if (dP.GetLength() < tempDist) {
 				if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
 					float tempX = 0;
 					if (dP.GetX() < 0) {
@@ -619,7 +619,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
-			else { // there is an obstacle but it is NOT preventing full dash length
+			else {
 				vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dashVec);
 				for (int i = 0; i < enemiesInRange.size(); i++) {
 					cherry::Object* curEnemy = enemiesInRange[i];
@@ -637,6 +637,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					cout << kills << endl;
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec);
+				kills++;
+				cout << kills << endl;
 			}
 		}
 		
