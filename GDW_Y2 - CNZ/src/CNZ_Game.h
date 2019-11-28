@@ -2,9 +2,11 @@
 #include "cherry/Game.h"
 #include "Player.h"
 #include "Enemies.h"
+#include "Obstacle.h"
 #include "cherry/PhysicsBody.h"
 #include "cherry/animate/Path.h"
 #include <ctime>
+#include "Projectile.h"
 
 //Enemy Sub-classes
 #include "EnemyTypes/Bastion.h"
@@ -75,15 +77,21 @@ namespace cnz
 		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
-		cherry::Object* arrowBase = nullptr;
+		Projectile* arrowBase = nullptr;
 
+		std::vector<Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+
+		std::vector<Projectile*> projList; //list of projectiles
+		std::vector<int> projTimeList; //list of projectile timers
+
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		bool mbLP = false, mbLR = false;
 
 		vector<cherry::PhysicsBody*> obstaclePBs;
 		vector<cherry::PhysicsBody*> enemyPBs;
+		vector<cherry::PhysicsBody*> projectilePBs;
 
 		float camLerpPercent = 0.0f;
 
@@ -101,6 +109,7 @@ namespace cnz
 		bool cd = true;
 
 		int kills = 0;
+		int curGroup = -1;
 
 		// camera
 		bool debugMode = true; // allows for debug mode.

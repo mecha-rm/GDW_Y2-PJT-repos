@@ -188,29 +188,32 @@ float cnz::CNZ_Game::getXYAngle(cherry::Vec3 vec)
 	return atanf(vec.GetX() / vec.GetY());
 }
 
-void cnz::CNZ_Game::spawnEnemyGroup(int i = 0)
+void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 {
 	int percent = rand() % 100;
 	
 	int count = 0;
 
-	if (percent < 50) {
-		i = rand() % 6;
-	}
-	else if (percent < 80) {
-		i = rand() % 13;
-	}
-	else if (percent < 96 && curWave > 5) {
-		i = rand() % 18;
-	}
-	else if (percent < 100 && curWave > 8) {
-		i = rand() % 20;
-	}
-	else {
-		i = rand() % 13;
+	if (i == -1) {
+		if (percent < 50) {
+			i = rand() % 6;
+		}
+		else if (percent < 80) {
+			i = rand() % 13;
+		}
+		else if (percent < 96 && curWave > 5) {
+			i = rand() % 18;
+		}
+		else if (percent < 100 && curWave > 8) {
+			i = rand() % 20;
+		}
+		else {
+			i = rand() % 13;
+		}
 	}
 	
 	cout << i << endl;
+	curGroup = i;
 
 	int n = enemyGroups[i].size();
 
@@ -220,7 +223,9 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = 0)
 		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + count * 5, -10 + abs(count) * -5, 0));
 		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
-		
+		enemyGroups[i][j]->alive = true;
+		enemyGroups[i][j]->SetRotationXDegrees(90);
+		enemyGroups[i][j]->SetRotationZDegrees(180);
 		AddObject(enemyGroups[i][j]);
 
 		if (j % 2 == 0) {
@@ -237,15 +242,22 @@ void cnz::CNZ_Game::LoadContent()
 
 	Game::LoadContent(); // calls the load content
 
-	playerObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates the player.
+	playerObj = new Player("res/objects/hero/charactoereee.obj", GetCurrentScene(), matStatic); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates the not player.
 
-	sentry = new Enemies("res/objects/cube.obj", GetCurrentScene(), matStatic);
-	oracle = new Enemies("res/objects/cube.obj", GetCurrentScene(), matStatic);
-	marauder = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
+	sentry = new Enemies("res/objects/enemies/Enemy_Bow.obj", GetCurrentScene(), matStatic);
+	oracle = new Enemies("res/objects/enemies/Enemy_Spear.obj", GetCurrentScene(), matStatic);
+	marauder = new Enemies("res/objects/enemies/Enemy_Sword.obj", GetCurrentScene(), matStatic);
 	bastion = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
-	mechaspider = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
-	arrowBase = new cherry::Object("res/objects/arrow.obj");
+	mechaspider = new Enemies("res/objects/enemies/Spider.obj", GetCurrentScene(), matStatic);
+	arrowBase = new Projectile("res/objects/weapons/arrow.obj");
+
+	// arena obstacles
+	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	obstacles.push_back(wall1);
+	//Obstacle* wall2 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	//Obstacle* wall3 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	//Obstacle* wall4 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
 
 	for (int i = 0; i < 20; i++) {
 		enemyGroups.push_back(std::vector<Enemies*>());
@@ -404,15 +416,27 @@ void cnz::CNZ_Game::LoadContent()
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 
-	// playerObj->CreateEntity(GetCurrentScene(), material);
+	// rotations
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	playerObj->SetRotationXDegrees(90);
+	playerObj->SetRotationZDegrees(180);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	
+	// positions
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
+	wall1->SetPosition(cherry::Vec3(-5, 0, 0));
 
+	// scale. if needed.
+	wall1->SetScale(5.0f);
+
+	// attach pbody
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
+	wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->getPBodySize()));
 
-	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	// set pbody pos and maybe rotation for static objects
+	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	wall1->GetPhysicsBodies()[0]->SetModelPosition(wall1->GetPosition());
 
 	// Path stuff
 	cherry::Path* testPath = new cherry::Path();
@@ -426,21 +450,35 @@ void cnz::CNZ_Game::LoadContent()
 	testPath->AddNode(1.0f, 1.0f, 0.0f);
 
 	testPath->SetIncrementer(0.5f);
-	testPath->SetInterpolationMode(1);
+	testPath->SetInterpolationMode(1); 
 
 	testObj->SetPath(testPath, true);
 
 	//Number corresponds with enemygroups first index
-	spawnEnemyGroup();
+    spawnEnemyGroup(19);
+
+	// add objects
 	AddObject(playerObj);
 	AddObject(testObj);
+	for (int i = 0; i < obstacles.size(); i++) {
+		AddObject(obstacles[i]);
+	}
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
 	}
 
+	// add pbs to correct list for collisions
 	// enemy PBs are added to the list in spawnEnemyGroup.
-	obstaclePBs.push_back(testObj->GetPhysicsBodies()[0]);
+	for (int i = 0; i < obstacles.size(); i++) {
+		auto temp = obstacles[i]->GetPhysicsBodies();
+		if (temp.size() != 0) {
+			obstaclePBs.push_back(temp[0]);
+		}
+		else {
+			cout << "obstacle " << i << " did not have a pb attached. accident?" << endl;
+		}
+	}
 
 	//// setting up the camera
 	myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
@@ -538,7 +576,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	}
 	
 	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
-	playerObj->SetRotation(cherry::Vec3(0.0f, 0.0f, playerObj->GetDegreeAngle()), true);
+	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 	
 	
 	// dash code
@@ -656,14 +694,37 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// Path update
 	testObj->Update(deltaTime);
 	
-	//Update enemies
+	//Spawn projectiles
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
-			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
-				//enemyGroups[i][j]->Attack(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
-				//AddObject(enemyGroups[i][j]->arrow);
+			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false && enemyGroups[i][j]->alive == true) {
+				enemyGroups[i][j]->attacking = true;
+				projList.push_back(new Projectile(arrowBase));
+				projTimeList.push_back(0);
+				projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+				projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
+				projList[projList.size() - 1]->SetWhichGroup(i);
+				projList[projList.size() - 1]->SetWhichEnemy(j);
+				projList[projList.size() - 1]->active = true;
+				projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
+				projList[projList.size() - 1]->SetDirVec(projList[projList.size() - 1]->GetPosition(), projList[projList.size() - 1]->GetPosition() + cherry::Vec3(0, 10, 0.1));
+				AddObject(projList[projList.size() - 1]);
 			}
-			enemyGroups[i][j]->Update(deltaTime);
+			//enemyGroups[i][j]->Update(deltaTime);
+		}
+	}
+
+	//Update Projectiles
+	for (int i = 0; i < projList.size(); i++) {
+		if (projList[i]->active == true) {
+			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (0.1f * deltaTime)));
+			projTimeList[i]++;
+			if (projTimeList[i] >= 60 * 5) {
+				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
+				projList[i]->active = false;
+				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
+				RemoveObject(projList[i]);
+			}
 		}
 	}
 
@@ -675,7 +736,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		enemyPBs[i]->SetModelPosition(enemyPBs[i]->GetObject()->GetPosition());
 	}
 	// test PB
-	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
 
 	// camera position update code
