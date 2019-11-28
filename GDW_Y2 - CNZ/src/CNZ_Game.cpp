@@ -188,29 +188,32 @@ float cnz::CNZ_Game::getXYAngle(cherry::Vec3 vec)
 	return atanf(vec.GetX() / vec.GetY());
 }
 
-void cnz::CNZ_Game::spawnEnemyGroup(int i = 0)
+void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 {
 	int percent = rand() % 100;
 	
 	int count = 0;
 
-	if (percent < 50) {
-		i = rand() % 6;
-	}
-	else if (percent < 80) {
-		i = rand() % 13;
-	}
-	else if (percent < 96 && curWave > 5) {
-		i = rand() % 18;
-	}
-	else if (percent < 100 && curWave > 8) {
-		i = rand() % 20;
-	}
-	else {
-		i = rand() % 13;
+	if (i == -1) {
+		if (percent < 50) {
+			i = rand() % 6;
+		}
+		else if (percent < 80) {
+			i = rand() % 13;
+		}
+		else if (percent < 96 && curWave > 5) {
+			i = rand() % 18;
+		}
+		else if (percent < 100 && curWave > 8) {
+			i = rand() % 20;
+		}
+		else {
+			i = rand() % 13;
+		}
 	}
 	
 	cout << i << endl;
+	curGroup = i;
 
 	int n = enemyGroups[i].size();
 
@@ -220,7 +223,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = 0)
 		enemyGroups[i][j]->SetPosition(cherry::Vec3(0 + count * 5, -10 + abs(count) * -5, 0));
 		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
-		
+		enemyGroups[i][j]->alive = true;
 		AddObject(enemyGroups[i][j]);
 
 		if (j % 2 == 0) {
@@ -245,7 +248,7 @@ void cnz::CNZ_Game::LoadContent()
 	marauder = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
 	bastion = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
 	mechaspider = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
-	arrowBase = new cherry::Object("res/objects/arrow.obj");
+	arrowBase = new Projectile("res/objects/arrow.obj");
 
 	for (int i = 0; i < 20; i++) {
 		enemyGroups.push_back(std::vector<Enemies*>());
@@ -426,12 +429,12 @@ void cnz::CNZ_Game::LoadContent()
 	testPath->AddNode(1.0f, 1.0f, 0.0f);
 
 	testPath->SetIncrementer(0.5f);
-	testPath->SetInterpolationMode(1);
+	testPath->SetInterpolationMode(1); 
 
 	testObj->SetPath(testPath, true);
 
 	//Number corresponds with enemygroups first index
-	spawnEnemyGroup();
+	spawnEnemyGroup(13);
 	AddObject(playerObj);
 	AddObject(testObj);
 
@@ -656,14 +659,37 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// Path update
 	testObj->Update(deltaTime);
 	
-	//Update enemies
+	//Spawn projectiles
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
-			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
-				//enemyGroups[i][j]->Attack(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
-				//AddObject(enemyGroups[i][j]->arrow);
+			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false && enemyGroups[i][j]->alive == true) {
+				enemyGroups[i][j]->attacking = true;
+				projList.push_back(new Projectile(arrowBase));
+				projTimeList.push_back(0);
+				projList[i]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+				projectilePBs.push_back(projList[i]->GetPhysicsBodies()[0]);
+				projList[projList.size() - 1]->SetWhichGroup(i);
+				projList[projList.size() - 1]->SetWhichEnemy(j);
+				projList[projList.size() - 1]->active = true;
+				projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
+				projList[projList.size() - 1]->SetDirVec(projList[projList.size() - 1]->GetPosition(), projList[projList.size() - 1]->GetPosition() + cherry::Vec3(0, 10, 0.1));
+				AddObject(projList[projList.size() - 1]);
 			}
-			enemyGroups[i][j]->Update(deltaTime);
+			//enemyGroups[i][j]->Update(deltaTime);
+		}
+	}
+
+	//Update Projectiles
+	for (int i = 0; i < projList.size(); i++) {
+		if (projList[i]->active == true) {
+			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (0.1f * deltaTime)));
+			projTimeList[i]++;
+			if (projTimeList[i] >= 60 * 5) {
+				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
+				projList[i]->active = false;
+				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
+				RemoveObject(projList[i]);
+			}
 		}
 	}
 

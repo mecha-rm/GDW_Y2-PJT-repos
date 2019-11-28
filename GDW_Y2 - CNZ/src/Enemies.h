@@ -40,6 +40,7 @@ namespace cnz
 		std::string description = "Enemy";
 		bool attacking = false;
 		cherry::Object* arrow = nullptr;
+		bool alive = false;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
