@@ -666,8 +666,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				enemyGroups[i][j]->attacking = true;
 				projList.push_back(new Projectile(arrowBase));
 				projTimeList.push_back(0);
-				projList[i]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
-				projectilePBs.push_back(projList[i]->GetPhysicsBodies()[0]);
+				projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+				projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
 				projList[projList.size() - 1]->SetWhichGroup(i);
 				projList[projList.size() - 1]->SetWhichEnemy(j);
 				projList[projList.size() - 1]->active = true;
