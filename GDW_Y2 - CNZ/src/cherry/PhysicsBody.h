@@ -27,7 +27,7 @@ namespace cherry
 		// sets the id for a specific physics body, and its position.
 		PhysicsBody(int id, cherry::Vec3 pos);
 
-		// ~PhysicsBody();
+		~PhysicsBody();
 
 		/*
 		 * gets the identifier for the physics body
@@ -90,15 +90,17 @@ namespace cherry
 		virtual std::string ToString() const = 0;
 
 	private:
-		cherry::Vec3 position; // position
-		
 		int id = 0; // identifier
-
-		// doesn't get deleted since the object it's attachted to isn't necessarily unused.
-		cherry::Object * object = nullptr; // the object the body is attachted to.
 
 
 	protected:
+		// doesn't get deleted since the object it's attachted to isn't necessarily unused.
+		cherry::Object* object = nullptr; // the object the body is attachted to.
+
+		cherry::Vec3 position; // position
+
+		// used to draw the body
+		cherry::Primitive* body = nullptr;
 	};
 
 	// the object for a rectange physics body
