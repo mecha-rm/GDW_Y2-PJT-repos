@@ -224,6 +224,8 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 		enemyGroups[i][j]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
 		enemyGroups[i][j]->alive = true;
+		enemyGroups[i][j]->SetRotationXDegrees(90);
+		enemyGroups[i][j]->SetRotationZDegrees(180);
 		AddObject(enemyGroups[i][j]);
 
 		if (j % 2 == 0) {
@@ -240,15 +242,15 @@ void cnz::CNZ_Game::LoadContent()
 
 	Game::LoadContent(); // calls the load content
 
-	playerObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates the player.
+	playerObj = new Player("res/objects/hero/charactoereee.obj", GetCurrentScene(), matStatic); // creates the player.
 	testObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates the not player.
 
-	sentry = new Enemies("res/objects/cube.obj", GetCurrentScene(), matStatic);
-	oracle = new Enemies("res/objects/cube.obj", GetCurrentScene(), matStatic);
-	marauder = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
+	sentry = new Enemies("res/objects/enemies/Enemy_Bow.obj", GetCurrentScene(), matStatic);
+	oracle = new Enemies("res/objects/enemies/Enemy_Spear.obj", GetCurrentScene(), matStatic);
+	marauder = new Enemies("res/objects/enemies/Enemy_Sword.obj", GetCurrentScene(), matStatic);
 	bastion = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
-	mechaspider = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
-	arrowBase = new Projectile("res/objects/arrow.obj");
+	mechaspider = new Enemies("res/objects/enemies/Spider.obj", GetCurrentScene(), matStatic);
+	arrowBase = new Projectile("res/objects/weapons/arrow.obj");
 
 	for (int i = 0; i < 20; i++) {
 		enemyGroups.push_back(std::vector<Enemies*>());
@@ -409,13 +411,15 @@ void cnz::CNZ_Game::LoadContent()
 
 	// playerObj->CreateEntity(GetCurrentScene(), material);
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	playerObj->SetRotationXDegrees(90);
+	playerObj->SetRotationZDegrees(180);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
 
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
-	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
+	//testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
 
-	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
 	// Path stuff
 	cherry::Path* testPath = new cherry::Path();
@@ -434,7 +438,7 @@ void cnz::CNZ_Game::LoadContent()
 	testObj->SetPath(testPath, true);
 
 	//Number corresponds with enemygroups first index
-	spawnEnemyGroup(13);
+	spawnEnemyGroup(19);
 	AddObject(playerObj);
 	AddObject(testObj);
 
@@ -443,7 +447,7 @@ void cnz::CNZ_Game::LoadContent()
 	}
 
 	// enemy PBs are added to the list in spawnEnemyGroup.
-	obstaclePBs.push_back(testObj->GetPhysicsBodies()[0]);
+	//obstaclePBs.push_back(testObj->GetPhysicsBodies()[0]);
 
 	//// setting up the camera
 	myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
@@ -541,7 +545,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	}
 	
 	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
-	playerObj->SetRotation(cherry::Vec3(0.0f, 0.0f, playerObj->GetDegreeAngle()), true);
+	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 	
 	
 	// dash code
@@ -701,7 +705,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		enemyPBs[i]->SetModelPosition(enemyPBs[i]->GetObject()->GetPosition());
 	}
 	// test PB
-	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
 
 
 	// camera position update code
