@@ -247,6 +247,13 @@ void cnz::CNZ_Game::LoadContent()
 	mechaspider = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
 	arrowBase = new cherry::Object("res/objects/arrow.obj");
 
+	// arena obstacles
+	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	obstacles.push_back(wall1);
+	//Obstacle* wall2 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	//Obstacle* wall3 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	//Obstacle* wall4 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+
 	for (int i = 0; i < 20; i++) {
 		enemyGroups.push_back(std::vector<Enemies*>());
 	}
@@ -404,15 +411,25 @@ void cnz::CNZ_Game::LoadContent()
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 	enemyGroups[19].push_back(new Mechaspider(mechaspider, GetCurrentScene()));
 
-	// playerObj->CreateEntity(GetCurrentScene(), material);
+	// rotations
 	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	
+	// positions
 	testObj->SetPosition(cherry::Vec3(0, -5, 0));
+	wall1->SetPosition(cherry::Vec3(-5, 0, 0));
 
+	// scale. if needed.
+	wall1->SetScale(5.0f);
+
+	// attach pbody
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
 	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
+	wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->getPBodySize()));
 
-	testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	// set pbody pos and maybe rotation for static objects
+	//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
+	wall1->GetPhysicsBodies()[0]->SetModelPosition(wall1->GetPosition());
 
 	// Path stuff
 	cherry::Path* testPath = new cherry::Path();
@@ -432,15 +449,29 @@ void cnz::CNZ_Game::LoadContent()
 
 	//Number corresponds with enemygroups first index
 	spawnEnemyGroup();
+
+	// add objects
 	AddObject(playerObj);
 	AddObject(testObj);
+	for (int i = 0; i < obstacles.size(); i++) {
+		AddObject(obstacles[i]);
+	}
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
 	}
 
+	// add pbs to correct list for collisions
 	// enemy PBs are added to the list in spawnEnemyGroup.
-	obstaclePBs.push_back(testObj->GetPhysicsBodies()[0]);
+	for (int i = 0; i < obstacles.size(); i++) {
+		auto temp = obstacles[i]->GetPhysicsBodies();
+		if (temp.size() != 0) {
+			obstaclePBs.push_back(temp[0]);
+		}
+		else {
+			cout << "obstacle " << i << " did not have a pb attached. accident?" << endl;
+		}
+	}
 
 	//// setting up the camera
 	myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));

@@ -105,6 +105,7 @@
     <ClCompile Include="src\EnemyTypes\Mechaspider.cpp" />
     <ClCompile Include="src\EnemyTypes\Oracle.cpp" />
     <ClCompile Include="src\EnemyTypes\Sentry.cpp" />
+    <ClCompile Include="src\Obstacle.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
     <ClCompile Include="src\cherry\Game.cpp" />
@@ -378,6 +379,7 @@
     <ClInclude Include="src\EnemyTypes\Mechaspider.h" />
     <ClInclude Include="src\EnemyTypes\Oracle.h" />
     <ClInclude Include="src\EnemyTypes\Sentry.h" />
+    <ClInclude Include="src\Obstacle.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\cherry\Camera.h" />
     <ClInclude Include="src\cherry\Game.h" />

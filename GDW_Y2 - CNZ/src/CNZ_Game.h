@@ -2,6 +2,7 @@
 #include "cherry/Game.h"
 #include "Player.h"
 #include "Enemies.h"
+#include "Obstacle.h"
 #include "cherry/PhysicsBody.h"
 #include "cherry/animate/Path.h"
 #include <ctime>
@@ -77,6 +78,7 @@ namespace cnz
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		cherry::Object* arrowBase = nullptr;
 
+		std::vector<Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		cnz::Player* testObj = nullptr; // object for the player.
