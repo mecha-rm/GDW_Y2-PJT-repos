@@ -141,14 +141,17 @@ void cherry::Light::SetLightAttenuation(float attenuation)
 
 }
 
+// generates shader with default shader values
+cherry::Material::Sptr cherry::Light::GenerateMaterial(const TextureSampler::Sptr& sampler) const { return GenerateMaterial(STATIC_VS, STATIC_FS, sampler); }
+
 // generates a material with the current light values
-cherry::Material::Sptr cherry::Light::GenerateMaterial(const TextureSampler::Sptr& sampler) const { return GenerateMaterial("res/images/default.png", 1.0F); }
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const { return GenerateMaterial(vs, fs, "res/images/default.png", 1.0F); }
 
 // generates a material using a material lib file.
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string mtllib, const TextureSampler::Sptr& sampler)
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::string fs, std::string mtllib, const TextureSampler::Sptr& sampler)
 {
 	// the material
-	Material::Sptr material = GenerateMaterial();
+	Material::Sptr material = GenerateMaterial(vs, fs);
 
 	// loads in the material
 	material->LoadMtl(mtllib);
@@ -157,19 +160,19 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string mtllib, const
 }
 
 // generates a material with one texture
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string texturePath, float weight, const TextureSampler::Sptr& sampler) const
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::string fs, std::string texturePath, float weight, const TextureSampler::Sptr& sampler) const
 {
-	return GenerateMaterial(texturePath, weight, "", 0.0F, "", 0.0F, sampler);
+	return GenerateMaterial(vs, fs, texturePath, weight, "", 0.0F, "", 0.0F, sampler);
 }
 
 // generates a material with two textures
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler) const
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::string fs, std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler) const
 {
-	return GenerateMaterial(txt0, wgt0, txt1, wgt1, "", 0.0F, sampler);
+	return GenerateMaterial(vs, fs, txt0, wgt0, txt1, wgt1, "", 0.0F, sampler);
 }
 
 // generates a material using a provided texture and weights
-cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler) const
+cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::string fs, std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler) const
 {
 	// the m_Scene material
 	Material::Sptr material; // the material
@@ -177,8 +180,8 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string txt0, float w
 	std::ifstream file; // used for checking if the image file exists.
 	glm::vec3 texWeights; // the weights of all of the textures.
 
-	// used to make the albedo
-	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl"); // the shader
+	// used to make the albedo // TODO: fix shaders
+	phong->Load(vs.c_str(), fs.c_str()); // the shader
 	material = std::make_shared<Material>(phong); // loads in the shader.
 
 	material->Set("a_LightPos", glm::vec3(m_LightPos.v.x, m_LightPos.v.y, m_LightPos.v.z));

@@ -142,7 +142,7 @@ namespace cherry
 		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera);
 
 		// gets the current m_Scene
-		std::string getCurrentScene() const;
+		std::string GetCurrentScene() const;
 
 
 		// set to 'true' for debug functionality.
@@ -152,7 +152,8 @@ namespace cherry
 		std::vector<std::string> scenes;
 
 		// the m_Scene material
-		Material::Sptr material;
+		Material::Sptr matStatic; // the static material
+		Material::Sptr matDynamic; // the dynamic material
 
 		SamplerDesc description; // texture description
 		TextureSampler::Sptr sampler; // texture sampler

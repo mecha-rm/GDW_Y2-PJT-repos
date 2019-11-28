@@ -61,18 +61,18 @@ namespace cnz
 		void SetAngle(glm::vec3 angle);
 
 		// set draw pbody
-		bool setDrawPBody(bool draw);
+		bool SetDrawPBody(bool draw);
 
 		// get draw pbody
-		bool getDrawPBody();
+		bool GetDrawPBody();
 
 		// get pbody size
-		cherry::Vec3 getPBodySize();
+		cherry::Vec3 GetPBodySize();
 
 		// get pbody width, height and depth.
-		float getPBodyWidth();
-		float getPBodyHeight();
-		float getPBodyDepth();
+		float GetPBodyWidth();
+		float GetPBodyHeight();
+		float GetPBodyDepth();
 
 	private:
 		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);

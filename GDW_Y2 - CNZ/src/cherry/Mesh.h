@@ -6,6 +6,7 @@
 #include <memory> // Needed for smart pointers
 
 #include "UtilsCRY.h"
+#include "VectorCRY.h"
 
 namespace cherry
 {
@@ -15,6 +16,22 @@ namespace cherry
 		glm::vec4 Color; // vertex colour
 		glm::vec3 Normal; // vertex normal
 		glm::vec2 UV; // texture UV coordinates
+	};
+
+	// Vertex Struct - used for morph targets
+	// NOTE: add two more position and normal parameters
+	struct MorphVertex {
+		glm::vec3 Position; // vertex position
+		glm::vec4 Color; // vertex colour
+		glm::vec3 Normal; // vertex normal
+		glm::vec2 UV; // texture UV coordinates
+
+		
+		glm::vec3 Position1; // position 1 for deformation animation
+		glm::vec3 Normal1; // normal 1 for deformation animation
+
+		glm::vec3 Position2; // position 2 for deformation animation
+		glm::vec3 Normal2; // normal 2 for deformation animation
 	};
 
 	// Mesh Class - creates meshes so that objects can appear on screen.
@@ -28,7 +45,12 @@ namespace cherry
 
 		// Creates a new mesh from the given vertices and indices
 		Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices);
+
 		Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe);
+
+		// Creates a new mesH for morph target animation.
+		// ONLY USE THIS IF YOU ARE USING MORPH TARGETS.
+		Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices);
 
 		// destructor
 		~Mesh();
@@ -60,7 +82,11 @@ namespace cherry
 		// sets whether the mesh is visible or not.
 		void SetVisible(bool visible);
 
-		
+		// morphs the mesh using the provided vertices as targets. This only takes the positions and normals from the provided vertices.
+		void Morph(MorphVertex* vertices, size_t numVerts);
+
+		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position1 and Normal.
+		static MorphVertex* ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts);
 
 	private:
 		// Our GL handle for the Vertex Array Object

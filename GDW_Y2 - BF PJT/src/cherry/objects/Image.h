@@ -12,6 +12,8 @@ namespace cherry
 		// call createEntity to replace the image?
 		Image(std::string filePath, std::string currentScene);
 
+		~Image();
+
 		// gets the width of the image.
 		uint32_t GetWidth() const;
 

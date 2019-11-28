@@ -4,6 +4,7 @@
 #include "VectorCRY.h" // includes cherry::Vectors, and glm::vectors
 #include "Material.h"
 
+
 namespace cherry
 {
 	class Light
@@ -116,28 +117,30 @@ namespace cherry
 		
 		
 		// void SetSampler(TextureSampler::Sptr sampler);
+		// generates a material with the default shader values
+		cherry::Material::Sptr GenerateMaterial(const TextureSampler::Sptr& sampler = nullptr) const;
 
 		// generates a material with the current values provided. No texture is applied, and default values are used.
-		cherry::Material::Sptr GenerateMaterial(const TextureSampler::Sptr& sampler = nullptr) const;
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler = nullptr) const;
 	
 		// generates a material using the lighting setup, and a material template library file.
 		// if a sampler isn't being used, it should just be set to nullptr
-		cherry::Material::Sptr GenerateMaterial(std::string mtllib, const TextureSampler::Sptr & sampler = nullptr);
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, std::string mtllib, const TextureSampler::Sptr & sampler = nullptr);
 
 		// generates a material with the current light values, as well as a texture. Set the weight to 1.0 to make the texture fully 
 		// if a sampler isn't being used, it should just be set to nullptr
 		// the texture path should be an image. Weight ranges from [0, 1]
-		cherry::Material::Sptr GenerateMaterial(std::string texturePath, float weight, const TextureSampler::Sptr& sampler = nullptr) const;
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, std::string texturePath, float weight, const TextureSampler::Sptr& sampler = nullptr) const;
 
 		// generates a material with the current light values, as well as two provided texture.
 		// the weights determine how they're mixed. Weights cannot be greater than 1.
 		// if a sampler isn't being used, it should just be set to nullptr
-		cherry::Material::Sptr GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler = nullptr) const;
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, std::string txt0, float wgt0, std::string txt1, float wgt1, const TextureSampler::Sptr& sampler = nullptr) const;
 
 		// generates a material with the current light values, as well as two provided texture.
 		// the weights determine how they're mixed. Weights must be in the [0, 1] range.
 		// if a sampler isn't being used, it should just be set to nullptr
-		cherry::Material::Sptr GenerateMaterial(std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler = nullptr) const;
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, std::string txt0, float wgt0, std::string txt1, float wgt1, std::string txt2, float wgt2, const TextureSampler::Sptr& sampler = nullptr) const;
 
 		// toString function for a light
 		std::string ToString() const;

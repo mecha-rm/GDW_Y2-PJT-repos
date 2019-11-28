@@ -29,25 +29,25 @@ namespace cherry
 		// if 'loadMtl' is set to true, then the object loads the texture, which is assumed to be in the section as the .obj file.
 		// 'dynamicObj' determines if the object is static or dynamic. If it's dynamic, then the object has deformation animation.
 		// remember to call CreateEntity() to add the entity to a scene
-		Object(std::string filePath, bool loadMtl = false);
+		Object(std::string filePath, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads an ob file using the filePath provided, and puts it in the provided scene.
 		// Use the bool to load the mtl file as well, which is assumed to be of the same name and be in the same location.
 		// this automatically calls CreateEntity() to add the entity into the scene.
-		Object(std::string filePath, std::string scene, bool loadMtl = false);
+		Object(std::string filePath, std::string scene, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads in the object with the designated scene, and an mtl file.
 		// this automatically calls CreateEntity() to add the entity into the scene.
-		Object(std::string filePath, std::string scene, std::string mtl);
+		Object(std::string filePath, std::string scene, std::string mtl, bool dynamicObj = false);
 
 		// loads an obj file, and places it in the scene with the provided material
 		// it can also load in an .mtl file after loading in the material, which is applied to be in the same location as the .obj file.
 		// this automatically calls CreateEntity().
-		Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl = false);
+		Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads in an obj file, adds to the scene, applies the material, then loads in the mtl file.
 		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
-		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl);
+		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl, bool dynamicObj = false);
 
 
 
@@ -310,6 +310,12 @@ namespace cherry
 
 
 		// ANIMATION //
+
+		// if the object is dynamic, then the object deforms.
+		bool IsDynamicObject() const;
+
+		// if the object is static, it doesn't deform.
+		bool IsStaticObject() const;
 		
 		// adds an animation to the object. This comes the object for the animation if it isn't already.
 		bool AddAnimation(Animation * anime);
@@ -318,16 +324,23 @@ namespace cherry
 		// gets the path that the object is locked to. If 'nullptr' is returned, then the object has no path.
 		Path * GetPath() const;
 
-		// sets the path the object follows. Set to 'nullptr' if the object shouldn't follow a path.
+		// sets the path the object follows. Set to 'nullptr' if you want to remove the path reference from the object.
+		// To delete the path from memory, use DeletePath().
 		void SetPath(Path* newPath = nullptr);
 
 		// sets the path for the object. If 'attachPath' is true, then the object starts moving via this path.
 		void SetPath(Path* newPath, bool attachPath);
 
+		// removes the path from the object. To remove the path from memory, use DeletePath().
+		void RemovePath();
+
+		// deletes the path from memory, which simoutaneously removes it from all objects that hold this reference.
+		void DeletePath();
+
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
 
-		// void AttachPath();
+		
 
 
 		// updates the object
@@ -362,10 +375,13 @@ namespace cherry
 		// template<typename T>
 		// void calculateNormals(std::vector<);
 
-		// parent object
-		Object * parent = nullptr;
+		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
+		bool dynamicObject = false;
 
-		std::vector<Object*> children;
+		// parent object
+		// Object * parent = nullptr;
+
+		// std::vector<Object*> children;
 
 		// the string for the file path
 		std::string filePath = "";

@@ -11,6 +11,12 @@
 Represents settings for a shader
 */
 
+#define STATIC_VS "res/lighting.vs.glsl"
+#define STATIC_FS "res/blinn-phong.fs.glsl"
+
+#define DYNAMIC_VS "res/lighting-morph.vs.glsl"
+#define DYNAMIC_FS "res/blinn-phong-morph.fs.glsl"
+
 namespace cherry
 {
 	class Material {
@@ -24,6 +30,9 @@ namespace cherry
 		virtual ~Material() = default;
 
 		const Shader::Sptr& GetShader() const { return myShader; }
+
+		// sets the shader for the material
+		void SetShader(Shader::Sptr shader) { myShader = shader; }
 
 		// applies all uniforms to the shader.
 		virtual void Apply();

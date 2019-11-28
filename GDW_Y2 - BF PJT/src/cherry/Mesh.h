@@ -19,14 +19,19 @@ namespace cherry
 	};
 
 	// Vertex Struct - used for morph targets
+	// NOTE: add two more position and normal parameters
 	struct MorphVertex {
-		glm::vec3 Position0; // vertex position
+		glm::vec3 Position; // vertex position
 		glm::vec4 Color; // vertex colour
-		glm::vec3 Normal0; // vertex normal
+		glm::vec3 Normal; // vertex normal
 		glm::vec2 UV; // texture UV coordinates
 
-		glm::vec3 Position1; // second vertex position (used for morphing)
-		glm::vec3 Normal1; // second normal position (used for morphing)
+		
+		glm::vec3 Position1; // position 1 for deformation animation
+		glm::vec3 Normal1; // normal 1 for deformation animation
+
+		glm::vec3 Position2; // position 2 for deformation animation
+		glm::vec3 Normal2; // normal 2 for deformation animation
 	};
 
 	// Mesh Class - creates meshes so that objects can appear on screen.
@@ -80,7 +85,7 @@ namespace cherry
 		// morphs the mesh using the provided vertices as targets. This only takes the positions and normals from the provided vertices.
 		void Morph(MorphVertex* vertices, size_t numVerts);
 
-		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position0 and Normal0.
+		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position1 and Normal.
 		static MorphVertex* ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts);
 
 	private:

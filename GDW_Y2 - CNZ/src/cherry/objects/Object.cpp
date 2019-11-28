@@ -22,7 +22,8 @@ const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
 const unsigned int cherry::Object::INDICES_MAX = pow(2, 32);
 
 // constructor - gets the filename and opens it.
-cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertices(nullptr), indices(nullptr)
+cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj) 
+	: position(), vertices(nullptr), indices(nullptr), dynamicObject(dynamicObj)
 {
 	this->filePath = filePath; // saves the file path
 
@@ -44,57 +45,45 @@ cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertice
 	// closes the file since it was only opened for this check.
 	file.close();
 
+	// default world transform
+	// worldTransform = TempTransform().GetWorldTransform();
+
 	// loads the object
 	LoadObject(loadMtl);
 }
 
 // loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
-cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl) : 
+cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl, bool dynamicObj) :
 	Object(filePath, loadMtl)
 {
-	//CreateEntity(scene, material);
+	CreateEntity(scene, material);
 }
 
 // creates an object, puts it in the provided scene, and loads in the mtl file.
-cherry::Object::Object(std::string filePath, std::string scene, std::string mtl)
-	: Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, std::string mtl, bool dynamicObj)
+	: Object(filePath, false, dynamicObj)
 {
 	// creates the entity, and loads in the mtl file.
-	//CreateEntity(scene, Material::GenerateMtl(mtl));
+	CreateEntity(scene, Material::GenerateMtl(mtl));
 }
 
 // creates an obj file, puts it in a scene, and then applies the material.
-cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl) : Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl, bool dynamicObj) 
+	: Object(filePath, false, dynamicObj)
 {
 	// gets the .obj file name, but replaces the file extension to find the .mtl file.
-	if (loadMtl)
+	if(loadMtl)
 		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
 
-	//CreateEntity(scene, material);
+	CreateEntity(scene, material);
 }
 
 // loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
-cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl)
-	:Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl, bool dynamicObj)
+	:Object(filePath, false, dynamicObj)
 {
 	material->LoadMtl(mtl);
-	//CreateEntity(scene, material);
-}
-
-cherry::Object::Object(Object* obj, std::string scene)
-{
-	name = obj->GetName();
-	description = obj->GetDescription();
-	safe = obj->GetSafe();
-
-	mesh = obj->GetMesh();
-	material = obj->GetMaterial();
-
-	position = obj->GetPosition();
-	scale = obj->GetScale();
-
 	CreateEntity(scene, material);
-
 }
 
 // the protected constructor used for default primitives
@@ -102,8 +91,13 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 
 cherry::Object::~Object()
 {
+	// TODO: add back deletions
 	delete[] vertices;
-	delete[] indices;
+
+	// if not initialized, it causes an error if deleted.
+	// since only the primitives use indicies, those call delete on their own.
+	// delete[] indices; 
+	delete animate;
 }
 
 
@@ -347,7 +341,13 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 	// creates the mesh
 	// unlike with the default primitives, the amount of vertices corresponds to how many Indices there are, and the values are set accordingly.
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	
+	// if the object is dynamic, a different set of vertices are used.
+	if (dynamicObject)
+		mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0); // deformation
+	else
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // no deformation
+	
 
 	// the object loader has a material associated with it, and said material should be loaded
 // if the .obj file had a material associated with it.
@@ -358,7 +358,9 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		mtllib = fpStr + mtllib;
 
 		// generates the material
-		material = Material::GenerateMtl(mtllib);
+		material = (dynamicObject) ? 
+			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS) :
+			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS);
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.
@@ -367,9 +369,10 @@ bool cherry::Object::LoadObject(bool loadMtl)
 // creates an entity with the provided m_Scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
-	this->material = material; // saves the material.
 
-	// sets up the Update function for the entity. This gets automatically called.
+	this->material = material; // saves the material.
+	
+							   // sets up the Update function for the entity. This gets automatically called.
 	auto& ecs = GetRegistry(scene);
 	entt::entity entity = ecs.create();
 
@@ -385,8 +388,8 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // udpates the position
 		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
 		transform.Scale = glm::vec3(scale.v.x, scale.v.y, scale.v.z); // sets the scale
-
-
+		
+		worldTransform = transform.GetWorldTransform();
 		// does the same thing, except all in one line (for rotation)
 		// CurrentRegistry().get_or_assign<TempTransform>(e).EulerRotation += glm::vec3(0, 0, 90 * dt);
 	};
@@ -394,6 +397,9 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	auto& up = ecs.get_or_assign<UpdateBehaviour>(entity);
 	up.Function = tform;
 }
+
+// gets the transformation into world space.
+glm::mat4 cherry::Object::GetWorldTransformation() const { return worldTransform; }
 
 // gets the entity of the object
 // entt::entity& cherry::Object::getEntity() { return entity; }
@@ -554,6 +560,7 @@ float cherry::Object::GetScaleZ() const { return scale.v.z; }
 void cherry::Object::SetScaleZ(float scaleZ) { scale.v.z = scaleZ; }
 
 
+
 // translates the object
 void cherry::Object::Translate(Vec3 translation) { position += translation; }
 
@@ -593,32 +600,6 @@ bool cherry::Object::RemovePhysicsBody(unsigned int index)
 	return false;
 }
 
-
-// gets the path
-cherry::Path* cherry::Object::GetPath() const { return path; }
-
-// sets the path the object follows.
-void cherry::Object::SetPath(Path* newPath)
-{
-	// if a path is being set, then the starting point is set for the object at its current position.
-	if (newPath != nullptr)
-		newPath->SetStartingPoint(position);
-
-	path = newPath;
-}
-
-// attaching a path.
-void cherry::Object::SetPath(Path* newPath, bool attachPath)
-{
-	SetPath(newPath);
-
-	followPath = attachPath;
-}
-
-// determines whether the object should use the path.
-void cherry::Object::UsePath(bool follow) { followPath = follow; }
-
-
 // gets the amount of physics bodies
 unsigned int cherry::Object::GetPhysicsBodyCount() const { return bodies.size(); }
 
@@ -631,25 +612,106 @@ bool cherry::Object::GetIntersection() const { return intersection; }
 // sets whether the object is interecting with something or not.
 void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 
-cherry::Vec3 cherry::Object::getPBodySize()
+
+
+// ANIMATION
+// object is dynamic.
+bool cherry::Object::IsDynamicObject() const { return dynamicObject; }
+
+// object is static
+bool cherry::Object::IsStaticObject() const { return !dynamicObject; }
+
+// adds an animation
+bool cherry::Object::AddAnimation(Animation * anime)
+{
+	// TODO: change to pointer?
+	animate = anime;
+
+	// sets the object.
+	if (anime->GetObject() != this)
+		anime->SetObject(this);
+
+	// TODO: set up MorphVertex so that it can use vertex shaders as well.
+	// Use this for replacing shaders for given animations
+	// if using morph targets
+	if (anime->GetId() == 1 && dynamicObject == true)
+	{
+		std::string dvs = DYNAMIC_VS;
+		std::string dfs = DYNAMIC_FS;
+		if (std::string(material->GetShader()->GetVertexShader()) != dvs || std::string(material->GetShader()->GetFragmentShader()) != dfs)
+		{
+			// TODO: runtime error?
+			// ERROR: cannot run with set shaders
+			animate = nullptr;
+			return false;
+		}
+	}
+	// deformation is not available, so animation addition has failed.
+	else if (anime->GetId() == 1 && !dynamicObject == true)
+	{
+		// #ifndef _DEBUG
+		// 
+		// #endif // !_DEBUG
+
+		// std::runtime_error("Error. Static object cannot utilize deformation animation.");
+		animate = nullptr;
+		return false;
+	}
+
+	return true;
+}
+
+
+// gets the path
+cherry::Path* cherry::Object::GetPath() const { return path; }
+
+// sets the path the object follows.
+void cherry::Object::SetPath(Path* newPath) 
+{ 
+	// if a path is being set, then the starting point is set for the object at its current position.
+	if (newPath != nullptr)
+		newPath->SetStartingPoint(position);
+	
+	path = newPath; 
+}
+
+// attaching a path.
+void cherry::Object::SetPath(Path* newPath, bool attachPath)
+{
+	SetPath(newPath);
+
+	followPath = attachPath;
+}
+
+// removes the path from the object. It still exists in memory.
+void cherry::Object::RemovePath() { path = nullptr; }
+
+// deletes the path from memory.
+void cherry::Object::DeletePath() { delete path; }
+
+// determines whether the object should use the path.
+void cherry::Object::UsePath(bool follow) { followPath = follow; }
+
+cherry::Vec3 cherry::Object::GetPBodySize()
 {
 	return this->pBodySize;
 }
 
-float cherry::Object::getPBodyWidth()
+float cherry::Object::GetPBodyWidth()
 {
-	return this->getPBodySize().GetX() / 2;
+	return this->GetPBodySize().GetX() / 2;
 }
 
-float cherry::Object::getPBodyHeight()
+float cherry::Object::GetPBodyHeight()
 {
-	return this->getPBodySize().GetY() / 2;
+	return this->GetPBodySize().GetY() / 2;
 }
 
-float cherry::Object::getPBodyDepth()
+float cherry::Object::GetPBodyDepth()
 {
-	return this->getPBodySize().GetZ() / 2;
+	return this->GetPBodySize().GetZ() / 2;
 }
+
 
 // updates the object
 void cherry::Object::Update(float deltaTime)
@@ -658,10 +720,16 @@ void cherry::Object::Update(float deltaTime)
 	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
 	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
 
-		// runs the path and sets the new position
+	// runs the path and sets the new position
 	if (followPath && path != nullptr)
 		position = path->Run(deltaTime);
 
+	// if the animation is playing
+	if (animate != nullptr)
+	{
+		if(animate->isPlaying())
+			animate->Update(deltaTime);
+	}
 }
 
 // returns a string representing the object

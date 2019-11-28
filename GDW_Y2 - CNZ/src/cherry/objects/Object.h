@@ -14,8 +14,9 @@
 #include "..\Camera.h"
 #include "..\VectorCRY.h"
 #include "..\Material.h"
-// #include "..\Physics.h"
+#include "..\animate\MorphAnimation.h"
 #include "..\animate\Path.h"
+// #include "..\Physics.h"
 
 namespace cherry
 {
@@ -26,28 +27,27 @@ namespace cherry
 	public:
 		// the name and directory of the .obj file
 		// if 'loadMtl' is set to true, then the object loads the texture, which is assumed to be in the section as the .obj file.
+		// 'dynamicObj' determines if the object is static or dynamic. If it's dynamic, then the object has deformation animation.
 		// remember to call CreateEntity() to add the entity to a scene
-		Object(std::string filePath, bool loadMtl = false);
+		Object(std::string filePath, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads an ob file using the filePath provided, and puts it in the provided scene.
 		// Use the bool to load the mtl file as well, which is assumed to be of the same name and be in the same location.
 		// this automatically calls CreateEntity() to add the entity into the scene.
-		Object(std::string filePath, std::string scene, bool loadMtl = false);
+		Object(std::string filePath, std::string scene, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads in the object with the designated scene, and an mtl file.
 		// this automatically calls CreateEntity() to add the entity into the scene.
-		Object(std::string filePath, std::string scene, std::string mtl);
+		Object(std::string filePath, std::string scene, std::string mtl, bool dynamicObj = false);
 
 		// loads an obj file, and places it in the scene with the provided material
 		// it can also load in an .mtl file after loading in the material, which is applied to be in the same location as the .obj file.
 		// this automatically calls CreateEntity().
-		Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl = false);
+		Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl = false, bool dynamicObj = false);
 
 		// loads in an obj file, adds to the scene, applies the material, then loads in the mtl file.
 		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
-		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl);
-
-		Object(Object* obj, std::string scene);
+		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl, bool dynamicObj = false);
 
 
 
@@ -142,6 +142,9 @@ namespace cherry
 
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
+
+		// gets the transformation from local space to world space.
+		glm::mat4 GetWorldTransformation() const;
 
 		
 		// gets the position as an engine vector
@@ -306,28 +309,46 @@ namespace cherry
 		void SetIntersection(bool inter);
 
 
+		// ANIMATION //
+
+		// if the object is dynamic, then the object deforms.
+		bool IsDynamicObject() const;
+
+		// if the object is static, it doesn't deform.
+		bool IsStaticObject() const;
+		
+		// adds an animation to the object. This comes the object for the animation if it isn't already.
+		bool AddAnimation(Animation * anime);
+
 		/// PATH ///
 		// gets the path that the object is locked to. If 'nullptr' is returned, then the object has no path.
-		Path* GetPath() const;
+		Path * GetPath() const;
 
-		// sets the path the object follows. Set to 'nullptr' if the object shouldn't follow a path.
+		// sets the path the object follows. Set to 'nullptr' if you want to remove the path reference from the object.
+		// To delete the path from memory, use DeletePath().
 		void SetPath(Path* newPath = nullptr);
 
 		// sets the path for the object. If 'attachPath' is true, then the object starts moving via this path.
 		void SetPath(Path* newPath, bool attachPath);
 
+		// removes the path from the object. To remove the path from memory, use DeletePath().
+		void RemovePath();
+
+		// deletes the path from memory, which simoutaneously removes it from all objects that hold this reference.
+		void DeletePath();
+
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
 
+
+		cherry::Vec3 GetPBodySize();
+
+		float GetPBodyWidth();
+
+		float GetPBodyHeight();
+
+		float GetPBodyDepth();
 		
-
-		// get pbody size
-		virtual cherry::Vec3 getPBodySize();
-
-		// get pbody width, height and depth.
-		virtual float getPBodyWidth();
-		virtual float getPBodyHeight();
-		virtual float getPBodyDepth();
 
 		// updates the object
 		void Update(float deltaTime);
@@ -361,22 +382,25 @@ namespace cherry
 		// template<typename T>
 		// void calculateNormals(std::vector<);
 
-		// parent object
-		Object * parent = nullptr;
+		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
+		bool dynamicObject = false;
 
-		std::vector<Object*> children;
+		// parent object
+		// Object * parent = nullptr;
+
+		// std::vector<Object*> children;
 
 		// the string for the file path
 		std::string filePath = "";
+
+		// transformation into world coordinate space.
+		glm::mat4 worldTransform;
 
 		// a vector of physics bodies
 		std::vector<cherry::PhysicsBody*> bodies;
 
 		// becomes 'true' when an object intersects something.
 		bool intersection = false;
-
-		// needs to be overwritten by inherited class or whatever its called
-		cherry::Vec3 pBodySize;
 
 		// used for object transformations
 		// entt::registry ecs;
@@ -386,6 +410,8 @@ namespace cherry
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
+		// needs to be overwritten by inherited class or whatever its called
+		cherry::Vec3 pBodySize;
 		
 
 	protected:
@@ -428,6 +454,10 @@ namespace cherry
 
 		// the scale of the object
 		cherry::Vec3 scale = { 1.0F, 1.0F, 1.0F };
+
+		// the animation
+		// TODO: repalce with an animation manager
+		cherry::Animation * animate;
 	};
 }
 

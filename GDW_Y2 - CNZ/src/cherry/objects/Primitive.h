@@ -11,6 +11,8 @@ namespace cherry
 	public:
 		Primitive();
 
+		~Primitive();
+
 		// gets the base color of the primitive.
 		// cherry::Vec4 GetBaseColor() const;
 

@@ -5,8 +5,6 @@
 
 namespace cherry
 {
-	static float gravity = -9.8F;
-
 	// the object for the physics body
 	class PhysicsBody
 	{
@@ -85,6 +83,9 @@ namespace cherry
 		// calculates collision between two physics bodies if is available.
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
 
+		// draws the collision body
+		virtual Mesh::Sptr & GetMesh() = 0;
+
 		// the toString function for physics bodies. This is basically here just so that this is an abstract class.
 		virtual std::string ToString() const = 0;
 
@@ -95,6 +96,7 @@ namespace cherry
 
 		// doesn't get deleted since the object it's attachted to isn't necessarily unused.
 		cherry::Object * object = nullptr; // the object the body is attachted to.
+
 
 	protected:
 	};
@@ -135,12 +137,14 @@ namespace cherry
 		// sets depth (size on z-axis)
 		void SetDepth(float newDepth);
 
+		// draws the collision body
+		Mesh::Sptr& GetMesh();
+
 		// toString
 		virtual std::string ToString() const;
 
 	private:
 		float width = 0, height = 0, depth = 0;
-		// PrimitiveCube box;
 
 	protected:
 
@@ -162,6 +166,9 @@ namespace cherry
 
 		// sets the radius; if negative is passed, the absolute value is received.
 		void SetRadius(float r);
+
+		// draws the collision body
+		Mesh::Sptr& GetMesh();
 
 		// ToString function
 		std::string ToString() const;

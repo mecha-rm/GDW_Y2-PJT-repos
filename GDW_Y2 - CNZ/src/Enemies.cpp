@@ -7,10 +7,11 @@ cnz::Enemies::Enemies()
 }
 
 cnz::Enemies::Enemies(Enemies* obj, std::string scene)
-	: Object(obj, scene)
+	: Object()
 {
-	pBodySize = obj->getPBodySize();
-	drawPBody = obj->getDrawPBody();
+	*this = *obj;
+	pBodySize = obj->GetPBodySize();
+	drawPBody = obj->GetDrawPBody();
 	degreeAngle = obj->GetDegreeAngle();
 	radianAngle = obj->GetRadianAngle();
 	worldAngle = obj->GetVec3Angle();
@@ -117,7 +118,7 @@ void cnz::Enemies::SetAngle(float angle, bool isDegrees) {
 
 void cnz::Enemies::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
-bool cnz::Enemies::setDrawPBody(bool draw)
+bool cnz::Enemies::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
 		this->drawPBody = false;
@@ -129,27 +130,27 @@ bool cnz::Enemies::setDrawPBody(bool draw)
 	}
 }
 
-bool cnz::Enemies::getDrawPBody()
+bool cnz::Enemies::GetDrawPBody()
 {
 	return this->drawPBody;
 }
 
-cherry::Vec3 cnz::Enemies::getPBodySize()
+cherry::Vec3 cnz::Enemies::GetPBodySize()
 {
 	return this->pBodySize;
 }
 
-float cnz::Enemies::getPBodyWidth()
+float cnz::Enemies::GetPBodyWidth()
 {
-	return this->getPBodySize().GetX() / 2;
+	return this->GetPBodySize().GetX() / 2;
 }
 
-float cnz::Enemies::getPBodyHeight()
+float cnz::Enemies::GetPBodyHeight()
 {
-	return this->getPBodySize().GetY() / 2;
+	return this->GetPBodySize().GetY() / 2;
 }
 
-float cnz::Enemies::getPBodyDepth()
+float cnz::Enemies::GetPBodyDepth()
 {
-	return this->getPBodySize().GetZ() / 2;
+	return this->GetPBodySize().GetZ() / 2;
 }

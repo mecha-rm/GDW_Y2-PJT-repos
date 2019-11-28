@@ -340,7 +340,7 @@ bool cherry::Game::AddObject(cherry::Object* obj, std::string scene)
 	bool added = util::addToVector(objects, obj);
 
 	if (added) // if the object was added, then an entity is created.
-		obj->CreateEntity(scene, material);
+		obj->CreateEntity(scene, matStatic);
 
 	return added; // returns 
 }
@@ -587,22 +587,22 @@ void cherry::Game::LoadContent()
 	// used to make the albedo
 	// dedicated variable no longer needed?
 	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
-	material = std::make_shared<Material>(phong);
-	material->Set("a_LightPos", { 0, 0, 3 });
-	material->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});
-	material->Set("a_AmbientColor", { 0.9f, 0.1f, 0.01f });
-	material->Set("a_AmbientPower", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower", 0.5f);
-	material->Set("a_LightShininess", 256.0f); // MUST be a float
-	material->Set("a_LightAttenuation", 0.15f);
+	matStatic = std::make_shared<Material>(phong);
+	matStatic->Set("a_LightPos", { 0, 0, 3 });
+	matStatic->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});
+	matStatic->Set("a_AmbientColor", { 0.9f, 0.1f, 0.01f });
+	matStatic->Set("a_AmbientPower", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
+	matStatic->Set("a_LightSpecPower", 0.5f);
+	matStatic->Set("a_LightShininess", 256.0f); // MUST be a float
+	matStatic->Set("a_LightAttenuation", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // objects will just be blank if no texture is set.
 	
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
 	
-	material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
+	matStatic->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+	matStatic->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
 
 	currentScene = "Cherry"; // the name of the m_Scene
 	scenes.push_back(currentScene); // saving the m_Scene
@@ -650,8 +650,9 @@ void cherry::Game::LoadContent()
 		Vec3(0.2F, 0.7F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
-	material = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler);
-
+	// replace teh shader for the material if using morph tagets.
+	matStatic = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+	matDynamic = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
 		// loads in default objects
 	if (loadDefaults)
@@ -659,46 +660,46 @@ void cherry::Game::LoadContent()
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
-		//// Creating the objects, storing them, and making them part of the default m_Scene.
-		//objects.push_back(new PrimitiveCapsule());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		//
+		// Creating the objects, storing them, and making them part of the default m_Scene.
+		objects.push_back(new PrimitiveCapsule());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		
 
-		//objects.push_back(new PrimitiveCircle());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		objects.push_back(new PrimitiveCircle());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		//objects.push_back(new PrimitiveCone());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		objects.push_back(new PrimitiveCone());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		//objects.push_back(new PrimitiveCube());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		objects.push_back(new PrimitiveCube());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		//objects.push_back(new PrimitiveCylinder());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		objects.push_back(new PrimitiveCylinder());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		//objects.push_back(new PrimitiveDiamond());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		objects.push_back(new PrimitiveDiamond());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		//objects.push_back(new PrimitiveUVSphere());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		objects.push_back(new PrimitiveUVSphere());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		//objects.push_back(new PrimitivePlane());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, material);
-		//objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		objects.push_back(new PrimitivePlane());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
-		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+		// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
-		//// images don't need CreateEntity called.
-		//objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		//objects.at(objects.size() - 1)->SetScale(0.1F);
+		// images don't need CreateEntity called.
+		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		objects.at(objects.size() - 1)->SetScale(0.1F);
 
 		//// version 1 (finds .mtl file automatically)
 		//objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
@@ -707,37 +708,41 @@ void cherry::Game::LoadContent()
 		// objects.push_back();
 
 		// version 2 (.mtl file manually added)
-		// objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
-		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler),
-		// 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl"));
+		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
+		 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
+		 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
 
 		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
 		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
 		// objects.at(objects.size() - 1)->SetScale(2.0F);
 
-		objects.push_back(new Object("res/objects/cube_target_0.obj", currentScene, material, false));
-		
+		//material->SetShader(shdr);
+		objects.push_back(new Object("res/objects/cube_morph_target_0.obj", currentScene, matDynamic, false, true));
+		//
 
 		MorphAnimation* mph = new MorphAnimation();
-		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_1.obj", 4.0F));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 4.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_0.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_1.obj", 2.0F));
+		// mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 2.0F));
 		mph->SetInfiniteLoop(true);
+		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
+		//mph->SetLoopsTotal(3);
 		mph->Play();
 		objects.at(objects.size() - 1)->AddAnimation(mph);
 
-		/*Path* path = new Path();
-		path->AddNode(8.0F, 0.0F, 0.0F);
-		path->AddNode(-8.0F, 8.0F, 0.0F);
-		path->AddNode(8.0F, 8.0F, 8.0F);
-		path->AddNode(8.0F, -8.0F, -8.0F);
-		path->SetIncrementer(0.5);
+		//Path* path = new Path();
+		//path->AddNode(8.0F, 0.0F, 0.0F);
+		//path->AddNode(-8.0F, 8.0F, 0.0F);
+		//path->AddNode(8.0F, 8.0F, 8.0F);
+		//path->AddNode(8.0F, -8.0F, -8.0F);
+		//path->SetIncrementer(0.5);
 
-		path->SetInterpolationMode(1);
+		//path->SetInterpolationMode(1);
 
-		objects.at(objects.size() - 1)->SetPath(path, true);
-		
-		objects.at(objects.size() - 1)->SetScale(0.7);*/
+		//objects.at(objects.size() - 1)->SetPath(path, true);
+		//
+		//objects.at(objects.size() - 1)->SetScale(0.7);
 	}
 
 	// Create and compile shader
@@ -1046,6 +1051,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 {
 	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
 	bool enableSkybox = false; // enables the skybox. TODO: change for final build.
+	static bool drawBodies = false; // set to 'true' to draw the bodies
 
 	int border = 0; // the border for the viewpoint
 	glm::vec4 borderColor = { 1.0F, 1.0F, 1.0F, 1.0F }; // border colour
@@ -1123,9 +1129,9 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 		// casting the mat4 down to a mat3, then putting it back into a mat4, which is done to remove the camera's translation.
 		scene->SkyboxShader->SetUniform("a_View", glm::mat4(glm::mat3(
-			myCamera->GetView()
+			camera->GetView()
 		)));
-		scene->SkyboxShader->SetUniform("a_Projection", myCamera->Projection);
+		scene->SkyboxShader->SetUniform("a_Projection", camera->Projection);
 
 		scene->Skybox->Bind(0);
 		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
@@ -1155,7 +1161,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		if (renderer.Material->GetShader() != boundShader) {
 			boundShader = renderer.Material->GetShader();
 			boundShader->Bind();
-			boundShader->SetUniform("a_CameraPos", myCamera->GetPosition());
+			boundShader->SetUniform("a_CameraPos", camera->GetPosition());
 			boundShader->SetUniform("a_Time", static_cast<float>(glfwGetTime())); // passing in the time.
 		}
 		// If our material has changed, we need to apply it to the shader
@@ -1175,7 +1181,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		// Update the MVP using the item's transform
 		mat->GetShader()->SetUniform(
 			"a_ModelViewProjection",
-			myCamera->GetViewProjection() *
+			camera->GetViewProjection() *
 			worldTransform);
 		// Update the model matrix to the item's world transform
 		mat->GetShader()->SetUniform("a_Model", worldTransform);
@@ -1197,8 +1203,12 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 			renderer.Mesh->Draw();
 		}
+		else
+		{
+			std::cout << "INVISIBLE" << std::endl;
+		}
 	}
 }
 
 // returns the current m_Scene
-std::string cherry::Game::getCurrentScene() const { return currentScene; }
+std::string cherry::Game::GetCurrentScene() const { return currentScene; }

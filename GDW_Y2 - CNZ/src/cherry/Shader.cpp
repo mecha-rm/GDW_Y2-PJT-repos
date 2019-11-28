@@ -56,6 +56,10 @@ void cherry::Shader::Load(const char* vsFile, const char* fsFile)
 	// Compile our program
 	Compile(vs_source, fs_source);
 
+	// saving the shader names
+	vertexShader = std::string(vsFile);
+	fragmentShader = std::string(fsFile);
+
 	// Clean up our memory
 	delete[] fs_source;
 	delete[] vs_source;
@@ -115,6 +119,12 @@ void cherry::Shader::Bind()
 {
 	glUseProgram(myShaderHandle);
 }
+
+// gets the vertex shader.
+const char* cherry::Shader::GetVertexShader() const { return vertexShader.c_str(); }
+
+// returns the file name for the fragment shader
+const char* cherry::Shader::GetFragmentShader() const { return fragmentShader.c_str(); }
 
 // compiling the bits of our shader and checking for errors.
 GLuint cherry::Shader::__CompileShaderPart(const char* source, GLenum type) {

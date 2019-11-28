@@ -10,6 +10,7 @@ namespace cherry
 	class AnimationFrame;
 	class Object;
 
+	// TODO: make abstract class?
 	class Animation
 	{
 	public:
@@ -51,9 +52,14 @@ namespace cherry
 		
 		// gets a frame based on its tag.
 		AnimationFrame * GetFrame(std::string tag) const;
+		
+		// TODO: add GetPreviousFrame and GetNextFrame()?
 
 		// gets the current animation frame.
 		AnimationFrame* GetCurrentFrame() const;
+
+		// returns the index of the current frame
+		int GetCurrentFrameIndex() const;
 
 
 		// adds a frame to the list. If 'true' is passed, then the frame was added successfully.
@@ -65,6 +71,9 @@ namespace cherry
 
 		// gets the frame count for the animation
 		unsigned int GetFrameCount() const;
+
+		// sets the frame the animation should start on.
+		// void SetStartingFrame(unsigned int index);
 
 		// gets how many loops are set for the animation.
 		unsigned int GetLoopsTotal() const;
@@ -106,6 +115,10 @@ namespace cherry
 
 		// set whether the animation should play in reverse.
 		void SetReverse(bool rvs);
+
+
+		// returns how long this frame has been on screen.
+		float GetElapsedTime() const;
 
 		// updates the animation
 		virtual void Update(float deltaTime);
@@ -164,7 +177,7 @@ namespace cherry
 		AnimationFrame(float units = 0);
 
 		// length of time in milliseconds the frame lasts for.
-		float getDelayUnits() const;
+		float GetDelayUnits() const;
 
 		// sets in milliseconds how long the frame lasts for.
 		void setDelayUnits(float units);

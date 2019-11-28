@@ -5,6 +5,11 @@ cherry::Primitive::Primitive() : cherry::Object()
 	
 }
 
+cherry::Primitive::~Primitive()
+{
+	delete[] indices;
+}
+
 // calculates the normals of the primitive.
 void cherry::Primitive::calculateNormals()
 {

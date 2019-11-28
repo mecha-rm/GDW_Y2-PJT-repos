@@ -69,6 +69,9 @@ cherry::AnimationFrame* cherry::Animation::GetFrame(std::string tag) const
 // gets hte current animation frame.
 cherry::AnimationFrame* cherry::Animation::GetCurrentFrame() const { return frames.at(currentFrame); }
 
+// returns the index of the current frame.
+int cherry::Animation::GetCurrentFrameIndex() const { return (signed)currentFrame; }
+
 
 // adds a frame to the list
 bool cherry::Animation::AddFrame(AnimationFrame* frame) { return util::addToVector(frames, frame); }
@@ -113,6 +116,7 @@ void cherry::Animation::Stop()
 	play = false; // sets play to false
 	currentFrame = 0; // returning to the starting frame
 	elapsedTime = 0; // restarting the animation.
+	finishedLoops = 0; // no finished loops, since the animation has been stopped.
 }
 
 // returns 'true' if the animation is playing in reverse.
@@ -123,6 +127,10 @@ void cherry::Animation::SetReverse() { reverse = !reverse; }
 
 // sets whether the animation should play in reverse
 void cherry::Animation::SetReverse(bool rvs) { reverse = rvs; }
+
+
+// returns how long hte frame has been on screen.
+float cherry::Animation::GetElapsedTime() const { return elapsedTime; }
 
 // time update
 void cherry::Animation::Update(float deltaTime)
@@ -136,7 +144,7 @@ void cherry::Animation::Update(float deltaTime)
 	elapsedTime += deltaTime;
 
 	// if the amount of time passed has exceeded the amount of delay units for the frames.
-	if (elapsedTime >= frames.at(currentFrame)->getDelayUnits())
+	if (elapsedTime >= frames.at(currentFrame)->GetDelayUnits())
 	{
 		// moves onto the next frame
 		currentFrame++;
@@ -151,10 +159,7 @@ void cherry::Animation::Update(float deltaTime)
 			// if the animation has finished looping, and shouldn't infinitely loop.
 			if (infiniteLoop == false && finishedLoops >= loopsTotal)
 			{
-				play = false; // no longer playing
-				currentFrame = 0;
-				elapsedTime = 0;
-				finishedLoops = 0;
+				Stop(); // stopping the animation
 			}
 
 		}
@@ -174,7 +179,7 @@ cherry::AnimationFrame::AnimationFrame(float units)
 }
 
 // gets the delay until moving onto the next frame.
-float cherry::AnimationFrame::getDelayUnits() const { return delayUnits; }
+float cherry::AnimationFrame::GetDelayUnits() const { return delayUnits; }
 
 // sets the amount of delay units
 void cherry::AnimationFrame::setDelayUnits(float units)

@@ -1,5 +1,6 @@
 #include "PhysicsBody.h"
 #include "utils/math/Collision.h"
+#include "objects/PrimitiveCube.h"
 
 // body at object origin
 // cherry::PhysicsBody::PhysicsBody() : position() {}
@@ -173,7 +174,6 @@ cherry::PhysicsBodyBox::PhysicsBodyBox(float x, float y, float z, float width, f
 cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, float width, float height, float depth)
 	: PhysicsBody(1, position), width(abs(width)), height(abs(height)), depth(abs(depth))// , box(width, height, depth)
 {
-	// box.setColor(255, 0, 0); // RED
 }
 
 // location of the physics body and its dimensions
@@ -199,6 +199,14 @@ float cherry::PhysicsBodyBox::GetDepth() const { return depth; }
 // sets the depth
 void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
 
+// returns a mesh for the draw.
+cherry::Mesh::Sptr& cherry::PhysicsBodyBox::GetMesh() 
+{ 
+	PrimitiveCube box{ width, height, depth };
+	box.SetPosition(GetModelPosition());
+	return box.GetMesh();
+}
+
 // toString
 std::string cherry::PhysicsBodyBox::ToString() const
 {
@@ -221,6 +229,15 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 float cherry::PhysicsBodySphere::GetRadius() const { return radius; }
 
 void cherry::PhysicsBodySphere::SetRadius(float r) { radius = r; }
+
+// gets the mesh for the spehre
+cherry::Mesh::Sptr & cherry::PhysicsBodySphere::GetMesh() 
+{
+	// creating a sphere.
+	PrimitiveUVSphere sphere{ radius };
+	sphere.SetPosition(GetModelPosition());
+	return sphere.GetMesh(); 
+}
 
 // toString function
 std::string cherry::PhysicsBodySphere::ToString() const

@@ -31,9 +31,19 @@ namespace cherry
 		void SetUniform(const char* name, const int& value);
 
 		void Bind();
+
+		// returns the vertex shader file being used.
+		const char* GetVertexShader() const;
+
+		// returns the fragment shader file being used.
+		const char* GetFragmentShader() const;
 	private:
 		GLuint __CompileShaderPart(const char* source, GLenum type);
 
 		GLuint myShaderHandle;
+
+		std::string vertexShader; // vertex shader file
+
+		std::string fragmentShader; // fragment shader file
 	};
 }

@@ -33,6 +33,9 @@ cherry::Image::Image(std::string filePath, std::string scene) : Object()
 	LoadImage(scene);
 }
 
+// destructor
+cherry::Image::~Image() { delete[] indices; }
+
 // gets the width
 uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
 

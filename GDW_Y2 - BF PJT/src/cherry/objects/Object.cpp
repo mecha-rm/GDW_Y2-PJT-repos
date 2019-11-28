@@ -22,7 +22,8 @@ const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
 const unsigned int cherry::Object::INDICES_MAX = pow(2, 32);
 
 // constructor - gets the filename and opens it.
-cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertices(nullptr), indices(nullptr)
+cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj) 
+	: position(), vertices(nullptr), indices(nullptr), dynamicObject(dynamicObj)
 {
 	this->filePath = filePath; // saves the file path
 
@@ -52,22 +53,23 @@ cherry::Object::Object(std::string filePath, bool loadMtl) : position(), vertice
 }
 
 // loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
-cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl) : 
+cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl, bool dynamicObj) :
 	Object(filePath, loadMtl)
 {
 	CreateEntity(scene, material);
 }
 
 // creates an object, puts it in the provided scene, and loads in the mtl file.
-cherry::Object::Object(std::string filePath, std::string scene, std::string mtl)
-	: Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, std::string mtl, bool dynamicObj)
+	: Object(filePath, false, dynamicObj)
 {
 	// creates the entity, and loads in the mtl file.
 	CreateEntity(scene, Material::GenerateMtl(mtl));
 }
 
 // creates an obj file, puts it in a scene, and then applies the material.
-cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl) : Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, bool loadMtl, bool dynamicObj) 
+	: Object(filePath, false, dynamicObj)
 {
 	// gets the .obj file name, but replaces the file extension to find the .mtl file.
 	if(loadMtl)
@@ -77,8 +79,8 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 }
 
 // loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
-cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl)
-	:Object(filePath, false)
+cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl, bool dynamicObj)
+	:Object(filePath, false, dynamicObj)
 {
 	material->LoadMtl(mtl);
 	CreateEntity(scene, material);
@@ -90,8 +92,12 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 cherry::Object::~Object()
 {
 	// TODO: add back deletions
-	// delete[] vertices;
-	// delete[] indices;
+	delete[] vertices;
+
+	// if not initialized, it causes an error if deleted.
+	// since only the primitives use indicies, those call delete on their own.
+	// delete[] indices; 
+	delete animate;
 }
 
 
@@ -335,8 +341,13 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 	// creates the mesh
 	// unlike with the default primitives, the amount of vertices corresponds to how many Indices there are, and the values are set accordingly.
-	// mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // original 
-	mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
+	
+	// if the object is dynamic, a different set of vertices are used.
+	if (dynamicObject)
+		mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0); // deformation
+	else
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // no deformation
+	
 
 	// the object loader has a material associated with it, and said material should be loaded
 // if the .obj file had a material associated with it.
@@ -347,7 +358,9 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		mtllib = fpStr + mtllib;
 
 		// generates the material
-		material = Material::GenerateMtl(mtllib);
+		material = (dynamicObject) ? 
+			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS) :
+			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS);
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.
@@ -356,9 +369,10 @@ bool cherry::Object::LoadObject(bool loadMtl)
 // creates an entity with the provided m_Scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
-	this->material = material; // saves the material.
 
-	// sets up the Update function for the entity. This gets automatically called.
+	this->material = material; // saves the material.
+	
+							   // sets up the Update function for the entity. This gets automatically called.
 	auto& ecs = GetRegistry(scene);
 	entt::entity entity = ecs.create();
 
@@ -598,6 +612,15 @@ bool cherry::Object::GetIntersection() const { return intersection; }
 // sets whether the object is interecting with something or not.
 void cherry::Object::SetIntersection(bool inter) { intersection = inter; }
 
+
+
+// ANIMATION
+// object is dynamic.
+bool cherry::Object::IsDynamicObject() const { return dynamicObject; }
+
+// object is static
+bool cherry::Object::IsStaticObject() const { return !dynamicObject; }
+
 // adds an animation
 bool cherry::Object::AddAnimation(Animation * anime)
 {
@@ -608,13 +631,32 @@ bool cherry::Object::AddAnimation(Animation * anime)
 	if (anime->GetObject() != this)
 		anime->SetObject(this);
 
+	// TODO: set up MorphVertex so that it can use vertex shaders as well.
+	// Use this for replacing shaders for given animations
 	// if using morph targets
-	//if (anime->GetId() == 1)
-	//{
-	// material->GetShader()->Load("res/lighting.morph.vs.glsl", "res/blinn-phong.morph.fs.glsl");
-	// Mesh::Sptr mesh2 = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0);
-	// mesh = mesh2;
-	//}
+	if (anime->GetId() == 1 && dynamicObject == true)
+	{
+		std::string dvs = DYNAMIC_VS;
+		std::string dfs = DYNAMIC_FS;
+		if (std::string(material->GetShader()->GetVertexShader()) != dvs || std::string(material->GetShader()->GetFragmentShader()) != dfs)
+		{
+			// TODO: runtime error?
+			// ERROR: cannot run with set shaders
+			animate = nullptr;
+			return false;
+		}
+	}
+	// deformation is not available, so animation addition has failed.
+	else if (anime->GetId() == 1 && !dynamicObject == true)
+	{
+		// #ifndef _DEBUG
+		// 
+		// #endif // !_DEBUG
+
+		// std::runtime_error("Error. Static object cannot utilize deformation animation.");
+		animate = nullptr;
+		return false;
+	}
 
 	return true;
 }
@@ -641,6 +683,12 @@ void cherry::Object::SetPath(Path* newPath, bool attachPath)
 	followPath = attachPath;
 }
 
+// removes the path from the object. It still exists in memory.
+void cherry::Object::RemovePath() { path = nullptr; }
+
+// deletes the path from memory.
+void cherry::Object::DeletePath() { delete path; }
+
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
 
@@ -656,9 +704,10 @@ void cherry::Object::Update(float deltaTime)
 		position = path->Run(deltaTime);
 
 	// if the animation is playing
-	if (animate->isPlaying())
+	if (animate != nullptr)
 	{
-		animate->Update(deltaTime);
+		if(animate->isPlaying())
+			animate->Update(deltaTime);
 	}
 }
 

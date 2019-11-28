@@ -88,7 +88,7 @@ cherry::Mesh::Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, si
 	// Our first attribute is 3 floats, the distance between
 	// them is the size of our vertex, and they will map to the position in our vertices
 	// index, three floats, not normalized, size of data
-	glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position0));
+	glVertexAttribPointer(0, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position));
 
 	// Enable vertex attribute 2 (colour)
 	glEnableVertexAttribArray(1);
@@ -102,7 +102,7 @@ cherry::Mesh::Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, si
 
 	// Our third attribute is 3 floats, the distance between
 	// them is the size of our vertex, and they will map to the color in our vertices
-	glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal0));
+	glVertexAttribPointer(2, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal));
 
 	// UV support
 	glEnableVertexAttribArray(3);
@@ -117,6 +117,14 @@ cherry::Mesh::Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, si
 	/// Second Normal
 	glEnableVertexAttribArray(5);
 	glVertexAttribPointer(5, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal1));
+
+	// Third Position
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position2));
+
+	/// Third Normal
+	glEnableVertexAttribArray(5);
+	glVertexAttribPointer(7, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal2));
 
 	// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
 	glBindVertexArray(0);
@@ -175,7 +183,7 @@ void cherry::Mesh::SetVisible() { visible = !visible; }
 // sets whether the object is visible or not.
 void cherry::Mesh::SetVisible(bool visible) { this->visible = visible; }
 
-// gets the vertices and takes out the positions and normals for morphing hte mesh
+// gets the vertices and takes out the positions and normals for morphing the mesh
 void cherry::Mesh::Morph(MorphVertex* vertices, size_t numVerts)
 {
 	//glm::vec3* positions = new glm::vec3[numVerts];
@@ -205,13 +213,15 @@ cherry::MorphVertex* cherry::Mesh::ConvertToMorphVertexArray(const Vertex* verts
 	// copies over the values
 	for (int i = 0; i < numVerts; i++)
 	{
-		morphVerts[i].Position0 = verts[i].Position;
+		morphVerts[i].Position = verts[i].Position;
 		morphVerts[i].Position1 = verts[i].Position;
+		morphVerts[i].Position2 = verts[i].Position;
 
 		morphVerts[i].Color = verts[i].Color;
 
-		morphVerts[i].Normal0 = verts[i].Normal;
+		morphVerts[i].Normal = verts[i].Normal;
 		morphVerts[i].Normal1 = verts[i].Normal;
+		morphVerts[i].Normal2 = verts[i].Normal;
 
 		morphVerts[i].UV = verts[i].UV;
 	}
