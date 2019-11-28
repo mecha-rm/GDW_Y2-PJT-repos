@@ -104,6 +104,9 @@ cherry::Object::~Object()
 // gets the file path for the object file.
 std::string cherry::Object::GetFilePath() const { return filePath; }
 
+// returns the scene the object is part of.
+std::string cherry::Object::GetScene() const { return scene; }
+
 // gets the name of the object.
 std::string cherry::Object::GetName() const { return name; }
 
@@ -184,6 +187,15 @@ cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 
 // gets the material
 cherry::Material::Sptr& cherry::Object::GetMaterial() { return material; }
+
+// returns if the object is visible
+bool cherry::Object::IsVisible() const { return mesh->IsVisible(); }
+
+// toggle's visibility on/off
+void cherry::Object::SetVisible() { mesh->SetVisible(); }
+
+// sets whether the object is visible.
+void cherry::Object::SetVisible(bool visible) { mesh->SetVisible(visible); }
 
 // creates the object.
 bool cherry::Object::LoadObject(bool loadMtl)
@@ -369,7 +381,7 @@ bool cherry::Object::LoadObject(bool loadMtl)
 // creates an entity with the provided m_Scene.
 void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr material)
 {
-
+	this->scene = scene; // saves the scene
 	this->material = material; // saves the material.
 	
 							   // sets up the Update function for the entity. This gets automatically called.
@@ -691,6 +703,28 @@ void cherry::Object::DeletePath() { delete path; }
 
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
+
+
+cherry::Vec3 cherry::Object::GetPBodySize()
+{
+	return this->pBodySize;
+}
+
+float cherry::Object::GetPBodyWidth()
+{
+	return this->GetPBodySize().GetX() / 2;
+}
+
+float cherry::Object::GetPBodyHeight()
+{
+	return this->GetPBodySize().GetY() / 2;
+}
+
+float cherry::Object::GetPBodyDepth()
+{
+	return this->GetPBodySize().GetZ() / 2;
+}
+
 
 // updates the object
 void cherry::Object::Update(float deltaTime)

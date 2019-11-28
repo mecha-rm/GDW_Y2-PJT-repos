@@ -58,6 +58,8 @@ namespace cherry
 		// if there is no file path, it will return a string with the ("") character inside it.
 		std::string GetFilePath() const;
 
+		// gets the scene the object is part of.
+		std::string GetScene() const;
 
 		// gets the name of the object.
 		std::string GetName() const;
@@ -139,6 +141,15 @@ namespace cherry
 
 		// gets the material for the object.
 		Material::Sptr& GetMaterial();
+
+		// returns whether or not the object is visible
+		bool IsVisible() const;
+
+		// toggle's visibility on/off
+		void SetVisible();
+
+		// sets whether the object is visible or not.
+		void SetVisible(bool visible);
 
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
@@ -341,6 +352,8 @@ namespace cherry
 		void UsePath(bool follow);
 
 
+
+		// TODO: remove this?
 		cherry::Vec3 GetPBodySize();
 
 		float GetPBodyWidth();
@@ -348,7 +361,7 @@ namespace cherry
 		float GetPBodyHeight();
 
 		float GetPBodyDepth();
-		
+
 
 		// updates the object
 		void Update(float deltaTime);
@@ -382,6 +395,8 @@ namespace cherry
 		// template<typename T>
 		// void calculateNormals(std::vector<);
 
+		std::string scene = "";
+
 		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
 		bool dynamicObject = false;
 
@@ -410,9 +425,7 @@ namespace cherry
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
-		// needs to be overwritten by inherited class or whatever its called
 		cherry::Vec3 pBodySize;
-		
 
 	protected:
 		// constructor used for default primitives

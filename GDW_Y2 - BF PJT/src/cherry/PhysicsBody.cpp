@@ -17,6 +17,13 @@ cherry::PhysicsBody::PhysicsBody(int id) : id(id), position(cherry::Vec3()) {}
 // sets the ID for a specific type of physics body
 cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(pos) {}
 
+// deleting the object
+cherry::PhysicsBody::~PhysicsBody()
+{
+	if (body != nullptr)
+		delete body;
+}
+
 
 /*
 // gets the ID for the physics body
@@ -202,9 +209,21 @@ void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
 // returns a mesh for the draw.
 cherry::Mesh::Sptr& cherry::PhysicsBodyBox::GetMesh() 
 { 
-	PrimitiveCube box{ width, height, depth };
-	box.SetPosition(GetModelPosition());
-	return box.GetMesh();
+	// creates the body to get the mesh.
+	if (body == nullptr)
+	{
+		body = new cherry::PrimitiveCube(width, height, depth);
+		body->CreateEntity(object->GetScene(), object->GetMaterial());
+	}
+	else
+	{
+		delete body;
+		body = new cherry::PrimitiveCube(width, height, depth);
+	}
+
+	body->SetPosition(position);
+
+	return body->GetMesh();
 }
 
 // toString
@@ -233,10 +252,17 @@ void cherry::PhysicsBodySphere::SetRadius(float r) { radius = r; }
 // gets the mesh for the spehre
 cherry::Mesh::Sptr & cherry::PhysicsBodySphere::GetMesh() 
 {
-	// creating a sphere.
-	PrimitiveUVSphere sphere{ radius };
-	sphere.SetPosition(GetModelPosition());
-	return sphere.GetMesh(); 
+	// creates the body to get the mesh.
+	if (body == nullptr)
+		body = new cherry::PrimitiveUVSphere(radius);
+	else
+	{
+		delete body;
+		body = new cherry::PrimitiveUVSphere(radius);
+	}
+
+	body->SetPosition(position);
+	return body->GetMesh();
 }
 
 // toString function

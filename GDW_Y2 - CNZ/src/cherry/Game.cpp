@@ -701,9 +701,9 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
 		objects.at(objects.size() - 1)->SetScale(0.1F);
 
-		//// version 1 (finds .mtl file automatically)
-		//objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
-		//	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
+		// version 1 (finds .mtl file automatically)
+		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
+			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
 
 		// objects.push_back();
 
@@ -712,6 +712,10 @@ void cherry::Game::LoadContent()
 		 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
 		 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
+
+		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(50.0F, 50.0F, 50.0F));
+		objects.at(objects.size() - 1)->GetPhysicsBodies().at(0)->GetMesh();
+		// objects.at(objects.size() - 1)->GetPhysicsBodies().at(0)->GetMesh();
 
 		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
 		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
@@ -730,6 +734,7 @@ void cherry::Game::LoadContent()
 		//mph->SetLoopsTotal(3);
 		mph->Play();
 		objects.at(objects.size() - 1)->AddAnimation(mph);
+		objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
 
 		//Path* path = new Path();
 		//path->AddNode(8.0F, 0.0F, 0.0F);
@@ -1205,7 +1210,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		}
 		else
 		{
-			std::cout << "INVISIBLE" << std::endl;
+			// std::cout << "INVISIBLE" << std::endl;
 		}
 	}
 }
