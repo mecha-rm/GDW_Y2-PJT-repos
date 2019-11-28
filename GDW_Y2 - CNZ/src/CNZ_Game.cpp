@@ -248,16 +248,40 @@ void cnz::CNZ_Game::LoadContent()
 	sentry = new Enemies("res/objects/enemies/Enemy_Bow.obj", GetCurrentScene(), matStatic);
 	oracle = new Enemies("res/objects/enemies/Enemy_Spear.obj", GetCurrentScene(), matStatic);
 	marauder = new Enemies("res/objects/enemies/Enemy_Sword.obj", GetCurrentScene(), matStatic);
-	bastion = new Enemies("res/objects/sphere.obj", GetCurrentScene(), matStatic);
+	bastion = new Enemies("res/objects/weapons/shield.obj", GetCurrentScene(), matStatic);
 	mechaspider = new Enemies("res/objects/enemies/Spider.obj", GetCurrentScene(), matStatic);
 	arrowBase = new Projectile("res/objects/weapons/arrow.obj");
 
 	// arena obstacles
-	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetCurrentScene(), cherry::Vec3(2, 2, 2));
 	obstacles.push_back(wall1);
 	//Obstacle* wall2 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
 	//Obstacle* wall3 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
 	//Obstacle* wall4 = new Obstacle("res/objects/wall.obj", getCurrentScene(), cherry::Vec3(2, 2, 2));
+
+	bow = new Obstacle("res/objects/weapons/bow.obj", GetCurrentScene(), false);
+	katana = new Obstacle("res/objects/weapons/katana.obj", GetCurrentScene(), false);
+	spear = new Obstacle("res/objects/weapons/spear.obj", GetCurrentScene(), false);
+	obstacles.push_back(bow);
+	obstacles.push_back(katana);
+	obstacles.push_back(spear);
+
+	drum = new Obstacle("res/objects/props/drum.obj", GetCurrentScene(), false);
+	dumpster = new Obstacle("res/objects/props/Dumpster.obj", GetCurrentScene(), false);
+	lamp_Center = new Obstacle("res/objects/props/Lamp_Center.obj", GetCurrentScene(), false);
+	lamp_Corner = new Obstacle("res/objects/props/Lamp_Corner.obj", GetCurrentScene(), false);
+	lamp_Side = new Obstacle("res/objects/props/Lamp_Side.obj", GetCurrentScene(), false);
+	manhole = new Obstacle("res/objects/props/manhole.obj", GetCurrentScene(), false);
+	piller = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", GetCurrentScene(), false);
+	road = new Obstacle("res/objects/props/Road.obj", GetCurrentScene(), false);
+	obstacles.push_back(drum);
+	obstacles.push_back(dumpster);
+	obstacles.push_back(lamp_Center);
+	obstacles.push_back(lamp_Corner);
+	obstacles.push_back(lamp_Side);
+	obstacles.push_back(manhole);
+	obstacles.push_back(piller);
+	obstacles.push_back(road);
 
 	for (int i = 0; i < 20; i++) {
 		enemyGroups.push_back(std::vector<Enemies*>());
@@ -460,9 +484,22 @@ void cnz::CNZ_Game::LoadContent()
 	// add objects
 	AddObject(playerObj);
 	AddObject(testObj);
+	int x = -27;
 	for (int i = 0; i < obstacles.size(); i++) {
 		AddObject(obstacles[i]);
+
+		if (i > 0 && i < 11) {
+			obstacles[i]->SetRotationXDegrees(90);
+			obstacles[i]->SetRotationZDegrees(180);
+			obstacles[i]->SetPosition(x, -40, 0);
+		}
+		x += 5;
 	}
+
+	road->SetRotationXDegrees(90);
+	road->SetRotationZDegrees(180);
+	road->SetPosition(0, -30, -1);
+	manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
 
 	if (!playerObj->setDrawPBody(true)) {
 		std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;

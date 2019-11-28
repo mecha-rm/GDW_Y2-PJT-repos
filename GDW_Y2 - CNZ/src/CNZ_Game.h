@@ -71,6 +71,22 @@ namespace cnz
 
 		cnz::Player * playerObj = nullptr; // object for the player.
 
+		//Weapons
+		Obstacle* bow = nullptr;
+		Obstacle* katana = nullptr;
+		Obstacle* spear = nullptr;
+
+		//Props
+		Obstacle* drum = nullptr;
+		Obstacle* dumpster = nullptr;
+		Obstacle* lamp_Center = nullptr;
+		Obstacle* lamp_Corner = nullptr;
+		Obstacle* lamp_Side = nullptr;
+		Obstacle* manhole = nullptr;
+		Obstacle* road = nullptr;
+		Obstacle* piller = nullptr;
+		
+
 		//Load enemies // Create multiple enemies using these with only loading one .obj
 		cnz::Enemies* sentry = nullptr; //Sentry enemy : Bowman
 		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
