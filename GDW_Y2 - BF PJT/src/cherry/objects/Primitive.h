@@ -1,10 +1,11 @@
-// Default Primitives for the Engine
+// Primitive - creates primitives for the engine
 #pragma once
 
 #include "Object.h"
 
 namespace cherry
 {
+	// all primitives inherit from this
 	// TODO: make abstract class
 	class Primitive : public cherry::Object
 	{

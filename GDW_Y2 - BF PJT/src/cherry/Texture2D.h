@@ -1,3 +1,4 @@
+// Texture2D - loads in texture images
 #pragma once
 #include <glad\glad.h>
 #include <memory>
@@ -9,7 +10,7 @@
 
 namespace cherry
 {
-	// https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml
+	// Formats: https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glTexImage2D.xhtml
 	// These are some of our more common available internal formats
 	ENUM(InternalFormat, GLint,
 		Depth = GL_DEPTH_COMPONENT,
@@ -20,7 +21,7 @@ namespace cherry
 		RGB16 = GL_RGB16,
 		RGBA8 = GL_RGBA8,
 		RGBA16 = GL_RGBA16
-		// Note: There are sized internal formats but there is a LOT of them
+		// Note: there are sized internal formats, but there are a LOT of them.
 	);
 
 	// The layout of the input pixel data
@@ -46,8 +47,8 @@ namespace cherry
 		Float = GL_FLOAT
 	);
 
-	// Represents some of the data required to set up our texture (but not actually load it's data)
-	// This is more or less all the GPU state that we care about at the moment
+	// Represents some of the data required to set up our texture (but does not actually load in its data).
+	// This is more or less all the GPU state that we care about at the moment.
 	struct Texture2DDescription {
 		uint32_t Width = 0;
 		uint32_t Height = 0;
@@ -58,11 +59,12 @@ namespace cherry
 		SamplerDesc Sampler = SamplerDesc();
 	};
 
-	// Represents a 2D texture in OpenGL
+	// Represents a 2D texture in OpenGL.
 	class Texture2D
 	{
 	public:
 		GraphicsClass(Texture2D);
+
 		// typedef std::shared_ptr<Texture2D> Sptr;
 		Texture2D(const Texture2DDescription& description);
 
@@ -71,7 +73,7 @@ namespace cherry
 		// handles uploading data to the GPU
 		void LoadData(void* data, size_t width, size_t height, PixelFormat format, PixelType type);
 
-		// binds the texture, which OpeNGl gives us about a minimum of 80 slots for.
+		// binds the texture, which OpenGL gives us about a minimum of 80 slots for.
 		void Bind(int slot) const;
 
 		static void UnBind(int slot);
@@ -79,10 +81,10 @@ namespace cherry
 		// loading from the file so that we don't have to manually apply a texture.
 		static Sptr LoadFromFile(const std::string& fileName, bool loadAlpha = true);
 
-		// gets the width of the image
+		// gets the width of the image.
 		uint32_t GetWidth() const;
 
-		// gets the height of the image
+		// gets the height of the image.
 		uint32_t GetHeight() const;
 
 	protected:

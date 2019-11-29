@@ -1,3 +1,5 @@
+// Animation (Header) - used to run animations
+// this currently only has morph target animation
 #pragma once
 #include <vector>
 #include <string>
@@ -5,8 +7,8 @@
 
 namespace cherry
 {
-	// AnimationManager
-	// vector of animations
+	// TODO: add AnimationManager
+	// forward declarations
 	class AnimationFrame;
 	class Object;
 
@@ -15,7 +17,6 @@ namespace cherry
 	{
 	public:
 		// animation constructor
-		// TODO: require object to be sent?
 		Animation();
 		// Animation(bool bones);
 
@@ -199,7 +200,7 @@ namespace cherry
 
 		float delayUnits = 0; // the delay units (in milliseconds) between this frame and the following frame.
 
-		std::string tag = "";
+		std::string tag = ""; // the tag for the animation
 	
 	protected:
 	};

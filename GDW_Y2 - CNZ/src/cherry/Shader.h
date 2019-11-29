@@ -1,4 +1,4 @@
-// SHADER CLASS (HEADER)
+// Shader (Header) - renders meshes to the screen
 #pragma once
 #include <glad/glad.h>
 #include <GLM/glm.hpp>
@@ -32,10 +32,10 @@ namespace cherry
 
 		void Bind();
 
-		// returns the vertex shader file being used.
+		// returns the path and name of the vertex shader file being used.
 		const char* GetVertexShader() const;
 
-		// returns the fragment shader file being used.
+		// returns the path and name of the fragment shader file being used.
 		const char* GetFragmentShader() const;
 	private:
 		GLuint __CompileShaderPart(const char* source, GLenum type);

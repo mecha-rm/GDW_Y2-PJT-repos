@@ -1,3 +1,4 @@
+// PrimitiveCone
 #include "PrimitiveCone.h"
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
@@ -8,14 +9,17 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 	radius = abs(radius);
 	height = abs(height);
 
+	// limits segments
 	if (segments < 3)
 		segments = 3;
 
 	float rFactor = 0; // the rotation factor
-	float rInc = glm::radians(360.0F / (float)segments);
+	float rInc = glm::radians(360.0F / (float)segments); // incrementer for rotations (in degrees)
 
 	int indiIndex = 0; // index used for indices
-	uint32_t ind0; // indice 0
+
+	// indices for a given triangle
+	uint32_t ind0;
 	uint32_t ind1;
 	uint32_t ind2;
 

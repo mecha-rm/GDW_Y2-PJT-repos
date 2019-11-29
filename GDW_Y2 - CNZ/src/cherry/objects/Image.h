@@ -1,9 +1,10 @@
-// loads in an image, which is mapped to a plane.
+// Image (Header) - loads in an image, which is mapped to a plane.
 #pragma once
 #include "Object.h"
 
 namespace cherry
 {
+	// inherits the object
 	class Image : public cherry::Object
 	{
 	public:

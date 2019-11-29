@@ -1,3 +1,4 @@
+// Animation (Source) - used to run animations
 #include "Animation.h"
 #include "..\utils\Utils.h"
 #include "..\objects\Object.h"
@@ -8,6 +9,7 @@ cherry::Animation::Animation() {}
 // constructor
 cherry::Animation::Animation(int id) : id(id) {}
 
+// deletes all frames.
 cherry::Animation::~Animation()
 {
 	// deletes each animation.

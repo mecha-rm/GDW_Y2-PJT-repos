@@ -1,3 +1,4 @@
+// SceneManager - Manages Scenes
 #include "SceneManager.h"
 #include<toolkit/Logging.h>
 

@@ -562,7 +562,7 @@ void cnz::CNZ_Game::LoadContent()
 			obstaclePBs.push_back(temp[0]);
 		}
 		else {
-			cout << "obstacle " << i << " did not have a pb attached. accident?" << endl;
+			// cout << "obstacle " << i << " did not have a pb attached. accident?" << endl;
 		}
 	}
 
@@ -632,7 +632,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	// check what directions the player can move in based on its collisions with obstacles in the scene.
 	if (playerObstacleCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
-		std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
+		// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
 		for (int i = 0; i < playerObstacleCollisions.size(); i++) {
 			cherry::Vec3 dP = playerObstacleCollisions[i]->GetModelPosition() - playerObj->GetPosition();
 			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only

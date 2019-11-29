@@ -1,4 +1,4 @@
-// CAMERA CLASS (SOURCE)
+// Camera Class (Source)
 #include "Camera.h"
 
 #include <glm/gtc/matrix_transform.hpp>

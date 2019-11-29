@@ -1,4 +1,4 @@
-// CAMERA CLASS (HEADER)
+// Camera Class (Header)
 #pragma once
 #include <GLM/glm.hpp>
 #include <GLM/glm.hpp>
@@ -10,6 +10,7 @@
 
 namespace cherry
 {
+	// camera class
 	class Camera {
 	public:
 		Camera();
@@ -104,6 +105,7 @@ namespace cherry
 		// Gets the right hand vector of this camera
 		inline glm::vec3 GetRight() const { return glm::vec3(-LeftX, -LeftY, -LeftZ); }
 
+		// looks at a given location
 		void LookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 0, 1));
 
 		// rotates the camera using a quaternion

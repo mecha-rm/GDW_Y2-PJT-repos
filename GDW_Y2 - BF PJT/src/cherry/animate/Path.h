@@ -73,8 +73,8 @@ namespace cherry
 
 	private:
 		
-		short int mode = 0;
-		const unsigned int MODES_TOTAL = 2;
+		short int mode = 0; // interpolation mode
+		const unsigned int MODES_TOTAL = 2; // total amount of modes
 		
 		// the nodes on the path
 		std::vector<cherry::Vec3> nodes;

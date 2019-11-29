@@ -176,18 +176,6 @@ namespace cherry
 		// the camera position
 		cherry::Vec3 cameraPos;
 
-		// A shared pointer to our mesh; this is no longer used, and has been replaced with a vector of meshes.
-		// Mesh::Sptr myMesh;
-
-		// a vector of all the meshes in the m_Scene. I'm using a vector for this project so that I can re-use this code later.
-		// std::vector<Mesh::Sptr> myMeshes;
-
-		// player mesh
-		// Mesh::Sptr playerMesh;
-
-		//player object
-		// Object* playerObj;
-
 		// A shared pointer to our shader.
 		Shader::Sptr myShader;
 
@@ -227,7 +215,7 @@ namespace cherry
 		// returns 'true' if the mouse is in the window content, false otherwise.
 		bool mouseEnter = false;
 
-		
+		unsigned int hitBoxIndex = -1;
 	};
 
 

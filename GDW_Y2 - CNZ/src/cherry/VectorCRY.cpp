@@ -1,4 +1,4 @@
-// file for general physics calculation. WIP.
+// Vector Cherry - engine vector classes
 #include "VectorCRY.h"
 #include "utils/math/Interpolation.h"
 
@@ -82,7 +82,7 @@ float cherry::Vec2::GetLength() const { return v.length(); }
 // normalizes the vector
 void cherry::Vec2::Normalize() { v.normalize(); }
 
-// normalizes the vector.
+// gets a normalized version of the vector
 cherry::Vec2 cherry::Vec2::GetNormalized() const { return v.getNormalized(); }
 
 // lerp for vector 2
@@ -177,7 +177,7 @@ float cherry::Vec3::GetLength() const { return v.length(); }
 // normalizes the vector
 void cherry::Vec3::Normalize() { v.normalize(); }
 
-// normalizes the vector.
+// gets a normalized verison of the vector
 cherry::Vec3 cherry::Vec3::GetNormalized() const { return v.getNormalized(); }
 
 // lerp for a vector 3.
@@ -276,7 +276,7 @@ float cherry::Vec4::GetLength() const { return v.length(); }
 // normalizes the vector
 void cherry::Vec4::Normalize() { v.normalize(); }
 
-// normalizes the vector.
+// gets a normalized verison of the vector
 cherry::Vec4 cherry::Vec4::GetNormalized() const { return v.getNormalized(); }
 
 // lerp for a vector 4.

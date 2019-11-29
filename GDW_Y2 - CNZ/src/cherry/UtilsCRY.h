@@ -1,11 +1,15 @@
+// Utils Cherry - various macro utilities for the program.
 #pragma once
 
 #include <memory>
 #include <string>
 
-// the value of TypeName gets replaced with whatever was brouught in.
+// this is a file taken from the Computer Graphics framework, where it was simply titled "Utils.h".
+// this had to be changed due to another file already being called "Utils.h" (see src/cherry/utils/Utils.h).
+// this file remains unchanged from what we had in the framework at the time.
 
-// preventing copies of certain game objects.
+// the value of TypeName gets replaced with whatever gets brought in.
+// prevents copies of certain game objects
 #define NoCopy(TypeName) \
 	TypeName(const TypeName& other) = delete; \
 	TypeName& operator =(const TypeName& other) = delete;

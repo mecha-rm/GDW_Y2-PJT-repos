@@ -1,3 +1,4 @@
+// Scene (Header) - holds scene information
 #pragma once
 
 #include <entt/entt.hpp>

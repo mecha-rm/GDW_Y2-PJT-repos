@@ -1,4 +1,4 @@
-// used to create lights
+// Light (Source) - used to create lights
 #pragma once
 
 #include "VectorCRY.h" // includes cherry::Vectors, and glm::vectors

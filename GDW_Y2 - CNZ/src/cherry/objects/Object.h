@@ -351,15 +351,17 @@ namespace cherry
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
 
-
-
 		// TODO: remove this?
+		// default physics body size
 		cherry::Vec3 GetPBodySize();
 
+		// default physics body size
 		float GetPBodyWidth();
 
+		// default physics body size
 		float GetPBodyHeight();
 
+		// default physics body size
 		float GetPBodyDepth();
 
 
@@ -425,6 +427,7 @@ namespace cherry
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
+		// default body size
 		cherry::Vec3 pBodySize;
 
 	protected:

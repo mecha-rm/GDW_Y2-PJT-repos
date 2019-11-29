@@ -1,3 +1,4 @@
+// MeshRenderer - renders meshes for the game
 #pragma once
 #include "Material.h"
 #include "Mesh.h"

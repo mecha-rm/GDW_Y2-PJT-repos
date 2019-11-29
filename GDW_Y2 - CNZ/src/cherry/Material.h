@@ -1,3 +1,4 @@
+// Material - used for applying materials to meshes
 #pragma once
 #include <GLM/glm.hpp>
 #include <unordered_map>
@@ -11,6 +12,7 @@
 Represents settings for a shader
 */
 
+// macros for file paths for commonly used shaders
 #define STATIC_VS "res/lighting.vs.glsl"
 #define STATIC_FS "res/blinn-phong.fs.glsl"
 
@@ -21,7 +23,7 @@ namespace cherry
 {
 	class Material {
 	public:
-		bool HasTransparency;
+		bool HasTransparency; // states if a material has transparency
 		typedef std::shared_ptr<Material> Sptr;
 
 		// all objects are opaque by default.
@@ -53,12 +55,14 @@ namespace cherry
 			myCubeMaps[name] = { value, sampler };
 		}
 
-		// loads a material from a MaterialTemplateLibrary. You can also pass the sampler the mateiral uses.
+		// loads a material from a MaterialTemplateLibrary (.mtl) file.
+		// this replaces the applicable values in this material with the ones from the .mtl file
+		// make sure the material has values already, since the .mtl file doesn't override every value for the Material class.
+		// You can also pass the sampler the material.
 		bool LoadMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr);
 
-		// generates a material using an MTL file, and reutrns said material. Make sure to set the lighting information.
-		// pass the sampler if you so choose.
-		// also takes in a vertex and fragment shader
+		// generates a material using a .mtl file, and returns said material. Make sure to set the lighting information.
+		// pass the sampler if you so choose. This also takes in a vertex shader and fragment shader
 		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = "res/lighting.vs.glsl", std::string fs = "res/blinn-phong.fs.glsl");
 
 

@@ -1,5 +1,7 @@
-// VERTEX STRUCT AND MESH CLASS (SOURCE)
+// Vertex Structs, and Mesh Class (Header)
+// Loads in meshes for rendering to the screen
 #pragma once
+
 #include <glad/glad.h>
 #include <GLM/glm.hpp> // For vec3 and vec4
 #include <cstdint> // Needed for uint32_t
@@ -18,8 +20,7 @@ namespace cherry
 		glm::vec2 UV; // texture UV coordinates
 	};
 
-	// Vertex Struct - used for morph targets
-	// NOTE: add two more position and normal parameters
+	// Morph Vertex Struct - used for morph targets
 	struct MorphVertex {
 		glm::vec3 Position; // vertex position
 		glm::vec4 Color; // vertex colour
@@ -48,8 +49,8 @@ namespace cherry
 
 		Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe);
 
-		// Creates a new mesH for morph target animation.
-		// ONLY USE THIS IF YOU ARE USING MORPH TARGETS.
+		// Creates a new mesh for morph target animation.
+		// NOTE: this should only be used if morph targets are being used.
 		Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices);
 
 		// destructor
@@ -58,7 +59,7 @@ namespace cherry
 		// Draws this mesh
 		void Draw();
 
-		// Returns wireframe boolean to tell the caller if the mesh is to be drawn in wirframe
+		// Returns wireframe boolean to tell the caller if the mesh is to be drawn in wireframe mode.
 		bool IsWireframe();
 
 		// if 'true' is passed, wireframe is enabled. If false is passed, wireframe is disabled.

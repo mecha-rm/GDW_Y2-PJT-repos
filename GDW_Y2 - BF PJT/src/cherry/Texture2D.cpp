@@ -47,8 +47,8 @@ void cherry::Texture2D::__SetupTexture() {
 
 // binds a texture into a given slot.
 void cherry::Texture2D::Bind(int slot) const {
-	// Bind to the given texture slot, OpenGL 4 guarantees that we have at least 80 texture slots
-	// Note that this is part of Direct State Access added in 4.5, replacing the old glActiveTexture and glBindTexture calls
+	// Bind to the given texture slot. OpenGL 4 guarantees that we have at least 80 texture slots.
+	// Note that this is part of Direct State Access added in 4.5, replacing the old glActiveTexture and glBindTexture calls.
 	glBindTextureUnit(slot, myTextureHandle);
 }
 
@@ -61,7 +61,7 @@ void cherry::Texture2D::UnBind(int slot) {
 void cherry::Texture2D::LoadData(void* data, size_t width, size_t height, PixelFormat format, PixelType type) {
 
 	// checks size of data against size of texture.
-	// TODO: Re-create texture if our data is a different size
+	// TODO: Re-create texture if our data is a different size.
 	LOG_ASSERT(width == myDescription.Width, "Width of data does not match the width of this texture!");
 	LOG_ASSERT(height == myDescription.Height, "Height of data does not match the width of this texture!");
 

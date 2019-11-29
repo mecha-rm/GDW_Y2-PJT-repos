@@ -1,4 +1,5 @@
-// MESH CLASS (SOURCE)
+// Vertex Structs, and Mesh Class (Source)
+// Loads in meshes for rendering to the screen
 #include "Mesh.h"
 
 // constructor

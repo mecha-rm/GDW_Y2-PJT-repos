@@ -1,8 +1,10 @@
+// Primitive Cube - creates a quadrilateral object
 #pragma once
 #include "Primitive.h"
 
 namespace cherry
 {
+	// PrimitiveCube
 	typedef class PrimitiveCube : public cherry::Primitive
 	{
 	public:

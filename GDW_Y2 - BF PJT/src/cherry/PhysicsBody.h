@@ -1,26 +1,15 @@
+// Physics Body - used to add physics related properties to an object.
 #pragma once
 #include "VectorCRY.h"
 #include "objects/Primitives.h"
-// #include "objects/Object.h"
 
 namespace cherry
 {
-	// the object for the physics body
+	// abstract physics body class
 	class PhysicsBody
 	{
 	public:
-		// constructor
-		// PhysicsBody();
-		
-		// location of the physics body (relative to object origin)
-		// PhysicsBody(float x, float y, float z);
-
-		// location of the physics body (relative to object origin)
-		// PhysicsBody(cherry::Vec3 pos);
-
-		// location of the physics body (relative to object origin)
-		// PhysicsBody(glm::vec3 position);
-
+		// constructors
 		// sets the id for a specific physics body.
 		PhysicsBody(int id);
 
@@ -31,57 +20,56 @@ namespace cherry
 
 		/*
 		 * gets the identifier for the physics body
-		 *** (0): no specifier
+		 *** (0): no type
 		 *** (1): box
 		 *** (2): sphere
 		*/
 		int GetId() const;
 
-		// gets the object this physics body is attachted to
+		// gets the object this physics body is attachted to.
 		cherry::Object* GetObject() const;
 
-		// sets the object the physics body is attachted to
+		// sets the object the physics body is attachted to.
 		void SetObject(cherry::Object * obj);
 
-		// attachs the physics body to an object, returning itself.
-		// NOTE: this does not save the body to the object's list.
+		// sets the object for the physics body, and returns the physics body so that it can be added to the object's physics body list.
+		// NOTE: this does not save the body to the object's list. Call AddPhysicsBody() on the object to add it to the object's list.
 		cherry::PhysicsBody* AttachToObject(cherry::Object * newObj);
 
-		// gets the model position
+		// gets the model (local space) position as a GLM vector
 		glm::vec3 GetModelPositionGLM() const;
 
-		// gets the model position
+		// gets the model (local space) position as a GLM vector
 		cherry::Vec3 GetModelPosition() const;
 
-		// sets the model position
+		// sets the model (local space) position
 		void SetModelPosition(cherry::Vec3 mpos);
 
-		// set model position (GLM version)
+		// set model (local space) position (GLM version)
 		void SetModelPosition(glm::vec3 mpos);
 
 
-		// get the world position as a glm vector
+		// gets the world position as a glm vector
 		glm::vec3 GetWorldPositionGLM() const;
 
-		// gets the world position
-		// if no object is attachted, then the model position is returned.
+		// gets the world position as a cherry Vector
+		// if no object is attached, then the model position is returned.
 		cherry::Vec3 GetWorldPosition() const;
 
-		// sets the world position
-		// if no object is attachted, then the model position is returned.
+		// sets the world position of the body
 		void SetWorldPosition(cherry::Vec3 wpos);
 
-		// sets the world position
+		// sets the world position of the body
 		void SetWorldPosition(glm::vec3 wpos);
 
 
-		// gets the rotation of the body
+		// gets the rotation of the body (in degrees)
 		cherry::Vec3 GetRotationDegrees() const;
 
 		// sets the rotation in degrees
 		void SetRotationDegrees(Vec3 degrees);
 		
-		// gets rotation in radians
+		// gets rotation of the physics body in radians
 		cherry::Vec3 GetRotationRadians() const;
 
 		// sets rotation in radians
@@ -94,22 +82,17 @@ namespace cherry
 		// sets the scale of the body.
 		void SetScale(cherry::Vec3 newScale);
 
-		// virtual void GetMesh() = 0;
-
-		// bool getVisible();
 		
-		// void setVisible();
-		
-		// calculates collision between two physics bodies if is available.
+		// calculates collision between two physics bodies if an equation for it is available.
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
 
 		// states whether the body is visible.
 		bool IsVisible() const;
 
-		// toggle visibility
+		// toggles visibility
 		void SetVisible();
 
-		// sets visibility
+		// sets visibility of the body
 		void SetVisible(bool visible);
 
 		// update loop for physics bodies
@@ -119,9 +102,7 @@ namespace cherry
 		virtual std::string ToString() const = 0;
 
 	private:
-		int id = 0; // identifier
-
-		// bool visible = false; // checks for visibility in reference to if the object is visible.
+		int id = 0; // identifier; check this value for downcasting
 
 		// rotation
 		cherry::Vec3 rotation;
@@ -130,39 +111,38 @@ namespace cherry
 		// the colour of the physics bodies (RGBA)
 		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 0.45F };
 
-		// doesn't get deleted since the object it's attachted to isn't necessarily unused.
-		cherry::Object* object = nullptr; // the object the body is attachted to.
+		// the object the body is attachted to.
+		cherry::Object* object = nullptr;
 
-		// a matrix that holds the node's transformation to the parent.
-		// glm::mat4 nodeParentTransform;
+		// position
+		cherry::Vec3 position;
 
-		cherry::Vec3 position; // position
-
-		// used to draw the body
+		// used to draw the body to the scene.
 		cherry::Primitive* body = nullptr;
 
+		// body scale
 		cherry::Vec3 scale{ 1.0F, 1.0F, 1.0F };
 
-		// material for primitives
+		// material for body when drawn to hte screen
 		Material::Sptr material;
 	};
 
-	// the object for a rectange physics body
+	// the object for a rectangular physics body
 	typedef class PhysicsBodyBox : public PhysicsBody
 	{
 	public:
-		// position of (0, 0, 0), with dimensions
+		// position of (0, 0, 0), with provided dimensions of (width, height, depth) for (x, y, z)
 		PhysicsBodyBox(float width, float height, float depth);
 
 		// location of the physics body (relative to object origin)
 		// (x, y, z) = position
-		// (width, height, depth) = size on (x, y, z)
+		// (width, height, depth) = size on (x, y, z) axes respectively
 		PhysicsBodyBox(float x, float y, float z, float width, float height, float depth);
 
-		// location of the physics body (relative to object origin), and dimensions 
+		// location of the physics body (relative to the object's origin), and its dimensions.
 		PhysicsBodyBox(cherry::Vec3 position, float width, float height, float depth);
 
-		// position and dimensions (width, height, depth)
+		// local position and dimensions (x, y, z) = (width, height, depth)
 		PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimensions);
 
 		// gets the width (size on x-axis)
@@ -183,12 +163,14 @@ namespace cherry
 		// sets depth (size on z-axis)
 		void SetDepth(float newDepth);
 
+		// update for bounding box
 		void Update(float deltaTime);
 
 		// toString
 		virtual std::string ToString() const;
 
 	private:
+		// dimensions
 		float width = 0, height = 0, depth = 0;
 
 	protected:
@@ -200,18 +182,19 @@ namespace cherry
 	typedef class PhysicsBodySphere : public PhysicsBody
 	{
 	public:
-		// radius of the sphere. The location is the object's origin.
+		// radius of the sphere. The sphere location is the object's origin.
 		PhysicsBodySphere(float radius);
 
-		// position of the sphere (relative to the object), and its radius.
+		// position of the sphere (relative to the object's origin), and its radius.
 		PhysicsBodySphere(cherry::Vec3 position, float radius);
 
 		// gets the radius
 		float GetRadius() const;
 
-		// sets the radius; if negative is passed, the absolute value is received.
+		// sets the radius; if a negative is passed, the absolute value is received.
 		void SetRadius(float r);
 
+		// update loop
 		void Update(float deltaTime);
 
 		// ToString function

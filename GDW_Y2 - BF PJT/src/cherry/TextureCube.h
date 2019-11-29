@@ -1,3 +1,4 @@
+// Texture Cube - used for making cube maps; received from the Computer Graphics framework
 #pragma once
 #include <glad/glad.h>
 #include <string>

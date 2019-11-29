@@ -1,3 +1,4 @@
+// Physics Body - used to add physics related properties to an object.
 #include "PhysicsBody.h"
 #include "utils/math/Collision.h"
 #include "objects/PrimitiveCube.h"
@@ -5,21 +6,14 @@
 
 #include "utils/math/Rotation.h"
 
-// body at object origin
-// cherry::PhysicsBody::PhysicsBody() : position() {}
-
-// sets position of body
-// cherry::PhysicsBody::PhysicsBody(float x, float y, float z) : position(x, y, z) {}
-
-// position of the body (passed as cherry::Vec3)
-// cherry::PhysicsBody::PhysicsBody(cherry::Vec3 pos) : position(pos) {}
-
+// constructors
 // sets the physics body ID
 cherry::PhysicsBody::PhysicsBody(int id) : PhysicsBody(id, cherry::Vec3()) {}
 
 // sets the ID for a specific type of physics body
 cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(pos) 
 {
+	// creates a material for the physics body. This is used to display the physics body for debugging purposes.
 	Shader::Sptr shader = std::make_shared<Shader>(); // creates the shader
 
 	shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
@@ -38,6 +32,7 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
 	material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
 	material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
 
+	// setting transparency since the bodies need to be see through
 	material->HasTransparency = true;
 }
 
@@ -50,49 +45,48 @@ cherry::PhysicsBody::~PhysicsBody()
 
 
 /*
-// gets the ID for the physics body
- *** (0): no specifier
- *** (1): box
- *** (2): sphere
+ * gets the ID for the physics body
+	*** (0): no type
+	*** (1): box
+	*** (2): sphere
 */
 int cherry::PhysicsBody::GetId() const { return id; }
 
-// gets the object this physics body is attachted to
+// gets the object this physics body is attachted to.
 cherry::Object* cherry::PhysicsBody::GetObject() const { return object; }
 
-// sets the object
+// sets the object for hte physics body
 void cherry::PhysicsBody::SetObject(cherry::Object* obj) 
 { 
 	object = obj; 
-	if (object != nullptr)
+	if (object != nullptr) // adds the body to the scene, and gives it the material
 	{
 		body->CreateEntity(object->GetScene(), material);
 		body->SetVisible(false);
 	}
 }
 
-// attaches to an object
+// attaches to an object, and reutnrs the body
 cherry::PhysicsBody* cherry::PhysicsBody::AttachToObject(cherry::Object* newObj)
 {
 	SetObject(newObj);
-	// newObj->AddPhysicsBody(this); // adds the physics body if it isn't there already
 	return this;
 }
 
-// gets the model position (glm)
+// gets the model (local) position (glm version)
 glm::vec3 cherry::PhysicsBody::GetModelPositionGLM() const
 {
 	Vec3 mpos = GetModelPosition();
 	return glm::vec3(mpos.v.x, mpos.v.y, mpos.v.z);
 }
 
-// gets the model position
+// gets the model (local) position
 cherry::Vec3 cherry::PhysicsBody::GetModelPosition() const { return position; }
 
-// sets the model position
+// sets the model (local) position
 void cherry::PhysicsBody::SetModelPosition(cherry::Vec3 mpos) { position = mpos; }
 
-// sets the model position
+// sets the model (local) position
 void cherry::PhysicsBody::SetModelPosition(glm::vec3 mpos) { 
 	position = cherry::Vec3(mpos);
 }
@@ -107,7 +101,7 @@ glm::vec3 cherry::PhysicsBody::GetWorldPositionGLM() const
 // returns the world position; objects save their position in world space
 cherry::Vec3 cherry::PhysicsBody::GetWorldPosition() const 
 {
-	// TODO : change this to take a cherry::Vec3
+	// TODO: reference body object instead?
 	return (object == nullptr ? position : object->GetPosition() + position);
 }
 
@@ -162,72 +156,44 @@ cherry::Vec3 cherry::PhysicsBody::GetScale() const { return scale; }
 void cherry::PhysicsBody::SetScale(cherry::Vec3 newScale) { scale = newScale; }
 
 
-// calculations collision between objects
+// calculates collision between objects
 bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 {
 	// if either object is null.
 	if (p1 == nullptr || p2 == nullptr)
 		return false;
 
-	// no physics body type attachted
+	// no physics body type attachted to either
 	if (p1->GetId() == 0 || p2->GetId() == 0)
 		return false;
 
 	// AABB Collision
 	if (p1->GetId() == 1 && p2->GetId() == 1)
 	{
+		// downcasts the objects
 		cherry::PhysicsBodyBox * temp1 = (cherry::PhysicsBodyBox*)p1;
 		cherry::PhysicsBodyBox * temp2 = (cherry::PhysicsBodyBox*)p2;
 
-		//// origin is the centre of the 
-		//// minimum values of A
-		//util::math::Vec3 minA (
-		//	temp1->GetWorldPosition().GetX() - temp1->getWidth() / 2.0F, 
-		//	temp1->GetWorldPosition().GetY() - temp1->getHeight() / 2.0F, 
-		//	temp1->GetWorldPosition().GetZ() - temp1->getDepth() / 2.0F
-		//);
-
-		//// maximum values of A
-		//util::math::Vec3 maxA(
-		//	temp1->GetWorldPosition().GetX() + temp1->getWidth() / 2.0F,
-		//	temp1->GetWorldPosition().GetY() + temp1->getHeight() / 2.0F,
-		//	temp1->GetWorldPosition().GetZ() + temp1->getDepth() / 2.0F
-		//);
-
-		//// minimum values of B
-		//util::math::Vec3 minB(
-		//	temp2->GetWorldPosition().GetX() - temp2->getWidth() / 2.0F,
-		//	temp2->GetWorldPosition().GetY() - temp2->getHeight() / 2.0F,
-		//	temp2->GetWorldPosition().GetZ() - temp2->getDepth() / 2.0F
-		//);
-
-		//// maximum values of B
-		//util::math::Vec3 maxB(
-		//	temp2->GetWorldPosition().GetX() + temp2->getWidth() / 2.0F,
-		//	temp2->GetWorldPosition().GetY() + temp2->getHeight() / 2.0F,
-		//	temp2->GetWorldPosition().GetZ() + temp2->getDepth() / 2.0F
-		//);
-
-		//return util::math::aabbCollision(minA, maxA, minB, maxB);
-
+		// calculation
 		return util::math::aabbCollision(temp1->GetWorldPosition().v, temp1->GetWidth(), temp1->GetHeight(), temp1->GetDepth(),
 										 temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
 	}
 	// Sphere Collision
 	else if (p1->GetId() == 2 && p2->GetId() == 2)
 	{
-		// converts to spehre
+		// downcasts to shere bodies
 		cherry::PhysicsBodySphere* temp1 = (cherry::PhysicsBodySphere*)p1;
 		cherry::PhysicsBodySphere* temp2 = (cherry::PhysicsBodySphere*)p2;
 
+		// calculation
 		return util::math::sphereCollision(temp1->GetWorldPosition().v, temp1->GetRadius(), temp2->GetWorldPosition().v, temp2->GetRadius());
 	}
 
 	// AABB - Sphere Collision
 	else if ((p1->GetId() == 1 && p2->GetId() == 2) || (p1->GetId() == 2 && p2->GetId() == 1))
 	{
-		// if the first object is an aabb,  meaning that the other object is a sphere
-		if (p1->GetId() == 1) // calls the collision function again, but swaps the variables
+		// if the first object is an aabb, meaning that the other object is a sphere
+		if (p1->GetId() == 1) // calls the collision function again, but swaps the objects around
 		{
 			return Collision(p2, p1);
 		}
@@ -236,6 +202,7 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		cherry::PhysicsBodySphere* temp1 = (cherry::PhysicsBodySphere*)p1;
 		cherry::PhysicsBodyBox* temp2 = (cherry::PhysicsBodyBox*)p2;
 
+		// calculation
 		return util::math::sphereAABBCollision(temp1->GetWorldPosition().v, temp1->GetRadius(),
 			temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
 	}
@@ -270,6 +237,7 @@ void cherry::PhysicsBody::SetVisible(bool visible)
 // updates a physics body
 void cherry::PhysicsBody::Update(float deltaTime)
 {
+	// ORIGINAL ATTEMPT USING MAT4 (DID NOT WORK)
 	//cherry::TempTransform temp; // used for generating matrices
 
 	//// Equation: T_nodeToWorld = T_parentToWorld * T_nodeToParent
@@ -311,6 +279,7 @@ void cherry::PhysicsBody::Update(float deltaTime)
 	// parentTransform[2][3] = object->GetPosition().v.x;
 	// parentTransform[3][3] = 1.0F;
 	
+	// Current Method (offset from object values)
 	// setting the world space values
 	body->SetPosition(object->GetPosition().v.x + position.v.x,
 		object->GetPosition().v.y + position.v.y,
@@ -329,6 +298,8 @@ void cherry::PhysicsBody::Update(float deltaTime)
 		object->GetScaleZ() + scale.v.z));
 	
 }
+
+
 
 // PHYSICS BODY BOX
 // constructor
@@ -377,7 +348,7 @@ void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
 // update
 void cherry::PhysicsBodyBox::Update(float deltaTime)
 {
-	PhysicsBody::Update(deltaTime);
+	PhysicsBody::Update(deltaTime); // no unique behaviour at this time
 }
 
 // toString
@@ -389,8 +360,7 @@ std::string cherry::PhysicsBodyBox::ToString() const
 		" | Depth: " + std::to_string(depth);
 }
 
-// Physics Body Sphere
-
+// PHYSICS BODY SPHERE //
 // constructor
 cherry::PhysicsBodySphere::PhysicsBodySphere(float radius) : PhysicsBodySphere(Vec3(), radius)
 {}
@@ -403,17 +373,19 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 
 	if(object != nullptr)
 		body->CreateEntity(object->GetScene(), object->GetMaterial());
-	// body->SetPosition(position);
+	
 }
 
 // gets the radius
 float cherry::PhysicsBodySphere::GetRadius() const { return radius; }
 
+// sets the radius
 void cherry::PhysicsBodySphere::SetRadius(float r) { radius = r; }
 
+// update
 void cherry::PhysicsBodySphere::Update(float deltaTime)
 {
-	PhysicsBody::Update(deltaTime);
+	PhysicsBody::Update(deltaTime); // no unique behaviour
 }
 
 // toString function

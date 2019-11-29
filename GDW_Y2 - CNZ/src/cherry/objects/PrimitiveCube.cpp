@@ -1,3 +1,4 @@
+// PrimitiveCube (Source)
 #include "PrimitiveCube.h"
 #include "..\PhysicsBody.h"
 
@@ -27,6 +28,7 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 	// Position and Color (Default Values) // NORMALS ARE WRONG
 	verticesTotal = 8;
 
+	// Original; kept here since the faces are being drawn wrong
 	//{ { -width / 2.0F, -height / 2.0F, depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, { 0.0F, 0.0F, 0.0f }}, // bottom left, front corner
 	//{ { -width / 2.0F,  height / 2.0F,  depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // top left, front corner
 	//{ { -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 0.0f} }, // bottom left, back corner
@@ -81,7 +83,7 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	
-	// TODO: LOOPS INFINITELY
+	// Maybe don't have primitives automatically get physics bodies (causes infinite loop)
 	// PhysicsBody* temp = new cherry::PhysicsBodyBox(width, height, depth);
 	// AddPhysicsBody(new cherry::PhysicsBodyBox(width, height, depth));
 }

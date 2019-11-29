@@ -1,3 +1,4 @@
+// PrimitiveSphere
 #include "PrimitiveSphere.h"
 #include "..\utils\math\Rotation.h"
 #include "..\PhysicsBody.h"
@@ -97,7 +98,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 	//	15|16 ||17 |18 ||19 |20 ||
 	//  --------------------------
 	//	21 (fill)
-
+	// ALSO DOESN'T WORK
 	// Ver. 2 (Right -> Down + Left -> Right) ~ just increases linerarly after
 	// For this version, row 0 is increased by 1
 	//	0 (fill)

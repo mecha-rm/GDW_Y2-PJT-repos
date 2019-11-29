@@ -542,7 +542,7 @@ glm::vec3 cherry::Object::GetScaleGLM() const { return glm::vec3(scale.v.x, scal
 cherry::Vec3 cherry::Object::GetScale() const { return scale; }
 
 // sets the scale
-void cherry::Object::SetScale(float scl) { scale = { scl, scl, scl }; }
+void cherry::Object::SetScale(float scl) { scale = Vec3(scl, scl, scl); }
 
 // sets scale
 void cherry::Object::SetScale(float scaleX, float scaleY, float scaleZ) { scale = { scaleX, scaleY, scaleZ }; }
@@ -704,22 +704,25 @@ void cherry::Object::DeletePath() { delete path; }
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
 
-
+// default physics body size
 cherry::Vec3 cherry::Object::GetPBodySize()
 {
 	return this->pBodySize;
 }
 
+// default physics body size
 float cherry::Object::GetPBodyWidth()
 {
 	return this->GetPBodySize().GetX() / 2;
 }
 
+// default physics body size
 float cherry::Object::GetPBodyHeight()
 {
 	return this->GetPBodySize().GetY() / 2;
 }
 
+// default physics body size
 float cherry::Object::GetPBodyDepth()
 {
 	return this->GetPBodySize().GetZ() / 2;

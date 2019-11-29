@@ -1,3 +1,4 @@
+// Texture Sampler - used for mipmapping; taken from the Computer Graphics framework
 #include "TextureSampler.h"
 #include <GLM/gtc/type_ptr.hpp>
 

@@ -1,8 +1,10 @@
+// Morph Animation (Source) -used for morph targets
 #include "MorphAnimation.h"
 #include "..\objects\Object.h"
 
 
 // MORPH ANIMATION
+// set as animation 1 in the list
 cherry::MorphAnimation::MorphAnimation() : Animation(1) {}
 
 
@@ -92,6 +94,8 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	if (t > 1.0F)
 		t = 1.0F;
 
+	// getting the frame of animation
+	// TODO: optimize so that a pose isn't generated every frame
 	object->GetMesh()->Morph(GeneratePose(), ((MorphAnimationFrame*)(GetCurrentFrame()))->GetValueAmount());
 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
 

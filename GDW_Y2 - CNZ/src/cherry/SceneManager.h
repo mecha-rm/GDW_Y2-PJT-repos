@@ -1,5 +1,4 @@
-// Manages Scenes
-
+// SceneManager - Manages Scenes
 #pragma once
 #include "Scene.h"
 #include <unordered_map>
@@ -19,13 +18,13 @@ namespace cherry
 		};
 		static Scene* Current();
 
-		// sets the current scene
+		// sets the current m_Scene
 		static bool SetCurrentScene(const std::string& name);
 
-		// returns 'true' if the scene manager has the given scene
+		// returns 'true' if the m_Scene manager has the given m_Scene
 		static bool HasScene(const std::string& name);
 
-		// gets the scene
+		// gets the m_Scene
 		static Scene* Get(const std::string& name);
 
 		static void RegisterScene(const std::string& name, Scene* scene = nullptr);

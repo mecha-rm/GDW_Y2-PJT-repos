@@ -1,3 +1,4 @@
+// PrimitiveDiamond
 #include "PrimitiveDiamond.h"
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
@@ -10,9 +11,11 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	radius = abs(radius);
 	height = abs(height);
 
+	// minimum
 	if (segments < 3)
 		segments = 3;
 
+	// cannot be less than 0 or greater than 1
 	if (origin < 0.0F)
 		origin = 0.0F;
 	else if (origin > 1.0F)

@@ -93,7 +93,7 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 
 	case 1: // spline
 		// the indexes for pt0, pt2, and pt3
-		// pt0 is for the control point before the start.
+		// pt0 is for the control point before the start point.
 		// pt1 is the start point. The value of p0 is used instead.
 		// pt2 is the point on the line.
 		// pt3 is for the control point after the end.
@@ -105,7 +105,7 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 		pt0 = index - 2; //  index - 2 (or nodes.size() - 1)
 		pt1 = index - 1;
 		pt2 = index;
-		pt3 = index + 1; // index + 1 
+		pt3 = index + 1; // index + 1 (or 0 if looping around to start)
 
 		// if the index is out of range
 		if (pt0 < 0)
@@ -134,12 +134,12 @@ cherry::Vec3 cherry::Path::Run(float deltaTime)
 		if (pt3 >= nodes.size())
 			pt3 = 0;
 
-		if (direc >= 0) // forward
+		if (direc >= 0) // forward (uses catmull-rom)
 		{
 			p2 = util::math::catmullRom(
 				nodes.at(pt0).v, p0.v, p1.v, nodes.at(pt3).v, u);
 		}
-		else if (direc < 0) // backward
+		else if (direc < 0) // backward (uses catmull-rom)
 		{
 			p2 = util::math::catmullRom(
 				nodes.at(pt3).v, p1.v, p0.v, nodes.at(pt0).v, u);

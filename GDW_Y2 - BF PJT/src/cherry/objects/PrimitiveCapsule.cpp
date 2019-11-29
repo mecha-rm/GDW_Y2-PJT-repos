@@ -1,3 +1,4 @@
+// PrimitiveCapsule
 #include "PrimitiveCapsule.h"
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
@@ -93,6 +94,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	//  --------------------------
 	//	21 (fill)
 
+	// ALSO DOES NOT WORK
 	// Ver. 2 (Right -> Down + Left -> Right) ~ just increases linerarly after
 	// For this version, row 0 is increased by 1
 	//	0 (fill)

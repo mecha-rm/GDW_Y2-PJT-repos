@@ -1,5 +1,6 @@
-// PHYSICS.H
-// This was a file that was deleted, but kept having its .obj getting added back when the project rebuilds.
+// Physics (Header) - currently does nothing
+// This was a file that was deleted, but kept having its .obj file added back when the project gets rebuilt.
+// This would cause compile errors, and require that the file be added back in.
 // For ease of development, this file has been kept, even though it serves no purpose at this time.
 #pragma once
 
@@ -8,5 +9,5 @@
 
 namespace cherry
 {
-	static float gravity = -9.8F;
+	static float gravity = -9.8F; // unused
 }

@@ -192,8 +192,6 @@ void cherry::Game::UpdateCursorPos(double xpos, double ypos)
 	//Logger::GetLogger()->info(xpos);
 	//Logger::GetLogger()->info(ypos);
 
-	// Update the player object's angle
-	// playerObj->updateAngle(*game->myCamera, xpos, ypos, this->windowWidth, this->windowHeight);
 }
 
 // gets the cursor position
@@ -274,6 +272,27 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_D:
 		d = true;
+		break;
+	case GLFW_KEY_V:
+		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
+			objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
+		break;
+	case GLFW_KEY_P:
+		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
+			objects[hitBoxIndex]->followPath = !objects[hitBoxIndex]->followPath;
+	case GLFW_KEY_I:
+		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
+		{
+			if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 0)
+			{
+				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(1);
+			}
+			else if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 1)
+			{
+				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(0);
+			}
+			
+		}
 		break;
 	}
 }
@@ -548,7 +567,7 @@ void cherry::Game::LoadContent()
 	// added for mip mapping. As long as its above the material, it's fine.
 	
 	// OLD VERSION
-	// TODO: remove upon submission
+	// TODO: remove upon final submission
 	// description = SamplerDesc();
 	// description.MinFilter = MinFilter::NearestMipNearest;
 
@@ -623,14 +642,14 @@ void cherry::Game::LoadContent()
 	scene->SkyboxMesh = MakeInvertedCube();
 
 	// loads in six files out of res, then making them into the cube map.
-
+	// only works with JPEG files
 	std::string files[6] = {
-	std::string("res/images/cubemap/graycloud_lf.jpg"),
-	std::string("res/images/cubemap/graycloud_rt.jpg"),
-	std::string("res/images/cubemap/graycloud_dn.jpg"),
-	std::string("res/images/cubemap/graycloud_up.jpg"),
-	std::string("res/images/cubemap/graycloud_ft.jpg"),
-	std::string("res/images/cubemap/graycloud_bk.jpg")
+	std::string("res/images/cubemaps/checkerboard_black-red.jpg"),
+	std::string("res/images/cubemaps/checkerboard_black-green.jpg"),
+	std::string("res/images/cubemaps/checkerboard_black-blue.jpg"),
+	std::string("res/images/cubemaps/checkerboard_red-white.jpg"),
+	std::string("res/images/cubemaps/checkerboard_green-white.jpg"),
+	std::string("res/images/cubemaps/checkerboard_blue-white.jpg")
 	};
 	scene->Skybox = TextureCube::LoadFromFiles(files);
 
@@ -644,10 +663,10 @@ void cherry::Game::LoadContent()
 	// TODO: add sampler
 	LightManager::AddScene(currentScene);
 	LightManager::AddLight(currentScene, Light(currentScene, Vec3(-30.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.8F, 0.5F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
+		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.5F, 256.0F, 0.15F));
 
-	LightManager::AddLight(currentScene, Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1F, 0.2F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.04F), 0.4F, 0.5F, 256.0F, 0.15F));
+	LightManager::AddLight(currentScene, Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
+		Vec3(0.2F, 0.7F, 0.9F), 0.4F, 0.5F, 256.0F, 0.15F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace teh shader for the material if using morph tagets.
@@ -661,49 +680,52 @@ void cherry::Game::LoadContent()
 		float offset = 3.0F; // position offset
 
 		// Creating the objects, storing them, and making them part of the default m_Scene.
-		//objects.push_back(new PrimitiveCapsule());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		//
+		objects.push_back(new PrimitiveCapsule());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		
 
-		//objects.push_back(new PrimitiveCircle());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		objects.push_back(new PrimitiveCircle());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		//objects.push_back(new PrimitiveCone());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		objects.push_back(new PrimitiveCone());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		//objects.push_back(new PrimitiveCube());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		objects.push_back(new PrimitiveCube());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		//objects.push_back(new PrimitiveCylinder());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		objects.push_back(new PrimitiveCylinder());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		//objects.push_back(new PrimitiveDiamond());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		objects.push_back(new PrimitiveDiamond());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		//objects.push_back(new PrimitiveUVSphere());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		objects.push_back(new PrimitiveUVSphere());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		//objects.push_back(new PrimitivePlane());
-		//objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		//objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		objects.push_back(new PrimitivePlane());
+		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
 		//// images don't need CreateEntity called.
-		//objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
-		//objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		//objects.at(objects.size() - 1)->SetScale(0.1F);
+		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		objects.at(objects.size() - 1)->SetScale(0.025F);
 
 		// version 1 (finds .mtl file automatically)
-		objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene,
-			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true));
+		objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
+			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
+
+		objects.at(objects.size() - 1)->SetScale(10.0F);
+		hitBoxIndex = objects.size() - 1;
 
 		// objects.push_back();
 
@@ -713,28 +735,10 @@ void cherry::Game::LoadContent()
 		// 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
 
-		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(2.0F, 2.0F, 2.0F));
-		objects.at(objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(true);
+		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(1.0F, 2.5F, 1.0F));
+		objects.at(objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(false);
 
-		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
-		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
-		// objects.at(objects.size() - 1)->SetScale(2.0F);
-
-		//material->SetShader(shdr);
-		objects.push_back(new Object("res/objects/cube_morph_target_0.obj", currentScene, matDynamic, false, true));
-		//
-
-		MorphAnimation* mph = new MorphAnimation();
-		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_0.obj", 2.0F));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_1.obj", 2.0F));
-		// mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 2.0F));
-		mph->SetInfiniteLoop(true);
-		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
-		//mph->SetLoopsTotal(3);
-		mph->Play();
-		objects.at(objects.size() - 1)->AddAnimation(mph);
-		objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
-
+		// path
 		Path* path = new Path();
 		path->AddNode(8.0F, 0.0F, 0.0F);
 		path->AddNode(-8.0F, 8.0F, 0.0F);
@@ -744,9 +748,41 @@ void cherry::Game::LoadContent()
 
 		path->SetInterpolationMode(1);
 
-		objects.at(objects.size() - 2)->SetPath(path, true);
-		
-		objects.at(objects.size() - 2)->SetScale(0.7);
+		objects.at(objects.size() - 1)->SetPath(path, true);
+
+		objects.at(objects.size() - 1)->SetScale(0.7);
+
+		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
+		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
+		// objects.at(objects.size() - 1)->SetScale(2.0F);
+
+		//material->SetShader(shdr);
+		// VER 1
+		//objects.push_back(new Object("res/objects/cube_morph_target_0.obj", currentScene, matDynamic, false, true));
+		//objects.at(objects.size() - 1)->SetPosition(offset, offset, 0.0F);
+		////
+
+		//MorphAnimation* mph = new MorphAnimation();
+		//mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_0.obj", 2.0F));
+		//mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_1.obj", 2.0F));
+
+		// VER 2
+		objects.push_back(new Object("res/objects/hero pose one.obj", currentScene, matDynamic, false, true));
+		objects.at(objects.size() - 1)->SetPosition(offset, offset, 0.0F);
+		//
+
+		MorphAnimation* mph = new MorphAnimation();
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
+		// mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 2.0F));
+		mph->SetInfiniteLoop(true);
+		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
+		//mph->SetLoopsTotal(3);
+		mph->Play();
+		objects.at(objects.size() - 1)->AddAnimation(mph);
+		// objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
+
 	}
 
 	// Create and compile shader
@@ -757,6 +793,7 @@ void cherry::Game::LoadContent()
 
 	// WATER SHADER
 	// Making the water shader
+	// NOTE: even though the skybox is not visible, the water still reflects it.
 	{ // Push a new scope so that we don't step on other names
 		if (loadDefaults) // the water will be considered one of the defaults.
 		{
@@ -804,7 +841,7 @@ void cherry::Game::UnloadContent() {
 void cherry::Game::Update(float deltaTime) {
 
 	glm::vec3 camTranslate{}; // movement for the camera this given frame.
-	float camTransInc = 0.05F; // increment for camera movement
+	float camTransInc = 5.0F; // increment for camera movement
 
 	// TODO: remove this line.
 	// <the update loop for all objects was originally here.>
@@ -813,8 +850,8 @@ void cherry::Game::Update(float deltaTime) {
 	if (debugMode) // moves the camera with button presses if in debug mode.
 	{
 		// moving the camera
-		camTranslate.x = (a) ? -camTransInc : (d) ? camTransInc : 0.0F; // x-axis
-		camTranslate.y = (w) ? camTransInc : (s) ? -camTransInc : 0.0F; // y-axis
+		camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
+		camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
 
 		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
 		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player

@@ -1,3 +1,4 @@
+// Texture Sampler - used for mipmapping; taken from the Computer Graphics framework
 #pragma once
 #include <glad/glad.h>
 #include <toolkit/EnumToString.h>

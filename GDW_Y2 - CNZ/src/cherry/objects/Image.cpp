@@ -30,7 +30,7 @@ cherry::Image::Image(std::string filePath, std::string scene) : Object()
 	this->filePath = filePath; // saves the file path
 	file.close(); // closing the file since the read was successful.
 	
-	LoadImage(scene);
+	LoadImage(scene); // loads in the image
 }
 
 // destructor
@@ -62,7 +62,7 @@ bool cherry::Image::LoadImage(std::string scene)
 	
 	// glm::float32_t; // glm float
 
-	// Position and Colour
+	// Position, Colour, Normals, and UVs
 	verticesTotal = 4;
 	vertices = new Vertex[verticesTotal]
 	{
@@ -97,7 +97,7 @@ bool cherry::Image::LoadImage(std::string scene)
 	// TODO: probably shouldn't use lighting shader since it's an image
 	shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
 
-
+	// lighting has no strong effect on images currnetly
 	material = std::make_shared<Material>(shader);
 	material->Set("a_LightPos", { 0, 0, 0 });
 	material->Set("a_LightColor", { 1.0f, 1.0f, 1.0f });
@@ -113,7 +113,7 @@ bool cherry::Image::LoadImage(std::string scene)
 
 
 
-	// TODO: should probably do error checking, but this is ifne for now.
+	// TODO: should probably do error checking, but this is fine for now.
 	if (util::equalsIgnoreCase(filePath.substr(filePath.find_last_of(".") + 1), "png"))
 	{
 		material->HasTransparency = true; // there should be transparency if it's a png

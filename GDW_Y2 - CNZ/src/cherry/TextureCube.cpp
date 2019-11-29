@@ -1,3 +1,4 @@
+// TextureCube - used for making cube maps; taken from the Computer Graphics framework.
 #include "TextureCube.h"
 #include <toolkit/Logging.h>
 #include <stbs/stb_image.h>

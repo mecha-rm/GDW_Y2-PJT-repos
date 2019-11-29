@@ -1,3 +1,4 @@
+// Material - used for adding materials to meshes
 #include "Material.h"
 #include "utils/Utils.h"
 
@@ -26,7 +27,7 @@ void cherry::Material::Apply() {
 	//	slot++;
 	//}
 
-	// updated in tutorial 09
+	// updated in tutorial 09 of Intro. to Computer Graphics
 	int slot = 0;
 	for (auto& kvp : myTextures) {
 		if (kvp.second.Sampler != nullptr)
@@ -38,7 +39,7 @@ void cherry::Material::Apply() {
 		slot++;
 	}
 
-	// updated in tutorial 10
+	// updated in tutorial 10 of Intro. to Computer Graphics
 	for (auto& kvp : myCubeMaps) {
 		if (kvp.second.Sampler != nullptr)
 			kvp.second.Sampler->Bind(slot);
@@ -48,7 +49,7 @@ void cherry::Material::Apply() {
 		myShader->SetUniform(kvp.first.c_str(), slot);
 	}
 
-	// mulitiplies everything by the source alpha so
+	// mulitiplies everything by the source alpha so that transparent objects don't blend with the clear colour.
 	if (HasTransparency) {
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
@@ -60,9 +61,7 @@ void cherry::Material::Apply() {
 	}
 }
 
-// loads from an MTL file
-// Resources:
-
+// loads from a .mtl file
 bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr& sampler)
 {
 	std::ifstream file(filePath, std::ios::in);
@@ -84,6 +83,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 	Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
 	Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
 
+	// gets each line
 	while (std::getline(file, line))
 	{
 		if (line.length() == 0) // if there was nothing on the line, then it is skipped.
@@ -103,7 +103,6 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		// Phong Light Model
 		// Our light shader just calculates the specular and diffuse colours using other values.
 		// This is used instead of giving them their own dedicated colours.
-		// 
 
 		// ambient colour
 		else if (line.substr(0, line.find_first_of(" ")) == "Ka")
@@ -111,7 +110,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			std::vector<float> avec = util::splitString<float>(line.substr(line.find_first_of(" ") + 1));
 			Set("a_AmbientColor", { avec[0], avec[1], avec[2] });
 		}
-		// weight of amblient colour (ambient power)
+		// weight of ambient colour (ambient power)
 		else if (line.substr(0, line.find_first_of(" ")) == "Na")
 		{
 			Set("a_AmbientPower", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
@@ -143,6 +142,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		// TODO: change properties to look in 'res/objects/' folder directly.
 		// the engine doesn't support different textures for ambient, diffuse, and specular.
 		// however, it does support multi-texturing with texture mixing, which is what's being used instead.
+
 		// ambient map (i.e. texture). This is set to Albedo[0] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ka")
 		{
@@ -151,7 +151,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 
 			Set("s_Albedos[0]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
 		}
-		// diffuse map (i.e. texture). This is set to Albedo[0] for multi-texturing.
+		// diffuse map (i.e. texture). This is set to Albedo[1] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Kd")
 		{
 			// gets the folder path if there is one.
@@ -159,7 +159,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 
 			Set("s_Albedos[1]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
 		}
-		// specular map (i.e. texture). This is set to Albedo[0] for multi-texturing.
+		// specular map (i.e. texture). This is set to Albedo[2] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ks")
 		{
 			// gets the folder path if there is one.
@@ -171,40 +171,42 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		// Index of Refraction (Optical Density)
 		else if (line.substr(0, line.find_first_of(" ")) == "Ni")
 		{
-			
+			// unused
 		}
 		// alpha (transparency) of object (1.0 by default)
 		else if (line.substr(0, line.find_first_of(" ")) == "d")
 		{
-
+			// unused
 		}
 		// alpha (transparency) of material (1.0 by default) (inverted: Tr = 1 - d)
 		else if (line.substr(0, line.find_first_of(" ")) == "Tr")
 		{
-
+			// unused
 		}
 		// illumination mode (0 - 10)
 		else if (line.substr(0, line.find_first_of(" ")) == "illum")
 		{
 			/*
-			 * The number responds to a different illumination mode for each. 
-				0. Color on and Ambient off
-				1. Color on and Ambient on
-				2. Highlight on
-				3. Reflection on and Ray trace on
-				4. Transparency: Glass on, Reflection: Ray trace on
-				5. Reflection: Fresnel on and Ray trace on
-				6. Transparency: Refraction on, Reflection: Fresnel off and Ray trace on
-				7. Transparency: Refraction on, Reflection: Fresnel on and Ray trace on
-				8. Reflection on and Ray trace off
-				9. Transparency: Glass on, Reflection: Ray trace off
+			 * Source: https://en.wikipedia.org/wiki/Wavefront_.obj_file#Material_template_library
+			 * Each value refers to a different illumination mode. 
+			 * The modes are listed below:
+				0. Color On, Ambient Off
+				1. Color On, Ambient On
+				2. Highlight On
+				3. Reflection On, Ray Trace On
+				4. Transparency: glass on | Reflection: ray trace on
+				5. Reflection: fresnel on, and ray trace on
+				6. Transparency: refraction on | Reflection: fresnel off and ray trace on
+				7. Transparency: refraction on | Reflection: fresnel on and ray trace on
+				8. Reflection: On | Ray Trace: Off
+				9. Transparency: glass on | Reflection: ray trace off
 				10. Casts shadows onto invisible surfaces
 			*/
 		}
 		
 	}
 
-	file.close();
+	file.close(); // closing the file
 
 	return true;
 }
@@ -212,6 +214,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 // creates a material using and MTL file and returns it.
 cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler, std::string vs, std::string fs)
 {
+	// creates the material and gives it a shader
 	Shader::Sptr shader = std::make_shared<cherry::Shader>();
 	shader->Load(vs.c_str(), fs.c_str());
 

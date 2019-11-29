@@ -1,10 +1,12 @@
 #include "Primitive.h"
 
+// constructor
 cherry::Primitive::Primitive() : cherry::Object()
 {
 	
 }
 
+// destructor
 cherry::Primitive::~Primitive()
 {
 	delete[] indices;

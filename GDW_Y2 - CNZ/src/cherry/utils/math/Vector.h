@@ -55,8 +55,6 @@ namespace util
 
 			// equality operator
 			bool operator==(const Vec2&) const; // checking if two vectors are equal
-			bool operator>=(const Vec2&) const; // checking if two vectors are greater than or equal
-			bool operator<=(const Vec2&) const; // checking if two vectors are less then orequal
 
 			Vec2 operator*(float) const; // scalar multiplication
 			friend Vec2 operator*(float, const Vec2&); // scalar times vec
@@ -118,8 +116,6 @@ namespace util
 			float& operator[](const int index); // editing
 
 			bool operator==(const Vec3&) const; // checking if two vectors are equal
-			bool operator>=(const Vec3&) const; // checking if two vectors are greater than or equal
-			bool operator<=(const Vec3&) const; // checking if two vectors are less than or equal
 
 			Vec3 operator*(float) const; // scalar multiplication
 			friend Vec3 operator*(float, const Vec3&); // scalar times vec

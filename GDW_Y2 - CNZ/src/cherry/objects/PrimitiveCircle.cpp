@@ -1,3 +1,4 @@
+// PrimitiveCircle - used for making circles
 #include "PrimitiveCircle.h"
 #include "..\utils\math\Rotation.h"
 

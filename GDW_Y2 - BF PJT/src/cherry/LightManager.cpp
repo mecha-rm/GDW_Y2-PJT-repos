@@ -1,3 +1,4 @@
+// LightManager - manages all lights for the game
 #include "LightManager.h"
 #include "utils/Utils.h"
 
@@ -50,7 +51,7 @@ bool cherry::LightManager::AddLight(const std::string sceneName, const cherry::L
 		}
 	}
 
-	// if the scene should be added if it doesn't exist.
+	// if the scene should be added if it doesn't already exist.
 	if (addScene)
 	{
 		AddScene(sceneName); // adds the scene
@@ -80,7 +81,7 @@ std::vector<cherry::Light>* cherry::LightManager::GetLightList(std::string scene
 // gets all lights in the scene as a single light.
 cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
 {
-	Light* sceneLight = nullptr;
+	Light* sceneLight = nullptr; // holds the lights when they get merged together
 	std::vector<Light> * lights = GetLightList(sceneName); // the list of lights
 
 
@@ -94,7 +95,7 @@ cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
 	float lightShine = 0; // shininess
 	float lightAtten = 0; // attenuation
 
-	// adds together all the values for each light
+	// adds together all the values for each light.
 	for (int i = 0; i < lights->size(); i++)
 	{
 		lightPos += lights->at(i).GetLightPosition();
@@ -108,7 +109,7 @@ cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
 		lightAtten += lights->at(i).GetLightAttenuation();
 	}
 
-	// creates the light for the whole scene
+	// creates a single light for the whole scene by averaging the values.
 	sceneLight = new Light(sceneName,
 		lightPos / lights->size(),
 		lightClr / lights->size(),

@@ -1,4 +1,4 @@
-// SHADER CLASS (SOURCE)
+// Shader (Source) - renders meshes to the screen
 #include "Shader.h"
 #include <toolkit/Logging.h>
 #include <fstream>
@@ -56,7 +56,7 @@ void cherry::Shader::Load(const char* vsFile, const char* fsFile)
 	// Compile our program
 	Compile(vs_source, fs_source);
 
-	// saving the shader names
+	// saving the shader file paths
 	vertexShader = std::string(vsFile);
 	fragmentShader = std::string(fsFile);
 
@@ -196,7 +196,7 @@ void cherry::Shader::Compile(const char* vs_source, const char* fs_source) {
 		GLint length = 0;
 		glGetProgramiv(myShaderHandle, GL_INFO_LOG_LENGTH, &length);
 		if (length > 0) {
-			// Read the log from openGL
+			// Read the log from OpenGL
 			char* log = new char[length];
 			glGetProgramInfoLog(myShaderHandle, length, &length, log);
 			LOG_ERROR("Shader failed to link:\n{}", log);

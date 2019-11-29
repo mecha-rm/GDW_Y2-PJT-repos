@@ -1,4 +1,4 @@
-// Used for making circles
+// PrimitiveCircle - used for making circles
 #pragma once
 
 #include "Primitive.h"

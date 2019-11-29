@@ -1,4 +1,4 @@
-// file for general physics calculation. WIP.
+// Vector Cherry - engine vector classes
 #pragma once
 #include <vector>
 #include <string>
@@ -11,18 +11,22 @@
 
 using namespace std;
 
+// these set of classes reuses the vector classes that are found in the util::math namespace.
+// most of these functions (namely the operators) just reuse functions in the util::math::Vector set of classes.
+// see src/cherry/utils/math/Vector.h and related .cpp file for how the functions work.
 namespace cherry
 {
+	// VECTOR 2
 	typedef struct Vec2
 	{
 		Vec2();
 
 		Vec2(float x, float y);
 
-		// converts util::math::vector to cherry::vector
+		// converts util::math::Vec2 to cherry::Vec2
 		Vec2(util::math::Vec2 vec);
 
-		// converts glm::vector to cherry::vector
+		// converts glm::Vec2 to cherry::Vec2
 		Vec2(glm::vec2 vec);
 
 		// desturctor 
@@ -30,16 +34,17 @@ namespace cherry
 
 		// gets the x-value
 		float GetX() const;
+
 		// sets the x-value
 		void SetX(float x);
 
 		// gets the y-value
 		float GetY() const;
+
 		// sets the y-value
 		void SetY(float y);
 
 		// operators
-		// standard operators
 		const float& operator[](const int index) const; // reading
 		float& operator[](const int index); // editing
 
@@ -47,14 +52,14 @@ namespace cherry
 		bool operator==(const Vec2&) const; // checking if two vectors are equal
 
 		Vec2 operator*(float) const; // scalar multiplication
-		friend Vec2 operator*(float, const Vec2&); // scalar times vec
+		friend Vec2 operator*(float, const Vec2&); // scalar * vector
 
 		Vec2 operator/(float) const; // scalar divison
 		Vec2 operator+(Vec2) const; // adding two vectors
 		Vec2 operator-(Vec2) const; // subtracting two vectors
 
 
-		Vec2 operator-() const; // -vector
+		Vec2 operator-() const; // vec2 - vec2
 		friend Vec2 operator-(const float, const Vec2); // float - vector
 
 		// equals equation operators
@@ -78,36 +83,41 @@ namespace cherry
 		// gets the vector as a string.
 		std::string ToString() const;
 
-		// vector
+		// vector object from util::math namespace. This is where the information is stored.
 		util::math::Vec2 v;
 	} Vector2;
 
+
+	// VECTOR 3 //
 	typedef struct Vec3 {
 
 		Vec3();
 
 		Vec3(float x, float y, float z);
 
-		// converts util::math::vector to cherry::vector
+		// converts util::math::vec3 to cherry::Vec3
 		Vec3(util::math::Vec3 vec);
 
-		// converts glm::vector to cherry::vector
+		// converts glm::vec3 to cherry::Vec3
 		Vec3(glm::vec3 vec);
 
 		~Vec3();
 
 		// gets the x-value
 		float GetX() const;
+
 		// sets the x-value
 		void SetX(float x);
 
 		// gets the y-value
 		float GetY() const;
+
 		// sets the y-value
 		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
+
 		// sets the z-value
 		void SetZ(float z);
 
@@ -129,6 +139,7 @@ namespace cherry
 		Vec3 operator-() const; // -vector
 		friend Vec3 operator-(const float, const Vec3); // float - vector
 
+		// operation_equals operators
 		Vec3 operator*=(float);
 		Vec3 operator/=(float);
 		Vec3 operator+=(Vec3);
@@ -149,11 +160,12 @@ namespace cherry
 		// gets the vector as a string.
 		std::string ToString() const;
 
-		// vector
+		// util::math::vector 3 
 		util::math::Vec3 v;
 
 	} Vector3;
 
+	// VECTOR 4 //
 	typedef struct Vec4
 	{
 		Vec4();
@@ -168,21 +180,25 @@ namespace cherry
 
 		// gets the x-value
 		float GetX() const;
+
 		// sets the x-value
 		void SetX(float x);
 
 		// gets the y-value
 		float GetY() const;
+
 		// sets the y-value
 		void SetY(float y);
 
 		// gets the z-value
 		float GetZ() const;
+
 		// sets the z-value
 		void SetZ(float z);
 
 		// gets the w-value
 		float GetW() const;
+
 		// sets the w-value
 		void SetW(float w);
 
@@ -201,9 +217,10 @@ namespace cherry
 		Vec4 operator-(Vec4) const; // subtraction
 
 
-		Vec4 operator-() const; // -vector
+		Vec4 operator-() const; // vector - vector
 		friend Vec4 operator-(const float, const Vec4); // float - vector
 
+		// operator_equals operations
 		Vec4 operator*=(float);
 		Vec4 operator/=(float);
 		Vec4 operator+=(Vec4);
@@ -224,7 +241,7 @@ namespace cherry
 		// gets the vector as a string.
 		std::string ToString() const;
 
-		// vector
+		// vec4 object from util::math
 		util::math::Vec4 v;
 	} Vector4;
 }

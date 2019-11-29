@@ -1,3 +1,4 @@
+// TempTransformation and Update Behaviour - used for bringing objects into world space and updating them.
 #pragma once
 
 #include <GLM/gtc/matrix_transform.hpp>
@@ -5,6 +6,8 @@
 #include <glm/gtx/quaternion.hpp>
 #include <entt/entt.hpp>
 
+// TempTransform and UpdateBehaviour were originally in the Game.cpp file for the Intro. to Computer Graphics framework.
+// They were moved here so that they could be included by classes that need them.
 namespace cherry
 {
 	struct TempTransform {
