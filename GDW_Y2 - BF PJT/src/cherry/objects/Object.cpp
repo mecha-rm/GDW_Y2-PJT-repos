@@ -390,14 +390,14 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
 	mr.Material = this->material;
-	// compute animation here?
+	
 	mr.Mesh = mesh;
 
 	auto tform = [&](entt::entity e, float dt) 
 	{
 		auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
 
-		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // udpates the position
+		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // updates the position
 		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
 		transform.Scale = glm::vec3(scale.v.x, scale.v.y, scale.v.z); // sets the scale
 		
