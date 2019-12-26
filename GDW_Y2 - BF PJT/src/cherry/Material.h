@@ -63,7 +63,7 @@ namespace cherry
 
 		// generates a material using a .mtl file, and returns said material. Make sure to set the lighting information.
 		// pass the sampler if you so choose. This also takes in a vertex shader and fragment shader
-		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = "res/lighting.vs.glsl", std::string fs = "res/blinn-phong.fs.glsl");
+		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = STATIC_VS, std::string fs = STATIC_FS);
 
 
 	private:

@@ -30,7 +30,115 @@ util::math::Vec4 util::math::lerp(const util::math::Vec4& v0, const util::math::
 	return ((1.0F - t) * v0 + t * v1);
 }
 
+// EASING FUNCTIONS
+// 1. EASE_IN - Slow In, Fast Out (Quadratic)
+util::math::Vec3 util::math::easeIn1(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 2)); }
 
+// 2. EASE_IN_2 - Slow In, Fast Out (Cubic)
+util::math::Vec3 util::math::easeIn2(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 3)); }
+
+// 3. EASE_IN_3 - Slow In, Fast Out (Optic)
+util::math::Vec3 util::math::easeIn3(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 8)); }
+
+
+// 4. EASE_OUT_1 - Fast In, Slow Out
+util::math::Vec3 util::math::easeOut1(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, 1.0F - powf(1.0F - t, 2)); }
+
+// 5. EASE_OUT_2 - Fast In, Slow Out (Inverse Cubic)
+util::math::Vec3 util::math::easeOut2(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, 1.0F - powf(1.0F - t, 3)); }
+
+// 6. EASE_OUT_3 - Fast In, Slow Out (Inverse Octic)
+util::math::Vec3 util::math::easeOut3(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, 1.0F - powf(1.0F - t, 8)); }
+
+// 7. EASE_IN_OUT_1 - Shrink, Offset, Simplify In / Out
+util::math::Vec3 util::math::easeInOut1(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ? 2 * powf(t, 2) : -2 * powf(t, 2) + 4 * t - 1;
+
+    return lerp(v1, v2, t);
+}
+
+// 8. EASE_IN_OUT_2 - Shrink, Offset, Simplify In / Out
+// Equation: y = (x < 0.5) ? 4x ^ 3 : 4x ^ 3-12x ^ 2 + 12x - 4
+util::math::Vec3 util::math::easeInOut2(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ? 4 * powf(t, 3) : 4 * powf(t, 3) - 12 * powf(t, 2) + 12 * t - 3;
+
+    return lerp(v1, v2, t);
+}
+
+// 9. EASE_IN_OUT_3 - Shrink, Offset, Simplify In / Out
+util::math::Vec3 util::math::easeInOut3(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ? 128 * powf(t, 8) : 0.5F + (1 - powf(2 * (1 - t), 8)) / 2.0F;
+
+    return lerp(v1, v2, t);
+}
+
+// 10. EASE_IN_CIRCULAR - Inwards (Valley) Curve
+util::math::Vec3 util::math::easeInCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, 1.0F - sqrtf(1 - powf(t, 2))); }
+
+// 11. EASE_OUT_CIRCULAR - Outwards (Hill) Curve
+util::math::Vec3 util::math::easeOutCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, sqrtf(-(t - 2) * t)); }
+
+// 12. EASE_IN_OUT_CIRCULAR - Curve Inward, Then Outwards (Valley -> Hill)
+util::math::Vec3 util::math::easeInOutCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    // changing the value of 't'.
+    t = (t < 0.5F) ?
+        0.5F * (1 - sqrtf(1 - 4 * powf(t, 2))) :
+        0.5F * (sqrtf(-4 * (t - 2) * t - 3) + 1);
+
+    return lerp(v1, v2, t);
+}
+
+// 13. EASE_IN_BOUNCE_1 - Offset Power Composition
+util::math::Vec3 util::math::easeInBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 2) * (2 * t - 1)); }
+
+// 14. EASE_IN_BOUNCE_2 - Offset Power Composition
+util::math::Vec3 util::math::easeInBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 2) * (3 * t - 2)); }
+
+// 15. EASE_IN_BOUNCE_3 - Offset Power Composition
+util::math::Vec3 util::math::easeInBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, powf(t, 2) * (4 * t - 3)); }
+
+// 16. EASE_OUT_BOUNCE_1 - Inverse offset, power composition
+util::math::Vec3 util::math::easeOutBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, t * (t * (2 * t - 5) + 4)); }
+
+// 17. EASE_OUT_BOUNCE_2 - Inverse offset, power composition
+util::math::Vec3 util::math::easeOutBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, t * (t * (3 * t - 7) + 5)); }
+
+// 18. EASE_OUT_BOUNCE_3 - Inverse offset, power composition
+util::math::Vec3 util::math::easeOutBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t) { return lerp(v1, v2, t * (t * (4 * t - 9) + 6)); }
+
+// 19. EASE_IN_OUT_BOUNCE_1 - Shrink, offset, simplify In / Out
+util::math::Vec3 util::math::easeInOutBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ?
+        8 * powf(t, 3) - 2 * powf(t, 2) :
+        8 * powf(t, 3) - 22 * powf(t, 2) + 20 * t - 5;
+
+    return lerp(v1, v2, t);
+}
+
+// 20. EASE_IN_OUT_BOUNCE_2 - Shrink, offset, simplify In / Out
+util::math::Vec3 util::math::easeInOutBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ?
+        12 * powf(t, 3) - 4 * powf(t, 2) :
+        12 * powf(t, 3) - 32 * powf(t, 2) + 28 * t - 7;
+
+    return lerp(v1, v2, t);
+}
+
+// 21. EASE_IN_OUT_BOUNCE_3 - Shrink, offset, simplify In / Out
+util::math::Vec3 util::math::easeInOutBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t)
+{
+    t = (t < 0.5F) ?
+        16 * powf(t, 3) - 6 * powf(t, 2) :
+        16 * powf(t, 3) - 42 * powf(t, 2) + 36 * t - 9;
+
+    return lerp(v1, v2, t);
+}
 
 
 // inverse lerp. Re-uses the inverseLerp for vec3.
@@ -195,13 +303,14 @@ util::math::Vec2 util::math::bilerp(const util::math::Vec2& v0, const util::math
 	return util::math::lerp(blvec1, blvec2, t);
 }
 
+
 // calculates a point on a spline (vec2).
 util::math::Vec2 util::math::pointOnCurve(const util::math::Vec2 p0, const util::math::Vec2 p1, const util::math::Vec2 p2, const util::math::Vec2 p3, float u, bool catmullRom)
 {
 	u = (u < 0.0F) ? 0.0F : (u > 1.0F) ? 1.0F : u; // bounds checking
 
 	// reuses the vec3 calculation
-	Vector3 v = pointOnCurve(Vec3(p0.x, p0.y, 0.0F), Vec3(p1.x, p1.y, 0.0F), Vec3(p2.x, p2.y, 0.0F), Vec3(p3.x, p3.y, 0.0F), u, catmullRom);
+	util::math::Vec3 v = pointOnCurve(Vec3(p0.x, p0.y, 0.0F), Vec3(p1.x, p1.y, 0.0F), Vec3(p2.x, p2.y, 0.0F), Vec3(p3.x, p3.y, 0.0F), u, catmullRom);
 
 	// gets the appropriate values
 	return util::math::Vec2(v.x, v.y);
@@ -210,13 +319,15 @@ util::math::Vec2 util::math::pointOnCurve(const util::math::Vec2 p0, const util:
 // calculates a point on a spline (vec3).
 util::math::Vec3 util::math::pointOnCurve(const util::math::Vec3 p0, const util::math::Vec3 p1, const util::math::Vec3 p2, const util::math::Vec3 p3, float u, bool catmullRom)
 {
-	u = (u < 0.0F) ? 0.0F : (u > 1.0F) ? 1.0F : u; // bounds checking 
+	u = (u < 0.0F) ? 0.0F : (u > 1.0F) ? 1.0F : u; // bounds checking
 
 	const Mat4 M = (catmullRom) ? M_CATMULL_ROM : M_BEZIER; // the constant matrix. Checks if using catmull-rom or bezier.
 
-
 	// these use mat4 since there isn't a multiplication function setup for matrices of different sizes
 	// the matrix of 'u', which is 1 X 4
+	
+	// TODO: using vec4 constructor instead of float constructor. Fix this.
+	// Mat4 u1x4(powf(u, 3), powf(u, 2), powf(u, 1), 0.0F);
 	Mat4 u1x4;
 
 	// sets the rows. It needs to be done this way because the vec4 constructor gets called by accident during initialization.

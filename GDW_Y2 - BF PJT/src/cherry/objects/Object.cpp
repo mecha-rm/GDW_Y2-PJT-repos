@@ -774,3 +774,11 @@ const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, boo
 	// returns the string put into a vector
 	return util::splitString<T>(str);
 }
+
+// destorys the object
+void cherry::Object::Destroy()
+{ 
+	// if (vertices == nullptr)
+		// vertices = new Vertex[0];
+	delete this;
+}

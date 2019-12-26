@@ -89,6 +89,12 @@ namespace cherry
 		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position1 and Normal.
 		static MorphVertex* ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts);
 
+		// creates an inverted cube; moved from Game.cpp
+		static cherry::Mesh::Sptr MakeInvertedCube();
+
+		// creates a subdivided plane; moved from Game.cpp
+		static cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true);
+
 	private:
 		// Our GL handle for the Vertex Array Object
 		GLuint myVao;

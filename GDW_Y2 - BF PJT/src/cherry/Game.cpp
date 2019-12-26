@@ -75,6 +75,11 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	case GLFW_PRESS:
 		game->MouseButtonPressed(window, button);
 		break;
+
+	case GLFW_REPEAT:
+		game->MouseButtonHeld(window, button);
+		break;
+
 	case GLFW_RELEASE:
 		game->MouseButtonReleased(window, button);
 		break;
@@ -226,7 +231,28 @@ void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 	}
 }
 
-// called when a mouse button has been pressed
+// called when a mouse button is being held
+void cherry::Game::MouseButtonHeld(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
+}
+
+// called when a mouse button has been released
 void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -345,6 +371,11 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_D:
 		d = false;
 		break;
+	case GLFW_KEY_0:
+		Object* obj = objects.at(0);
+		util::removeFromVector(objects, obj);
+		obj->Destroy();
+		break;
 	}
 }
 
@@ -454,96 +485,6 @@ void cherry::Game::Shutdown() {
 	glfwTerminate();
 }
 
-// makes the faces face outward.
-cherry::Mesh::Sptr MakeInvertedCube() {
-	// Create our 4 vertices
-	cherry::Vertex verts[8] = {
-		// Position
-		// x y z
-		{{ -1.0f, -1.0f, -1.0f }}, {{ 1.0f, -1.0f, -1.0f }}, {{ -1.0f, 1.0f, -1.0f }}, {{ 1.0f, 1.0f, -1.0f }},
-		{{ -1.0f, -1.0f, 1.0f }}, {{ 1.0f, -1.0f, 1.0f }}, {{ -1.0f, 1.0f, 1.0f }}, {{ 1.0f, 1.0f, 1.0f }}
-	};
-	// Create our 6 indices
-	uint32_t indices[36] = {
-	0, 1, 2, 2, 1, 3, 4, 6, 5, 6, 7, 5, // bottom / top
-	0, 1, 4, 4, 1, 5, 2, 3, 6, 6, 3, 7, // front /back
-	2, 4, 0, 2, 6, 4, 3, 5, 1, 3, 7, 5 // left / right
-	};
-	// Create a new mesh from the data
-	return std::make_shared<cherry::Mesh>(verts, 8, indices, 36);
-}
-
-// chopping up the plane.
-cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true) {
-	LOG_ASSERT(numSections > 0, "Number of sections must be greater than 0!");
-	LOG_ASSERT(size != 0, "Size cannot be zero!");
-	// Determine the number of edge vertices, and the number of vertices and indices we'll need
-	int numEdgeVerts = numSections + 1;
-	size_t vertexCount = numEdgeVerts * numEdgeVerts;
-	size_t indexCount = numSections * numSections * 6;
-	// Allocate some memory for our vertices and indices
-	cherry::Vertex* vertices = new cherry::Vertex[vertexCount];
-	uint32_t* indices = new uint32_t[indexCount];
-	// Determine where to start vertices from, and the step pre grid square
-	float start = -size / 2.0f;
-	float step = size / numSections;
-
-	// vertices
-	// Iterate over the grid's edge vertices
-	for (int ix = 0; ix <= numSections; ix++) {
-		for (int iy = 0; iy <= numSections; iy++) {
-			// Get a reference to the vertex so we can modify it
-			cherry::Vertex& vert = vertices[ix * numEdgeVerts + iy];
-			// Set its position
-			vert.Position.x = start + ix * step;
-			vert.Position.y = start + iy * step;
-			vert.Position.z = 0.0f;
-			// Set its normal
-			vert.Normal = glm::vec3(0, 0, 1);
-			// The UV will go from [0, 1] across the entire plane (can change this later)
-			if (worldUvs) {
-				vert.UV.x = vert.Position.x;
-				vert.UV.y = vert.Position.y;
-			}
-			else {
-				vert.UV.x = vert.Position.x / size;
-				vert.UV.y = vert.Position.y / size;
-			}
-			// Flat white color
-			vert.Color = glm::vec4(1.0f);
-		}
-	}
-
-	// indices
-	// We'll just increment an index instead of calculating it
-	uint32_t index = 0;
-	// Iterate over the quads that make up the grid
-	for (int ix = 0; ix < numSections; ix++) {
-		for (int iy = 0; iy < numSections; iy++) {
-			// Determine the indices for the points on this quad
-			uint32_t p1 = (ix + 0) * numEdgeVerts + (iy + 0);
-			uint32_t p2 = (ix + 1) * numEdgeVerts + (iy + 0);
-			uint32_t p3 = (ix + 0) * numEdgeVerts + (iy + 1);
-			uint32_t p4 = (ix + 1) * numEdgeVerts + (iy + 1);
-			// Append the quad to the index list
-			indices[index++] = p1;
-			indices[index++] = p2;
-			indices[index++] = p3;
-			indices[index++] = p3;
-			indices[index++] = p2;
-			indices[index++] = p4;
-		}
-	}
-
-	// returning the mesh
-	// Create the result, then clean up the arrays we used
-	cherry::Mesh::Sptr result = std::make_shared<cherry::Mesh>(vertices, vertexCount, indices, indexCount);
-	delete[] vertices;
-	delete[] indices;
-	// Return the result
-	return result;
-}
-
 // loads the content for the meshes and shaders
 void cherry::Game::LoadContent()
 {
@@ -639,7 +580,7 @@ void cherry::Game::LoadContent()
 	auto scene = CurrentScene();
 	scene->SkyboxShader = std::make_shared<Shader>();
 	scene->SkyboxShader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
-	scene->SkyboxMesh = MakeInvertedCube();
+	scene->SkyboxMesh = Mesh::MakeInvertedCube();
 
 	// loads in six files out of res, then making them into the cube map.
 	// only works with JPEG files
@@ -743,10 +684,13 @@ void cherry::Game::LoadContent()
 		path->AddNode(8.0F, 0.0F, 0.0F);
 		path->AddNode(-8.0F, 8.0F, 0.0F);
 		path->AddNode(8.0F, 8.0F, 8.0F);
+		path->AddNode(7.0F, 9.0F, 7.0F);
 		path->AddNode(8.0F, -8.0F, -8.0F);
-		path->SetIncrementer(0.5);
+		path->SetIncrementer(0.1f);
 
 		path->SetInterpolationMode(1);
+		path->SetOpenPath(false);
+		path->SetSpeedControl(true);
 
 		objects.at(objects.size() - 1)->SetPath(path, true);
 
@@ -820,7 +764,7 @@ void cherry::Game::LoadContent()
 			entt::entity e1 = ecs.create();
 			MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
 			m1.Material = waterMaterial;
-			m1.Mesh = MakeSubdividedPlane(20.0f, 100);
+			m1.Mesh = Mesh::MakeSubdividedPlane(20.0f, 100);
 
 			auto tform = [](entt::entity e, float dt)
 			{

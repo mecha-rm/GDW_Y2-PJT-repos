@@ -370,6 +370,9 @@ namespace cherry
 
 		virtual std::string ToString() const;
 
+		// destroys the object
+		void Destroy();
+
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;
 
@@ -377,6 +380,7 @@ namespace cherry
 		const static unsigned int INDICES_MAX;
 
 		// the path the object follows
+		// std::shared_ptr <Path> path = nullptr;
 		Path* path = nullptr;
 
 		// following the path

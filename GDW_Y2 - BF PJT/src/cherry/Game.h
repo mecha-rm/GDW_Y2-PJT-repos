@@ -69,6 +69,9 @@ namespace cherry
 		// called when a mouse button has been pressed
 		virtual void MouseButtonPressed(GLFWwindow* window, int button);
 
+		// called when a mouse button is being held.
+		virtual void MouseButtonHeld(GLFWwindow* window, int button);
+
 		// called when a mouse button has been pressed
 		virtual void MouseButtonReleased(GLFWwindow* window, int button);
 

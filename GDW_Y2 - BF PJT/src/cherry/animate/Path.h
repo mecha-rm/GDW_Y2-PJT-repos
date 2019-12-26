@@ -25,6 +25,13 @@ namespace cherry
 		// [1]: spline
 		void SetInterpolationMode(short int mode);
 
+		// returns 'true' if using speed control
+		bool GetSpeedControl() const;
+
+		// sets whether to used speed control or not.
+		void SetSpeedControl(bool spdCtrl);
+
+
 		// adds a node to the path.
 		void AddNode(Vec3 node);
 
@@ -43,6 +50,16 @@ namespace cherry
 		// if the index is out of range, no node is removed.
 		void RemoveNode(unsigned int index);
 
+		// edits a node by changing its position.
+		void EditNode(unsigned int index, Vec3 newPos);
+
+		// edits a node's position
+		void EditNode(unsigned int index, float x, float y, float z);
+
+		// gets the total amount of nodes for this path.
+		unsigned int GetNodeCount() const;
+
+
 		// sets the starting position of the object on the path.
 		void SetStartingPoint(Vec3 startPos);
 
@@ -53,7 +70,25 @@ namespace cherry
 		// if a negative value is passed, it is converted to its absolute value. Use Reverse() if you wnat to reverse the path.
 		void SetIncrementer(float inc);
 
+		// returns if the path is open (true) or closed (closed)
+		// if the path is closed, then the end point interpolates to the starting point.
+		// the path is closed by default.
+		bool IsOpenPath() const;
 
+		// sets whether the paht is open (true) or closed (false). If the path is closed, then the entity loops aorund the whole path.
+		// if the path is open, then the entity snaps to the start of the path once it ends.
+		void SetOpenPath(bool open);
+
+		// returns 'true' if the path is closed, false otherwise.
+		bool IsClosedPath() const;
+
+		// set to 'true' will close the path, false will have the path stay open.
+		// if the path is open, then the entity snaps to the start of the path once it ends.
+		void SetClosedPath(bool closed);
+
+		// returns 'true' if the current path has been finished. False otherwise.
+		// NOTE: if the path is closed (i.e. the entity loops from start to end), this will always return false.
+		bool AtEndOfPath() const;
 
 		// returns if the pathway is reversed.
 		bool IsReversed() const;
@@ -69,13 +104,20 @@ namespace cherry
 		// do note that you cannot use this function if there are less than 2 nodes.
 		cherry::Vec3 Run(float deltaTime);
 
-		//TODO: add more LERP modes
 
 	private:
+
+		// calculates the distances along the curve from the current index
+		void CalculateDistances(int fromIndex = 0);
+
 		
+
+
 		short int mode = 0; // interpolation mode
-		const unsigned int MODES_TOTAL = 2; // total amount of modes
-		
+		const unsigned int MODES_TOTAL = 24; // total amount of modes
+		bool speedControl = false;
+		bool openPath = false; // sets whether the path is open or closed.
+
 		// the nodes on the path
 		std::vector<cherry::Vec3> nodes;
 		int index = 0; // index in 'nodes'
@@ -88,6 +130,11 @@ namespace cherry
 		float u = 0; // the percentage of the line.
 	
 		float direc = 1; // 1 is for travelling forward, -1 is travelling backwards
+		
+
+		// calculates the distances for the curve
+		// (pairwise distance, distance on curve)
+		std::vector<cherry::Vec2> distances;
 
 	protected:
 
