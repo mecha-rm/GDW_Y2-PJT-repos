@@ -139,7 +139,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

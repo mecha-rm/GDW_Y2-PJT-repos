@@ -309,13 +309,13 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_I:
 		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
 		{
-			if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 0)
+			if (objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 0)
 			{
-				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(1);
+				objects[hitBoxIndex]->GetPath().SetInterpolationMode(1);
 			}
-			else if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 1)
+			else if (objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 1)
 			{
-				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(0);
+				objects[hitBoxIndex]->GetPath().SetInterpolationMode(0);
 			}
 			
 		}
@@ -477,7 +477,7 @@ void cherry::Game::Initialize() {
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_CULL_FACE); // TODO: uncomment when showcasing game.
+	glEnable(GL_CULL_FACE); // TODO: uncomment when showcasing game.
 	glEnable(GL_SCISSOR_TEST); // used for rendering multiple windows (TODO: maybe turn off if we aren't using multiple windows?)
 }
 
@@ -620,6 +620,10 @@ void cherry::Game::LoadContent()
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
+		 // objects.push_back(new PrimitiveUVSphere());
+		 // objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		 // objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+
 		// Creating the objects, storing them, and making them part of the default m_Scene.
 		objects.push_back(new PrimitiveCapsule());
 		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
@@ -680,17 +684,17 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(false);
 
 		// path
-		Path* path = new Path();
-		path->AddNode(8.0F, 0.0F, 0.0F);
-		path->AddNode(-8.0F, 8.0F, 0.0F);
-		path->AddNode(8.0F, 8.0F, 8.0F);
-		path->AddNode(7.0F, 9.0F, 7.0F);
-		path->AddNode(8.0F, -8.0F, -8.0F);
-		path->SetIncrementer(0.1f);
+		Path path = Path();
+		path.AddNode(8.0F, 0.0F, 0.0F);
+		path.AddNode(-8.0F, 8.0F, 0.0F);
+		path.AddNode(8.0F, 8.0F, 8.0F);
+		path.AddNode(7.0F, 9.0F, 7.0F);
+		path.AddNode(8.0F, -8.0F, -8.0F);
+		path.SetIncrementer(0.1f);
 
-		path->SetInterpolationMode(1);
-		path->SetOpenPath(false);
-		path->SetSpeedControl(true);
+		path.SetInterpolationMode(1);
+		path.SetOpenPath(false);
+		path.SetSpeedControl(true);
 
 		objects.at(objects.size() - 1)->SetPath(path, true);
 
@@ -715,7 +719,7 @@ void cherry::Game::LoadContent()
 		objects.at(objects.size() - 1)->SetPosition(offset, offset, 0.0F);
 		//
 
-		MorphAnimation* mph = new MorphAnimation();
+		MorphAnimation * mph = new MorphAnimation();
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
@@ -724,7 +728,7 @@ void cherry::Game::LoadContent()
 		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
 		//mph->SetLoopsTotal(3);
 		mph->Play();
-		objects.at(objects.size() - 1)->AddAnimation(mph);
+		objects.at(objects.size() - 1)->AddAnimation(mph, true);
 		// objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
 
 	}

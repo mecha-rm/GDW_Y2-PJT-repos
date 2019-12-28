@@ -104,7 +104,7 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
 
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

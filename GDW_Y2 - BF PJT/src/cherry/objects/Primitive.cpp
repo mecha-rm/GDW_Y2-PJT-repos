@@ -9,11 +9,11 @@ cherry::Primitive::Primitive() : cherry::Object()
 // destructor
 cherry::Primitive::~Primitive()
 {
-	delete[] indices;
+	delete[] indices; // TODO: fix deletions
 }
 
 // calculates the normals of the primitive.
-void cherry::Primitive::calculateNormals()
+void cherry::Primitive::CalculateNormals()
 {
 	// dynamic array of surface normals.
 	// float* surfaceNormals = new float[round(indicesTotal / 3.0F)];
@@ -76,4 +76,14 @@ void cherry::Primitive::calculateNormals()
 		x = vertices[i].Normal;
 		y = vertexNormals[i];
 	}
+}
+
+// flip the normals
+void cherry::Primitive::FlipNormals()
+{
+	if (vertices == nullptr)
+		return;
+
+	for (int i = 0; i < verticesTotal; i++)
+		vertices[i].Normal *= -1;
 }

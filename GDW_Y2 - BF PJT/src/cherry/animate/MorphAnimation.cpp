@@ -138,6 +138,7 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::MorphVertex * pose, uns
 cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float units) : AnimationFrame(units)
 {
 	// creates an object that reads the file
+	// Object obj(filePath);
 	Object obj(filePath);
 
 	// stores the vertices from the obj file as morph vertices

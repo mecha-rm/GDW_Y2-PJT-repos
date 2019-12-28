@@ -14,7 +14,7 @@
 #include "..\Camera.h"
 #include "..\VectorCRY.h"
 #include "..\Material.h"
-#include "..\animate\MorphAnimation.h"
+#include "..\animate\AnimationManager.h"
 #include "..\animate\Path.h"
 // #include "..\Physics.h"
 
@@ -52,7 +52,7 @@ namespace cherry
 
 
 		// destructor
-		~Object();
+		virtual ~Object();
 
 		// gets the file path of the requested object.
 		// if there is no file path, it will return a string with the ("") character inside it.
@@ -328,25 +328,35 @@ namespace cherry
 		// if the object is static, it doesn't deform.
 		bool IsStaticObject() const;
 		
+		// gets the animation manager for the object
+		cherry::AnimationManager& GetAnimationManager();
+
 		// adds an animation to the object. This comes the object for the animation if it isn't already.
-		bool AddAnimation(Animation * anime);
+		bool AddAnimation(Animation * anime, bool current = false);
+
+		// gets an animation based on a given index.
+		// if there is no animation at this index, an empty object is returned.
+		cherry::Animation * GetAnimation(unsigned int index);
+
+		// gets the current animation
+		cherry::Animation * GetCurrentAnimation();
+
+		// sets the current animation
+		void SetCurrentAnimation(unsigned int index);
 
 		/// PATH ///
-		// gets the path that the object is locked to. If 'nullptr' is returned, then the object has no path.
-		Path * GetPath() const;
+		// gets the path that the object is locked to.
+		cherry::Path GetPath() const;
 
 		// sets the path the object follows. Set to 'nullptr' if you want to remove the path reference from the object.
 		// To delete the path from memory, use DeletePath().
-		void SetPath(Path* newPath = nullptr);
+		void SetPath(cherry::Path newPath);
 
 		// sets the path for the object. If 'attachPath' is true, then the object starts moving via this path.
-		void SetPath(Path* newPath, bool attachPath);
+		void SetPath(cherry::Path newPath, bool attachPath);
 
-		// removes the path from the object. To remove the path from memory, use DeletePath().
-		void RemovePath();
-
-		// deletes the path from memory, which simoutaneously removes it from all objects that hold this reference.
-		void DeletePath();
+		// clears all nodes from the path.
+		void ClearPath();
 
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
@@ -381,7 +391,7 @@ namespace cherry
 
 		// the path the object follows
 		// std::shared_ptr <Path> path = nullptr;
-		Path* path = nullptr;
+		Path path = Path();
 
 		// following the path
 		bool followPath = false;
@@ -399,7 +409,7 @@ namespace cherry
 		const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
 
 		// template<typename T>
-		// void calculateNormals(std::vector<);
+		// void CalculateNormals(std::vector<);
 
 		std::string scene = "";
 
@@ -477,7 +487,8 @@ namespace cherry
 
 		// the animation
 		// TODO: repalce with an animation manager
-		cherry::Animation * animate;
+		cherry::AnimationManager animations = cherry::AnimationManager();
+		// cherry::Animation animate = Animation();
 	};
 }
 

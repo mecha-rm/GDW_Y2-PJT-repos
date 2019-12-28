@@ -1,6 +1,9 @@
 #include "Path.h"
 #include "..\utils\math\Interpolation.h"
 
+// total amount of modes
+const unsigned int cherry::Path::MODES_TOTAL = 24;
+
 // creates a path with a starting position of (0, 0, 0)
 cherry::Path::Path() : p0(0, 0, 0) {}
 
@@ -69,6 +72,13 @@ void cherry::Path::RemoveNode(unsigned int index)
 	CalculateDistances(index); // recalculates the distances past this point.
 }
 
+// clears all nodes
+void cherry::Path::RemoveAllNodes()
+{
+	nodes.clear(); // clears out all nodes
+	distances.clear(); // clears out all distances
+}
+
 // edits a node's position
 void cherry::Path::EditNode(unsigned int index, Vec3 newPos) 
 {
@@ -124,6 +134,25 @@ void cherry::Path::SetReverse(bool rvs)
 
 // reverses the direction on the path
 void cherry::Path::Reverse() { direc = (direc >= 0.0F) ? -1.0F : 1.0F; }
+
+// resets all nodes
+void cherry::Path::Reset()
+{
+	index = 0;
+	u = 0;
+
+	// changing the starting position
+	if (nodes.size() != 0)
+		p0 = nodes[0];
+	else
+		p0 = cherry::Vec3();
+	
+	// changing the ending position
+	if (nodes.size() != 0)
+		p1 = nodes[nodes.size() - 1];
+	else
+		p1 = cherry::Vec3();
+}
 
 // updates the object's placement on the path, returning the new position.
 cherry::Vec3 cherry::Path::Run(float deltaTime)

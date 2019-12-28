@@ -50,6 +50,9 @@ namespace cherry
 		// if the index is out of range, no node is removed.
 		void RemoveNode(unsigned int index);
 
+		// removes all nodes from the path
+		void RemoveAllNodes();
+
 		// edits a node by changing its position.
 		void EditNode(unsigned int index, Vec3 newPos);
 
@@ -99,6 +102,11 @@ namespace cherry
 		// reverses the direction on the path.
 		void Reverse();
 
+		// resets the path, putting the entity back at its beginning.
+		// the starting position will be set to the first node, and the ending position will be set to the second node.
+		// to remove all the nodes, use RemoveAllNodes().
+		void Reset();
+
 		// updates the object's placement on the path, returning the new position.
 		// the vector returned is the new position for the object along the path.
 		// do note that you cannot use this function if there are less than 2 nodes.
@@ -111,20 +119,20 @@ namespace cherry
 		void CalculateDistances(int fromIndex = 0);
 
 		
-
-
 		short int mode = 0; // interpolation mode
-		const unsigned int MODES_TOTAL = 24; // total amount of modes
-		bool speedControl = false;
+		
+		static const unsigned int MODES_TOTAL; // total amount of modes
+		
+		bool speedControl = false; // used for speed control
+		
 		bool openPath = false; // sets whether the path is open or closed.
 
 		// the nodes on the path
 		std::vector<cherry::Vec3> nodes;
 		int index = 0; // index in 'nodes'
 
-		Vec3 p0; // starting position
-
-		Vec3 p1; // ending position
+		cherry::Vec3 p0; // starting position
+		cherry::Vec3 p1; // ending position
 
 		float u_inc = 0.1; // the incrementer for the time value.
 		float u = 0; // the percentage of the line.

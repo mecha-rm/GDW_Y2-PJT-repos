@@ -96,8 +96,10 @@ cherry::Object::~Object()
 
 	// if not initialized, it causes an error if deleted.
 	// since only the primitives use indicies, those call delete on their own.
+	// if(indices != nullptr) // TODO: fix this
 	// delete[] indices; 
-	delete animate;
+
+	// delete bodies;
 }
 
 
@@ -633,11 +635,14 @@ bool cherry::Object::IsDynamicObject() const { return dynamicObject; }
 // object is static
 bool cherry::Object::IsStaticObject() const { return !dynamicObject; }
 
+// returns the animation manager for the object
+cherry::AnimationManager& cherry::Object::GetAnimationManager() { return animations; }
+
 // adds an animation
-bool cherry::Object::AddAnimation(Animation * anime)
+bool cherry::Object::AddAnimation(Animation * anime, bool current)
 {
-	// TODO: change to pointer?
-	animate = anime;
+	if (anime == nullptr)
+		return false;
 
 	// sets the object.
 	if (anime->GetObject() != this)
@@ -648,13 +653,13 @@ bool cherry::Object::AddAnimation(Animation * anime)
 	// if using morph targets
 	if (anime->GetId() == 1 && dynamicObject == true)
 	{
+		// checking for proper shaders
 		std::string dvs = DYNAMIC_VS;
 		std::string dfs = DYNAMIC_FS;
 		if (std::string(material->GetShader()->GetVertexShader()) != dvs || std::string(material->GetShader()->GetFragmentShader()) != dfs)
 		{
 			// TODO: runtime error?
 			// ERROR: cannot run with set shaders
-			animate = nullptr;
 			return false;
 		}
 	}
@@ -666,29 +671,31 @@ bool cherry::Object::AddAnimation(Animation * anime)
 		// #endif // !_DEBUG
 
 		// std::runtime_error("Error. Static object cannot utilize deformation animation.");
-		animate = nullptr;
 		return false;
 	}
 
+	animations.AddAnimation(anime, current);
 	return true;
 }
 
+// gets an animation
+cherry::Animation * cherry::Object::GetAnimation(unsigned int index) { return animations.GetAnimation(index); }
+
+// gets the current animation
+cherry::Animation * cherry::Object::GetCurrentAnimation() { return animations.GetCurrentAnimation(); }
+
+// sets the current animation
+void cherry::Object::SetCurrentAnimation(unsigned int index) { animations.SetCurrentAnimation(index); }
+
 
 // gets the path
-cherry::Path* cherry::Object::GetPath() const { return path; }
+cherry::Path cherry::Object::GetPath() const { return path; }
 
 // sets the path the object follows.
-void cherry::Object::SetPath(Path* newPath) 
-{ 
-	// if a path is being set, then the starting point is set for the object at its current position.
-	if (newPath != nullptr)
-		newPath->SetStartingPoint(position);
-	
-	path = newPath; 
-}
+void cherry::Object::SetPath(cherry::Path newPath) { path = newPath; }
 
 // attaching a path.
-void cherry::Object::SetPath(Path* newPath, bool attachPath)
+void cherry::Object::SetPath(cherry::Path newPath, bool attachPath)
 {
 	SetPath(newPath);
 
@@ -696,10 +703,7 @@ void cherry::Object::SetPath(Path* newPath, bool attachPath)
 }
 
 // removes the path from the object. It still exists in memory.
-void cherry::Object::RemovePath() { path = nullptr; }
-
-// deletes the path from memory.
-void cherry::Object::DeletePath() { delete path; }
+void cherry::Object::ClearPath() { path = Path(); }
 
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
@@ -737,19 +741,21 @@ void cherry::Object::Update(float deltaTime)
 	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
 
 	// runs the path and sets the new position
-	if (followPath && path != nullptr)
-		position = path->Run(deltaTime);
+	if (followPath)
+		position = path.Run(deltaTime);
 
 	// if the animation is playing
-	if (animate != nullptr)
+	if (animations.GetCurrentAnimation() != nullptr)
 	{
-		if(animate->isPlaying())
-			animate->Update(deltaTime);
-	}
+		animations.GetCurrentAnimation()->isPlaying();
+		animations.GetCurrentAnimation()->Update(deltaTime);
+	}	
 
 	// updating the physics bodies
 	for (cherry::PhysicsBody* body : bodies)
 		body->Update(deltaTime);
+
+	SetRotationDegrees(GetRotationDegrees() + Vec3(30.0F, 10.0F, 5.0F) * deltaTime);
 }
 
 // returns a string representing the object
@@ -778,7 +784,10 @@ const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, boo
 // destorys the object
 void cherry::Object::Destroy()
 { 
-	// if (vertices == nullptr)
-		// vertices = new Vertex[0];
+	if (vertices == nullptr)
+		vertices = new Vertex[0];
+
+	// if (indices == nullptr)
+		// indices = new uint32_t[0];
 	delete this;
 }

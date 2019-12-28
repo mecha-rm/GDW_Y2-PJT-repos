@@ -232,7 +232,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	}
 
 	// calculating the normals
-	calculateNormals();
+	CalculateNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

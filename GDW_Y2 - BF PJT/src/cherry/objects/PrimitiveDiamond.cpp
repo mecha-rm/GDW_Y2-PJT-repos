@@ -113,7 +113,7 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
 
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
