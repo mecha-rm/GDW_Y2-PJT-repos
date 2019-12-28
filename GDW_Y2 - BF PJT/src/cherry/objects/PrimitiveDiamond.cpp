@@ -92,8 +92,8 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 			else if (i >= 1) // base
 			{
 				// draws the triangle from the highest point down.
-				indices[indiIndex] = ind0; // 0
-				indices[++indiIndex] = ind1 - segments;
+				indices[indiIndex] = ind1 - segments; // ind0
+				indices[++indiIndex] = ind0; // ind1 - segments;
 
 				// final triangle
 				if (j == verticesTotal - 3)
@@ -114,6 +114,7 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	}
 
 	CalculateNormals();
+	InvertNormals();
 
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

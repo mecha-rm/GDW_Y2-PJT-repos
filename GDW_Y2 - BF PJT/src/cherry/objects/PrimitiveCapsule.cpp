@@ -203,7 +203,11 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 				// top left -> bottom point -> top right
 				indices[index] = ind1 - cylSegments;
 				indices[++index] = ind0;
-				indices[++index] = ind2 - cylSegments;
+
+				if (col == cylSegments - 1) // if on the final column of the final row
+					indices[++index] = ind2 - cylSegments * 2;
+				else
+					indices[++index] = ind2 - cylSegments;
 
 				ind1++;
 				ind2++;
@@ -211,15 +215,31 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			}
 			else // other rows
 			{
-				// triangle 1 (top left -> top right -> bottom left)
-				indices[index] = ind1 - cylSegments;
-				indices[++index] = ind2 - cylSegments;
-				indices[++index] = ind1;
+				if (col == cylSegments - 1)
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - cylSegments; // ind1 - cylSegments;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments * 2; // ind1;
 
-				// triangle 2 bottom left -> top right -> bottom right)
-				indices[++index] = ind1;
-				indices[++index] = ind2 - cylSegments;
-				indices[++index] = ind2;
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind2 - cylSegments * 2; // ind1;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind2;
+				}
+				else
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - cylSegments; // ind1 - cylSegments;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind1;
+
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind1; // ind1;
+					indices[++index] = ind2; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind2;
+				}
+				
 
 				ind1++;
 				ind2++;
@@ -233,6 +253,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 
 	// calculating the normals
 	CalculateNormals();
+	InvertNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

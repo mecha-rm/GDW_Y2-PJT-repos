@@ -34,7 +34,7 @@ namespace cherry
 		void CalculateNormals();
 
 		// changes the direction of the normals. Only call this if vertices are set.
-		void FlipNormals();
+		void InvertNormals();
 
 		cherry::Vec4 baseColor{ 1.0F, 1.0F, 1.0F, 1.0F }; // the base color of the object.
 	};

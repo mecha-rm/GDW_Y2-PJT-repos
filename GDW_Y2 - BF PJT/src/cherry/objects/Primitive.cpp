@@ -79,7 +79,7 @@ void cherry::Primitive::CalculateNormals()
 }
 
 // flip the normals
-void cherry::Primitive::FlipNormals()
+void cherry::Primitive::InvertNormals()
 {
 	if (vertices == nullptr)
 		return;

@@ -176,6 +176,15 @@ void cherry::Mesh::enableWireframe() { this->wireframe = true; }
 // disables wireframe mode.
 void cherry::Mesh::DisableWireframe() { this->wireframe = false; }
 
+// gets whether the faces are culled or not.
+bool cherry::Mesh::GetCullFaces() const { return cullFaces; }
+
+// sets whether to cull the faces or not.
+void cherry::Mesh::SetCullFaces(bool cf) { cullFaces = cf; }
+
+// toggle's face culling
+void cherry::Mesh::SetCullFaces() { cullFaces = !cullFaces; }
+
 // returns 'true' if the mesh is visible, false otherwise.
 bool cherry::Mesh::IsVisible() { return visible; }
 

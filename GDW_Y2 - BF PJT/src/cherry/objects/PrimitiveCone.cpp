@@ -83,8 +83,8 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 			else if (i >= 1) // base
 			{
 				// draws the triangle from the highest point down.
-				indices[indiIndex] = ind0; // 0
-				indices[++indiIndex] = ind1 - segments;
+				indices[indiIndex] = ind1 - segments; // ind0
+				indices[++indiIndex] = ind0; // ind1 - segments
 				
 				// final triangle
 				if (j == verticesTotal - 3)
@@ -105,6 +105,7 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 	}
 
 	CalculateNormals();
+	InvertNormals();
 
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

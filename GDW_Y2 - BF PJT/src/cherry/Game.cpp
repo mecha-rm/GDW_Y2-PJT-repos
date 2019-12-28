@@ -620,9 +620,9 @@ void cherry::Game::LoadContent()
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
-		 // objects.push_back(new PrimitiveUVSphere());
-		 // objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		 // objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		  //objects.push_back(new PrimitivePlane(5, 5, true));
+		  //objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
+		  //objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
 		// Creating the objects, storing them, and making them part of the default m_Scene.
 		objects.push_back(new PrimitiveCapsule());
@@ -1190,7 +1190,16 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 				(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			renderer.Mesh->Draw();
+			if (!renderer.Mesh->cullFaces)
+			{
+				glDisable(GL_CULL_FACE);
+				renderer.Mesh->Draw();
+				glEnable(GL_CULL_FACE);
+			}
+			else // faces are set to be culled automatically
+			{
+				renderer.Mesh->Draw();
+			}
 		}
 		else
 		{

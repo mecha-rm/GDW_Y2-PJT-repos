@@ -79,7 +79,7 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 
 	// calculates the normals
 	CalculateNormals();
-	FlipNormals();
+	InvertNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

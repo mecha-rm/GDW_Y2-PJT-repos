@@ -2,7 +2,7 @@
 #include "PrimitivePlane.h"
 
 // constructor
-cherry::PrimitivePlane::PrimitivePlane(float width, float height) : Primitive(), width(abs(width)), height(abs(height))
+cherry::PrimitivePlane::PrimitivePlane(float width, float height, bool doubleSided) : Primitive(), width(abs(width)), height(abs(height))
 {
 	// absolute values
 	width = abs(width);
@@ -28,7 +28,7 @@ cherry::PrimitivePlane::PrimitivePlane(float width, float height) : Primitive(),
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
-
+	mesh->cullFaces = !doubleSided;
 }
 
 // gets the width of the plane.

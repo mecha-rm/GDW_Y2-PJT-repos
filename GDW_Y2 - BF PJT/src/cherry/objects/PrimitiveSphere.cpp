@@ -252,7 +252,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 	}
 
 	CalculateNormals();
-	FlipNormals();
+	InvertNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

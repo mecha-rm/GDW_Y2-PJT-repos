@@ -74,6 +74,15 @@ namespace cherry
 		// Disables wireframe mode on the mesh
 		void DisableWireframe();
 
+		// gets whether the faces should be culled or not.
+		bool GetCullFaces() const;
+
+		// set to 'true' to cull the faces on the mesh, false to not cull them. It is set to true by default.
+		void SetCullFaces(bool cf);
+
+		// toggles culling faces
+		void SetCullFaces();
+
 		// returns 'true' if the mesh is visible, false otherwise.
 		bool IsVisible();
 
@@ -94,6 +103,8 @@ namespace cherry
 
 		// creates a subdivided plane; moved from Game.cpp
 		static cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true);
+
+		bool cullFaces = true; // tells the mesh to cull the faces
 
 	private:
 		// Our GL handle for the Vertex Array Object
