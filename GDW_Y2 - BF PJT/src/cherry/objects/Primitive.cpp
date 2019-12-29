@@ -9,7 +9,7 @@ cherry::Primitive::Primitive() : cherry::Object()
 // destructor
 cherry::Primitive::~Primitive()
 {
-	delete[] indices; // TODO: fix deletions
+	// delete[] indices; // TODO: fix deletions
 }
 
 // calculates the normals of the primitive.

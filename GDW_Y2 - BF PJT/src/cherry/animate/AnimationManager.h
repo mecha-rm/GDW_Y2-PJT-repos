@@ -12,6 +12,9 @@ namespace cherry
 		// animation manager constructor
 		AnimationManager();
 
+		// destructor
+		~AnimationManager();
+
 		// adds the animation, and makes it the current one
 		bool AddAnimation(cherry::Animation * newAni, bool current = false);
 

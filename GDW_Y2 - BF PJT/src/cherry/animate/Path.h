@@ -11,6 +11,7 @@ namespace cherry
 	public:
 		// creates a path with a starting position of (0, 0, 0)
 		Path();
+		~Path() = default; // TODO: make nodes pointers
 
 		// sets the start position
 		Path(cherry::Vec3 startPos);

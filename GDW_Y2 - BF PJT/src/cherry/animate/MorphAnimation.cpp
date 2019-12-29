@@ -139,12 +139,12 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float uni
 {
 	// creates an object that reads the file
 	// Object obj(filePath);
-	Object obj(filePath);
+	Object* obj = new Object(filePath); // TODO: make value variable
 
 	// stores the vertices from the obj file as morph vertices
-	const Vertex* tempVerts = obj.GetVertices();
+	const Vertex* tempVerts = obj->GetVertices();
 	// MorphVertex* tempVerts;
-	valNum = obj.GetVerticesTotal();
+	valNum = obj->GetVerticesTotal();
 
 	// gets the vertices as morph target vertices
 	// tempVerts = Mesh::ConvertToMorphVertexArray(obj.GetVertices(), obj.GetVerticesTotal());
@@ -158,6 +158,12 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float uni
 		vertices[i] = tempVerts[i].Position;
 		normals[i] = tempVerts[i].Normal;
 	}
+}
+
+cherry::MorphAnimationFrame::~MorphAnimationFrame()
+{
+	delete[] vertices; // deleting the vertices
+	delete[] normals; // deleting the normals
 }
 
 // gets the vertices

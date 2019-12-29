@@ -6,6 +6,15 @@ cherry::AnimationManager::AnimationManager()
 {
 }
 
+// destructor
+cherry::AnimationManager::~AnimationManager()
+{
+	for (Animation* anime : animations)
+		delete anime;
+
+	animations.clear();
+}
+
 // adds an animation, and makes it the current one if a 'true' is passed
 bool cherry::AnimationManager::AddAnimation(cherry::Animation * newAni, bool current)
 {

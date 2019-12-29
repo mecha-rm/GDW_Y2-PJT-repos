@@ -620,7 +620,7 @@ void cherry::Game::LoadContent()
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
-		  //objects.push_back(new PrimitivePlane(5, 5, true));
+		  //objects.push_back(new PrimitiveCube(5));
 		  //objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
 		  //objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
@@ -661,7 +661,7 @@ void cherry::Game::LoadContent()
 		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
 		//// images don't need CreateEntity called.
-		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
+		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
 		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
 		objects.at(objects.size() - 1)->SetScale(0.025F);
 
@@ -769,6 +769,7 @@ void cherry::Game::LoadContent()
 			MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
 			m1.Material = waterMaterial;
 			m1.Mesh = Mesh::MakeSubdividedPlane(20.0f, 100);
+			m1.Mesh->SetVisible(false);
 
 			auto tform = [](entt::entity e, float dt)
 			{

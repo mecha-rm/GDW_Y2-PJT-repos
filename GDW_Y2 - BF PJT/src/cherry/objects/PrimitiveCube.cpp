@@ -48,10 +48,10 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom left, back corner
 		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top left, back corner
 																									
-		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom right, front corner
-		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top right, front corner
-		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom right, back corner
-		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}} // top right, back corner
+		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}}, // bottom right, front corner
+		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // top right, front corner
+		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // bottom right, back corner
+		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}} // top right, back corner
 
 	};
 

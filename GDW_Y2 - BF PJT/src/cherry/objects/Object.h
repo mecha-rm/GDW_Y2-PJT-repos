@@ -76,39 +76,6 @@ namespace cherry
 		// returns 'true' if the file is safe to use, and 'false' if it isn't. If it's false, then something is wrong with the file.
 		bool GetSafe() const;
 
-		//// returns the color as a glm::vec3
-		//// this returns only the colour of the first vertex, so if other vertices have different colours, they are not set.
-		//glm::vec4 GetColor() const;
-
-		//// sets the colour based on a range of 0 to 255 for the RGB values. Alpha (a) stll ranges from 0.0 to 1.0
-		//// this overrides ALL RGB values for all vertices
-		//void SetColor(int r, int g, int b, float a = 1.0F);
-
-		//// sets the colour based on a range of 0.0 to 1.0 (OpenGL default)
-		//// this overrides ALL RGBA values for all vertices
-		//void SetColor(float r, float g, float b, float a = 1.0F);
-
-		//// sets the colour of the mesh. This leaves out the alpha (a) value, which is set to whatever it is for the first vertex.
-		//void SetColor(glm::vec3 color);
-
-		//// sets the colour of the mesh (RGBA [0-1]).
-		//void SetColor(glm::vec4 color);
-
-		// makes the mesh rainbow
-		// setRainbow()
-
-		// Setting a vertex colour
-		//// gets the colour of a specific vertex
-		//glm::vec4 getVertexColor(unsigned int index) const;
-
-		//void setVertexColor(unsigned int index, int r, int g, int b, float a = 1.0F);
-
-		//void setVertexColor(unsigned int index, float r, float g, float b, float a = 1.0F);
-
-		//void setVertexColor(unsigned int index, glm::vec3 color);
-
-		//void setVertexColor(unsigned int index, glm::vec4 color);
-
 		// object is in wireframe mode.
 		bool IsWireframeMode();
 

@@ -3,7 +3,7 @@
 
 // TODO: save scene to a string so that UI can carry over
 // creates an iamge by taking in a file path.
-cherry::Image::Image(std::string filePath, std::string scene) : Object()
+cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided) : Object()
 {
 	std::ifstream file(filePath, std::ios::in); // opens the file
 	// file.open(filePath, std::ios::in); // opens file
@@ -30,7 +30,7 @@ cherry::Image::Image(std::string filePath, std::string scene) : Object()
 	this->filePath = filePath; // saves the file path
 	file.close(); // closing the file since the read was successful.
 	
-	LoadImage(scene); // loads in the image
+	LoadImage(scene, doubleSided); // loads in the image
 }
 
 // destructor
@@ -43,7 +43,7 @@ uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
 uint32_t cherry::Image::GetHeight() const { return dimensions.y; }
 
 // loads an image
-bool cherry::Image::LoadImage(std::string scene)
+bool cherry::Image::LoadImage(std::string scene, bool doubleSided)
 {
 	// gets the iamge
 	Texture2D::Sptr img = Texture2D::LoadFromFile(filePath);
@@ -79,11 +79,14 @@ bool cherry::Image::LoadImage(std::string scene)
 		0, 1, 2,
 		2, 1, 3
 	};
+	
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	mesh->cullFaces = !doubleSided; // images do not have their faces culled. // TODO: add ability to have the image be the same on both sides
 	
-
+	
+	
 	// MAPPING THE TEXTURE
 	// texture description and sampler
 	description = SamplerDesc();

@@ -21,7 +21,7 @@ namespace cherry
 		// Animation(bool bones);
 
 		// destructor
-		~Animation();
+		virtual ~Animation();
 		
 		// animation object
 		// 0 = generic

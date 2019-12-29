@@ -97,9 +97,13 @@ cherry::Object::~Object()
 	// if not initialized, it causes an error if deleted.
 	// since only the primitives use indicies, those call delete on their own.
 	// if(indices != nullptr) // TODO: fix this
-	// delete[] indices; 
+	delete[] indices; 
 
-	// delete bodies;
+	// deleting all of the physics bodies
+	for (PhysicsBody* body : bodies)
+		delete body;
+
+	bodies.clear();
 }
 
 
@@ -123,39 +127,6 @@ void cherry::Object::SetDescription(std::string newDesc) { description = newDesc
 
 // returns true if the file is safe to use, false if not safe to use.
 bool cherry::Object::GetSafe() const { return safe; }
-
-//// gets the color of the first vertex
-//glm::vec4 cherry::Object::GetColor() const { return vertices->Color; }
-//
-//// sets colour based on range of 0 to 255. Alpha (a) still goes from 0 to 1.
-//void cherry::Object::SetColor(int r, int g, int b, float a) { SetColor((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a); }
-//
-//// sets the color for all vertices
-//void cherry::Object::SetColor(float r, float g, float b, float a)
-//{
-//	// bounds checking for RGBA
-//	r = (r < 0.0F) ? 0.0F : (r > 1.0F) ? 1.0F : r;
-//	g = (g < 0.0F) ? 0.0F : (g > 1.0F) ? 1.0F : g;
-//	b = (b < 0.0F) ? 0.0F : (b > 1.0F) ? 1.0F : b;
-//	a = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
-//
-//	for (int i = 0; i < verticesTotal; i++)
-//		vertices[i].Color = glm::vec4(r, g, b, a);
-//
-//	// TODO: doing this causes the mesh to screw up for some reason.
-//	bool wf = mesh->IsWireframe(); // copying over values
-//	bool vis = mesh->IsVisible(); // copying over values
-//
-//	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal); // creates the mesh
-//	mesh->SetWireframe(wf);
-//	mesh->SetVisible(vis);
-//}
-//
-//// sets the color, keeping the alpha (a) value from the first vertex.
-//void cherry::Object::SetColor(glm::vec3 color) { SetColor(color.x, color.y, color.z, vertices[0].Color.w); }
-//
-//// sets the color (RGBA [0-1])
-//void cherry::Object::SetColor(glm::vec4 color) { SetColor(color.x, color.y, color.z, color.w); }
 
 // checks to see if the object is in wireframe mode.
 bool cherry::Object::IsWireframeMode() { return mesh->IsWireframe(); }
