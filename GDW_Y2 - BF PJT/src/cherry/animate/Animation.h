@@ -24,8 +24,10 @@ namespace cherry
 		virtual ~Animation();
 		
 		// animation object
-		// 0 = generic
+		// 0 = generic/none
 		// 1 = morph targets
+		// 2 = forward kinematics
+		// 3 = texture animation
 		int GetId() const;
 
 		// gets the object the animation applies to.

@@ -345,10 +345,8 @@ namespace cherry
 		// updates the object
 		void Update(float deltaTime);
 
+		// toString
 		virtual std::string ToString() const;
-
-		// destroys the object
-		void Destroy();
 
 		// the maximum amount of vertices one object can have. This doesn't get used.
 		const static unsigned int VERTICES_MAX;

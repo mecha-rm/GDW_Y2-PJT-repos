@@ -138,13 +138,13 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::MorphVertex * pose, uns
 cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float units) : AnimationFrame(units)
 {
 	// creates an object that reads the file
-	// Object obj(filePath);
-	Object* obj = new Object(filePath); // TODO: make value variable
+	Object obj(filePath);
+	// Object* obj = new Object(filePath); // TODO: make value variable
 
 	// stores the vertices from the obj file as morph vertices
-	const Vertex* tempVerts = obj->GetVertices();
+	const Vertex* tempVerts = obj.GetVertices();
 	// MorphVertex* tempVerts;
-	valNum = obj->GetVerticesTotal();
+	valNum = obj.GetVerticesTotal();
 
 	// gets the vertices as morph target vertices
 	// tempVerts = Mesh::ConvertToMorphVertexArray(obj.GetVertices(), obj.GetVerticesTotal());

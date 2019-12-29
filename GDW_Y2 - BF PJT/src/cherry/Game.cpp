@@ -17,6 +17,8 @@
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
 #include "objects/Image.h"
+#include "objects/Liquid.h"
+#include "Skybox.h"
 #include "WorldTransform.h"
 
 #include<functional>
@@ -374,7 +376,7 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_0:
 		Object* obj = objects.at(0);
 		util::removeFromVector(objects, obj);
-		obj->Destroy();
+		delete obj;
 		break;
 	}
 }
@@ -578,21 +580,32 @@ void cherry::Game::LoadContent()
 	// SKYBOX
 	// we need to make the scene before we can attach things to it.
 	auto scene = CurrentScene();
-	scene->SkyboxShader = std::make_shared<Shader>();
-	scene->SkyboxShader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
-	scene->SkyboxMesh = Mesh::MakeInvertedCube();
+	//scene->SkyboxShader = std::make_shared<Shader>();
+	//scene->SkyboxShader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
+	//scene->SkyboxMesh = Mesh::MakeInvertedCube();
 
-	// loads in six files out of res, then making them into the cube map.
-	// only works with JPEG files
-	std::string files[6] = {
-	std::string("res/images/cubemaps/checkerboard_black-red.jpg"),
-	std::string("res/images/cubemaps/checkerboard_black-green.jpg"),
-	std::string("res/images/cubemaps/checkerboard_black-blue.jpg"),
-	std::string("res/images/cubemaps/checkerboard_red-white.jpg"),
-	std::string("res/images/cubemaps/checkerboard_green-white.jpg"),
-	std::string("res/images/cubemaps/checkerboard_blue-white.jpg")
-	};
-	scene->Skybox = TextureCube::LoadFromFiles(files);
+	//// loads in six files out of res, then making them into the cube map.
+	//// only works with JPEG files
+	//std::string files[6] = {
+	//std::string("res/images/cubemaps/checkerboard_black-red.jpg"),
+	//std::string("res/images/cubemaps/checkerboard_black-green.jpg"),
+	//std::string("res/images/cubemaps/checkerboard_black-blue.jpg"),
+	//std::string("res/images/cubemaps/checkerboard_red-white.jpg"),
+	//std::string("res/images/cubemaps/checkerboard_green-white.jpg"),
+	//std::string("res/images/cubemaps/checkerboard_blue-white.jpg")
+	//};
+	//scene->Skybox = TextureCube::LoadFromFiles(files);
+
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-red.jpg",
+		"res/images/cubemaps/checkerboard_black-green.jpg",
+		"res/images/cubemaps/checkerboard_black-blue.jpg",
+		"res/images/cubemaps/checkerboard_red-white.jpg",
+		"res/images/cubemaps/checkerboard_green-white.jpg",
+		"res/images/cubemaps/checkerboard_blue-white.jpg"
+	);
+
+	skybox.AddSkyboxToScene(scene);
 
 	// Shader was originally compiled here.
 	// // Create and compile shader
@@ -661,9 +674,9 @@ void cherry::Game::LoadContent()
 		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
 
 		//// images don't need CreateEntity called.
-		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		objects.at(objects.size() - 1)->SetScale(0.025F);
+		// objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
+		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		// objects.at(objects.size() - 1)->SetScale(0.025F);
 
 		// version 1 (finds .mtl file automatically)
 		objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
@@ -745,41 +758,24 @@ void cherry::Game::LoadContent()
 	{ // Push a new scope so that we don't step on other names
 		if (loadDefaults) // the water will be considered one of the defaults.
 		{
-			Shader::Sptr waterShader = std::make_shared<Shader>();
-			waterShader->Load("res/water-shader.vs.glsl", "res/water-shader.fs.glsl");
-			Material::Sptr waterMaterial = std::make_shared<Material>(waterShader);
-			waterMaterial->HasTransparency = true;
+			Liquid* water = new Liquid(currentScene, 20.0f, 100);
+			water->SetEnabledWaves(3);
+			water->SetGravity(9.81F);
 
+			water->SetWave(0, 1.0f, 0.0f, 0.50f, 6.0f);
+			water->SetWave(1, 0.0f, 1.0f, 0.25f, 3.1f);
+			water->SetWave(2, 1.0f, 1.4f, 0.20f, 1.8f);
 
-			waterMaterial->Set("a_EnabledWaves", 3); // number of waves
-			waterMaterial->Set("a_Gravity", 9.81f);
-			// Format is: [xDir, yDir, "steepness", wavelength] (note that the sum of steepness should be < 1 to avoid loops)
-			waterMaterial->Set("a_Waves[0]", { 1.0f, 0.0f, 0.50f, 6.0f });
-			waterMaterial->Set("a_Waves[1]", { 0.0f, 1.0f, 0.25f, 3.1f });
-			waterMaterial->Set("a_Waves[2]", { 1.0f, 1.4f, 0.20f, 1.8f });
-			waterMaterial->Set("a_WaterAlpha", 0.75f);
-			waterMaterial->Set("a_WaterColor", { 0.5f, 0.5f, 0.95f });
-			waterMaterial->Set("a_WaterClarity", 0.9f); // 0.9f so that it's fairly clear
-			waterMaterial->Set("a_FresnelPower", 0.5f); // the higehr the power, the higher the reflection
-			waterMaterial->Set("a_RefractionIndex", 1.0f / 1.34f); // bending light; 1.0/1.34 goes from air to water.
-			waterMaterial->Set("s_Environment", scene->Skybox);
+			water->SetColor(0.5f, 0.5f, 0.95f, 0.75f);
+			water->SetClarity(0.9f);
+			
+			water->SetFresnelPower(0.5f);
+			water->SetRefractionIndex(1.0f, 1.34f);
+			water->SetEnvironment(scene->Skybox);
 
-			auto& ecs = GetRegistry(currentScene); // If you've changed the name of the scene, you'll need to modify this!
-			entt::entity e1 = ecs.create();
-			MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
-			m1.Material = waterMaterial;
-			m1.Mesh = Mesh::MakeSubdividedPlane(20.0f, 100);
-			m1.Mesh->SetVisible(false);
+			water->SetPosition(0.0F, 0.0F, -50.0F);
 
-			auto tform = [](entt::entity e, float dt)
-			{
-				auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
-
-				transform.Position = { 0.0f, 0.0f, -50.0f };
-			};
-
-			auto& up = ecs.get_or_assign<UpdateBehaviour>(e1);
-			up.Function = tform;
+			objects.push_back(water);
 		}
 	}
 }
@@ -1040,7 +1036,7 @@ void cherry::Game::DrawGui(float deltaTime) {
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 {
 	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
-	bool enableSkybox = false; // enables the skybox. TODO: change for final build.
+	bool enableSkybox = true; // enables the skybox. TODO: change for final build.
 	static bool drawBodies = false; // set to 'true' to draw the bodies
 
 	int border = 0; // the border for the viewpoint

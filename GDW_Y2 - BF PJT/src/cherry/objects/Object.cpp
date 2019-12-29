@@ -34,7 +34,10 @@ cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj)
 	if (!file)
 	{
 		safe = false; // file cannot be used
+		// #ifndef _DEBUG
 		throw std::runtime_error("Error opening file. Functions for this object should not be used.");
+		// #endif // !DEBUG
+		file.close();
 		return;
 	}
 	else // if file opening was successful, it is safe to read from.
@@ -284,23 +287,27 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		}
 	}
 
-	verticesTotal = vertIndices.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.
-	vertices = new Vertex[verticesTotal]; // making the dynamic array of vertices
+	// vertices and indices
+	{
+		verticesTotal = vertIndices.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.
+		vertices = new Vertex[verticesTotal]; // making the dynamic array of vertices
 
-	// if (verticesTotal > VERTICES_MAX) // if it exceeds the limit, it is set at the limit; not used
-		// verticesTotal = VERTICES_MAX;
+		// if (verticesTotal > VERTICES_MAX) // if it exceeds the limit, it is set at the limit; not used
+			// verticesTotal = VERTICES_MAX;
 
-	// puts the vertices into the dynamic vertex buffer array.
-	for (int i = 0; i < vertIndices.size(); i++)
-		vertices[i] = vertVec[vertIndices[i] - 1];
+		indicesTotal = vertIndices.size(); // gets the total number of indices.
+		indices = new uint32_t[indicesTotal]; // creates the dynamic array
 
-	indicesTotal = vertIndices.size(); // gets the total number of indices.
-	indices = new uint32_t[indicesTotal]; // creates the dynamic array
-
-	// if (indicesTotal > INDICES_MAX) // if it exceeds the limit, it is set at the limit; not used
+		// if (indicesTotal > INDICES_MAX) // if it exceeds the limit, it is set at the limit; not used
 		// indicesTotal > INDICES_MAX;
 
-	indices = vertIndices.data(); // gets the indices as an array; not being used at this time.
+		// puts the vertices into the dynamic vertex buffer array.
+		for (int i = 0; i < vertIndices.size(); i++)
+		{
+			vertices[i] = vertVec[vertIndices[i] - 1];
+			indices[i] = vertIndices[i]; // vector.data() caused issues with deletion, so this version is being used instead.
+		}
+	}
 
 	// calculating the normals
 	{
@@ -750,15 +757,4 @@ const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, boo
 
 	// returns the string put into a vector
 	return util::splitString<T>(str);
-}
-
-// destorys the object
-void cherry::Object::Destroy()
-{ 
-	if (vertices == nullptr)
-		vertices = new Vertex[0];
-
-	// if (indices == nullptr)
-		// indices = new uint32_t[0];
-	delete this;
 }
