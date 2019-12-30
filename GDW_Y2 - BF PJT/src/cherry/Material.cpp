@@ -49,7 +49,7 @@ void cherry::Material::Apply() {
 		myShader->SetUniform(kvp.first.c_str(), slot);
 	}
 
-	// mulitiplies everything by the source alpha so that transparent objects don't blend with the clear colour.
+	// mulitiplies everything by the source alpha so that transparent sceneLists don't blend with the clear colour.
 	if (HasTransparency) {
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
@@ -139,7 +139,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			Set("a_LightSpecPower", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
 		}
 
-		// TODO: change properties to look in 'res/objects/' folder directly.
+		// TODO: change properties to look in 'res/sceneLists/' folder directly.
 		// the engine doesn't support different textures for ambient, diffuse, and specular.
 		// however, it does support multi-texturing with texture mixing, which is what's being used instead.
 

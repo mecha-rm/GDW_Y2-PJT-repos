@@ -1,4 +1,4 @@
-// TempTransformation and Update Behaviour - used for bringing objects into world space and updating them.
+// TempTransformation and Update Behaviour - used for bringing sceneLists into world space and updating them.
 #pragma once
 
 #include <GLM/gtc/matrix_transform.hpp>

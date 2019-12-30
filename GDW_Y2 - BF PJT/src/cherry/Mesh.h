@@ -35,7 +35,7 @@ namespace cherry
 		glm::vec3 Normal2; // normal 2 for deformation animation
 	};
 
-	// Mesh Class - creates meshes so that objects can appear on screen.
+	// Mesh Class - creates meshes so that sceneLists can appear on screen.
 	class Mesh {
 	public:
 

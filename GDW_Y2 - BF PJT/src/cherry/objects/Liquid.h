@@ -58,6 +58,16 @@ namespace cherry
 	private:
 		static const int MAX_WAVES;
 
+		// save vertex count and wave count
+		// TODO: add liquid
+		// float size
+		// float numSections
+		// int enabledWaves = 0;
+		// float gravity;
+		// glm::vec4 color;
+		// float clarity;
+		// float fresnelPower;
+		// float refractionIndex;
 
 
 	protected:

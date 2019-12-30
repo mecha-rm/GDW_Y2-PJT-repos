@@ -299,7 +299,7 @@ CODE
                  // The vast majority of draw calls will use the Dear ImGui texture atlas, which value you have set yourself during initialization.
                  MyEngineBindTexture((MyTexture*)pcmd->TextureId);
 
-                 // We are using scissoring to clip some objects. All low-level graphics API should supports it.
+                 // We are using scissoring to clip some sceneLists. All low-level graphics API should supports it.
                  // - If your engine doesn't support scissoring yet, you may ignore this at first. You will get some small glitches
                  //   (some elements visible outside their bounds) but you can fix that once everything else works!
                  // - Clipping coordinates are provided in imgui coordinates space (from draw_data->DisplayPos to draw_data->DisplayPos + draw_data->DisplaySize)
@@ -830,7 +830,7 @@ CODE
      Depending on your use cases you may want to use strings, indices or pointers as ID.
       e.g. when following a single pointer that may change over time, using a static string as ID
        will preserve your node open/closed state when the targeted object change.
-      e.g. when displaying a list of objects, using indices or pointers as ID will preserve the
+      e.g. when displaying a list of sceneLists, using indices or pointers as ID will preserve the
        node open/closed state differently. See what makes more sense in your situation!
 
  Q: How can I use my own math types instead of ImVec2/ImVec4?

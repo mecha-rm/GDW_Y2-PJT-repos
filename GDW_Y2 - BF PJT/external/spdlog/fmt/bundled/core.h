@@ -486,7 +486,7 @@ class basic_format_arg;
 template <typename Context>
 class basic_format_args;
 
-// A formatter for objects of type T.
+// A formatter for sceneLists of type T.
 template <typename T, typename Char = char, typename Enable = void>
 struct formatter {
   static_assert(internal::no_formatter_error<T>::value,
@@ -1212,7 +1212,7 @@ class basic_format_args {
   union {
     // If the number of arguments is less than max_packed_args, the argument
     // values are stored in values_, otherwise they are stored in args_.
-    // This is done to reduce compiled code size as storing larger objects
+    // This is done to reduce compiled code size as storing larger sceneLists
     // may require more code (at least on x86-64) even if the same amount of
     // data is actually copied to stack. It saves ~10% on the bloat test.
     const internal::value<Context> *values_;

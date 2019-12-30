@@ -101,6 +101,7 @@
     <ClCompile Include="src\cherry\MeshRenderer.cpp" />
     <ClCompile Include="src\cherry\objects\Liquid.cpp" />
     <ClCompile Include="src\cherry\objects\Object.cpp" />
+    <ClCompile Include="src\cherry\objects\ObjectManager.cpp" />
     <ClCompile Include="src\cherry\objects\Primitive.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveCapsule.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveCircle.cpp" />
@@ -365,6 +366,7 @@
     <ClInclude Include="src\cherry\MeshRenderer.h" />
     <ClInclude Include="src\cherry\objects\Liquid.h" />
     <ClInclude Include="src\cherry\objects\Object.h" />
+    <ClInclude Include="src\cherry\objects\ObjectManager.h" />
     <ClInclude Include="src\cherry\objects\Primitive.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveCapsule.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveCircle.h" />
