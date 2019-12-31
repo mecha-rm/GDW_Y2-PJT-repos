@@ -9,7 +9,7 @@
 // File Includes
 #include "Shader.h"
 #include "Mesh.h"
-#include "objects/Primitives.h"
+#include "objects/ObjectManager.h"
 #include "Camera.h" // camera
 #include "LightManager.h"
 
@@ -26,7 +26,7 @@ namespace cherry
 
 		// creates the game with a width, height, and in fullscreen if requested.
 		// _debug is used to start the game in debug mode.
-		// variable '_default' opens the project with default settings for the camera, objects, and more.
+		// variable '_default' opens the project with default settings for the camera, sceneLists, and more.
 		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults = false, bool _debug = false);
 
 		// destructor
@@ -69,6 +69,9 @@ namespace cherry
 		// called when a mouse button has been pressed
 		virtual void MouseButtonPressed(GLFWwindow* window, int button);
 
+		// called when a mouse button is being held.
+		virtual void MouseButtonHeld(GLFWwindow* window, int button);
+
 		// called when a mouse button has been pressed
 		virtual void MouseButtonReleased(GLFWwindow* window, int button);
 
@@ -84,33 +87,38 @@ namespace cherry
 
 		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
 		// if false is returned, then the object is already in the m_Scene.
-		bool AddObject(cherry::Object* obj);
+		bool AddObjectToScene(cherry::Object* obj);
 
 		// adds an object to the current registry of the game.
-		bool AddObject(cherry::Object* obj, std::string scene);
+		bool AddObjectToScene(cherry::Object* obj, std::string scene);
 
+		// TODO: rename to DeleteObject?
 		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
-		bool RemoveObject(cherry::Object* obj);
+		bool DeleteObjectFromScene(cherry::Object* obj);
 
+		// replace with object manager
 		// gets an object from the current scene
 		cherry::Object* GetSceneObject(unsigned int index) const;
 
 		// gets an object from the provided scene
 		cherry::Object * GetSceneObject(unsigned int index, std::string scene) const;
 
-		// gets the total amount of objects
+		// gets a scene object, finding it via its name (must be in the current scene)
+		cherry::Object* GetSceneObjectByName(std::string name) const;
+
+		// gets the total amount of sceneLists
 		unsigned int GetObjectCount() const;
 
 		// runs the game
 		void Run();
 
-		// handles resizing the window without skewing the objects in the m_Scene.
+		// handles resizing the window without skewing the sceneLists in the m_Scene.
 		void Resize(int newWidth, int newHeight);
 
-		// if 'true', then the objects keep their scale when the window is resized.
-		// If false, the objects skew with the size of the window.
+		// if 'true', then the sceneLists keep their scale when the window is resized.
+		// If false, the sceneLists skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
-
+		 
 		// the object used for the camera
 		Camera::Sptr myCamera;
 		
@@ -154,8 +162,8 @@ namespace cherry
 		// the m_Scene material
 		Material::Sptr matStatic; // the static material
 		Material::Sptr matDynamic; // the dynamic material
-
-		SamplerDesc description; // texture description
+		 
+		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
 		glm::ivec2 myWindowSize; // saves the window size
@@ -181,16 +189,28 @@ namespace cherry
 
 		std::string currentScene = ""; // the current m_Scene
 
-		// a vector of the objects created for the game.
-		std::vector<Object*> objects;
+		// a vector of the sceneLists created for the game.
+		// std::vector<Object*> objects;
+
+		// object manager
+		std::shared_ptr<cherry::ObjectManager> objManager;
+
+		// object list
+		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
 
 		// the lights in the current scene
-		std::vector<Light*> * lights;
+		// std::vector<Light*>* lights; // TODO: replace with light manager
+
+		// light manager
+		std::shared_ptr<cherry::LightManager> lightManager;
+
+		// holds the list of lights
+		cherry::LightList* lightList; // lightManager deletion handles this
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;
 
-		// if 'loadDefaults' is true, then default objects will be loaded up
+		// if 'loadDefaults' is true, then default sceneLists will be loaded up
 		bool loadDefaults = false;
 
 		// enables the skybox. TODO: change for final build.

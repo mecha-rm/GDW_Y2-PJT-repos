@@ -203,7 +203,11 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 				// top left -> bottom point -> top right
 				indices[index] = ind1 - segCols;
 				indices[++index] = ind0;
-				indices[++index] = ind2 - segCols;
+
+				if (col == segCols - 1) // if on the final column of the final row
+					indices[++index] = ind2 - segCols * 2;
+				else
+					indices[++index] = ind2 - segCols;
 
 				ind1++;
 				ind2++;
@@ -211,15 +215,31 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 			}
 			else // other rows
 			{
-				// triangle 1 (top left -> top right -> bottom left)
-				indices[index] = ind1 - segCols;
-				indices[++index] = ind2 - segCols;
-				indices[++index] = ind1;
+				if (col == segCols - 1)
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segCols; // ind1 - segCols;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols * 2; // ind1;
 
-				// triangle 2 bottom left -> top right -> bottom right)
-				indices[++index] = ind1;
-				indices[++index] = ind2 - segCols;
-				indices[++index] = ind2;
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind2 - segCols * 2; // ind1;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind2;
+				}
+				else
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segCols; // ind1 - segCols;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind1;
+
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind1; // ind1;
+					indices[++index] = ind2; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind2;
+				}
+
 
 				ind1++;
 				ind2++;
@@ -231,7 +251,8 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
+	InvertNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

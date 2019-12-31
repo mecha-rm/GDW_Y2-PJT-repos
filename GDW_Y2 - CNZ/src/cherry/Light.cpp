@@ -184,13 +184,14 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::stri
 	phong->Load(vs.c_str(), fs.c_str()); // the shader
 	material = std::make_shared<Material>(phong); // loads in the shader.
 
-	material->Set("a_LightPos", glm::vec3(m_LightPos.v.x, m_LightPos.v.y, m_LightPos.v.z));
-	material->Set("a_LightColor", glm::vec3(m_LightColor.v.x, m_LightColor.v.y, m_LightColor.v.z));
-	material->Set("a_AmbientColor", glm::vec3(m_AmbientColor.v.x, m_AmbientColor.v.y, m_AmbientColor.v.z));
-	material->Set("a_AmbientPower", m_AmbientPower); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower", m_LightSpecPower);
-	material->Set("a_LightShininess", m_LightShininess);
-	material->Set("a_LightAttenuation", m_LightAttenuation);
+	material->Set("a_LightCount", 1);
+	material->Set("a_LightPos[0]", glm::vec3(m_LightPos.v.x, m_LightPos.v.y, m_LightPos.v.z));
+	material->Set("a_LightColor[0]", glm::vec3(m_LightColor.v.x, m_LightColor.v.y, m_LightColor.v.z));
+	material->Set("a_AmbientColor[0]", glm::vec3(m_AmbientColor.v.x, m_AmbientColor.v.y, m_AmbientColor.v.z));
+	material->Set("a_AmbientPower[0]", m_AmbientPower); // change this to change the main lighting power (originally value of 0.1F)
+	material->Set("a_LightSpecPower[0]", m_LightSpecPower);
+	material->Set("a_LightShininess[0]", m_LightShininess);
+	material->Set("a_LightAttenuation[0]", m_LightAttenuation);
 
 	// getting the weights of the textures.
 	texWeights.x = (wgt0 < 0.0F) ? 0.0F : (wgt0 > 1.0F) ? 1.0F : wgt0;
@@ -252,7 +253,7 @@ cherry::Material::Sptr cherry::Light::GenerateMaterial(std::string vs, std::stri
 	material->Set("s_Albedos[1]", Texture2D::LoadFromFile(txt1), sampler);
 	material->Set("s_Albedos[2]", Texture2D::LoadFromFile(txt2), sampler);
 	
-
+	
 	return material;
 }
 

@@ -3,7 +3,7 @@
 
 // TODO: save scene to a string so that UI can carry over
 // creates an iamge by taking in a file path.
-cherry::Image::Image(std::string filePath, std::string scene) : Object()
+cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront) : Object()
 {
 	std::ifstream file(filePath, std::ios::in); // opens the file
 	// file.open(filePath, std::ios::in); // opens file
@@ -30,11 +30,11 @@ cherry::Image::Image(std::string filePath, std::string scene) : Object()
 	this->filePath = filePath; // saves the file path
 	file.close(); // closing the file since the read was successful.
 	
-	LoadImage(scene); // loads in the image
+	LoadImage(scene, doubleSided, duplicateFront); // loads in the image
 }
 
 // destructor
-cherry::Image::~Image() { delete[] indices; }
+cherry::Image::~Image() { }
 
 // gets the width
 uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
@@ -43,7 +43,7 @@ uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
 uint32_t cherry::Image::GetHeight() const { return dimensions.y; }
 
 // loads an image
-bool cherry::Image::LoadImage(std::string scene)
+bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicateFront)
 {
 	// gets the iamge
 	Texture2D::Sptr img = Texture2D::LoadFromFile(filePath);
@@ -62,28 +62,79 @@ bool cherry::Image::LoadImage(std::string scene)
 	
 	// glm::float32_t; // glm float
 
-	// Position, Colour, Normals, and UVs
-	verticesTotal = 4;
-	vertices = new Vertex[verticesTotal]
-	{
-		//  x			  y				  z		   r	 g	   b	 a		 // normals
-		{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-		{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-		{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-		{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
-	};
+	if(duplicateFront) // the front and back are the same
+	{ 
+		// creates a cube that gets squished so that it appears to be a plane.
+		// the front and back of the cube (which become the front and back of the plane)
+		verticesTotal = 8;
+		vertices = new Vertex[verticesTotal]
+		{
+			//  x			  y				  z		   r	 g	   b	 a		 // normals
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
 
-	// indices
-	indicesTotal = 6;
-	indices = new uint32_t[indicesTotal]{
-		0, 1, 2,
-		2, 1, 3
-	};
+			// replication of what's shown above.
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {1.0F, 0.0F}},
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {0.0F, 0.0F}},
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {1.0F, 1.0F}},
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F}},
+		};
+
+		// indices
+		indicesTotal = 36;
+		indices = new uint32_t[indicesTotal]{
+			0, 1, 2,
+			2, 1, 3,
+			0, 2, 4,
+			2, 6, 4,
+			1, 5, 3,
+			3, 5, 7,
+			4, 6, 5,
+			6, 7, 5,
+			0, 4, 5,
+			5, 1, 0,
+			2, 7, 6,
+			7, 2, 3
+		};
+	}
+	else // the front and back are different
+	{
+		verticesTotal = 4;
+		vertices = new Vertex[verticesTotal]
+		{
+			//  x			  y				  z		   r	 g	   b	 a		 // normals
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+		};
+
+		// indices
+		indicesTotal = 6;
+		indices = new uint32_t[indicesTotal]{
+			0, 1, 2,
+			2, 1, 3
+		};
+	}
+	// Position, Colour, Normals, and UVs
+
+	
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	
-
+	if (duplicateFront) // if the front and back are the same, then both should be shown.
+	{
+		mesh->cullFaces = true; // hide the backfaces.
+	}
+	else // front shouldn't be duplicated, meaning that the backfaces may not be shown.
+	{
+		mesh->cullFaces = !doubleSided; // images do not have their faces culled. // TODO: add ability to have the image be the same on both sides
+	}
+	
+	
 	// MAPPING THE TEXTURE
 	// texture description and sampler
 	description = SamplerDesc();
@@ -99,13 +150,14 @@ bool cherry::Image::LoadImage(std::string scene)
 
 	// lighting has no strong effect on images currnetly
 	material = std::make_shared<Material>(shader);
-	material->Set("a_LightPos", { 0, 0, 0 });
-	material->Set("a_LightColor", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientColor", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientPower", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower", 0.0f);
-	material->Set("a_LightShininess", 0.0f); // MUST be a float
-	material->Set("a_LightAttenuation", 1.0f);
+	material->Set("a_LightCount", 1);
+	material->Set("a_LightPos[0]", { 0, 0, 0 });
+	material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
+	material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
+	material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
+	material->Set("a_LightSpecPower[0]", 0.0f);
+	material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
+	material->Set("a_LightAttenuation[0]", 1.0f);
 	
 	material->Set("s_Albedos[0]", Texture2D::LoadFromFile(filePath), sampler);
 	material->Set("s_Albedos[1]", Texture2D::LoadFromFile(filePath), sampler);

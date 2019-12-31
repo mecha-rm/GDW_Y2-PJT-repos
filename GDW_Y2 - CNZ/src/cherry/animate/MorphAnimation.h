@@ -9,6 +9,7 @@ namespace cherry
 	{
 	public:
 		MorphAnimation();
+		~MorphAnimation() = default;
 
 		// the object being used for the morph target animation.
 		MorphAnimation(Object* obj);
@@ -51,6 +52,8 @@ namespace cherry
 		// units determines the length of the lerp between the previous frame; default 1 second.
 		MorphAnimationFrame(std::string filePath, float units = 1.0F);
 
+		~MorphAnimationFrame();
+
 		// gets the vertices for this frame.
 		glm::vec3 * GetVertices() const;
 
@@ -78,7 +81,7 @@ namespace cherry
 		glm::vec3 * vertices;
 
 		// array of normals
-		glm::vec3* normals;
+		glm::vec3 * normals;
 
 		// total amount of vertices
 		unsigned int valNum;

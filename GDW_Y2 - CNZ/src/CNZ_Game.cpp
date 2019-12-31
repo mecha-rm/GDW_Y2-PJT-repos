@@ -238,7 +238,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
-	srand(time(NULL));
+	// srand(time(NULL)); // move to Game.h
 
 	Game::LoadContent(); // calls the load content
 
@@ -512,18 +512,18 @@ void cnz::CNZ_Game::LoadContent()
 	playerObj->GetPhysicsBodies()[0]->SetVisible(true);
 
 	// Path stuff
-	cherry::Path* testPath = new cherry::Path();
-	testPath->AddNode(1.0f, 1.0f, 0.0f);
-	testPath->AddNode(0.0f, 5.0f, 0.0f);
-	testPath->AddNode(-2.0f, 5.0f, 0.0f);
-	testPath->AddNode(-3.0f, 7.0f, 0.0f);
-	testPath->AddNode(-6.0f, 8.0f, 0.0f);
-	testPath->AddNode(-6.0f, 6.0f, 0.0f);
-	testPath->AddNode(-2.0f, 4.0f, 0.0f);
-	testPath->AddNode(1.0f, 1.0f, 0.0f);
+	cherry::Path testPath = cherry::Path();
+	testPath.AddNode(1.0f, 1.0f, 0.0f);
+	testPath.AddNode(0.0f, 5.0f, 0.0f);
+	testPath.AddNode(-2.0f, 5.0f, 0.0f);
+	testPath.AddNode(-3.0f, 7.0f, 0.0f);
+	testPath.AddNode(-6.0f, 8.0f, 0.0f);
+	testPath.AddNode(-6.0f, 6.0f, 0.0f);
+	testPath.AddNode(-2.0f, 4.0f, 0.0f);
+	testPath.AddNode(1.0f, 1.0f, 0.0f);
 
-	testPath->SetIncrementer(0.5f);
-	testPath->SetInterpolationMode(1); 
+	testPath.SetIncrementer(0.5f);
+	testPath.SetInterpolationMode(1); 
 
 	testObj->SetPath(testPath, true);
 

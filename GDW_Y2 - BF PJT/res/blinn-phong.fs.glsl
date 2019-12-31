@@ -28,7 +28,7 @@ void main() {
 
     vec4 finalResult = vec4(0, 0, 0, 0);
 
-    // calculating te total amount of lights being used.
+    // calculating the total amount of lights being used.
     int lightsTotal = (a_LightCount > MAX_LIGHTS) ? MAX_LIGHTS : (a_LightCount <= 0) ? 1 : a_LightCount;
 
     for(int i = 0; i < lightsTotal; i++)

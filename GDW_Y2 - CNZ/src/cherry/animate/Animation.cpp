@@ -13,8 +13,8 @@ cherry::Animation::Animation(int id) : id(id) {}
 cherry::Animation::~Animation()
 {
 	// deletes each animation.
-	for (int i = 0; i < frames.size(); i++)
-		delete frames[i];
+	for (AnimationFrame* frame : frames)
+		delete frame;
 
 	// clears out the animations.
 	frames.clear();

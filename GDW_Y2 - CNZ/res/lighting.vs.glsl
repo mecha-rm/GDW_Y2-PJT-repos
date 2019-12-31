@@ -22,6 +22,7 @@ void main() {
 	outWorldPos =  (a_Model * vec4(inPosition, 1)).xyz;
 	gl_Position = a_ModelViewProjection * vec4(inPosition, 1);
 	
+	// TODO: change for texture weights
 	// you'll need to change this based on the current terrain.
 	outTexWeights = vec3(
 		sin(inPosition.x / 2.0f) / 2 + 0.5,

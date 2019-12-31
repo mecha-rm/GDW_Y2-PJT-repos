@@ -85,29 +85,67 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
-		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
-		// if false is returned, then the object is already in the m_Scene.
-		bool AddObject(cherry::Object* obj);
+		// creates a scene. If 'makeCurrent' is true, then this scene is made the current scene.
+		cherry::Scene * CreateScene(const std::string sceneName, const bool makeCurrent);
 
-		// adds an object to the current registry of the game.
-		bool AddObject(cherry::Object* obj, std::string scene);
+		// nothing happens if the scene already exists
+		cherry::Scene * CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent);
 
-		// TODO: rename to DeleteObject?
-		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
-		bool RemoveObject(cherry::Object* obj);
+		// sets the skybox for the current scene, and whether it should be visible or not.
+		void SetSkybox(cherry::Skybox & skybox, const bool visible = true);
+
+		// sets the skybox for the provided scene, and whether it should be visible or not.
+		void SetSkybox(cherry::Skybox& skybox, const std::string sceneName, const bool visible = true);
+
+		// gets whether the skybox is visible for the current scene or not.
+		bool GetSkyboxVisible() const;
+
+		// gets whether the skybox is visible in the provided scene or not.
+		bool GetSkyboxVisible(std::string sceneName) const;
+
+		// changes whether the skybox is visible or not for the current scene.
+		void SetSkyboxVisible(bool skybox);
+
+		// changes whether the skybox is visible or not for the provided scene.
+		void SetSkyboxVisible(bool skybox, std::string sceneName);
+
+		// gets the total amount of sceneLists
+		unsigned int GetObjectCount() const;
+
+		// gets the object list for the scene.
+		cherry::ObjectList * GetSceneObjectList() const;
+
+		// returns the object list for the provided scene.
+		cherry::ObjectList* GetSceneObjectList(std::string scene);
 
 		// replace with object manager
 		// gets an object from the current scene
-		cherry::Object* GetSceneObject(unsigned int index) const;
+		cherry::Object * GetSceneObjectByIndex(unsigned int index) const;
 
 		// gets an object from the provided scene
-		cherry::Object * GetSceneObject(unsigned int index, std::string scene) const;
+		cherry::Object * GetSceneObjectByIndex(std::string scene, unsigned int index) const;
 
 		// gets a scene object, finding it via its name (must be in the current scene)
 		cherry::Object* GetSceneObjectByName(std::string name) const;
 
-		// gets the total amount of sceneLists
-		unsigned int GetObjectCount() const;
+		// gets a scene object from the provided scene, finding it via its name (must be in the current scene)
+		cherry::Object* GetSceneObjectByName(std::string scene, std::string name) const;
+
+		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
+		// if false is returned, then the object is already in the m_Scene.
+		bool AddObjectToScene(cherry::Object* obj);
+
+		// adds an object to the current registry of the game.
+		// bool AddObjectToScene(cherry::Object* obj, std::string scene);
+
+		// TODO: rename to DeleteObject?
+		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
+		bool DeleteObjectFromScene(cherry::Object* obj);
+
+
+
+		// adds a light to the scene
+		void AddLight(cherry::Light * light);
 
 		// runs the game
 		void Run();
@@ -196,7 +234,7 @@ namespace cherry
 		std::shared_ptr<cherry::ObjectManager> objManager;
 
 		// object list
-		cherry::ObjectList* objList = nullptr;
+		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
 
 		// the lights in the current scene
 		// std::vector<Light*>* lights; // TODO: replace with light manager
@@ -205,7 +243,7 @@ namespace cherry
 		std::shared_ptr<cherry::LightManager> lightManager;
 
 		// holds the list of lights
-		cherry::LightList* lightList;
+		cherry::LightList* lightList; // lightManager deletion handles this
 
 		// Model transformation matrix
 		glm::mat4 myModelTransform;

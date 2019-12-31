@@ -6,7 +6,7 @@ class Obstacle : public cherry::Object {
 public:
 	//// constructors
 	// default (dont use)
-	Obstacle();
+	Obstacle() = default;
 	
 	// load in obj file and specify whether to load its associated mtl file
 	Obstacle(std::string filePath, std::string scene, bool loadMtl = false);

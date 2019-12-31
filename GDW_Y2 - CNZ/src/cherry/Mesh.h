@@ -35,7 +35,7 @@ namespace cherry
 		glm::vec3 Normal2; // normal 2 for deformation animation
 	};
 
-	// Mesh Class - creates meshes so that objects can appear on screen.
+	// Mesh Class - creates meshes so that sceneLists can appear on screen.
 	class Mesh {
 	public:
 
@@ -74,6 +74,15 @@ namespace cherry
 		// Disables wireframe mode on the mesh
 		void DisableWireframe();
 
+		// gets whether the faces should be culled or not.
+		bool GetCullFaces() const;
+
+		// set to 'true' to cull the faces on the mesh, false to not cull them. It is set to true by default.
+		void SetCullFaces(bool cf);
+
+		// toggles culling faces
+		void SetCullFaces();
+
 		// returns 'true' if the mesh is visible, false otherwise.
 		bool IsVisible();
 
@@ -88,6 +97,14 @@ namespace cherry
 
 		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position1 and Normal.
 		static MorphVertex* ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts);
+
+		// creates an inverted cube; moved from Game.cpp
+		static cherry::Mesh::Sptr MakeInvertedCube();
+
+		// creates a subdivided plane; moved from Game.cpp
+		static cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true);
+
+		bool cullFaces = true; // tells the mesh to cull the faces
 
 	private:
 		// Our GL handle for the Vertex Array Object

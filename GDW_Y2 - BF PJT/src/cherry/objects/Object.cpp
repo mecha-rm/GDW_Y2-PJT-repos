@@ -733,7 +733,7 @@ void cherry::Object::Update(float deltaTime)
 	for (cherry::PhysicsBody* body : bodies)
 		body->Update(deltaTime);
 
-	SetRotationDegrees(GetRotationDegrees() + Vec3(30.0F, 10.0F, 5.0F) * deltaTime);
+	// SetRotationDegrees(GetRotationDegrees() + Vec3(30.0F, 10.0F, 5.0F) * deltaTime);
 }
 
 // returns a string representing the object

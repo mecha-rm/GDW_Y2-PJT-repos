@@ -20,7 +20,8 @@
 #include "WorldTransform.h"
 
 #include<functional>
-
+#include<time.h>
+#include<random>
 
 /*
 	Handles debug messages from OpenGL
@@ -152,7 +153,9 @@ cherry::Game::Game() :
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f)), // default clear colour
 	myModelTransform(glm::mat4(1)), // my model transform
 	myWindowSize(600, 600) // window size (default)
-{ }
+{
+	srand(time(0));
+}
 
 // creates window with a width, height, and whether or not it's in full screen.
 cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
@@ -380,42 +383,136 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	}
 }
 
-// adds an object to the m_Scene
-bool cherry::Game::AddObject(cherry::Object* obj) { return AddObject(obj, currentScene); }
-
-
-// adds an object to the m_Scene.
-bool cherry::Game::AddObject(cherry::Object* obj, std::string scene)
+// makes a scene
+cherry::Scene* cherry::Game::CreateScene(std::string sceneName, bool makeCurrent)
 {
-	// adds the object to the list of sceneLists.
-	bool added = util::addToVector(objList->objects, obj);
+	SceneManager::RegisterScene(sceneName); // registering the m_Scene
+	SceneManager::SetCurrentScene(sceneName);
 
-	if (added) // if the object was added, then an entity is created.
-		obj->CreateEntity(scene, matStatic);
+	// creating a skybox for the scene, since none was provided
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-red.jpg",
+		"res/images/cubemaps/checkerboard_black-green.jpg",
+		"res/images/cubemaps/checkerboard_black-blue.jpg",
+		"res/images/cubemaps/checkerboard_red-white.jpg",
+		"res/images/cubemaps/checkerboard_green-white.jpg",
+		"res/images/cubemaps/checkerboard_blue-white.jpg"
+	);
 
-	return added; // returns 
+	return nullptr;
 }
 
-// removes an object from the sceneLists vector.
-bool cherry::Game::RemoveObject(cherry::Object* obj) 
+cherry::Scene* cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent)
+{
+	if (SceneManager::HasScene) // if the scene already exists
+	{
+
+	}
+
+	SceneManager::RegisterScene(sceneName); // registering the scene
+
+	
+	
+	auto scene = CurrentScene();
+
+	SceneManager::SetCurrentScene(sceneName); // 
+
+	return nullptr;
+}
+
+// sets the skybox for the current scene.
+void cherry::Game::SetSkybox(cherry::Skybox& skybox, const bool visible) 
 { 
-	return util::removeFromVector(objList->objects, obj);
-	delete obj;
+	auto* scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+	{
+		skybox.AddSkyboxToScene(scene);
+		scene->SkyboxMesh->SetVisible(visible);
+	}
 }
+
+// sets the skybox for a scene, provides a scene name, and sets if it should be visible.
+void cherry::Game::SetSkybox(cherry::Skybox& skybox, const std::string sceneName, const bool visible)
+{
+	auto* scene = SceneManager::Get(sceneName);
+
+	if (scene != nullptr) // if the scene exists.
+	{
+		skybox.AddSkyboxToScene(scene);
+		scene->SkyboxMesh->SetVisible(visible);
+	}
+}
+
+// gets whether the skybox is visible for the current scene or not.
+bool cherry::Game::GetSkyboxVisible() const 
+{
+	auto* scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+		scene->SkyboxMesh->IsVisible();
+}
+
+// gets the visibility of the skybox in the scene.
+bool cherry::Game::GetSkyboxVisible(std::string sceneName) const
+{
+	auto* scene = SceneManager::Get(sceneName);
+
+	if (scene != nullptr) // if the scene exists.
+		scene->SkyboxMesh->IsVisible();
+}
+
+// changes whether the skybox should be visible or not.
+void cherry::Game::SetSkyboxVisible(bool skybox)
+{
+	auto* scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+		scene->SkyboxMesh->SetVisible(skybox);
+}
+
+// sets if the skybox is visible for the provided scene or not.
+void cherry::Game::SetSkyboxVisible(bool skybox, std::string sceneName)
+{
+	auto* scene = SceneManager::Get(sceneName);
+
+	if(scene != nullptr) // if the scene exists.
+		scene->SkyboxMesh->SetVisible(skybox);
+}
+
+// gets the total amount of sceneLists
+unsigned int cherry::Game::GetObjectCount() const { return objList->objects.size(); }
+
+// gets the object list for the scene
+cherry::ObjectList* cherry::Game::GetSceneObjectList() const { return objList; }
+
+// gets the object list for the provided scene.
+cherry::ObjectList* cherry::Game::GetSceneObjectList(std::string scene) { return objManager->GetSceneObjectListByName(scene); }
 
 // gets an object from the current scene
-cherry::Object* cherry::Game::GetSceneObject(unsigned int index) const { return GetSceneObject(index, currentScene); }
+cherry::Object* cherry::Game::GetSceneObjectByIndex(unsigned int index) const 
+{
+	if (objList != nullptr) // if there is an object list for this scene
+	{
+		return objList->GetObjectByIndex(index);
+	}
+	else // if there isn't an object list for this scene
+	{
+		return GetSceneObjectByIndex(currentScene, index);
+	}
+}
 
 // gets an object from the provided scene
-cherry::Object* cherry::Game::GetSceneObject(unsigned int index, std::string scene) const
+cherry::Object* cherry::Game::GetSceneObjectByIndex(std::string scene, unsigned int index) const
 {
 	// TODO: check for proper scene
 	if (index > objList->objects.size())
 		return nullptr;
 	else
-		return objList->objects.at(index);
+		return objManager->GetSceneObjectListByName(scene)->GetObjectByIndex(index);
 }
 
+// gets a scene object by name
 cherry::Object* cherry::Game::GetSceneObjectByName(std::string name) const
 {
 	for (Object* obj : objList->objects)
@@ -426,9 +523,42 @@ cherry::Object* cherry::Game::GetSceneObjectByName(std::string name) const
 	return nullptr;
 }
 
+// gets a scene object from the provided scene, using its name
+cherry::Object* cherry::Game::GetSceneObjectByName(std::string scene, std::string name) const
+{
+	return objManager->GetSceneObjectListByName(scene)->GetObjectByName(name);
+}
 
-// gets the total amount of sceneLists
-unsigned int cherry::Game::GetObjectCount() const { return objList->objects.size(); }
+// adds an object to the m_Scene
+bool cherry::Game::AddObjectToScene(cherry::Object* obj) { return objManager->AddObjectToSceneObjectList(obj); }
+
+
+// adds an object to the m_Scene.
+//bool cherry::Game::AddObjectToScene(cherry::Object* obj, std::string scene)
+//{
+//	// adds the object to the list of sceneLists.
+//	bool added = util::addToVector(objList->objects, obj);
+//
+//	if (added) // if the object was added, then an entity is created.
+//		obj->CreateEntity(scene, matStatic);
+//
+//	return added; // returns 
+//}
+
+// removes an object from the sceneLists vector.
+bool cherry::Game::DeleteObjectFromScene(cherry::Object* obj)
+{
+	if (objList != nullptr) // if the list hasn't been set, then it must be received.
+	{
+		return objList->DeleteObjectByPointer(obj);
+	}
+	else
+	{
+		objList = objManager->GetSceneObjectListByName(currentScene);
+		return objManager->GetSceneObjectListByName(currentScene)->DeleteObjectByPointer(obj);
+	}
+
+}
 
 
 void cherry::Game::Initialize() {
@@ -703,7 +833,7 @@ void cherry::Game::LoadContent()
 		// images don't need CreateEntity called.
 		 objList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true, false));
 		 objList->objects.at(objList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		 objList->objects.at(objList->GetObjectCount() - 1)->SetScale(0.025F);
+		 objList->objects.at(objList->GetObjectCount() - 1)->SetScale(0.025F); 
 
 		// version 1 (finds .mtl file automatically)
 		objList->objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
