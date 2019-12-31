@@ -68,6 +68,13 @@ namespace cherry
 		// gets the scene lights averaged together
 		cherry::Light* GetLightsMerged();
 
+		// generates a material out of the light list (first 10 in hte list)
+		// TODO: add indexes of lights to be used.
+		// generates a material without a sampler
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs) const;
+		
+		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const;
+
 		// vector of lights
 		std::vector<cherry::Light *> lights;
 

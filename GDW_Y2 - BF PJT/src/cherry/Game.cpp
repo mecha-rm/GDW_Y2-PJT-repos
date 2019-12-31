@@ -549,7 +549,7 @@ void cherry::Game::LoadContent()
 	//desc2.MagFilter = MagFilter::Linear;
 
 	//samplerEX = std::make_shared<TextureSampler>(desc1);
-
+	
 
 
 	// before the mesh in the original code
@@ -562,13 +562,14 @@ void cherry::Game::LoadContent()
 	// dedicated variable no longer needed?
 	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
 	matStatic = std::make_shared<Material>(phong);
-	matStatic->Set("a_LightPos", { 0, 0, 3 });
-	matStatic->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});
-	matStatic->Set("a_AmbientColor", { 0.9f, 0.1f, 0.01f });
-	matStatic->Set("a_AmbientPower", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
-	matStatic->Set("a_LightSpecPower", 0.5f);
-	matStatic->Set("a_LightShininess", 256.0f); // MUST be a float
-	matStatic->Set("a_LightAttenuation", 0.15f);
+	matStatic->Set("a_LightCount", 1);
+	matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
+	matStatic->Set("a_LightColor[0]", { 0.5f, 0.1f, 0.9f});
+	matStatic->Set("a_AmbientColor[0]", { 0.9f, 0.1f, 0.01f });
+	matStatic->Set("a_AmbientPower[0]", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
+	matStatic->Set("a_LightSpecPower[0]", 0.5f);
+	matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
+	matStatic->Set("a_LightAttenuation[0]", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
 	
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
@@ -614,22 +615,25 @@ void cherry::Game::LoadContent()
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 
-	// TODO: add sampler
+	// TODO: add sampler 
 	lightManager->AddSceneLightList(currentScene);
 	lightList = lightManager->GetSceneLightList(currentScene);
 
-	lightManager->AddLightToSceneLightList(currentScene, new Light(currentScene, Vec3(-30.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.5F, 256.0F, 0.15F));
+	lightList->AddLight(new Light(currentScene, Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
 
-	lightManager->AddLightToSceneLightList(currentScene, new Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.4F, 0.5F, 256.0F, 0.15F));
+	lightList->AddLight(new Light(currentScene, Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
+		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F)); 
+
+	lightList->AddLight(new Light(currentScene, Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
-	matStatic = lightList->GetLightsMerged()->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
-	matDynamic = lightList->GetLightsMerged()->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
-	
-		// loads in default sceneLists
+	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
+	 
+	// loads in default sceneLists
 	if (loadDefaults)
 	{
 		Material::Sptr objMat; // used for custom materials
@@ -696,14 +700,18 @@ void cherry::Game::LoadContent()
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 
-		//// images don't need CreateEntity called.
-		// sceneLists.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
-		// sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		// sceneLists.at(sceneLists.size() - 1)->SetScale(0.025F);
+		// images don't need CreateEntity called.
+		 objList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
+		 objList->objects.at(objList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		 objList->objects.at(objList->GetObjectCount() - 1)->SetScale(0.025F);
 
 		// version 1 (finds .mtl file automatically)
 		objList->objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
-			lightManager->GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
+			lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler), true, true));
+
+		// objList->objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
+		// lightManager->GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
+
 
 		objList->objects.at(objList->objects.size() - 1)->SetScale(10.0F);
 		hitBoxIndex = objList->objects.size() - 1;
@@ -723,7 +731,7 @@ void cherry::Game::LoadContent()
 		Path path = Path();
 		path.AddNode(8.0F, 0.0F, 0.0F);
 		path.AddNode(-8.0F, 8.0F, 0.0F);
-		path.AddNode(8.0F, 8.0F, 8.0F);
+		path.AddNode(20.0F, 8.0F, 8.0F);
 		path.AddNode(7.0F, 9.0F, 7.0F);
 		path.AddNode(8.0F, -8.0F, -8.0F);
 		path.SetIncrementer(0.1f);
@@ -790,13 +798,22 @@ void cherry::Game::Update(float deltaTime) {
 	// updates the camera
 	if (debugMode) // moves the camera with button presses if in debug mode.
 	{
-		// moving the camera
-		camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
-		camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
+		//// moving the camera
+		//camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
+		//camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
 
-		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
-		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
-	}
+		//myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
+		//myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
+	} 
+
+	if (w)
+		objList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
+	else if (s)
+		objList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
+	if (a)
+		objList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
+	else if (d)
+		objList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
 
 	// updates the object list
 	objList->Update(deltaTime);
@@ -1113,7 +1130,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		// Draw the item
 		if (renderer.Mesh->IsVisible())
 		{
-			// if the mesh is in weireframe mode, and the draw call isn't set to that already.
+			// if the mesh is in wireframe mode, and the draw call isn't set to that already.
 			if (renderer.Mesh->IsWireframe() != wireframe)
 			{
 				wireframe = !wireframe;

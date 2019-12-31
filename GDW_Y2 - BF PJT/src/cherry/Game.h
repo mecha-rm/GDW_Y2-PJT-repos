@@ -118,7 +118,7 @@ namespace cherry
 		// if 'true', then the sceneLists keep their scale when the window is resized.
 		// If false, the sceneLists skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
-
+		 
 		// the object used for the camera
 		Camera::Sptr myCamera;
 		
@@ -163,7 +163,7 @@ namespace cherry
 		Material::Sptr matStatic; // the static material
 		Material::Sptr matDynamic; // the dynamic material
 
-		SamplerDesc description; // texture description
+		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
 		glm::ivec2 myWindowSize; // saves the window size

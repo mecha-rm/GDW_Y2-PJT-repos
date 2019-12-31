@@ -117,7 +117,6 @@ cherry::Light* cherry::LightList::GetLightsMerged()
 {
 	cherry::Light* sceneLight = nullptr; // returns the scene light
 
-
 	cherry::Vec3 lightPos; // light position
 	cherry::Vec3 lightClr; // colour
 
@@ -154,4 +153,70 @@ cherry::Light* cherry::LightList::GetLightsMerged()
 	);
 
 	return sceneLight;
+}
+
+// generates a material
+cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::string fs) const
+{
+	return GenerateMaterial(vs, fs, nullptr);
+}
+
+// generates the material
+cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const
+{
+	if(lights.size() == 0) // no lights
+		return cherry::Material::Sptr();
+
+	Material::Sptr material; // the material
+	Shader::Sptr phong = std::make_shared<Shader>(); // shader
+	glm::vec3 temp; // temporary vector
+	
+	int lightCount = 0; // total amount of lights
+
+	// Must align with MAX_LIGHTS. It is set to allow for 10 lights.
+	// TODO: add const to cap lights instead
+	lightCount = (lights.size() > 10) ? 10 : lights.size();
+
+	// used to make the albedo // TODO: fix shaders
+	phong->Load(vs.c_str(), fs.c_str()); // the shader
+	material = std::make_shared<Material>(phong); // loads in the shader.
+	 
+	material->Set("a_LightCount", lightCount);
+
+	// goes through each light, getting the values.
+	for (int i = 0; i < lightCount; i++)
+	{
+		temp = lights.at(i)->GetAmbientColorGLM();
+		material->Set("a_AmbientColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // ambient colour
+
+		material->Set("a_AmbientPower[" + std::to_string(i) + "]", lights.at(i)->GetAmbientPower()); // ambient power
+		material->Set("a_LightSpecPower[" + std::to_string(i) + "]", lights.at(i)->GetLightSpecularPower()); // specular power
+
+		temp = lights.at(i)->GetLightPositionGLM();
+		material->Set("a_LightPos[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // position
+
+		temp = lights.at(i)->GetLightColorGLM();
+		material->Set("a_LightColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // light colour
+
+		material->Set("a_LightShininess[" + std::to_string(i) + "]", lights.at(i)->GetLightShininess()); // shininess
+		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
+	}
+
+	// albedo values (with sampler)
+	if (sampler != nullptr)
+	{
+		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+	}
+	else // no sampler provided
+	{
+		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
+		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
+		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
+	}
+
+	 
+	// returns the material
+	return material;
 }
