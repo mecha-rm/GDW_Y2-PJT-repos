@@ -162,7 +162,7 @@ namespace cherry
 		// the m_Scene material
 		Material::Sptr matStatic; // the static material
 		Material::Sptr matDynamic; // the dynamic material
-
+		 
 		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 

@@ -695,13 +695,13 @@ void cherry::Game::LoadContent()
 			water->SetEnvironment(scene->Skybox);
 
 			water->SetPosition(0.0F, 0.0F, -50.0F);
-
+			water->SetVisible(false);
 			objList->objects.push_back(water);
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 
 		// images don't need CreateEntity called.
-		 objList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true));
+		 objList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene, true, false));
 		 objList->objects.at(objList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
 		 objList->objects.at(objList->GetObjectCount() - 1)->SetScale(0.025F);
 
@@ -799,21 +799,21 @@ void cherry::Game::Update(float deltaTime) {
 	if (debugMode) // moves the camera with button presses if in debug mode.
 	{
 		//// moving the camera
-		//camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
-		//camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
+		camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
+		camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
 
-		//myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
-		//myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
+		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
+		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
 	} 
 
-	if (w)
-		objList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
-	else if (s)
-		objList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
-	if (a)
-		objList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
-	else if (d)
-		objList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
+	// if (w)
+	// 	objList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
+	// else if (s)
+	// 	objList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
+	// if (a)
+	// 	objList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
+	// else if (d)
+	// 	objList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
 
 	// updates the object list
 	objList->Update(deltaTime);
