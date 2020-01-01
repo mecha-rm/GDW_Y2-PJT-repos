@@ -823,6 +823,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
 				RemoveObject(projList[i]);
+				projList.erase(projList.begin() + i);
+				projTimeList.erase(projTimeList.begin() + i);
 			}
 		}
 	}
