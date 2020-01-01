@@ -374,9 +374,7 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 		d = false;
 		break;
 	case GLFW_KEY_0:
-		Object* obj = objectList->objects.at(0);
-		util::removeFromVector(objectList->objects, obj);
-		delete obj;
+		DeleteObjectFromScene(objectList->objects.at(0));
 		break;
 	}
 }
@@ -569,7 +567,7 @@ cherry::ObjectList* cherry::Game::GetSceneObjectList() const { return objectList
 cherry::ObjectList* cherry::Game::GetSceneObjectList(std::string scene) { return ObjectManager::GetSceneObjectListByName(scene); }
 
 // gets an object from the current scene
-cherry::Object* cherry::Game::GetSceneObjectByIndex(unsigned int index) const 
+cherry::Object* cherry::Game::GetCurrentSceneObjectByIndex(unsigned int index) const 
 {
 	if (objectList != nullptr) // if there is an object list for this scene
 	{
@@ -592,7 +590,7 @@ cherry::Object* cherry::Game::GetSceneObjectByIndex(std::string scene, unsigned 
 }
 
 // gets a scene object by name
-cherry::Object* cherry::Game::GetSceneObjectByName(std::string name) const
+cherry::Object* cherry::Game::GetCurrentSceneObjectByName(std::string name) const
 {
 	for (Object* obj : objectList->objects)
 	{
@@ -609,7 +607,10 @@ cherry::Object* cherry::Game::GetSceneObjectByName(std::string scene, std::strin
 }
 
 // adds an object to the m_Scene
-bool cherry::Game::AddObjectToCurrentScene(cherry::Object* obj) { return ObjectManager::AddObjectToSceneObjectList(obj); }
+bool cherry::Game::AddObjectToScene(cherry::Object* obj) 
+{ 
+	return ObjectManager::AddObjectToSceneObjectList(obj); 
+}
 
 
 // adds an object to the m_Scene.
@@ -641,6 +642,32 @@ bool cherry::Game::DeleteObjectFromScene(cherry::Object* obj)
 
 // gets the light list for the current scene
 cherry::LightList* cherry::Game::GetSceneLightList() const { return lightList; }
+
+// gets the lights for a given scene.
+cherry::LightList* cherry::Game::GetSceneLightList(std::string sceneName)
+{
+	return LightManager::GetSceneLightListByName(sceneName);
+}
+
+// adds the light to the scene it's part of.
+bool cherry::Game::AddLightToScene(cherry::Light* light)
+{
+	return LightManager::AddLightToSceneLightList(light);
+}
+
+// deletes a light from the scene.
+bool cherry::Game::DeleteLightFromScene(cherry::Light* light)
+{
+	if (lightList != nullptr) // if the list hasn't been set, then it must be received.
+	{
+		return lightList->DeleteLightByPointer(light);
+	}
+	else
+	{
+		lightList = LightManager::GetSceneLightListByName(GetCurrentSceneName());
+		return LightManager::GetSceneLightListByName(GetCurrentSceneName())->DeleteLightByPointer(light);
+	}
+}
 
 
 void cherry::Game::Initialize() {
@@ -827,7 +854,7 @@ void cherry::Game::LoadContent()
 	lightList->AddLight(new Light(GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
 		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F)); 
 
-	lightList->AddLight(new Light(GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+	AddLightToScene(new Light(GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
 		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
@@ -898,7 +925,7 @@ void cherry::Game::LoadContent()
 
 			water->SetPosition(0.0F, 0.0F, -50.0F);
 			water->SetVisible(true);
-			AddObjectToCurrentScene(water);
+			AddObjectToScene(water);
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 

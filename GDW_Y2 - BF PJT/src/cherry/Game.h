@@ -143,13 +143,13 @@ namespace cherry
 
 		// replace with object manager
 		// gets an object from the current scene
-		cherry::Object * GetSceneObjectByIndex(unsigned int index) const;
+		cherry::Object * GetCurrentSceneObjectByIndex(unsigned int index) const;
 
 		// gets an object from the provided scene
 		cherry::Object * GetSceneObjectByIndex(std::string scene, unsigned int index) const;
 
 		// gets a scene object, finding it via its name (must be in the current scene)
-		cherry::Object* GetSceneObjectByName(std::string name) const;
+		cherry::Object* GetCurrentSceneObjectByName(std::string name) const;
 
 		// gets a scene object from the provided scene, finding it via its name (must be in the current scene)
 		cherry::Object* GetSceneObjectByName(std::string scene, std::string name) const;
@@ -157,12 +157,9 @@ namespace cherry
 		// TODO: add function; adds an object to the requested scen's list.
 		// bool AddObjectToScene(std::string sceneName, cherry::Object* obj);
 
-		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
-		// if false is returned, then the object is already in the m_Scene.
-		bool AddObjectToCurrentScene(cherry::Object* obj);
-
-		// adds an object to the current registry of the game.
-		// bool AddObjectToCurrentScene(cherry::Object* obj, std::string scene);
+		// adds an object to the scene stored in it. Only call this if the object has already been given a scene..
+		// if false is returned, then the object is already in the requested scene, or the scene didn't exist.
+		bool AddObjectToScene(cherry::Object* obj);
 
 		// TODO: rename to DeleteObject?
 		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
@@ -173,16 +170,13 @@ namespace cherry
 		cherry::LightList* GetSceneLightList() const;
 
 		// gets the light list for the provided scene.
-		LightList* GetSceneLightList(std::string sceneName);
+		cherry::LightList* GetSceneLightList(std::string sceneName);
 
 		// adds a light to the scene
-		void AddLightToScene(cherry::Light * light);
-
-		// adds a light to the provided scene
-		void AddLightToScene(cherry::Light* light, std::string scene);
+		bool AddLightToScene(cherry::Light * light);
 
 		// removes a light from the scene.
-		void DeleteLightFromScene();
+		bool DeleteLightFromScene(cherry::Light * light);
 
 		// runs the game
 		void Run();

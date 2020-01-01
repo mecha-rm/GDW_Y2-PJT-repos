@@ -89,6 +89,24 @@ namespace cherry
 		
 		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const;
 
+		// removes a light by its index.
+		cherry::Light* RemoveLightByIndex(unsigned int index);
+
+		// removes a light from the list via its pointer.
+		cherry::Light* RemoveLightByPointer(cherry::Light * light);
+
+		// removes the first light with // TODO: add tag
+		// cherry::Light* RemoveLightByTag(std::string tag);
+
+		// deletes an object from memory based on a provided index.
+		bool DeleteLightByIndex(unsigned int index);
+
+		// deletes a light from the list based on a provided pointer.
+		bool DeleteLightByPointer(cherry::Light* ll);
+
+		// deletes an object based on its name.
+		// bool DeleteLightByTag(std::string name);
+
 		// vector of lights
 		std::vector<cherry::Light *> lights;
 

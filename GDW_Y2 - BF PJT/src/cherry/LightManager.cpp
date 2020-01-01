@@ -285,3 +285,70 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	// returns the material
 	return material;
 }
+
+// removes a light via its index
+cherry::Light* cherry::LightList::RemoveLightByIndex(unsigned int index)
+{
+	if (index >= lights.size()) // bounds checking
+		return nullptr;
+
+	Light * ll = lights.at(index);
+
+	if (util::removeFromVector(lights, ll)) // success
+	{
+		return ll;
+	}
+	else // failure
+	{
+		return nullptr;
+	}
+}
+
+// removes a light via its pointer
+cherry::Light* cherry::LightList::RemoveLightByPointer(cherry::Light* light)
+{
+	if (light == nullptr) // nullptr passed.
+		return nullptr;
+
+	if (util::removeFromVector(lights, light)) // removed successfully
+	{
+		return light;
+	}
+	else // failure
+	{
+		return nullptr;
+	}
+}
+
+// deletes a light via its index.
+bool cherry::LightList::DeleteLightByIndex(unsigned int index)
+{
+	Light* ll = RemoveLightByIndex(index);
+
+	if (ll != nullptr) // light exists
+	{
+		delete ll;
+		return true;
+	}
+	else // light doesn't exist
+	{
+		return false;
+	}
+}
+
+// deletes the light via its pointer.
+bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
+{
+	if (ll == nullptr) // nullptr passed
+		return false;
+
+	if (RemoveLightByPointer(ll) != nullptr) // if the light was removed successfully
+	{
+		delete ll;
+		return true;
+	}
+	else // not removed successfully
+	{
+		return false;
+	}
+}
