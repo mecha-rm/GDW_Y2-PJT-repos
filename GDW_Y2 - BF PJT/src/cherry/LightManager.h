@@ -16,32 +16,46 @@ namespace cherry
 		// constructor
 		LightManager() = default;
 
+		// destructor
+		~LightManager();
+
 		// checks to see if the requested scene exists in the list, returning true if it does.
-		bool SceneLightListExists(const std::string sceneName);
+		static bool SceneLightListExists(const std::string sceneName);
+
+		// gets the light list via its index.
+		static cherry::LightList* GetSceneLightListByIndex(unsigned int index);
 
 		// gets a pointer to the list of lights for a scene. If this scene doesn't exist, then a nullptr is returned.
-		cherry::LightList * GetSceneLightList(std::string sceneName);
+		static cherry::LightList * GetSceneLightListByName(std::string sceneName);
 
 		// adds a scene to the light manager. This will generate a list of lights for said scene.
 		// if 'true' is returned, then the scene was added.
-		bool AddSceneLightList(const std::string sceneName);
+		static bool CreateSceneLightList(const std::string sceneName);
 	
 
-		// adds a light to a given scene. If this scene doesn't exist, then a false is retuned.
+		// adds a light to the scene stored in the light.
 		// if 'addScene' is true, then the scene is added if its name couldn't be found, and the light is added to said scene's list.
-		bool AddLightToSceneLightList(const std::string sceneName, cherry::Light * light, bool addScene = false);
+		static bool AddLightToSceneLightList(cherry::Light * light, bool addScene = false);
 		
 
 		// returns the average of all lights in the scene, returning them as a single light.
 		// TODO: create a lighting shader that takes multiple lights.
-		// TODO: move this to the light list
-		cherry::Light* GetSceneLightsMerged(std::string sceneName);
+		// TODO: move this to the light list. Delete this?
+		static cherry::Light* GetSceneLightsMerged(std::string sceneName);
 
+		// deletes a scene object list by using its index.
+		static bool DestroySceneLightListByIndex(unsigned int index);
+
+		// deletes an scene list via finding its pointer.
+		static bool DestroySceneLightListByPointer(cherry::LightList* ll);
+
+		// deletes a scene list via the name of the scene.
+		static bool DestroySceneLightListByName(std::string sceneName);
 
 	private:
 
 		// a vector of light list
-		std::vector<cherry::LightList *> lightLists;
+		static std::vector<cherry::LightList *> lightLists;
 
 	protected:
 

@@ -3,6 +3,7 @@
 #include "..\PhysicsBody.h"
 
 // object manager
+std::vector<cherry::ObjectList*> cherry::ObjectManager::objectLists = std::vector<cherry::ObjectList*>();
 
 // destructor
 cherry::ObjectManager::~ObjectManager()
@@ -17,7 +18,7 @@ cherry::ObjectManager::~ObjectManager()
 }
 
 // checks to see if a scene object list already exists.
-bool cherry::ObjectManager::SceneObjectListExists(std::string sceneName) const
+bool cherry::ObjectManager::SceneObjectListExists(std::string sceneName)
 {
 	// checks to see if a scene exist.
 	for (ObjectList* list : objectLists)
@@ -30,7 +31,7 @@ bool cherry::ObjectManager::SceneObjectListExists(std::string sceneName) const
 }
 
 // gets the object list by index
-cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByIndex(unsigned int index) const
+cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByIndex(unsigned int index)
 {
 	if (index >= objectLists.size()) // index out of bounds
 		return nullptr;
@@ -39,7 +40,7 @@ cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByIndex(unsigned in
 }
 
 // gets list of objects for a provided scene. A nullptr is returned if the scene doesn't have a list.
-cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByName(std::string sceneName) const
+cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByName(std::string sceneName)
 {
 	// goes through the sceneLists to get the right object list.
 	for (cherry::ObjectList* objList : objectLists)
@@ -51,7 +52,7 @@ cherry::ObjectList* cherry::ObjectManager::GetSceneObjectListByName(std::string 
 }
 
 // add scene object list. 
-bool cherry::ObjectManager::AddSceneObjectList(std::string scene)
+bool cherry::ObjectManager::CreateSceneObjectList(std::string scene)
 {
 	for (cherry::ObjectList* objList : objectLists)
 	{
@@ -97,7 +98,7 @@ bool cherry::ObjectManager::AddObjectToSceneObjectList(Object* obj, bool addScen
 }
 
 // deletes a scene object list by using its index.
-bool cherry::ObjectManager::DeleteSceneObjectListByIndex(unsigned int index)
+bool cherry::ObjectManager::DestroySceneObjectListByIndex(unsigned int index)
 {
 	ObjectList* objList = GetSceneObjectListByIndex(index);
 
@@ -115,11 +116,11 @@ bool cherry::ObjectManager::DeleteSceneObjectListByIndex(unsigned int index)
 }
 
 // deletes a scene object, which is found via a pointer
-bool cherry::ObjectManager::DeleteSceneObjectListByPointer(cherry::ObjectList* obj)
+bool cherry::ObjectManager::DestroySceneObjectListByPointer(cherry::ObjectList* objList)
 {
-	if (util::removeFromVector(objectLists, obj)) // in list
+	if (util::removeFromVector(objectLists, objList)) // in list
 	{
-		delete obj;
+		delete objList;
 		return true;
 	}
 	else // was not in list
@@ -129,18 +130,18 @@ bool cherry::ObjectManager::DeleteSceneObjectListByPointer(cherry::ObjectList* o
 }
 
 // deletes a scene object via finding the name of the scene
-bool cherry::ObjectManager::DeleteSceneObjectListByName(std::string sceneName)
+bool cherry::ObjectManager::DestroySceneObjectListByName(std::string sceneName)
 {
 	ObjectList* obj = GetSceneObjectListByName(sceneName);
 
-	return DeleteSceneObjectListByPointer(obj);
+	return DestroySceneObjectListByPointer(obj);
 }
 
 // reading of an index
-const cherry::ObjectList & cherry::ObjectManager::operator[](const int index) const { return *objectLists[index]; }
+// const cherry::ObjectList & cherry::ObjectManager::operator[](const int index) const { return *objectLists[index]; }
 
 // editing of an index
-cherry::ObjectList & cherry::ObjectManager::operator[](const int index) { return *objectLists[index]; }
+// cherry::ObjectList & cherry::ObjectManager::operator[](const int index) { return *objectLists[index]; }
 
 // OBJECT LIST
 // constructor

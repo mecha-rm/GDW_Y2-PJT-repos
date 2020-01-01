@@ -407,6 +407,7 @@ namespace cherry
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
 		// default body size
+		// TODO: change so that it's based on the vertices intead.
 		cherry::Vec3 pBodySize;
 
 	protected:
