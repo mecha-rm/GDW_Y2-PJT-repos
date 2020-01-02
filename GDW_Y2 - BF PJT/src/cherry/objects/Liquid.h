@@ -7,9 +7,15 @@ namespace cherry
 	class Liquid : public Object
 	{
 	public:
-		// the constructor for liquid
+		// the constructor for liquid; size and numsections must be greater than 1, otherwise they'll be set to 1.
 		// this uses the water shader, with refers to 'water' being simplified to 'liquid'.
 		Liquid(std::string scene, float size, float numSections, bool worldUVs = true);
+
+		// gets the size of the liquid (length and width are the same for liquids).
+		float GetSize() const;
+
+		// gets the number of sections for the waves.
+		float GetNumberOfSections() const;
 
 		// gets the total amount of enabled waves
 		int GetEnabledWaves() const;
@@ -87,10 +93,10 @@ namespace cherry
 		void SetEnvironment(TextureCube::Sptr skyboxTexture); // the environment (skybox) for the water.
 
 	private:
-		static const int MAX_WAVES;
+		float size; // size of wave
+		float numSections; // number of sections
 
-		// save vertex count and wave count
-		// TODO: add liquid defaults
+		static const int MAX_WAVES; // maximum amount of waves
 
 		// number of enabled waves (all enabled by default)
 		int enabledWaves = 8;

@@ -341,6 +341,11 @@ namespace cherry
 		// default physics body size
 		float GetPBodyDepth();
 
+		// calculates the upper limits of the mesh body
+		static cherry::Vec3 CalculateMeshBodyMaximum(const Vertex * vertices, const unsigned int VERTEX_COUNT);
+
+		// calculates the lower limits of the mesh body
+		static cherry::Vec3 CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT);
 
 		// updates the object
 		void Update(float deltaTime);
@@ -372,6 +377,7 @@ namespace cherry
 		// *** the symbol at the start is what's used to determine what the values in a given line of a .obj are for.
 		template<typename T>
 		const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
+
 
 		// template<typename T>
 		// void CalculateNormals(std::vector<);
@@ -408,11 +414,16 @@ namespace cherry
 
 		// default body size
 		// TODO: change so that it's based on the vertices intead.
-		cherry::Vec3 pBodySize;
+
+		cherry::Vec3 pBodySize; // DELETE
 
 	protected:
 		// constructor used for default primitives
 		Object();
+
+		// calculates the limits of the mesh (i.e. the highest and lowest vertex positions). This does not account for animations.
+		// only call this once the vertices have all been found and accounted for.
+		void CalculateMeshBody();
 
 		// object name
 		std::string name = "";
@@ -438,6 +449,9 @@ namespace cherry
 		// the mesh
 		Mesh::Sptr mesh;
 
+		// mesh body size
+		cherry::Vec3 meshBodyMin; // minimum vertex positions
+		cherry::Vec3 meshBodyMax; // maximum vertex positions
 
 		// the color of the model.
 		// cherry::Vec4 color;

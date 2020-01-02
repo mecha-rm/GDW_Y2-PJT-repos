@@ -244,14 +244,20 @@ bool cherry::Object::LoadObject(bool loadMtl)
 			switch (tempVecFlt.size())
 			{
 			case 3: // (x, y, z)
-			case 4: // (x, y, z, w) (n/a) ('w' value is ignored)
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
+
+			case 4: // (x, y, z, w) (n/a) ('w' value is ignored); currently same as case 3.
 				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} });
 				break;
 
 			case 6: // (x, y, z, r, g, b)
 				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[3], tempVecFlt[4], tempVecFlt[5], 1.0F}, {0.0F, 0.0F, 0.0F} });
-			case 7: // (x, y, z, w, r, g, b) (n/a) ('w' value is ignored)
+				break;
+
+			case 7: // (x, y, z, w, r, g, b) (n/a) ('w' value is ignored); currently the same as case 6.
 				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
 			}
 		}
 		else if (line.substr(0, line.find_first_of(" ")) == "vt") // Texture UV (u, v); not used for anything
@@ -331,6 +337,8 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		}
 	}
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// creates the mesh
 	// unlike with the default primitives, the amount of vertices corresponds to how many Indices there are, and the values are set accordingly.
 	
@@ -340,9 +348,8 @@ bool cherry::Object::LoadObject(bool loadMtl)
 	else
 		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0); // no deformation
 	
-
 	// the object loader has a material associated with it, and said material should be loaded
-// if the .obj file had a material associated with it.
+	// if the .obj file had a material associated with it.
 	if (mtllib != "" && loadMtl)
 	{
 		// adds the file path to the material
@@ -356,6 +363,23 @@ bool cherry::Object::LoadObject(bool loadMtl)
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.
+}
+
+// parses a string to get all the values from it as data type (T).
+template<typename T>
+const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, bool containsSymbol)
+{
+	// if the string is of length 0, then an empty vector is returned.
+	if (str.length() == 0)
+		return std::vector<T>();
+
+	if (containsSymbol) // checks if the symbol is still in the string. If so, it is removed.
+	{
+		str.erase(0, str.find_first_of(" ")); // erases the start of the string, which contains the symbol.
+	}
+
+	// returns the string put into a vector
+	return util::splitString<T>(str);
 }
 
 // creates an entity with the provided m_Scene.
@@ -710,6 +734,60 @@ float cherry::Object::GetPBodyDepth()
 	return this->GetPBodySize().GetZ() / 2;
 }
 
+// gets the maximum mesh body values.
+cherry::Vec3 cherry::Object::CalculateMeshBodyMaximum(const Vertex* vertices, const unsigned int VERTEX_COUNT)
+{
+	if (vertices == nullptr || VERTEX_COUNT == 0) // no vertices were passed.
+		return Vec3();
+
+	cherry::Vec3 maxVerts{}; // maximum verts
+
+	// getting the maximum mesh body values.
+	for (int i = 0; i < VERTEX_COUNT; i++)
+	{
+		if (maxVerts.v.x < vertices[i].Position.x) // x-position
+			maxVerts.v.x = vertices[i].Position.x;
+		
+		if (maxVerts.v.y < vertices[i].Position.y) // y-position
+			maxVerts.v.y = vertices[i].Position.y;
+
+		if (maxVerts.v.z < vertices[i].Position.z) // z-position
+			maxVerts.v.z = vertices[i].Position.z;
+	}
+
+	return maxVerts; // maximum vertex values
+}
+
+// gets the mesh body minimum values
+cherry::Vec3 cherry::Object::CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT)
+{
+	if (vertices == nullptr || VERTEX_COUNT == 0) // no vertices were passed.
+		return Vec3();
+
+	cherry::Vec3 minVerts{}; // maximum verts
+
+	// getting the maximum mesh body values.
+	for (int i = 0; i < VERTEX_COUNT; i++)
+	{
+		if (minVerts.v.x > vertices[i].Position.x) // x-position
+			minVerts.v.x = vertices[i].Position.x;
+
+		if (minVerts.v.y > vertices[i].Position.y) // y-position
+			minVerts.v.y = vertices[i].Position.y;
+
+		if (minVerts.v.z > vertices[i].Position.z) // z-position
+			minVerts.v.z = vertices[i].Position.z;
+	}
+
+	return minVerts; // minimum vertex values
+}
+
+// calculates the mesh body, which is the limits of the mesh.
+void cherry::Object::CalculateMeshBody()
+{
+	meshBodyMax = CalculateMeshBodyMaximum(vertices, verticesTotal); // maximum values
+	meshBodyMin = CalculateMeshBodyMinimum(vertices, verticesTotal); // minimum values
+}
 
 // updates the object
 void cherry::Object::Update(float deltaTime)
@@ -740,21 +818,4 @@ void cherry::Object::Update(float deltaTime)
 std::string cherry::Object::ToString() const
 {
 	return "Name: " + name + " | Description: " + description + " | Position: " + position.ToString();
-}
-
-// parses a string to get all the values from it as data type (T).
-template<typename T>
-const std::vector<T> cherry::Object::parseStringForTemplate(std::string str, bool containsSymbol)
-{
-	// if the string is of length 0, then an empty vector is returned.
-	if (str.length() == 0)
-		return std::vector<T>();
-
-	if (containsSymbol) // checks if the symbol is still in the string. If so, it is removed.
-	{
-		str.erase(0, str.find_first_of(" ")); // erases the start of the string, which contains the symbol.
-	}
-
-	// returns the string put into a vector
-	return util::splitString<T>(str);
 }

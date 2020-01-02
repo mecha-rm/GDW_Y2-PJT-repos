@@ -254,6 +254,8 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 	CalculateNormals();
 	InvertNormals();
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	// AddPhysicsBody(new cherry::PhysicsBodySphere(radius));

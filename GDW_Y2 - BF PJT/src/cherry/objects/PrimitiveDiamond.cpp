@@ -116,6 +116,8 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	CalculateNormals();
 	InvertNormals();
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 

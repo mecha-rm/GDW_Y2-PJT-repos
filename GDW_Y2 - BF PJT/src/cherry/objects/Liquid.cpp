@@ -5,9 +5,19 @@
 // NOTE: make sure this value aligns with the macro 'MAX_WAVES' in the 'water-shader.vs.glsl'
 const int cherry::Liquid::MAX_WAVES = 8;
 
+// constructor
 cherry::Liquid::Liquid(std::string scene, float size, float numSections, bool worldUVs)
 	:Object()
 {
+	if (size <= 0) // minimum size
+		size = 1;
+
+	if (numSections < 0) // minimum amount of sections.
+		numSections = 1.0F;
+
+	this->size = size; // saving the wave size.
+	this->numSections = numSections; // saving the number of wave sections.
+
 	// creating the material
 	Shader::Sptr liquidShader = std::make_shared<Shader>();
 	liquidShader->Load("res/water-shader.vs.glsl", "res/water-shader.fs.glsl");
@@ -15,10 +25,34 @@ cherry::Liquid::Liquid(std::string scene, float size, float numSections, bool wo
 	material = std::make_shared<Material>(liquidShader);
 	material->HasTransparency = true;
 
+
+	// the wave calculation doesn't save the vertices, so the calculation is done here.
+	// the mesh body
+	float start = -size / 2.0f;
+	float step = size / numSections;
+
+	// minimum values (first iteration of the loop)
+	meshBodyMin.v.x = start;
+	meshBodyMin.v.y = start;
+	meshBodyMin.v.z = 0;
+
+	// maximum values (final iteration of the loop)
+	meshBodyMax.v.x = start + numSections * step;
+	meshBodyMax.v.y = start + numSections * step;
+	meshBodyMax.v.z = 0;
+
 	mesh = Mesh::MakeSubdividedPlane(size, numSections, worldUVs);
 	mesh->cullFaces = false;
+
+
 	CreateEntity(scene, material); // creates the entity
 }
+
+// returns the size of the liquid.
+float cherry::Liquid::GetSize() const { return size; }
+
+// returns the number of sections for the wave.
+float cherry::Liquid::GetNumberOfSections() const { return numSections; }
 
 // gets the total amount of enabled waves.
 int cherry::Liquid::GetEnabledWaves() const { return enabledWaves; }

@@ -263,13 +263,16 @@ cherry::Mesh::Sptr cherry::Mesh::MakeInvertedCube() {
 cherry::Mesh::Sptr cherry::Mesh::MakeSubdividedPlane(float size, int numSections, bool worldUvs) {
 	LOG_ASSERT(numSections > 0, "Number of sections must be greater than 0!");
 	LOG_ASSERT(size != 0, "Size cannot be zero!");
+
 	// Determine the number of edge vertices, and the number of vertices and indices we'll need
 	int numEdgeVerts = numSections + 1;
 	size_t vertexCount = numEdgeVerts * numEdgeVerts;
 	size_t indexCount = numSections * numSections * 6;
+
 	// Allocate some memory for our vertices and indices
 	cherry::Vertex* vertices = new cherry::Vertex[vertexCount];
 	uint32_t* indices = new uint32_t[indexCount];
+
 	// Determine where to start vertices from, and the step pre grid square
 	float start = -size / 2.0f;
 	float step = size / numSections;

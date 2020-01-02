@@ -67,6 +67,8 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 		// creates a cube that gets squished so that it appears to be a plane.
 		// the front and back of the cube (which become the front and back of the plane)
 		verticesTotal = 8;
+
+		// Position, Colour, Normals, and UVs
 		vertices = new Vertex[verticesTotal]
 		{
 			//  x			  y				  z		   r	 g	   b	 a		 // normals
@@ -102,6 +104,8 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 	else // the front and back are different
 	{
 		verticesTotal = 4;
+
+		// Position, Colour, Normals, and UVs
 		vertices = new Vertex[verticesTotal]
 		{
 			//  x			  y				  z		   r	 g	   b	 a		 // normals
@@ -118,9 +122,9 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 			2, 1, 3
 		};
 	}
-	// Position, Colour, Normals, and UVs
-
 	
+
+	CalculateMeshBody(); // calculates the limits of the mesh body.
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
