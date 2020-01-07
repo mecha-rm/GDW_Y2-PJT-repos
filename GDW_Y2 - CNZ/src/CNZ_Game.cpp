@@ -240,6 +240,8 @@ void cnz::CNZ_Game::LoadContent()
 {
 	srand(time(NULL));
 
+	Level test = Level("res/loader/legend.csv", "res/loader/map1.csv");
+
 	Game::LoadContent(); // calls the load content
 
 	playerObj = new Player("res/objects/hero/charactoereee.obj", GetCurrentScene(), matStatic); // creates the player.
