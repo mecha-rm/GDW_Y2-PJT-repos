@@ -48,6 +48,69 @@ namespace util
 		// linear interpolation (vec4). If (t) is less than 0, it's set at 0. If (t) is greater than 1, it's set to 1.
 		inline util::math::Vec4 lerp(const util::math::Vec4& v0, const util::math::Vec4& v1, float t);
 
+		// Easing Functions
+		// 1. Ease In 1 - Slow In, Fast Out (Quadratic)
+		util::math::Vec3 easeIn1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 2. Ease In 1 - Slow In, Fast Out (Cubic)
+		util::math::Vec3 easeIn2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 3. Ease In 3 - Slow In, Slow Out (Octic)
+		util::math::Vec3 easeIn3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 4. Ease Out 1 - Fast In, Slow Out (Inverse Quadratic)
+		util::math::Vec3 easeOut1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 5. Ease Out 2 - Fase In, Slow Out (Inverse Cubic)
+		util::math::Vec3 easeOut2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 6. Ease Out 3 - Fade In, Slow Out (Inverse Octic)
+		util::math::Vec3 easeOut3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 7. Ease In-Out 1 - Shrink, Offset, Simplify In / Out
+		util::math::Vec3 easeInOut1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 8. Ease In-Out 2 - Shrink, Offset, Simplify In / Out
+		util::math::Vec3 easeInOut2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 9. Ease In-Out 2 - Shrink, Offset, Simplify In / Out
+		util::math::Vec3 easeInOut3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 10. Ease In Circular - Inwards (Valley) Curve
+		util::math::Vec3 easeInCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 11. Ease Out Circular - Outwards (Hill) Curve
+		util::math::Vec3 easeOutCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 12. Ease In-Out Circular - curve inward, then outwards (Valley -> Hill)
+		util::math::Vec3 easeInOutCircular(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 13. Ease In Bounce 1 - Offset Power Composition
+		util::math::Vec3 easeInBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 14. Ease In Bounce 2 - Offset Power Composition
+		util::math::Vec3 easeInBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 15. Ease In Bounce 3 - Offset Power Composition
+		util::math::Vec3 easeInBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 16. Ease Out Bounce 1 - inverse offset, power composition
+		util::math::Vec3 easeOutBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 17. Ease Out Bounce 2 - inverse offset, power composition
+		util::math::Vec3 easeOutBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 18. Ease Out Bounce 3 - inverse offset, power composition
+		util::math::Vec3 easeOutBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 19. EaseInOutBounce 1 - shrink, offset, simplify in/out
+		util::math::Vec3 easeInOutBounce1(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 20. EaseInOutBounce 2 - shrink, offset, simplify in/out
+		util::math::Vec3 easeInOutBounce2(util::math::Vec3 v1, util::math::Vec3 v2, float t);
+
+		// 21. EaseInOutBounce 3 - Shrink, offset, simplify In / Out
+		util::math::Vec3 easeInOutBounce3(util::math::Vec3 v1, util::math::Vec3 v2, float t);
 
 
 

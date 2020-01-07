@@ -98,7 +98,7 @@ glm::vec3 cherry::PhysicsBody::GetWorldPositionGLM() const
 	return glm::vec3(wpos.v.x, wpos.v.y, wpos.v.z);
 }
 
-// returns the world position; objects save their position in world space
+// returns the world position; sceneLists save their position in world space
 cherry::Vec3 cherry::PhysicsBody::GetWorldPosition() const 
 {
 	// TODO: reference body object instead?
@@ -156,7 +156,7 @@ cherry::Vec3 cherry::PhysicsBody::GetScale() const { return scale; }
 void cherry::PhysicsBody::SetScale(cherry::Vec3 newScale) { scale = newScale; }
 
 
-// calculates collision between objects
+// calculates collision between sceneLists
 bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 {
 	// if either object is null.
@@ -170,7 +170,7 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 	// AABB Collision
 	if (p1->GetId() == 1 && p2->GetId() == 1)
 	{
-		// downcasts the objects
+		// downcasts the sceneLists
 		cherry::PhysicsBodyBox * temp1 = (cherry::PhysicsBodyBox*)p1;
 		cherry::PhysicsBodyBox * temp2 = (cherry::PhysicsBodyBox*)p2;
 
@@ -193,7 +193,7 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 	else if ((p1->GetId() == 1 && p2->GetId() == 2) || (p1->GetId() == 2 && p2->GetId() == 1))
 	{
 		// if the first object is an aabb, meaning that the other object is a sphere
-		if (p1->GetId() == 1) // calls the collision function again, but swaps the objects around
+		if (p1->GetId() == 1) // calls the collision function again, but swaps the sceneLists around
 		{
 			return Collision(p2, p1);
 		}

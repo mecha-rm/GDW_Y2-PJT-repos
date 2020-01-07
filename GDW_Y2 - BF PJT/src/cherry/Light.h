@@ -69,23 +69,23 @@ namespace cherry
 		void SetLightColor(glm::vec3 clr);
 
 		// gets the ambient color of the light in decimal form [0, 1]
-		// these values are used for textureless objects
+		// these values are used for textureless sceneLists
 		cherry::Vec3 GetAmbientColor() const;
 
 		// gets the ambient color of the light in decimal form [0, 1]
-		// these values are used for textureless objects
+		// these values are used for textureless sceneLists
 		glm::vec3 GetAmbientColorGLM() const;
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
-		// these values are used for textureless objects
+		// these values are used for textureless sceneLists
 		void SetAmbientColor(float x, float y, float z);
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
-		// these values are used for textureless objects
+		// these values are used for textureless sceneLists
 		void SetAmbientColor(cherry::Vec3 ambientClr);
 
 		// sets the ambient colour (in RGB decimal, [0, 1])
-		// these values are used for textureless objects
+		// these values are used for textureless sceneLists
 		void SetAmbientColor(glm::vec3 ambientClr);
 
 		// gets the ambient power

@@ -10,16 +10,16 @@
 #include <GLM/gtc/matrix_transform.hpp>
 #include <toolkit/Logging.h>
 
-#include "SceneManager.h"
 #include "MeshRenderer.h"
 #include "Texture2D.h"
 
 #include "PhysicsBody.h"
 #include "utils/Utils.h"
-#include "objects/Image.h"
 #include "WorldTransform.h"
 
 #include<functional>
+#include<time.h>
+#include<random>
 
 /*
 	Handles debug messages from OpenGL
@@ -75,6 +75,11 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	case GLFW_PRESS:
 		game->MouseButtonPressed(window, button);
 		break;
+
+	case GLFW_REPEAT:
+		game->MouseButtonHeld(window, button);
+		break;
+
 	case GLFW_RELEASE:
 		game->MouseButtonReleased(window, button);
 		break;
@@ -146,7 +151,9 @@ cherry::Game::Game() :
 	myClearColor(glm::vec4(0.1f, 0.7f, 0.5f, 1.0f)), // default clear colour
 	myModelTransform(glm::mat4(1)), // my model transform
 	myWindowSize(600, 600) // window size (default)
-{ }
+{
+	srand(time(0));
+}
 
 // creates window with a width, height, and whether or not it's in full screen.
 cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
@@ -226,7 +233,28 @@ void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 	}
 }
 
-// called when a mouse button has been pressed
+// called when a mouse button is being held
+void cherry::Game::MouseButtonHeld(GLFWwindow* window, int button) {
+	Game* game = (Game*)glfwGetWindowUserPointer(window);
+
+	if (game == nullptr) // if game is 'null', then nothing happens
+		return;
+
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
+}
+
+// called when a mouse button has been released
 void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -274,22 +302,22 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 		d = true;
 		break;
 	case GLFW_KEY_V:
-		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
-			objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
+		if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
+			objectList->objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
 		break;
 	case GLFW_KEY_P:
-		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
-			objects[hitBoxIndex]->followPath = !objects[hitBoxIndex]->followPath;
+		if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
+			objectList->objects[hitBoxIndex]->followPath = !objectList->objects[hitBoxIndex]->followPath;
 	case GLFW_KEY_I:
-		if (hitBoxIndex >= 0 && hitBoxIndex < objects.size())
+		if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
 		{
-			if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 0)
+			if (objectList->objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 0)
 			{
-				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(1);
+				objectList->objects[hitBoxIndex]->GetPath().SetInterpolationMode(1);
 			}
-			else if (objects[hitBoxIndex]->GetPath()->GetInterpolationMode() == 1)
+			else if (objectList->objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 1)
 			{
-				objects[hitBoxIndex]->GetPath()->SetInterpolationMode(0);
+				objectList->objects[hitBoxIndex]->GetPath().SetInterpolationMode(0);
 			}
 			
 		}
@@ -345,48 +373,301 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_D:
 		d = false;
 		break;
+	case GLFW_KEY_0:
+		DeleteObjectFromScene(objectList->objects.at(0));
+		break;
 	}
 }
 
+// makes a scene
+bool cherry::Game::CreateScene(const std::string sceneName, const bool makeCurrent)
+{
+	// creating a default skybox for the scene, since none was provided
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+	);
+
+	return CreateScene(sceneName, skybox, makeCurrent);
+}
+
+// creates a scene, and returns 'true' if it was successful.
+bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent)
+{
+	if (SceneManager::HasScene(sceneName)) // if the scene already exists
+	{
+		return false;
+	}
+	else
+	{
+		SceneManager::RegisterScene(sceneName); // registering the scene
+		cherry::Scene * scene = SceneManager::Get(sceneName); // getting the scene
+
+		skybox.AddSkyboxToScene(scene); // adds the skybox to the scene.
+
+		// creating an object list.
+		ObjectManager::CreateSceneObjectList(sceneName);
+		objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+
+		// creating a light list.
+		LightManager::CreateSceneLightList(sceneName);
+		lightList = LightManager::GetSceneLightListByName(sceneName);
+
+		if (makeCurrent) // if the new scene should be the current scene.
+		{
+			SceneManager::SetCurrentScene(sceneName);
+		}
+
+		return true;
+	}
+}
+
+// gets the requested scene via its name
+cherry::Scene* cherry::Game::GetScene(std::string sceneName) const { return SceneManager::Get(sceneName); }
+
+// gets the current scene.
+cherry::Scene* cherry::Game::GetCurrentScene() const { return CurrentScene(); }
+
+// sets the current scene
+bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene) 
+{
+	if (SceneManager::HasScene(sceneName)) // sets the current scene.
+	{
+		if (SceneManager::SetCurrentScene(sceneName)) // if the scene switch was successful.
+		{
+			// object manager
+			if (ObjectManager::SceneObjectListExists(sceneName)) // if the scene object list exists
+			{
+				objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+			}
+			else // it doesn't exist, so it should be made.
+			{
+				ObjectManager::CreateSceneObjectList(sceneName);
+				objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+			}
+
+			// light manager
+			if (LightManager::SceneLightListExists(sceneName)) // if the light list exists
+			{
+				lightList = LightManager::GetSceneLightListByName(sceneName);
+			}
+			else // it doesn't exist, so it should be made.
+			{
+				LightManager::CreateSceneLightList(sceneName);
+				lightList = LightManager::GetSceneLightListByName(sceneName);
+			}
+
+			return true;
+		}
+		else // scene switch failed
+		{
+			return false;
+		}
+
+	}
+	else // scene doesn't exist
+	{
+		if (createScene) // new scene should be made.
+		{
+			return CreateScene(sceneName, true); // creates the scene, and makes it the current scene.
+		}
+		else // scene doesn't exist, and shouldn't be made.
+		{
+			return false;
+		}
+
+	}
+}
+
+// returns the name of the current scene.
+const std::string & cherry::Game::GetCurrentSceneName() const
+{ 
+	Scene* scene = CurrentScene();
+
+	if (scene != nullptr) // scene exists
+		scene->GetName();
+	else // scene doesn't exist
+		return std::string("");
+}
+
+// destroys all scenes
+void cherry::Game::DestroyScenes() { SceneManager::DestroyScenes(); }
+
+// sets the skybox for the current scene.
+void cherry::Game::SetSkybox(cherry::Skybox& skybox, const bool visible) 
+{ 
+	auto scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+	{
+		skybox.AddSkyboxToScene(scene);
+		scene->SkyboxMesh->SetVisible(visible);
+	}
+}
+
+// sets the skybox for a scene, provides a scene name, and sets if it should be visible.
+void cherry::Game::SetSkybox(cherry::Skybox& skybox, const std::string sceneName, const bool visible)
+{
+	auto scene = SceneManager::Get(sceneName);
+
+	if (scene != nullptr) // if the scene exists.
+	{
+		skybox.AddSkyboxToScene(scene);
+		scene->SkyboxMesh->SetVisible(visible);
+	}
+}
+
+// gets whether the skybox is visible for the current scene or not.
+bool cherry::Game::GetSkyboxVisible() const 
+{
+	auto scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+		return scene->SkyboxMesh->IsVisible();
+}
+
+// gets the visibility of the skybox in the scene.
+bool cherry::Game::GetSkyboxVisible(std::string sceneName) const
+{
+	auto scene = SceneManager::Get(sceneName);
+
+	if (scene != nullptr) // if the scene exists.
+		return scene->SkyboxMesh->IsVisible();
+}
+
+// changes whether the skybox should be visible or not.
+void cherry::Game::SetSkyboxVisible(bool skybox)
+{
+	auto scene = CurrentScene();
+
+	if (scene != nullptr) // if the scene exists.
+		return scene->SkyboxMesh->SetVisible(skybox);
+}
+
+// sets if the skybox is visible for the provided scene or not.
+void cherry::Game::SetSkyboxVisible(bool skybox, std::string sceneName)
+{
+	auto scene = SceneManager::Get(sceneName);
+
+	if(scene != nullptr) // if the scene exists.
+		scene->SkyboxMesh->SetVisible(skybox);
+}
+
+// gets the total amount of sceneLists
+unsigned int cherry::Game::GetObjectCount() const { return objectList->objects.size(); }
+
+// gets the object list for the scene
+cherry::ObjectList* cherry::Game::GetSceneObjectList() const { return objectList; }
+
+// gets the object list for the provided scene.
+cherry::ObjectList* cherry::Game::GetSceneObjectList(std::string scene) { return ObjectManager::GetSceneObjectListByName(scene); }
+
+// gets an object from the current scene
+cherry::Object* cherry::Game::GetCurrentSceneObjectByIndex(unsigned int index) const 
+{
+	if (objectList != nullptr) // if there is an object list for this scene
+	{
+		return objectList->GetObjectByIndex(index);
+	}
+	else // if there isn't an object list for this scene
+	{
+		return GetSceneObjectByIndex(GetCurrentSceneName(), index);
+	}
+}
+
+// gets an object from the provided scene
+cherry::Object* cherry::Game::GetSceneObjectByIndex(std::string scene, unsigned int index) const
+{
+	// TODO: check for proper scene
+	if (index > objectList->objects.size())
+		return nullptr;
+	else
+		return ObjectManager::GetSceneObjectListByName(scene)->GetObjectByIndex(index);
+}
+
+// gets a scene object by name
+cherry::Object* cherry::Game::GetCurrentSceneObjectByName(std::string name) const
+{
+	for (Object* obj : objectList->objects)
+	{
+		if (obj->GetName() == name && obj->GetScene() == GetCurrentSceneName())
+			return obj;
+	}
+	return nullptr;
+}
+
+// gets a scene object from the provided scene, using its name
+cherry::Object* cherry::Game::GetSceneObjectByName(std::string scene, std::string name) const
+{
+	return ObjectManager::GetSceneObjectListByName(scene)->GetObjectByName(name);
+}
+
 // adds an object to the m_Scene
-bool cherry::Game::AddObject(cherry::Object* obj) { return AddObject(obj, currentScene); }
+bool cherry::Game::AddObjectToScene(cherry::Object* obj) 
+{ 
+	return ObjectManager::AddObjectToSceneObjectList(obj); 
+}
 
 
 // adds an object to the m_Scene.
-bool cherry::Game::AddObject(cherry::Object* obj, std::string scene)
+//bool cherry::Game::AddObjectToCurrentScene(cherry::Object* obj, std::string scene)
+//{
+//	// adds the object to the list of sceneLists.
+//	bool added = util::addToVector(objectList->objects, obj);
+//
+//	if (added) // if the object was added, then an entity is created.
+//		obj->CreateEntity(scene, matStatic);
+//
+//	return added; // returns 
+//}
+
+// removes an object from the sceneLists vector.
+bool cherry::Game::DeleteObjectFromScene(cherry::Object* obj)
 {
-	// adds the object to the list of objects.
-	bool added = util::addToVector(objects, obj);
-
-	if (added) // if the object was added, then an entity is created.
-		obj->CreateEntity(scene, matStatic);
-
-	return added; // returns 
-}
-
-// removes an object from the objects vector.
-bool cherry::Game::RemoveObject(cherry::Object* obj) 
-{ 
-	return util::removeFromVector(objects, obj); 
-	delete obj;
-}
-
-// gets an object from the current scene
-cherry::Object* cherry::Game::GetSceneObject(unsigned int index) const { return GetSceneObject(index, currentScene); }
-
-// gets an object from the provided scene
-cherry::Object* cherry::Game::GetSceneObject(unsigned int index, std::string scene) const
-{
-	// TODO: check for proper scene
-	if (index > objects.size())
-		return nullptr;
+	if (objectList != nullptr) // if the list hasn't been set, then it must be received.
+	{
+		return objectList->DeleteObjectByPointer(obj);
+	}
 	else
-		return objects.at(index);
+	{
+		objectList = ObjectManager::GetSceneObjectListByName(GetCurrentSceneName());
+		return ObjectManager::GetSceneObjectListByName(GetCurrentSceneName())->DeleteObjectByPointer(obj);
+	}
+
 }
 
+// gets the light list for the current scene
+cherry::LightList* cherry::Game::GetSceneLightList() const { return lightList; }
 
-// gets the total amount of objects
-unsigned int cherry::Game::GetObjectCount() const { return objects.size(); }
+// gets the lights for a given scene.
+cherry::LightList* cherry::Game::GetSceneLightList(std::string sceneName)
+{
+	return LightManager::GetSceneLightListByName(sceneName);
+}
+
+// adds the light to the scene it's part of.
+bool cherry::Game::AddLightToScene(cherry::Light* light)
+{
+	return LightManager::AddLightToSceneLightList(light);
+}
+
+// deletes a light from the scene.
+bool cherry::Game::DeleteLightFromScene(cherry::Light* light)
+{
+	if (lightList != nullptr) // if the list hasn't been set, then it must be received.
+	{
+		return lightList->DeleteLightByPointer(light);
+	}
+	else
+	{
+		lightList = LightManager::GetSceneLightListByName(GetCurrentSceneName());
+		return LightManager::GetSceneLightListByName(GetCurrentSceneName())->DeleteLightByPointer(light);
+	}
+}
 
 
 void cherry::Game::Initialize() {
@@ -446,102 +727,12 @@ void cherry::Game::Initialize() {
 	glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 
 	glEnable(GL_DEPTH_TEST);
-	// glEnable(GL_CULL_FACE); // TODO: uncomment when showcasing game.
+	glEnable(GL_CULL_FACE); // TODO: uncomment when showcasing game.
 	glEnable(GL_SCISSOR_TEST); // used for rendering multiple windows (TODO: maybe turn off if we aren't using multiple windows?)
 }
 
 void cherry::Game::Shutdown() {
 	glfwTerminate();
-}
-
-// makes the faces face outward.
-cherry::Mesh::Sptr MakeInvertedCube() {
-	// Create our 4 vertices
-	cherry::Vertex verts[8] = {
-		// Position
-		// x y z
-		{{ -1.0f, -1.0f, -1.0f }}, {{ 1.0f, -1.0f, -1.0f }}, {{ -1.0f, 1.0f, -1.0f }}, {{ 1.0f, 1.0f, -1.0f }},
-		{{ -1.0f, -1.0f, 1.0f }}, {{ 1.0f, -1.0f, 1.0f }}, {{ -1.0f, 1.0f, 1.0f }}, {{ 1.0f, 1.0f, 1.0f }}
-	};
-	// Create our 6 indices
-	uint32_t indices[36] = {
-	0, 1, 2, 2, 1, 3, 4, 6, 5, 6, 7, 5, // bottom / top
-	0, 1, 4, 4, 1, 5, 2, 3, 6, 6, 3, 7, // front /back
-	2, 4, 0, 2, 6, 4, 3, 5, 1, 3, 7, 5 // left / right
-	};
-	// Create a new mesh from the data
-	return std::make_shared<cherry::Mesh>(verts, 8, indices, 36);
-}
-
-// chopping up the plane.
-cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true) {
-	LOG_ASSERT(numSections > 0, "Number of sections must be greater than 0!");
-	LOG_ASSERT(size != 0, "Size cannot be zero!");
-	// Determine the number of edge vertices, and the number of vertices and indices we'll need
-	int numEdgeVerts = numSections + 1;
-	size_t vertexCount = numEdgeVerts * numEdgeVerts;
-	size_t indexCount = numSections * numSections * 6;
-	// Allocate some memory for our vertices and indices
-	cherry::Vertex* vertices = new cherry::Vertex[vertexCount];
-	uint32_t* indices = new uint32_t[indexCount];
-	// Determine where to start vertices from, and the step pre grid square
-	float start = -size / 2.0f;
-	float step = size / numSections;
-
-	// vertices
-	// Iterate over the grid's edge vertices
-	for (int ix = 0; ix <= numSections; ix++) {
-		for (int iy = 0; iy <= numSections; iy++) {
-			// Get a reference to the vertex so we can modify it
-			cherry::Vertex& vert = vertices[ix * numEdgeVerts + iy];
-			// Set its position
-			vert.Position.x = start + ix * step;
-			vert.Position.y = start + iy * step;
-			vert.Position.z = 0.0f;
-			// Set its normal
-			vert.Normal = glm::vec3(0, 0, 1);
-			// The UV will go from [0, 1] across the entire plane (can change this later)
-			if (worldUvs) {
-				vert.UV.x = vert.Position.x;
-				vert.UV.y = vert.Position.y;
-			}
-			else {
-				vert.UV.x = vert.Position.x / size;
-				vert.UV.y = vert.Position.y / size;
-			}
-			// Flat white color
-			vert.Color = glm::vec4(1.0f);
-		}
-	}
-
-	// indices
-	// We'll just increment an index instead of calculating it
-	uint32_t index = 0;
-	// Iterate over the quads that make up the grid
-	for (int ix = 0; ix < numSections; ix++) {
-		for (int iy = 0; iy < numSections; iy++) {
-			// Determine the indices for the points on this quad
-			uint32_t p1 = (ix + 0) * numEdgeVerts + (iy + 0);
-			uint32_t p2 = (ix + 1) * numEdgeVerts + (iy + 0);
-			uint32_t p3 = (ix + 0) * numEdgeVerts + (iy + 1);
-			uint32_t p4 = (ix + 1) * numEdgeVerts + (iy + 1);
-			// Append the quad to the index list
-			indices[index++] = p1;
-			indices[index++] = p2;
-			indices[index++] = p3;
-			indices[index++] = p3;
-			indices[index++] = p2;
-			indices[index++] = p4;
-		}
-	}
-
-	// returning the mesh
-	// Create the result, then clean up the arrays we used
-	cherry::Mesh::Sptr result = std::make_shared<cherry::Mesh>(vertices, vertexCount, indices, indexCount);
-	delete[] vertices;
-	delete[] indices;
-	// Return the result
-	return result;
 }
 
 // loads the content for the meshes and shaders
@@ -561,6 +752,9 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
+	// creating the object manager and light manager
+	// objManager = std::make_shared<ObjectManager>();
+	// lightManager = std::make_shared<LightManager>();
 
 
 	// SAMPLER FOR MIP MAPPING
@@ -594,7 +788,7 @@ void cherry::Game::LoadContent()
 	//desc2.MagFilter = MagFilter::Linear;
 
 	//samplerEX = std::make_shared<TextureSampler>(desc1);
-
+	
 
 
 	// before the mesh in the original code
@@ -607,181 +801,208 @@ void cherry::Game::LoadContent()
 	// dedicated variable no longer needed?
 	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
 	matStatic = std::make_shared<Material>(phong);
-	matStatic->Set("a_LightPos", { 0, 0, 3 });
-	matStatic->Set("a_LightColor", { 0.5f, 0.1f, 0.9f});
-	matStatic->Set("a_AmbientColor", { 0.9f, 0.1f, 0.01f });
-	matStatic->Set("a_AmbientPower", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
-	matStatic->Set("a_LightSpecPower", 0.5f);
-	matStatic->Set("a_LightShininess", 256.0f); // MUST be a float
-	matStatic->Set("a_LightAttenuation", 0.15f);
-	// material->Set("s_Albedo", albedo, sampler); // objects will just be blank if no texture is set.
+	matStatic->Set("a_LightCount", 1);
+	matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
+	matStatic->Set("a_LightColor[0]", { 0.5f, 0.1f, 0.9f});
+	matStatic->Set("a_AmbientColor[0]", { 0.9f, 0.1f, 0.01f });
+	matStatic->Set("a_AmbientPower[0]", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
+	matStatic->Set("a_LightSpecPower[0]", 0.5f);
+	matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
+	matStatic->Set("a_LightAttenuation[0]", 0.15f);
+	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
 	
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
-	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
-	
-	matStatic->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	matStatic->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
 
-	currentScene = "Cherry"; // the name of the m_Scene
-	scenes.push_back(currentScene); // saving the m_Scene
-
-	//lights.push_back(new Light(currentScene, glm::vec3( 0.0F, 0.0F, 1.0F ), glm::vec3( 1.0F, 1.0F, 0.0F ), glm::vec3(0.2F, 0.5F, 0.01F
-	//	), 0.9F, 0.5F, 256, 1.0F));
-	//material = lights[0]->GenerateMaterial();
-
-	SceneManager::RegisterScene(currentScene); // registering the m_Scene
-	// SceneManager::RegisterScene("Test2");
-	SceneManager::SetCurrentScene(currentScene);
-
-	// SKYBOX
-	// we need to make the scene before we can attach things to it.
-	auto scene = CurrentScene();
-	scene->SkyboxShader = std::make_shared<Shader>();
-	scene->SkyboxShader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
-	scene->SkyboxMesh = MakeInvertedCube();
-
-	// loads in six files out of res, then making them into the cube map.
-	// only works with JPEG files
-	std::string files[6] = {
-	std::string("res/images/cubemaps/checkerboard_black-red.jpg"),
-	std::string("res/images/cubemaps/checkerboard_black-green.jpg"),
-	std::string("res/images/cubemaps/checkerboard_black-blue.jpg"),
-	std::string("res/images/cubemaps/checkerboard_red-white.jpg"),
-	std::string("res/images/cubemaps/checkerboard_green-white.jpg"),
-	std::string("res/images/cubemaps/checkerboard_blue-white.jpg")
-	};
-	scene->Skybox = TextureCube::LoadFromFiles(files);
-
-	// Shader was originally compiled here.
+		// Shader was originally compiled here.
 	// // Create and compile shader
 	// myShader = std::make_shared<Shader>();
 	// myShader->Load("res/shader.vert.glsl", "res/shader.frag.glsl");
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
+	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
+	
+	matStatic->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+	matStatic->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
+	
+	
+	
 
-	// TODO: add sampler
-	LightManager::AddScene(currentScene);
-	LightManager::AddLight(currentScene, Light(currentScene, Vec3(-30.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.5F, 256.0F, 0.15F));
+	// creating a skybox for the scene.
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-red.jpg",
+		"res/images/cubemaps/checkerboard_black-green.jpg",
+		"res/images/cubemaps/checkerboard_black-blue.jpg",
+		"res/images/cubemaps/checkerboard_red-white.jpg",
+		"res/images/cubemaps/checkerboard_green-white.jpg",
+		"res/images/cubemaps/checkerboard_blue-white.jpg"
+	);
 
-	LightManager::AddLight(currentScene, Light(currentScene, Vec3(30.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.4F, 0.5F, 256.0F, 0.15F));
+	CreateScene("Cherry", skybox, true); // creates the scene
+	GetCurrentScene()->SkyboxMesh->SetVisible(false); // makes the skybox invisible
+
+	ObjectManager::CreateSceneObjectList(GetCurrentSceneName()); // creating an object list for the scene
+	objectList = ObjectManager::GetSceneObjectListByName(GetCurrentSceneName()); // getting the object list.
+
+	// TODO: add sampler for light list?
+	LightManager::CreateSceneLightList(GetCurrentSceneName());
+	lightList = LightManager::GetSceneLightListByName(GetCurrentSceneName()); // getting the light list
+
+	lightList->AddLight(new Light(GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
+
+	lightList->AddLight(new Light(GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
+		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F)); 
+
+	AddLightToScene(new Light(GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
-	// replace teh shader for the material if using morph tagets.
-	matStatic = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
-	matDynamic = LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
-
-		// loads in default objects
+	// replace the shader for the material if using morph tagets.
+	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
+	 
+	// loads in default sceneLists
 	if (loadDefaults)
 	{
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
 
-		// Creating the objects, storing them, and making them part of the default m_Scene.
-		objects.push_back(new PrimitiveCapsule());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		  //sceneLists.push_back(new PrimitiveCube(5));
+		  //sceneLists.at(sceneLists.size() - 1)->CreateEntity(currentScene, matStatic);
+		  //sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+
+		// Creating the sceneLists, storing them, and making them part of the default m_Scene.
+		objectList->objects.push_back(new PrimitiveCapsule());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
 		
 
-		objects.push_back(new PrimitiveCircle());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		objectList->objects.push_back(new PrimitiveCircle());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		objects.push_back(new PrimitiveCone());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		objectList->objects.push_back(new PrimitiveCone());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		objects.push_back(new PrimitiveCube());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		objectList->objects.push_back(new PrimitiveCube());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		objects.push_back(new PrimitiveCylinder());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		objectList->objects.push_back(new PrimitiveCylinder());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		objects.push_back(new PrimitiveDiamond());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		objectList->objects.push_back(new PrimitiveDiamond());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		objects.push_back(new PrimitiveUVSphere());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		objectList->objects.push_back(new PrimitiveUVSphere());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		objects.push_back(new PrimitivePlane());
-		objects.at(objects.size() - 1)->CreateEntity(currentScene, matStatic);
-		objects.at(objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		objectList->objects.push_back(new PrimitivePlane());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
-		//// objects.push_back(new Object("res/objects/monkey.obj", currentScene, material));
+		// liquid
+		{
+			Liquid* water = new Liquid(GetCurrentSceneName(), 20.0f, 100);
+			water->SetEnabledWaves(3);
+			water->SetGravity(9.81F);
 
-		//// images don't need CreateEntity called.
-		objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", currentScene));
-		objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		objects.at(objects.size() - 1)->SetScale(0.025F);
+			water->SetWave(0, 1.0f, 0.0f, 0.50f, 6.0f);
+			water->SetWave(1, 0.0f, 1.0f, 0.25f, 3.1f);
+			water->SetWave(2, 1.0f, 1.4f, 0.20f, 1.8f);
+
+			water->SetColor(0.5f, 0.5f, 0.95f, 0.75f);
+			water->SetClarity(0.9f);
+
+			water->SetFresnelPower(0.5f);
+			water->SetRefractionIndex(1.0f, 1.34f);
+			water->SetEnvironment(GetCurrentScene()->Skybox);
+
+			water->SetPosition(0.0F, 0.0F, -50.0F);
+			water->SetVisible(true);
+			AddObjectToScene(water);
+		}
+		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
+
+		// images don't need CreateEntity called.
+		 objectList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", GetCurrentSceneName(), true, false));
+		 objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+		 objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.025F); 
 
 		// version 1 (finds .mtl file automatically)
-		objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
-			LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
+		objectList->objects.push_back(new Object("res/objects/charactoereee.obj", GetCurrentSceneName(),
+			lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler), true, true));
 
-		objects.at(objects.size() - 1)->SetScale(10.0F);
-		hitBoxIndex = objects.size() - 1;
+		// objectList->objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
+		// LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
 
-		// objects.push_back();
+
+		objectList->objects.at(objectList->objects.size() - 1)->SetScale(10.0F);
+		hitBoxIndex = objectList->objects.size() - 1;
+
+		// sceneLists.push_back();
 
 		// version 2 (.mtl file manually added)
-		//objects.push_back(new Object("res/objects/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
+		//sceneLists.push_back(new Object("res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
 		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
-		// 	"res/objects/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
+		// 	"res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
 
-		objects.at(objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(1.0F, 2.5F, 1.0F));
-		objects.at(objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(1.0F, 2.5F, 1.0F));
+		objectList->objects.at(objectList->objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(false);
 
 		// path
-		Path* path = new Path();
-		path->AddNode(8.0F, 0.0F, 0.0F);
-		path->AddNode(-8.0F, 8.0F, 0.0F);
-		path->AddNode(8.0F, 8.0F, 8.0F);
-		path->AddNode(8.0F, -8.0F, -8.0F);
-		path->SetIncrementer(0.5);
+		Path path = Path();
+		path.AddNode(8.0F, 0.0F, 0.0F);
+		path.AddNode(-8.0F, 8.0F, 0.0F);
+		path.AddNode(20.0F, 8.0F, 8.0F);
+		path.AddNode(7.0F, 9.0F, 7.0F);
+		path.AddNode(8.0F, -8.0F, -8.0F);
+		path.SetIncrementer(0.1f);
 
-		path->SetInterpolationMode(1);
+		path.SetInterpolationMode(1);
+		path.SetOpenPath(false);
+		path.SetSpeedControl(true);
 
-		objects.at(objects.size() - 1)->SetPath(path, true);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPath(path, true);
 
-		objects.at(objects.size() - 1)->SetScale(0.7);
+		objectList->objects.at(objectList->objects.size() - 1)->SetScale(0.7);
 
-		// objects.at(objects.size() - 1)->CreateEntity(currentScene, objMat);
-		// objects.at(objects.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
-		// objects.at(objects.size() - 1)->SetScale(2.0F);
+		// sceneLists.at(sceneLists.size() - 1)->CreateEntity(currentScene, objMat);
+		// sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
+		// sceneLists.at(sceneLists.size() - 1)->SetScale(2.0F);
 
 		//material->SetShader(shdr);
 		// VER 1
-		//objects.push_back(new Object("res/objects/cube_morph_target_0.obj", currentScene, matDynamic, false, true));
-		//objects.at(objects.size() - 1)->SetPosition(offset, offset, 0.0F);
+		//sceneLists.push_back(new Object("res/sceneLists/cube_morph_target_0.obj", currentScene, matDynamic, false, true));
+		//sceneLists.at(sceneLists.size() - 1)->SetPosition(offset, offset, 0.0F);
 		////
 
 		//MorphAnimation* mph = new MorphAnimation();
-		//mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_0.obj", 2.0F));
-		//mph->AddFrame(new MorphAnimationFrame("res/objects/cube_morph_target_1.obj", 2.0F));
+		//mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_morph_target_0.obj", 2.0F));
+		//mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_morph_target_1.obj", 2.0F));
 
 		// VER 2
-		objects.push_back(new Object("res/objects/hero pose one.obj", currentScene, matDynamic, false, true));
-		objects.at(objects.size() - 1)->SetPosition(offset, offset, 0.0F);
+		objectList->objects.push_back(new Object("res/objects/hero pose one.obj", GetCurrentSceneName(), matDynamic, false, true));
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, offset, 0.0F);
 		//
 
-		MorphAnimation* mph = new MorphAnimation();
+		MorphAnimation * mph = new MorphAnimation();
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
-		// mph->AddFrame(new MorphAnimationFrame("res/objects/cube_target_0.obj", 2.0F));
+		// mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_target_0.obj", 2.0F));
 		mph->SetInfiniteLoop(true);
 		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
 		//mph->SetLoopsTotal(3);
 		mph->Play();
-		objects.at(objects.size() - 1)->AddAnimation(mph);
-		// objects.at(objects.size() - 1)->GetMesh()->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
 	}
 
@@ -790,49 +1011,6 @@ void cherry::Game::LoadContent()
 	myShader->Load("res/shader.vert.glsl", "res/shader.frag.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
-
-	// WATER SHADER
-	// Making the water shader
-	// NOTE: even though the skybox is not visible, the water still reflects it.
-	{ // Push a new scope so that we don't step on other names
-		if (loadDefaults) // the water will be considered one of the defaults.
-		{
-			Shader::Sptr waterShader = std::make_shared<Shader>();
-			waterShader->Load("res/water-shader.vs.glsl", "res/water-shader.fs.glsl");
-			Material::Sptr waterMaterial = std::make_shared<Material>(waterShader);
-			waterMaterial->HasTransparency = true;
-
-
-			waterMaterial->Set("a_EnabledWaves", 3); // number of waves
-			waterMaterial->Set("a_Gravity", 9.81f);
-			// Format is: [xDir, yDir, "steepness", wavelength] (note that the sum of steepness should be < 1 to avoid loops)
-			waterMaterial->Set("a_Waves[0]", { 1.0f, 0.0f, 0.50f, 6.0f });
-			waterMaterial->Set("a_Waves[1]", { 0.0f, 1.0f, 0.25f, 3.1f });
-			waterMaterial->Set("a_Waves[2]", { 1.0f, 1.4f, 0.20f, 1.8f });
-			waterMaterial->Set("a_WaterAlpha", 0.75f);
-			waterMaterial->Set("a_WaterColor", { 0.5f, 0.5f, 0.95f });
-			waterMaterial->Set("a_WaterClarity", 0.9f); // 0.9f so that it's fairly clear
-			waterMaterial->Set("a_FresnelPower", 0.5f); // the higehr the power, the higher the reflection
-			waterMaterial->Set("a_RefractionIndex", 1.0f / 1.34f); // bending light; 1.0/1.34 goes from air to water.
-			waterMaterial->Set("s_Environment", scene->Skybox);
-
-			auto& ecs = GetRegistry(currentScene); // If you've changed the name of the scene, you'll need to modify this!
-			entt::entity e1 = ecs.create();
-			MeshRenderer& m1 = ecs.assign<MeshRenderer>(e1);
-			m1.Material = waterMaterial;
-			m1.Mesh = MakeSubdividedPlane(20.0f, 100);
-
-			auto tform = [](entt::entity e, float dt)
-			{
-				auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
-
-				transform.Position = { 0.0f, 0.0f, -50.0f };
-			};
-
-			auto& up = ecs.get_or_assign<UpdateBehaviour>(e1);
-			up.Function = tform;
-		}
-	}
 }
 
 void cherry::Game::UnloadContent() {
@@ -844,73 +1022,33 @@ void cherry::Game::Update(float deltaTime) {
 	float camTransInc = 5.0F; // increment for camera movement
 
 	// TODO: remove this line.
-	// <the update loop for all objects was originally here.>
+	// <the update loop for all sceneLists was originally here.>
 
 	// updates the camera
 	if (debugMode) // moves the camera with button presses if in debug mode.
 	{
-		// moving the camera
+		//// moving the camera
 		camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
 		camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
 
 		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
 		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
-	}
+	} 
 
-	// setting intersection to false for all objects
-	for (int i = 0; i < objects.size(); i++)
-	{
-		objects[i]->Update(deltaTime); // calls the Update loop
-		objects[i]->SetIntersection(false); // sets intersection to false for all objects
-		// std::cout << "[" + std::to_string(i) + "] : " << *cherry::Vec3(objects[i]->GetPosition()).v << std::endl;
-	}
+	// if (w)
+	// 	objectList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
+	// else if (s)
+	// 	objectList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
+	// if (a)
+	// 	objectList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
+	// else if (d)
+	// 	objectList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
 
-	// std::cout << std::endl;
-	// collisions
-mainLoop:
-	for (cherry::Object* obj1 : objects) // object 1
-	{
-		if (obj1 == nullptr)
-			continue;
-		if (obj1->GetIntersection() == true) // already colliding with something.
-			continue;
-
-		for (cherry::Object* obj2 : objects) // object 2
-		{
-			if (obj1 == obj2 || obj2 == nullptr) // if the two objects are the same.
-				continue;
-
-			if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
-				continue;
-
-			// gets the vectors from both objects
-			std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
-			std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
-
-			// goes through each collision body
-			for (cherry::PhysicsBody* pb1 : pbods1)
-			{
-				for (cherry::PhysicsBody* pb2 : pbods2)
-				{
-					bool col = PhysicsBody::Collision(pb1, pb2);
-
-					if (col == true) // if collision has occurred.
-					{
-						obj1->SetIntersection(true);
-						// obj1->setColor(255, 0, 0);
-						obj2->SetIntersection(true);
-						// obj2->setColor(255, 0, 0);
-						// std::cout << "Hit!" << std::endl;
-
-						goto mainLoop; // goes back to the main loop
-					}
-				}
-			}
-		}
-	}
+	// updates the object list
+	objectList->Update(deltaTime);
 
 	// moved to the bottom of the update.
-	// called to Update the position and rotation of hte objects.
+	// called to Update the position and rotation of hte sceneLists.
 	// calling all of our functions for our Update behaviours.
 	auto view = CurrentRegistry().view<UpdateBehaviour>();
 	for (const auto& e : view) {
@@ -1012,7 +1150,7 @@ void cherry::Game::Run()
 	Shutdown();
 }
 
-// resizes the window without skewing the objects, and changes the cameras accordingly.
+// resizes the window without skewing the sceneLists, and changes the cameras accordingly.
 void cherry::Game::Resize(int newWidth, int newHeight)
 {
 	myWindowSize = { newWidth, newHeight }; // updating window size
@@ -1075,7 +1213,7 @@ void cherry::Game::DrawGui(float deltaTime) {
 		}
 		if (ImGui::Button("Wireframe/Fill Toggle"))
 		{
-			for (cherry::Object* obj : objects)
+			for (cherry::Object* obj : objectList->objects)
 				obj->SetWireframeMode();
 		}
 
@@ -1091,7 +1229,6 @@ void cherry::Game::DrawGui(float deltaTime) {
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 {
 	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
-	bool enableSkybox = false; // enables the skybox. TODO: change for final build.
 	static bool drawBodies = false; // set to 'true' to draw the bodies
 
 	int border = 0; // the border for the viewpoint
@@ -1121,20 +1258,6 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
-	
-	// REPLACED: TODO: remove comments for submission
-	//// We sort our mesh renderers based on material properties
-	//// This will group all of our meshes based on shader first, then material second
-	//ecs.sort<MeshRenderer>([](const MeshRenderer& lhs, const MeshRenderer& rhs) {
-	//	if (rhs.Material == nullptr || rhs.Mesh == nullptr)
-	//		return false;
-	//	else if (lhs.Material == nullptr || lhs.Mesh == nullptr)
-	//		return true;
-	//	else if (lhs.Material->GetShader() != rhs.Material->GetShader())
-	//		return lhs.Material->GetShader() < rhs.Material->GetShader();
-	//	else
-	//		return lhs.Material < rhs.Material;
-	//	});
 
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
@@ -1154,7 +1277,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 	// SKYBOX //
 	auto scene = CurrentScene();
 	// Draw the skybox after everything else, if the scene has one
-	if (scene->Skybox && enableSkybox)
+	if (scene->Skybox)
 	{
 		// Disable culling
 		glDisable(GL_CULL_FACE); // we disable face culling if the cube map is screwed up.
@@ -1176,7 +1299,10 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 		scene->Skybox->Bind(0);
 		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
-		scene->SkyboxMesh->Draw();
+
+		// draws the skybox if it is to be visible.
+		if(scene->SkyboxMesh->IsVisible())
+			scene->SkyboxMesh->Draw();
 
 		// Restore our state
 		glDepthMask(GL_TRUE);
@@ -1233,7 +1359,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		// Draw the item
 		if (renderer.Mesh->IsVisible())
 		{
-			// if the mesh is in weireframe mode, and the draw call isn't set to that already.
+			// if the mesh is in wireframe mode, and the draw call isn't set to that already.
 			if (renderer.Mesh->IsWireframe() != wireframe)
 			{
 				wireframe = !wireframe;
@@ -1242,7 +1368,16 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 				(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			renderer.Mesh->Draw();
+			if (!renderer.Mesh->cullFaces)
+			{
+				glDisable(GL_CULL_FACE);
+				renderer.Mesh->Draw();
+				glEnable(GL_CULL_FACE);
+			}
+			else // faces are set to be culled automatically
+			{
+				renderer.Mesh->Draw();
+			}
 		}
 		else
 		{
@@ -1250,6 +1385,3 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 		}
 	}
 }
-
-// returns the current m_Scene
-std::string cherry::Game::GetCurrentScene() const { return currentScene; }

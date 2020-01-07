@@ -9,5 +9,5 @@
 
 namespace cherry
 {
-	static float gravity = -9.8F; // unused
+	static float gravity = 9.807F;
 }

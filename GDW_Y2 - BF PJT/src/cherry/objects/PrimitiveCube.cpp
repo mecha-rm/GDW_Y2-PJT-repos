@@ -48,10 +48,10 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 		{{ -width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom left, back corner
 		{{ -width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top left, back corner
 																									
-		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}}, // bottom right, front corner
-		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // top right, front corner
-		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // bottom right, back corner
-		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}} // top right, back corner
+		{{ width / 2.0F, -height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 1}}, // bottom right, front corner
+		{{ width / 2.0F,  height / 2.0F,  depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {1, 0}}, // top right, front corner
+		{{ width / 2.0F, -height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 1}}, // bottom right, back corner
+		{{ width / 2.0F,  height / 2.0F, -depth / 2.0F }, { clr }, {0.0F, 0.0F, 0.0f}, {0, 0}} // top right, back corner
 
 	};
 
@@ -63,22 +63,23 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 	indicesTotal = 36; // 8 * 4
 	indices = new uint32_t[indicesTotal] 
 	{
-		0, 1, 2, // front face - top half
-		2, 1, 3, // front face - bottom half
-		0, 4, 2, // right side-face (box's perspective) - top half
-		2, 4, 6, // right side-face (box's perspectice) - bottom half
+		0, 1, 2, // right-side face - top half (correct)
+		2, 1, 3, // right-side face - bottom half (correct)
+		0, 2, 4, // right side-face (box's perspective) - top half
+		2, 6, 4, // right side-face (box's perspectice) - bottom half
 		1, 5, 3, // left side-face - top half
 		3, 5, 7, // left side-face, bottom half
-		4, 5, 6, // back face - top half
-		6, 5, 7, // back face - bottom half
+		4, 6, 5, // back face - top half
+		6, 7, 5, // back face - bottom half
 		0, 4, 5, // top tri 1
-		5, 0, 1, //  top tri 2
-		2, 6, 7, // bottom tri 1
+		5, 1, 0, //  top tri 2
+		2, 7, 6, // bottom tri 1
 		7, 2, 3 // bottom tri 2
 	};
 
 	// calculates the normals
-	calculateNormals();
+	CalculateNormals();
+	InvertNormals();
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

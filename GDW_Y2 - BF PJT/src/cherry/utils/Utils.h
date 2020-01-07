@@ -66,7 +66,7 @@ namespace util
 
 	// convets the string to the provided data type. Do note that the value might be truncated if the conversion doesn't make logical sense.
 	template<typename T>
-	T convertString(const std::string& str)
+	T convertString(const std::string & str)
 	{
 		// TODO: do error checking for this function.
 		std::stringstream ss; // the string stream.
@@ -88,6 +88,10 @@ namespace util
 	// the greater than operator (>) must be overloaded for this function to work.
 	template<typename T>
 	T max(T val1, T val2) { return (val1 > val2) ? val1 : val2; }
+
+	// caps 'val' using lowerBound and upperBound. The (<) and (>) operators must be overloaded for this function. 
+	template<typename T>
+	T cap(T val, T lowerBound, T upperBound) { return (val < lowerBound) ? lowerBound : (val > upperBound) ? upperBound : val;};
 
 	template<typename T>
 	bool addToVector(std::vector<T*>& vector, T* val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.

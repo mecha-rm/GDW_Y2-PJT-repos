@@ -31,7 +31,10 @@ namespace cherry
 
 		// calculates the normals for the primitive.
 		// ONLY CALL THIS IF THE VERTICES AND INDICES ARE SET.
-		void calculateNormals();
+		void CalculateNormals();
+
+		// changes the direction of the normals. Only call this if vertices are set.
+		void InvertNormals();
 
 		cherry::Vec4 baseColor{ 1.0F, 1.0F, 1.0F, 1.0F }; // the base color of the object.
 	};

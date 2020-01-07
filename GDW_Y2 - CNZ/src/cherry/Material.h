@@ -26,7 +26,7 @@ namespace cherry
 		bool HasTransparency; // states if a material has transparency
 		typedef std::shared_ptr<Material> Sptr;
 
-		// all objects are opaque by default.
+		// all sceneLists are opaque by default.
 		Material(const Shader::Sptr& shader) :HasTransparency(false) { myShader = shader; }
 		
 		virtual ~Material() = default;
@@ -45,7 +45,7 @@ namespace cherry
 		void Set(const std::string& name, const float& value) { myFloats[name] = value; }
 		void Set(const std::string& name, const int& value) { myInts[name] = value; }
 
-		// now sets sampler objects per texture.
+		// now sets sampler sceneLists per texture.
 		void Set(const std::string& name, const Texture2D::Sptr& value,
 			const TextureSampler::Sptr& sampler = nullptr) {
 			myTextures[name] = { value, sampler };
@@ -63,7 +63,7 @@ namespace cherry
 
 		// generates a material using a .mtl file, and returns said material. Make sure to set the lighting information.
 		// pass the sampler if you so choose. This also takes in a vertex shader and fragment shader
-		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = "res/lighting.vs.glsl", std::string fs = "res/blinn-phong.fs.glsl");
+		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = STATIC_VS, std::string fs = STATIC_FS);
 
 
 	private:

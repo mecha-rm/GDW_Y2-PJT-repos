@@ -10,7 +10,7 @@ namespace cherry
 	public:
 		// takes a position, radius, and vertices. Vertices must be at least edges.
 		// at least 3 dges must be provided.
-		PrimitiveCircle(float radius = 1.0F, unsigned int edges = 10);
+		PrimitiveCircle(float radius = 1.0F, unsigned int edges = 10, bool doubleSided = true);
 
 		// gets the radius
 		float GetRadius() const;

@@ -253,7 +253,7 @@ class file {
   // necessary.
   FMT_API void dup2(int fd, error_code &ec) FMT_NOEXCEPT;
 
-  // Creates a pipe setting up read_end and write_end file objects for reading
+  // Creates a pipe setting up read_end and write_end file sceneLists for reading
   // and writing respectively.
   FMT_API static void pipe(file &read_end, file &write_end);
 

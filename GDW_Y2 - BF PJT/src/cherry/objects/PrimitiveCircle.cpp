@@ -3,7 +3,7 @@
 #include "..\utils\math\Rotation.h"
 
 // creates a circle
-cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges) : radius(abs(radius))
+cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges, bool doubleSided) : radius(abs(radius))
 {
 	radius = abs(radius);
 
@@ -52,7 +52,7 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges) : rad
 
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
-
+	mesh->cullFaces = !doubleSided;
 	// setting the position
 	// setPosition(pos.v->x, pos.v->y, pos.v->z);
 }

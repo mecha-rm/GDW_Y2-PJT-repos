@@ -9,7 +9,7 @@
 // this file remains unchanged from what we had in the framework at the time.
 
 // the value of TypeName gets replaced with whatever gets brought in.
-// prevents copies of certain game objects
+// prevents copies of certain game sceneLists
 #define NoCopy(TypeName) \
 	TypeName(const TypeName& other) = delete; \
 	TypeName& operator =(const TypeName& other) = delete;
