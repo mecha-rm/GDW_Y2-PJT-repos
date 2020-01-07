@@ -134,7 +134,7 @@
     <ClCompile Include="src\cherry\VectorCRY.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\cherry\animate\TextureAnimation.cpp" />
+    <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cherry\animate\AnimationManager.h" />
@@ -405,7 +405,7 @@
     <ClInclude Include="src\cherry\utils\UtilsToolsLib.h" />
     <ClInclude Include="src\cherry\VectorCRY.h" />
     <ClInclude Include="src\cherry\WorldTransform.h" />
-    <ClInclude Include="src\cherry\animate\TextureAnimation.h" />
+    <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />

@@ -31,17 +31,25 @@ cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 	MorphVertex* pose = new MorphVertex[object->GetVerticesTotal()];
 	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
 
-	const Vertex* verts = object->GetVertices(); // the vertices of the object
+	// const Vertex* verts = object->GetVertices(); // the vertices of the object
 	int nextFrameIndex = GetCurrentFrameIndex() + 1; // gets the index of the previous frame.
 
 	MorphAnimationFrame* currFrame = (MorphAnimationFrame*)(GetCurrentFrame()); // the current frame
-	MorphAnimationFrame* nextFrame = nullptr;
+	MorphAnimationFrame* nextFrame = nullptr; // the next frame
+
+	const Vertex* currPose; // pose for the current frame
+	const Vertex* nextPose; // pose for the next frame
+
 	unsigned int valsTtl = object->GetVerticesTotal(); // total amount of values
 
 	if (nextFrameIndex >= GetFrameCount()) // if its the starting frame, then it morphs to the next frame
 		nextFrameIndex = 0;
 	
 	nextFrame = (MorphAnimationFrame*)(GetFrame(nextFrameIndex)); // gets the next frame
+	
+	// getting the poses.
+	currPose = currFrame->GetPose();
+	nextPose = nextFrame->GetPose();
 
 	// gets all the values
 	for (int i = 0; i < valsTtl; i++)
@@ -54,19 +62,23 @@ cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 
 		// position
 		// pose[i].Position = verts[i].Position;
-		pose[i].Position1 = currFrame->GetVertices()[i];
-		pose[i].Position2 = nextFrame->GetVertices()[i];
+		pose[i].Position1 = currPose[i].Position;
+		pose[i].Position2 = nextPose[i].Position;
 
 		// colour
 		// pose[i].Color = verts[i].Color;
+		pose[i].Color1 = currPose[i].Color;
+		pose[i].Color2 = nextPose[i].Color;
 
 		// normals
 		// pose[i].Normal = verts[i].Normal;
-		pose[i].Normal1 = currFrame->GetVertices()[i];
-		pose[i].Normal2 = nextFrame->GetVertices()[i];
+		pose[i].Normal1 = currPose[i].Normal;
+		pose[i].Normal2 = nextPose[i].Normal;
 
-		// uv
+		// uvs
 		// pose[i].UV = verts[i].UV;
+		pose[i].UV1 = currPose[i].UV;
+		pose[i].UV2 = nextPose[i].UV;
 	}
 
 	return pose;
@@ -82,7 +94,7 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	// // time += 0.5;
 
 	// TODO: fix so that the morphing happens from the second animation
-	
+	MorphVertex* morphVerts = nullptr;
 	
 	if (isPlaying() == false)
 		return;
@@ -95,9 +107,13 @@ void cherry::MorphAnimation::Update(float deltaTime)
 		t = 1.0F;
 
 	// getting the frame of animation
-	// TODO: optimize so that a pose isn't generated every frame
+	// TODO: optimize so that a pose isn't generated every frame.
+	morphVerts = GeneratePose();
+	
 	object->GetMesh()->Morph(GeneratePose(), ((MorphAnimationFrame*)(GetCurrentFrame()))->GetValueAmount());
 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+	
+	delete[] morphVerts;
 
 	// switches the frame if at the end of the animation.
 	Animation::Update(deltaTime);
@@ -106,9 +122,26 @@ void cherry::MorphAnimation::Update(float deltaTime)
 
 ///////////////////////////////
 // MORPH ANIMATION FRAME
-cherry::MorphAnimationFrame::MorphAnimationFrame(glm::vec3* vertices, glm::vec3* normals, unsigned int valNum, float units)
-	: AnimationFrame(units), vertices(vertices), normals(normals), valNum(valNum)
+cherry::MorphAnimationFrame::MorphAnimationFrame(glm::vec3* vertices, glm::vec4 * colors, glm::vec3* normals,
+	glm::vec2* uvs, unsigned int valNum, float units)
+	: AnimationFrame(units), verticesTotal(valNum)
 {
+	// the pose, and arrays to the individual values.
+	pose = new Vertex[valNum];
+
+	for (int i = 0; i < valNum; i++) // getting all the values.
+	{
+		pose[i].Position = vertices[i];
+		pose[i].Color = colors[i];
+		pose[i].Normal = normals[i];
+		pose[i].UV = uvs[i];
+	}
+
+	// deleting data, since it has been successfully copied.
+	delete[] vertices;
+	delete[] colors;
+	delete[] normals;
+	delete[] uvs;
 }
 
 // gets the vertices from a regular vertex
@@ -118,19 +151,20 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::Vertex* pose, unsigned 
 }
 
 // recieves vertices and vertices total
-cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::MorphVertex * pose, unsigned int vertsTotal, float units)
+cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::MorphVertex * newPose, unsigned int vertsTotal, float units)
 	: AnimationFrame(units)
 {
 	// setting the values
-	valNum = vertsTotal;
-	vertices = new glm::vec3[vertsTotal];
-	normals = new glm::vec3[vertsTotal];
+	verticesTotal = vertsTotal;
+	pose = new Vertex[vertsTotal];
 
 	// gets the values
 	for (int i = 0; i < vertsTotal; i++)
 	{
-		vertices[i] = pose->Position;
-		normals[i] = pose->Normal;
+		pose[i].Position = newPose->Position;
+		pose[i].Color = newPose->Color;
+		pose[i].Normal = newPose->Normal;
+		pose[i].UV = newPose->UV;
 	}
 }
 
@@ -144,36 +178,35 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float uni
 	// stores the vertices from the obj file as morph vertices
 	const Vertex* tempVerts = obj.GetVertices();
 	// MorphVertex* tempVerts;
-	valNum = obj.GetVerticesTotal();
+	verticesTotal = obj.GetVerticesTotal();
 
 	// gets the vertices as morph target vertices
 	// tempVerts = Mesh::ConvertToMorphVertexArray(obj.GetVertices(), obj.GetVerticesTotal());
 
-	vertices = new glm::vec3[valNum];
-	normals = new glm::vec3[valNum];
+	pose = new Vertex[verticesTotal];
 
-// gets the values from the morph vertices
-	for (int i = 0; i < valNum; i++)
+	// gets the values from the morph vertices 
+	// TODO: maybe memcpy is more efficient?
+	for (int i = 0; i < verticesTotal; i++)
 	{
-		vertices[i] = tempVerts[i].Position;
-		normals[i] = tempVerts[i].Normal;
+		pose[i].Position = tempVerts[i].Position;
+		pose[i].Color = tempVerts[i].Color;
+		pose[i].Normal = tempVerts[i].Normal;
+		pose[i].UV = tempVerts[i].UV;
 	}
 }
 
+// destructor.
 cherry::MorphAnimationFrame::~MorphAnimationFrame()
 {
-	delete[] vertices; // deleting the vertices
-	delete[] normals; // deleting the normals
+	delete[] pose; // deleting the pose.
 }
 
-// gets the vertices
-glm::vec3* cherry::MorphAnimationFrame::GetVertices() const { return vertices; }
-
-// gets the normals
-glm::vec3* cherry::MorphAnimationFrame::GetNormals() const { return normals; }
+// returns the pose
+const cherry::Vertex* const cherry::MorphAnimationFrame::GetPose() const { return pose; }
 
 // returns the value amount.
-unsigned int cherry::MorphAnimationFrame::GetValueAmount() const { return valNum; }
+unsigned int cherry::MorphAnimationFrame::GetValueAmount() const { return verticesTotal; }
 
 
 

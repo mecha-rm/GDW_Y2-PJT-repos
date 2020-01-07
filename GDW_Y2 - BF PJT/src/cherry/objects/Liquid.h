@@ -92,6 +92,9 @@ namespace cherry
 		// sets the environment (skybox) the water part of.
 		void SetEnvironment(TextureCube::Sptr skyboxTexture); // the environment (skybox) for the water.
 
+		// update
+		void Update(float deltaTime);
+
 	private:
 		float size; // size of wave
 		float numSections; // number of sections

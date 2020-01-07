@@ -56,7 +56,7 @@ namespace cherry
 
 		// gets the file path of the requested object.
 		// if there is no file path, it will return a string with the ("") character inside it.
-		std::string GetFilePath() const;
+		virtual const std::string & GetFilePath() const;
 
 		// gets the scene the object is part of.
 		std::string GetScene() const;
@@ -264,6 +264,9 @@ namespace cherry
 		// translates the object by the provided values.
 		void Translate(float x, float y, float z);
 
+		// gets the parent object.
+		// cherry::Object* GetParent() const;
+
 
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
 		bool AddPhysicsBody(cherry::PhysicsBody * body);
@@ -348,7 +351,7 @@ namespace cherry
 		static cherry::Vec3 CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT);
 
 		// updates the object
-		void Update(float deltaTime);
+		virtual void Update(float deltaTime);
 
 		// toString
 		virtual std::string ToString() const;
@@ -388,7 +391,7 @@ namespace cherry
 		bool dynamicObject = false;
 
 		// parent object
-		// Object * parent = nullptr;
+		const Object * parent = nullptr;
 
 		// std::vector<Object*> children;
 

@@ -7,6 +7,7 @@
 cherry::Mesh::Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices) {
 	myIndexCount = numIndices;
 	myVertexCount = numVerts;
+
 	// Create and bind our vertex array
 	glCreateVertexArrays(1, &myVao);
 	glBindVertexArray(myVao);
@@ -116,17 +117,33 @@ cherry::Mesh::Mesh(MorphVertex* vertices, size_t numVerts, uint32_t* indices, si
 	glEnableVertexAttribArray(4);
 	glVertexAttribPointer(4, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position1));
 
-	/// Second Normal
+	/// Second Color
 	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(5, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal1));
+	glVertexAttribPointer(5, 4, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Color1));
+
+	/// Second Normal
+	glEnableVertexAttribArray(6);
+	glVertexAttribPointer(6, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal1));
+
+	// Second UV
+	glEnableVertexAttribArray(7);
+	glVertexAttribPointer(7, 2, GL_FLOAT, false, sizeof(MorphVertex), &(vert->UV1));
 
 	// Third Position
-	glEnableVertexAttribArray(6);
-	glVertexAttribPointer(6, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position2));
+	glEnableVertexAttribArray(8);
+	glVertexAttribPointer(8, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Position2));
+
+	/// Third Color
+	glEnableVertexAttribArray(9);
+	glVertexAttribPointer(9, 4, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Color2));
 
 	/// Third Normal
-	glEnableVertexAttribArray(5);
-	glVertexAttribPointer(7, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal2));
+	glEnableVertexAttribArray(10);
+	glVertexAttribPointer(10, 3, GL_FLOAT, false, sizeof(MorphVertex), &(vert->Normal2));
+
+	// Third UV
+	glEnableVertexAttribArray(11);
+	glVertexAttribPointer(11, 2, GL_FLOAT, false, sizeof(MorphVertex), &(vert->UV2));
 
 	// Unbind our VAO (just ot be safe and make sure we don't modify it by accident)
 	glBindVertexArray(0);
@@ -194,6 +211,12 @@ void cherry::Mesh::SetVisible() { visible = !visible; }
 // sets whether the object is visible or not.
 void cherry::Mesh::SetVisible(bool visible) { this->visible = visible; }
 
+// morph for regular vertices
+void cherry::Mesh::Morph(Vertex* vertices, size_t numVerts)
+{
+	glNamedBufferData(myBuffers[0], sizeof(Vertex) * numVerts, vertices, GL_DYNAMIC_DRAW);
+}
+
 // gets the vertices and takes out the positions and normals for morphing the mesh
 void cherry::Mesh::Morph(MorphVertex* vertices, size_t numVerts)
 {
@@ -213,7 +236,7 @@ void cherry::Mesh::Morph(MorphVertex* vertices, size_t numVerts)
 }
 
 // converts from a regular vertex to a morph vertex
-cherry::MorphVertex* cherry::Mesh::ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts)
+cherry::MorphVertex* cherry::Mesh::ConvertToMorphVertexArray(const Vertex* const verts, const size_t numVerts)
 {
 	// no data given
 	if (verts == nullptr || numVerts == 0)
@@ -229,12 +252,16 @@ cherry::MorphVertex* cherry::Mesh::ConvertToMorphVertexArray(const Vertex* verts
 		morphVerts[i].Position2 = verts[i].Position;
 
 		morphVerts[i].Color = verts[i].Color;
+		morphVerts[i].Color1 = verts[i].Color;
+		morphVerts[i].Color2 = verts[i].Color;
 
 		morphVerts[i].Normal = verts[i].Normal;
 		morphVerts[i].Normal1 = verts[i].Normal;
 		morphVerts[i].Normal2 = verts[i].Normal;
 
 		morphVerts[i].UV = verts[i].UV;
+		morphVerts[i].UV1 = verts[i].UV;
+		morphVerts[i].UV2 = verts[i].UV;
 	}
 
 	return morphVerts;

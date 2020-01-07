@@ -190,6 +190,8 @@ namespace cherry
 		 
 		// the object used for the camera
 		Camera::Sptr myCamera;
+
+		// Camera::Sptr UICamera;
 		
 
 	protected:

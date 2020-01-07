@@ -111,7 +111,7 @@ cherry::Object::~Object()
 
 
 // gets the file path for the object file.
-std::string cherry::Object::GetFilePath() const { return filePath; }
+const std::string & cherry::Object::GetFilePath() const { return filePath; }
 
 // returns the scene the object is part of.
 std::string cherry::Object::GetScene() const { return scene; }
@@ -803,8 +803,8 @@ void cherry::Object::Update(float deltaTime)
 	// if the animation is playing
 	if (animations.GetCurrentAnimation() != nullptr)
 	{
-		animations.GetCurrentAnimation()->isPlaying();
-		animations.GetCurrentAnimation()->Update(deltaTime);
+		if(animations.GetCurrentAnimation()->isPlaying())
+			animations.GetCurrentAnimation()->Update(deltaTime);
 	}	
 
 	// updating the physics bodies

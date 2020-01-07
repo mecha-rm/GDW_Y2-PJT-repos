@@ -873,38 +873,38 @@ void cherry::Game::LoadContent()
 		  //sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
 		// Creating the sceneLists, storing them, and making them part of the default m_Scene.
-		objectList->objects.push_back(new PrimitiveCapsule());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		
+		//objectList->objects.push_back(new PrimitiveCapsule());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		//
 
-		objectList->objects.push_back(new PrimitiveCircle());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		//objectList->objects.push_back(new PrimitiveCircle());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 
-		objectList->objects.push_back(new PrimitiveCone());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		//objectList->objects.push_back(new PrimitiveCone());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 
-		objectList->objects.push_back(new PrimitiveCube());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		//objectList->objects.push_back(new PrimitiveCube());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
-		objectList->objects.push_back(new PrimitiveCylinder());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		//objectList->objects.push_back(new PrimitiveCylinder());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
-		objectList->objects.push_back(new PrimitiveDiamond());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		//objectList->objects.push_back(new PrimitiveDiamond());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
 
-		objectList->objects.push_back(new PrimitiveUVSphere());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		//objectList->objects.push_back(new PrimitiveUVSphere());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 
-		objectList->objects.push_back(new PrimitivePlane());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		//objectList->objects.push_back(new PrimitivePlane());
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		// liquid
 		{
@@ -924,15 +924,49 @@ void cherry::Game::LoadContent()
 			water->SetEnvironment(GetCurrentScene()->Skybox);
 
 			water->SetPosition(0.0F, 0.0F, -50.0F);
-			water->SetVisible(true);
+			water->SetVisible(false);
 			AddObjectToScene(water);
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 
-		// images don't need CreateEntity called.
-		 objectList->objects.push_back(new Image("res/images/bonus_fruit_logo_v01.png", GetCurrentSceneName(), true, false));
-		 objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-		 objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.025F); 
+		{
+			// images don't need CreateEntity called.
+			// Image Test (1)
+			// cherry::Image* image = new Image("res/images/bonus_fruit_logo_v01.png", GetCurrentSceneName(), true, false);
+
+			// Image Test (2)
+			// cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss.png", GetCurrentSceneName(), false, false);
+
+			// sprite sheet (currently 21 frames)
+
+			// Image Test (3)
+			cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_bw.png", GetCurrentSceneName(), 
+				Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 1185, 594), 5925, 594, false), true, false);
+			
+			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 0, 0, 1185 * 1, 594), 5925, 594, false), 0.5F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 1, 0, 1185 * 2, 594), 5925, 594, false), 0.5F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 2, 0, 1185 * 3, 594), 5925, 594, false), 0.5F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 3, 0, 1185 * 4, 594), 5925, 594, false), 0.5F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 4, 0, 1185 * 5, 594), 5925, 594, false), 0.5F));
+			imgAnime->SetInfiniteLoop(true);
+			
+			// Image Test (4)
+			// cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_bw.png", GetCurrentSceneName(), 
+			// 	Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 1185, 594), 5925, 594, false), true, false);
+			// 
+
+			imgAnime->Play();
+			image->AddAnimation(imgAnime, false);
+			
+
+			objectList->objects.push_back(image);
+			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
+			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.025F);
+		
+			// image->GetAnimation(0)->Play();
+			
+		}
 
 		// version 1 (finds .mtl file automatically)
 		objectList->objects.push_back(new Object("res/objects/charactoereee.obj", GetCurrentSceneName(),

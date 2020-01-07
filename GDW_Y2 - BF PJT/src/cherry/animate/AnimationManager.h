@@ -2,6 +2,7 @@
 #pragma once
 // #include "Animation.h"
 #include "MorphAnimation.h"
+#include "ImageAnimation.h"
 #include <vector>
 
 namespace cherry

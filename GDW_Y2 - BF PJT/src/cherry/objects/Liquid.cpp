@@ -185,3 +185,9 @@ void cherry::Liquid::SetEnvironment(TextureCube::Sptr skyboxTexture)
 	material->Set("s_Environment", skyboxTexture);
 	this->skyboxTexture = skyboxTexture;
 }
+
+// update
+void cherry::Liquid::Update(float deltaTime)
+{
+	Object::Update(deltaTime);
+}
