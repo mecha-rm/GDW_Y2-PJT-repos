@@ -81,13 +81,20 @@ cherry::Texture2D::Sptr cherry::Texture2D::LoadFromFile(const std::string& fileN
 	int width, height, numChannels;
 	void* data = stbi_load(fileName.c_str(), &width, &height, &numChannels, loadAlpha ? 4 : 3);
 	if (data != nullptr && width != 0 && height != 0 && numChannels != 0) {
+		
+		// endif //!_DEBUG
 		Texture2DDescription desc = Texture2DDescription();
 		desc.Width = width;
 		desc.Height = height;
 
+		// checks to see if the texture is small enough to be loaded. If it isn't, a runtime error is thrown.
+		// ifndef _DEBUG (TODO: add debug wrappers)
+		if (width > GetMaximumSideLength() || height > GetMaximumSideLength())
+			throw std::runtime_error("Texture too large to load into memory.");
+
 		// format differs based on whether we loaded the alpha or not.
 		desc.Format = loadAlpha ? InternalFormat::RGBA8 : InternalFormat::RGB8;
-		Sptr result = std::make_shared<Texture2D>(desc);
+		Sptr result = std::make_shared<Texture2D>(desc); // if the texture is too large, the texture loader throws an error here.
 		result->LoadData(data, width, height, loadAlpha ? PixelFormat::Rgba : PixelFormat::Rgb, PixelType::UByte);
 
 		// image files take up a lot of data, so we call this to clean up the data once it's on our GPU.
@@ -105,6 +112,16 @@ cherry::Texture2D::Sptr cherry::Texture2D::LoadFromFile(const std::string& fileN
 		return nullptr;
 	}
 }
+
+// returns the limit on the width of the texture.
+int cherry::Texture2D::GetMaximumSideLength()
+{
+	int value = 0;
+	glGetIntegerv(GL_MAX_TEXTURE_SIZE, &value); // the limit on the size of the texture.
+
+	return value;
+}
+
 
 // gets the width of the image
 uint32_t cherry::Texture2D::GetWidth() const { return myDescription.Width; }

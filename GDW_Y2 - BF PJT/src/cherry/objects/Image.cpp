@@ -71,6 +71,9 @@ cherry::Image::~Image() { }
 // returns the file path for the image.
 const std::string& cherry::Image::GetFilePath() const { return filePath; }
 
+// returns the maximum side length of the image.
+int cherry::Image::GetMaximumSideLength() { return Texture2D::GetMaximumSideLength(); }
+
 // gets the width
 uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
 
@@ -150,6 +153,12 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 		dimensions = glm::u32vec2(img->GetWidth(), img->GetHeight());
 	}
 	
+	// image is too large to be loaded.
+	if(dimensions.x > GetMaximumSideLength() || dimensions.y > GetMaximumSideLength())
+	{
+		std::cout << "File too large to be read." << std::endl;
+		safe = false;
+	}
 
 	if(duplicatedFront) // the front and back are the same
 	{ 
@@ -258,9 +267,9 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
 	material->Set("a_LightAttenuation[0]", 1.0f);
 	
-	material->Set("s_Albedos[0]", Texture2D::LoadFromFile(filePath), sampler);
-	material->Set("s_Albedos[1]", Texture2D::LoadFromFile(filePath), sampler);
-	material->Set("s_Albedos[2]", Texture2D::LoadFromFile(filePath), sampler);
+	material->Set("s_Albedos[0]", img, sampler);
+	material->Set("s_Albedos[1]", img, sampler);
+	material->Set("s_Albedos[2]", img, sampler);
 
 
 

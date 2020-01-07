@@ -77,9 +77,10 @@ void cherry::ImageAnimation::Update(float deltaTime)
 		// if the two images are not the same
 		if (currFrame->GetFilePath() != nextFrame->GetFilePath())
 		{
-			object->GetMaterial()->Set("s_Albedos[0]", Texture2D::LoadFromFile(nextFrame->GetFilePath()), image->GetTextureSampler());
-			object->GetMaterial()->Set("s_Albedos[1]", Texture2D::LoadFromFile(nextFrame->GetFilePath()), image->GetTextureSampler());
-			object->GetMaterial()->Set("s_Albedos[2]", Texture2D::LoadFromFile(nextFrame->GetFilePath()), image->GetTextureSampler());
+			Texture2D::Sptr txtr = Texture2D::LoadFromFile(nextFrame->GetFilePath());
+			object->GetMaterial()->Set("s_Albedos[0]", txtr, image->GetTextureSampler());
+			object->GetMaterial()->Set("s_Albedos[1]", txtr, image->GetTextureSampler());
+			object->GetMaterial()->Set("s_Albedos[2]", txtr, image->GetTextureSampler());
 		}
 
 		// gets the uvs of the image.

@@ -799,7 +799,7 @@ void cherry::Game::LoadContent()
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
 	// dedicated variable no longer needed?
-	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
+	
 	matStatic = std::make_shared<Material>(phong);
 	matStatic->Set("a_LightCount", 1);
 	matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
@@ -820,10 +820,10 @@ void cherry::Game::LoadContent()
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
-	
-	matStatic->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	matStatic->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
+	matStatic->Set("s_Albedos[0]", albedo, sampler);
+	matStatic->Set("s_Albedos[1]", albedo, sampler);
+	matStatic->Set("s_Albedos[2]", albedo,sampler);
 	
 	
 	
@@ -928,7 +928,6 @@ void cherry::Game::LoadContent()
 			AddObjectToScene(water);
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
-
 		{
 			// images don't need CreateEntity called.
 			// Image Test (1)
@@ -940,29 +939,55 @@ void cherry::Game::LoadContent()
 			// sprite sheet (currently 21 frames)
 
 			// Image Test (3)
-			cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_bw.png", GetCurrentSceneName(), 
-				Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 1185, 594), 5925, 594, false), true, false);
-			
-			cherry::ImageAnimation* imgAnime = new ImageAnimation();
-			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 0, 0, 1185 * 1, 594), 5925, 594, false), 0.5F));
-			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 1, 0, 1185 * 2, 594), 5925, 594, false), 0.5F));
-			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 2, 0, 1185 * 3, 594), 5925, 594, false), 0.5F));
-			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 3, 0, 1185 * 4, 594), 5925, 594, false), 0.5F));
-			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 4, 0, 1185 * 5, 594), 5925, 594, false), 0.5F));
-			imgAnime->SetInfiniteLoop(true);
-			
-			// Image Test (4)
 			// cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_bw.png", GetCurrentSceneName(), 
 			// 	Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 1185, 594), 5925, 594, false), true, false);
 			// 
+			// // ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
+			// cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			// imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 0, 0, 1185 * 1, 594), 5925, 594, false), 0.5F));
+			// imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 1, 0, 1185 * 2, 594), 5925, 594, false), 0.5F));
+			// imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 2, 0, 1185 * 3, 594), 5925, 594, false), 0.5F));
+			// imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_rb.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 3, 0, 1185 * 4, 594), 5925, 594, false), 0.5F));
+			// imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_bw.png", Image::ConvertImagePixelsToUVSpace(Vec4(1185 * 4, 0, 1185 * 5, 594), 5925, 594, false), 0.5F));
+			// imgAnime->SetInfiniteLoop(true);
+			// imgAnime->Play();
+			// image->AddAnimation(imgAnime, false);
 
+			// Image Test (4)
+			// cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_bw.png", GetCurrentSceneName(), 
+			// 	Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 1185, 594), 5925, 594, false), true, false);
+			cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_sml.png", GetCurrentSceneName(),
+				Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 395, 198), 5530, 198, false), true, false);
+
+			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
+			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			
+			// 14 frames
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 1, 0, 395 * 2, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 2, 0, 395 * 3, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 3, 0, 395 * 4, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 4, 0, 395 * 5, 198), 5530, 198, false), 0.0F));
+																							  
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 5, 0, 395 * 6, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 6, 0, 395 * 7, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 7, 0, 395 * 8, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 8, 0, 395 * 9, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 9, 0, 395 * 10, 198), 5530, 198, false), 0.0F));
+																							  
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 10, 0, 395 * 11, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 11, 0, 395 * 12, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 12, 0, 395 * 13, 198), 5530, 198, false), 0.0F));
+			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 13, 0, 395 * 14, 198), 5530, 198, false), 0.0F));
+			
+			
+			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
 			image->AddAnimation(imgAnime, false);
 			
-
 			objectList->objects.push_back(image);
 			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.025F);
+			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.1F);
 		
 			// image->GetAnimation(0)->Play();
 			

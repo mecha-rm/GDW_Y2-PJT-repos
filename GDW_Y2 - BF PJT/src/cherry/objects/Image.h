@@ -76,6 +76,9 @@ namespace cherry
 		// gets the file path of the image.
 		const std::string& GetFilePath() const;
 
+		// returns the maximum side length of the image.
+		static int GetMaximumSideLength();
+
 		// gets the width of the image.
 		uint32_t GetWidth() const;
 
