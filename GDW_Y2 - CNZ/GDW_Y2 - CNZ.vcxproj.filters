@@ -64,10 +64,15 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+<<<<<<< HEAD
+    <ClCompile Include="src\LevelLoader.cpp" />
+    <ClCompile Include="src\CSV.cpp" />
+=======
     <ClCompile Include="src\cherry\animate\TextureAnimation.cpp" />
     <ClCompile Include="src\cherry\objects\Liquid.cpp" />
     <ClCompile Include="src\cherry\objects\ObjectManager.cpp" />
     <ClCompile Include="src\cherry\Skybox.cpp" />
+>>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -345,10 +350,15 @@
     <ClInclude Include="src\cherry\VectorCRY.h" />
     <ClInclude Include="src\CNZ_Game.h" />
     <ClInclude Include="src\Projectile.h" />
+<<<<<<< HEAD
+    <ClInclude Include="src\LevelLoader.h" />
+    <ClInclude Include="src\CSV.h" />
+=======
     <ClInclude Include="src\cherry\animate\TextureAnimation.h" />
     <ClInclude Include="src\cherry\objects\Liquid.h" />
     <ClInclude Include="src\cherry\objects\ObjectManager.h" />
     <ClInclude Include="src\cherry\Skybox.h" />
+>>>>>>> master
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />

@@ -7,6 +7,7 @@
 #include "cherry/animate/Path.h"
 #include <ctime>
 #include "Projectile.h"
+#include "LevelLoader.h"
 
 //Enemy Sub-classes
 #include "EnemyTypes/Bastion.h"
