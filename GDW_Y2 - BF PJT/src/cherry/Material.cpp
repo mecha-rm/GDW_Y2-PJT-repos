@@ -67,6 +67,9 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 	std::ifstream file(filePath, std::ios::in);
 	std::string line; // a single line form a file
 
+	// TODO: maybe make this static so that you can share defaults?
+	Texture2D::Sptr defaultAlbedo = Texture2D::LoadFromFile("res/images/default.png"); // default albedo
+
 	// std::ifstream file(filePath, std::ios::in); // opens the file
 	// file.open(filePath, std::ios::in); // opens file
 
@@ -82,9 +85,9 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 	Set("a_LightCount", 1);
 
 	// default textures
-	Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
-	Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
-	Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
+	Set("s_Albedos[0]", defaultAlbedo);
+	Set("s_Albedos[1]", defaultAlbedo);
+	Set("s_Albedos[2]", defaultAlbedo);
 
 	// gets each line
 	while (std::getline(file, line))

@@ -68,17 +68,17 @@ bool cherry::ObjectManager::CreateSceneObjectList(std::string scene)
 }
 
 // adds object to the scene object list.
-bool cherry::ObjectManager::AddObjectToSceneObjectList(Object* obj, bool addSceneList)
+bool cherry::ObjectManager::AddObjectToSceneObjectList(cherry::Object* obj, bool addSceneList)
 {
 	if (obj == nullptr) // nullptr of an object
 		return false;
 
-	std::string scene = obj->GetScene();
+	std::string scene = obj->GetSceneName();
 
 	// goes thorugh the object lists to see if an appropriate scene exists.
 	for (cherry::ObjectList* objList : objectLists)
 	{
-		if (objList->GetSceneName() == obj->GetScene()) // if the object is part of a scene that already has a list.
+		if (objList->GetSceneName() == obj->GetSceneName()) // if the object is part of a scene that already has a list.
 		{
 			return objList->AddObject(obj); // adds the object to the list.
 		}
@@ -86,7 +86,7 @@ bool cherry::ObjectManager::AddObjectToSceneObjectList(Object* obj, bool addScen
 
 	if (addSceneList) // if true, a new scene list is created.
 	{
-		ObjectList* objList = new ObjectList(obj->GetScene());
+		ObjectList* objList = new ObjectList(obj->GetSceneName());
 		objList->AddObject(obj);
 		objectLists.push_back(objList);
 		return true;
@@ -95,6 +95,38 @@ bool cherry::ObjectManager::AddObjectToSceneObjectList(Object* obj, bool addScen
 	{
 		return false;
 	}
+}
+
+// removes an object from a scene object list.
+bool cherry::ObjectManager::RemoveObjectFromSceneObjectList(cherry::Object* obj)
+{
+	if (obj == nullptr) // no object passed.
+		return false;
+
+	ObjectList* objList = GetSceneObjectListByName(obj->GetSceneName());
+
+	if (objList == nullptr) // no list exists
+		return false;
+	
+	// if the object isn't returned then it was never in hte list.
+	if (objList->RemoveObjectByPointer(obj) != nullptr)
+		return true;
+	else
+		return false;
+}
+
+// deletes an object from its scene object list.
+bool cherry::ObjectManager::DeleteObjectFromSceneObjectList(cherry::Object* obj)
+{
+	if (obj == nullptr) // no object passed.
+		return false;
+
+	ObjectList* objList = GetSceneObjectListByName(obj->GetSceneName()); // gets the object list.
+
+	if (objList == nullptr) // no list exists
+		return false;
+
+	return objList->DeleteObjectByPointer(obj);
 }
 
 // deletes a scene object list by using its index.

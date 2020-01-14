@@ -411,11 +411,15 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 
 		// creating an object list.
 		ObjectManager::CreateSceneObjectList(sceneName);
-		objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+		
+		if(makeCurrent) // if it should be the current object list.
+			objectList = ObjectManager::GetSceneObjectListByName(sceneName);
 
 		// creating a light list.
 		LightManager::CreateSceneLightList(sceneName);
-		lightList = LightManager::GetSceneLightListByName(sceneName);
+
+		if (makeCurrent) // if it should be the current light list.
+			lightList = LightManager::GetSceneLightListByName(sceneName);
 
 		if (makeCurrent) // if the new scene should be the current scene.
 		{
@@ -594,7 +598,7 @@ cherry::Object* cherry::Game::GetCurrentSceneObjectByName(std::string name) cons
 {
 	for (Object* obj : objectList->objects)
 	{
-		if (obj->GetName() == name && obj->GetScene() == GetCurrentSceneName())
+		if (obj->GetName() == name && obj->GetSceneName() == GetCurrentSceneName())
 			return obj;
 	}
 	return nullptr;
@@ -752,6 +756,14 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
+	UICamera = std::make_shared<Camera>();
+	UICamera->SetPosition(0, 0, 12); // try adjusting the position of the perspecitve cam and orthographic cam
+	UICamera->LookAt(glm::vec3(0));
+	
+	// TODO: maybe just have the one camera that switches between orthographic mode and perspective mode?
+	UICamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f), false);
+	UICamera->SetOrthographicMode(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f), true);
+
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
 	// lightManager = std::make_shared<LightManager>();
@@ -800,15 +812,16 @@ void cherry::Game::LoadContent()
 	// used to make the albedo
 	// dedicated variable no longer needed?
 	
-	matStatic = std::make_shared<Material>(phong);
-	matStatic->Set("a_LightCount", 1);
-	matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
-	matStatic->Set("a_LightColor[0]", { 0.5f, 0.1f, 0.9f});
-	matStatic->Set("a_AmbientColor[0]", { 0.9f, 0.1f, 0.01f });
-	matStatic->Set("a_AmbientPower[0]", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
-	matStatic->Set("a_LightSpecPower[0]", 0.5f);
-	matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
-	matStatic->Set("a_LightAttenuation[0]", 0.15f);
+	// no longer needed since GenerateMaterial() exists.
+	// matStatic = std::make_shared<Material>(phong);
+	// matStatic->Set("a_LightCount", 1);
+	// matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
+	// matStatic->Set("a_LightColor[0]", { 0.5f, 0.1f, 0.9f});
+	// matStatic->Set("a_AmbientColor[0]", { 0.9f, 0.1f, 0.01f });
+	// matStatic->Set("a_AmbientPower[0]", 0.4f); // change this to change the main lighting power (originally value of 0.1F)
+	// matStatic->Set("a_LightSpecPower[0]", 0.5f);
+	// matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
+	// matStatic->Set("a_LightAttenuation[0]", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
 	
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
@@ -820,10 +833,12 @@ void cherry::Game::LoadContent()
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
-	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
-	matStatic->Set("s_Albedos[0]", albedo, sampler);
-	matStatic->Set("s_Albedos[1]", albedo, sampler);
-	matStatic->Set("s_Albedos[2]", albedo,sampler);
+
+	// No longer needed since GenerateMaterial exists.
+	// Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png");
+	// matStatic->Set("s_Albedos[0]", albedo, sampler);
+	// matStatic->Set("s_Albedos[1]", albedo, sampler);
+	// matStatic->Set("s_Albedos[2]", albedo,sampler);
 	
 	
 	
@@ -873,38 +888,45 @@ void cherry::Game::LoadContent()
 		  //sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
 		// Creating the sceneLists, storing them, and making them part of the default m_Scene.
-		//objectList->objects.push_back(new PrimitiveCapsule());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		//
+		 objectList->objects.push_back(new PrimitiveCapsule());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		 
+		 
+		 
+		 objectList->objects.push_back(new PrimitiveCircle());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveCone());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveCube());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveCylinder());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveDiamond());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveUVSphere());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitivePlane());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
-		//objectList->objects.push_back(new PrimitiveCircle());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		 // testing the copy constructor.
+		 // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		 // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, 10.0F);
+		 // objectList->objects.at(objectList->objects.size() - 1)->SetScale(5.0F);
 
-		//objectList->objects.push_back(new PrimitiveCone());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-
-		//objectList->objects.push_back(new PrimitiveCube());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
-
-		//objectList->objects.push_back(new PrimitiveCylinder());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
-
-		//objectList->objects.push_back(new PrimitiveDiamond());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
-
-		//objectList->objects.push_back(new PrimitiveUVSphere());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
-
-		//objectList->objects.push_back(new PrimitivePlane());
-		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		//objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		// liquid
 		{
@@ -924,8 +946,21 @@ void cherry::Game::LoadContent()
 			water->SetEnvironment(GetCurrentScene()->Skybox);
 
 			water->SetPosition(0.0F, 0.0F, -50.0F);
-			water->SetVisible(false);
+			water->SetVisible(true);
 			AddObjectToScene(water);
+		}
+		  
+		// Height Map
+		{
+			Terrain* terrain = new Terrain(GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 30.0f, 50, false);
+			terrain->SetTexture(0, "res/images/red.png");
+			terrain->SetTexture(1, "res/images/green.png");
+			terrain->SetTexture(2, "res/images/blue.png");  
+			terrain->SetMinimumHeight(-5.0F);
+			terrain->SetMaximumHeight(10.0F); 
+			terrain->SetPosition(0.0F, 0.0F, -15.0F); 
+			terrain->SetVisible(true); 
+			AddObjectToScene(terrain); 
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 		{
@@ -1064,6 +1099,11 @@ void cherry::Game::LoadContent()
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
 	}
+	
+	// Switching a scene.
+	// CreateScene("AIS", false);
+	// objectList->objects.at(0)->SetScene("AIS");
+	// SetCurrentScene("AIS", false);
 
 	// Create and compile shader
 	myShader = std::make_shared<Shader>();
@@ -1229,8 +1269,11 @@ void cherry::Game::Draw(float deltaTime) {
 	0, 0,
 	myWindowSize.x, myWindowSize.y
 	};
-	__RenderScene(viewport, myCamera);
-	
+	__RenderScene(viewport, myCamera, true);
+
+	// TODO: find out why MyView is equal to nan 
+	// __RenderScene(viewport, UICamera, false); // comment-out if you decide not to clear.
+
 	// bottom of the window
 	//glm::ivec4 viewport1 = {
 	//	0, 0,
@@ -1285,7 +1328,7 @@ void cherry::Game::DrawGui(float deltaTime) {
 }
 
 // Now handles rendering the scene.
-void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
+void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool clear)
 {
 	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
 	static bool drawBodies = false; // set to 'true' to draw the bodies
@@ -1299,7 +1342,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 	// Clear with the border color
 	glClearColor(borderColor.x, borderColor.y, borderColor.z, borderColor.w);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if(clear)
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 	// Set viewport to be inset slightly (the amount is the border width)
@@ -1309,7 +1353,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 	// Clear our new inset area with the scene clear color
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if(clear)
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// no longer needed?
 	// myShader->Bind();
@@ -1398,8 +1443,11 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 		// We'll need some info about the entities position in the world
 		const TempTransform& transform = ecs.get_or_assign<TempTransform>(entity);
+		
 		// Get the object's transformation
+		// TODO: set up parent system
 		glm::mat4 worldTransform = transform.GetWorldTransform();
+		
 		// Our normal matrix is the inverse-transpose of our object's world rotation
 		// Recall that everything's backwards in GLM
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));

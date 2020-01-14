@@ -21,7 +21,8 @@ cherry::Liquid::Liquid(std::string scene, float size, float numSections, bool wo
 	// creating the material
 	Shader::Sptr liquidShader = std::make_shared<Shader>();
 	liquidShader->Load("res/water-shader.vs.glsl", "res/water-shader.fs.glsl");
-	
+	safe = true;
+
 	material = std::make_shared<Material>(liquidShader);
 	material->HasTransparency = true;
 

@@ -111,6 +111,7 @@
     <ClCompile Include="src\cherry\objects\PrimitiveDiamond.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveSphere.cpp" />
+    <ClCompile Include="src\cherry\objects\Terrain.cpp" />
     <ClCompile Include="src\cherry\Physics.cpp" />
     <ClCompile Include="src\cherry\PhysicsBody.cpp" />
     <ClCompile Include="src\cherry\Scene.cpp" />
@@ -118,6 +119,7 @@
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\Skybox.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
+    <ClCompile Include="src\cherry\Target.cpp" />
     <ClCompile Include="src\cherry\Texture2D.cpp" />
     <ClCompile Include="src\cherry\TextureCube.cpp" />
     <ClCompile Include="src\cherry\TextureSampler.cpp" />
@@ -132,6 +134,7 @@
     <ClCompile Include="src\cherry\utils\math\Vector.cpp" />
     <ClCompile Include="src\cherry\utils\Utils.cpp" />
     <ClCompile Include="src\cherry\VectorCRY.cpp" />
+    <ClCompile Include="src\cherry\WorldTransform.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
@@ -356,6 +359,7 @@
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
+    <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\Light.h" />
     <ClInclude Include="src\cherry\LightManager.h" />
@@ -385,6 +389,7 @@
     <ClInclude Include="src\cherry\Shader.h" />
     <ClInclude Include="src\cherry\Skybox.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
+    <ClInclude Include="src\cherry\Target.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
     <ClInclude Include="src\cherry\TextureCube.h" />
     <ClInclude Include="src\cherry\TextureSampler.h" />

@@ -234,6 +234,8 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 
 	Material::Sptr material; // the material
 	Shader::Sptr phong = std::make_shared<Shader>(); // shader
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png"); // texture
+
 	glm::vec3 temp; // temporary vector
 	
 	int lightCount = 0; // total amount of lights
@@ -267,18 +269,19 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
 	}
 
+	
 	// albedo values (with sampler)
 	if (sampler != nullptr)
 	{
-		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+		material->Set("s_Albedos[0]", albedo, sampler);
+		material->Set("s_Albedos[1]", albedo, sampler);
+		material->Set("s_Albedos[2]", albedo, sampler);
 	}
 	else // no sampler provided
 	{
-		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
-		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
-		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
+		material->Set("s_Albedos[0]", albedo);
+		material->Set("s_Albedos[1]", albedo);
+		material->Set("s_Albedos[2]", albedo);
 	}
 
 	 

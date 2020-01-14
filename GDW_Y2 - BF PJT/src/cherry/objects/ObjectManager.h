@@ -4,6 +4,7 @@
 #include "Primitives.h"
 #include "Image.h"
 #include "Liquid.h"
+#include "Terrain.h"
 
 namespace cherry
 {
@@ -34,9 +35,16 @@ namespace cherry
 		// only call this function if the object has already been given a scene.
 		// if the scene doesn't exist, or the object is already part of that scene, a false is passed.
 		// However, if addSceneList is set to 'true', a list for that scene is created, and 'true' is returned.
-		static bool AddObjectToSceneObjectList(Object * obj, bool addSceneList = true);
+		static bool AddObjectToSceneObjectList(cherry::Object * obj, bool addSceneList = true);
 
-		// AddObject(scene)
+		// removes an object from its scene object list.
+		// if 'true' is returned, then the object was removed successfully. 
+		// If false, the object either wasn't in the list, or the list didn't exist.
+		static bool RemoveObjectFromSceneObjectList(cherry::Object* obj);
+
+		// delets an object from its scene object list.
+		// if a 'false' is returned, then the object was null, or the list didn't exist.
+		static bool DeleteObjectFromSceneObjectList(cherry::Object* obj);
 
 		// deletes a scene object list by using its index.
 		static bool DestroySceneObjectListByIndex(unsigned int index);

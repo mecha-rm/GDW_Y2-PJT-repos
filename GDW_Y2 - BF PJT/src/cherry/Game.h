@@ -191,7 +191,8 @@ namespace cherry
 		// the object used for the camera
 		Camera::Sptr myCamera;
 
-		// Camera::Sptr UICamera;
+		// the camera for the ui.
+		Camera::Sptr UICamera;
 		
 
 	protected:
@@ -218,7 +219,7 @@ namespace cherry
 		void DrawGui(float deltaTime);
 
 		// used for rendering the scene to multiple viewpoints.
-		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera);
+		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool clear = true);
 
 
 		// set to 'true' for debug functionality.

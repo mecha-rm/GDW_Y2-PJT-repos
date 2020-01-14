@@ -7,6 +7,7 @@
 
 #include "..\SceneManager.h"
 #include "..\MeshRenderer.h"
+#include "ObjectManager.h"
 
 #include <iostream>
 #include <sstream>
@@ -89,6 +90,81 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 	CreateEntity(scene, material);
 }
 
+// copy constructor
+cherry::Object::Object(const cherry::Object& obj)
+{
+	// temporary variables
+	const Vertex* tempVerts = obj.GetVertices();
+	const uint32_t* tempIndices = obj.GetIndices();
+
+	// total vertices and indices
+	verticesTotal = obj.GetVerticesTotal();
+	indicesTotal = obj.GetIndicesTotal();
+
+	// vertices and indices
+	vertices = new Vertex[verticesTotal];
+	indices = new uint32_t[indicesTotal];
+	
+	// copying vertices
+	for (int i = 0; i < verticesTotal; i++)
+		vertices[i] = Vertex(tempVerts[i]);
+	
+	// copying indices
+	for (int i = 0; i < indicesTotal; i++)
+		indices[i] = tempIndices[i];
+	
+
+	name = obj.GetName();
+	description = obj.GetDescription();
+
+	memcpy(vertices, obj.GetVertices(), sizeof(Vertex) * verticesTotal);
+	memcpy(indices, obj.GetIndices(), sizeof(uint32_t) * indicesTotal);
+
+	path = obj.GetPath();
+	followPath = obj.followPath;
+	dynamicObject = obj.IsDynamicObject();
+
+	meshBodyMax = obj.GetMeshBodyMaximum();
+	meshBodyMin = obj.GetMeshBodyMinimum();
+
+	filePath = obj.GetFilePath();
+
+	position = obj.GetPosition();
+	scale = obj.GetScale();
+	rotation = obj.GetRotationDegrees();
+	
+	// copying the animation manager.
+	animations = obj.animations;
+
+	PhysicsBodyBox* box = nullptr;
+	PhysicsBodySphere* sphere = nullptr;
+
+	// copying hte physics body.
+	for (PhysicsBody* body : obj.bodies)
+	{
+		switch (body->GetId())
+		{
+		case 1: // box		
+			box = (PhysicsBodyBox*)body;
+			bodies.push_back(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			box = nullptr;
+			break;
+
+		case 2:// sphere
+			sphere = (PhysicsBodySphere*)sphere;
+			bodies.push_back(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			sphere = nullptr;
+			break;
+		}
+		
+	}
+	// TODO: add animation manager
+	// TODO: copy physics bodies
+
+	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
+}
+
 // the protected constructor used for default primitives
 cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { filePath = ""; }
 
@@ -96,11 +172,13 @@ cherry::Object::~Object()
 {
 	// TODO: add back deletions
 	delete[] vertices;
+	vertices = nullptr;
 
 	// if not initialized, it causes an error if deleted.
 	// since only the primitives use indicies, those call delete on their own.
 	// if(indices != nullptr) // TODO: fix this
 	delete[] indices; 
+	indices = nullptr;
 
 	// deleting all of the physics bodies
 	for (PhysicsBody* body : bodies)
@@ -114,7 +192,19 @@ cherry::Object::~Object()
 const std::string & cherry::Object::GetFilePath() const { return filePath; }
 
 // returns the scene the object is part of.
-std::string cherry::Object::GetScene() const { return scene; }
+std::string cherry::Object::GetSceneName() const { return scene; }
+
+// sets the new scene name.
+void cherry::Object::SetScene(std::string newScene)
+{
+	// removes the object from its object list.
+	ObjectManager::RemoveObjectFromSceneObjectList(this);
+	
+	CreateEntity(newScene, material); // re-creates the entity to switch its scene.
+
+	// adds the object to its scene object list.
+	ObjectManager::AddObjectToSceneObjectList(this, true);
+}
 
 // gets the name of the object.
 std::string cherry::Object::GetName() const { return name; }
@@ -162,7 +252,7 @@ unsigned int cherry::Object::GetIndicesTotal() const { return indicesTotal; }
 cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 
 // gets the material
-cherry::Material::Sptr& cherry::Object::GetMaterial() { return material; }
+const cherry::Material::Sptr& cherry::Object::GetMaterial() const { return material; }
 
 // returns if the object is visible
 bool cherry::Object::IsVisible() const { return mesh->IsVisible(); }
@@ -583,6 +673,32 @@ void cherry::Object::Translate(Vec3 translation) { position += translation; }
 // translates the object
 void cherry::Object::Translate(float x, float y, float z) { Translate(Vec3(x, y, z)); }
 
+// gets the parent of the object
+// const cherry::Object* cherry::Object::GetParent() const { return parent; }
+
+// sets the parent for an object.
+// void cherry::Object::SetParent(const cherry::Object* newParent) 
+// { 
+// 	// // removing from the old parent.
+// 	// if (parent != nullptr)
+// 	// 	parent->RemoveChild(this);
+// 	// 
+// 	// // adding the new parent.
+// 	// if (newParent != nullptr)
+// 	// 	newParent->AddChild(this);
+// 
+// 	parent = newParent; 
+// }
+
+// removes the parent
+// void cherry::Object::RemoveParent() { parent = nullptr; }
+
+// adds a child.
+// bool cherry::Object::AddChild(cherry::Object* child)
+// {
+// 	return util::addToVector(children, child);
+// }
+
 
 
 // returns true if added successfully.
@@ -710,29 +826,8 @@ void cherry::Object::ClearPath() { path = Path(); }
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
 
-// default physics body size
-cherry::Vec3 cherry::Object::GetPBodySize()
-{
-	return this->pBodySize;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyWidth()
-{
-	return this->GetPBodySize().GetX() / 2;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyHeight()
-{
-	return this->GetPBodySize().GetY() / 2;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyDepth()
-{
-	return this->GetPBodySize().GetZ() / 2;
-}
+// gets the mesh body maximum.
+const cherry::Vec3 & cherry::Object::GetMeshBodyMaximum() const { return meshBodyMax; }
 
 // gets the maximum mesh body values.
 cherry::Vec3 cherry::Object::CalculateMeshBodyMaximum(const Vertex* vertices, const unsigned int VERTEX_COUNT)
@@ -757,6 +852,9 @@ cherry::Vec3 cherry::Object::CalculateMeshBodyMaximum(const Vertex* vertices, co
 
 	return maxVerts; // maximum vertex values
 }
+
+// gets the mesh body minimum.
+const cherry::Vec3& cherry::Object::GetMeshBodyMinimum() const { return meshBodyMin; }
 
 // gets the mesh body minimum values
 cherry::Vec3 cherry::Object::CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT)
