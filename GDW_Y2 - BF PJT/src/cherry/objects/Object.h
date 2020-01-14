@@ -362,6 +362,19 @@ namespace cherry
 		// calculates the lower limits of the mesh body
 		static cherry::Vec3 CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT);
 
+		// TODO: remove this?
+	// default physics body size
+		cherry::Vec3 GetPBodySize();
+
+		// default physics body size
+		float GetPBodyWidth();
+
+		// default physics body size
+		float GetPBodyHeight();
+
+		// default physics body size
+		float GetPBodyDepth();
+
 		// updates the object
 		virtual void Update(float deltaTime);
 
@@ -431,7 +444,8 @@ namespace cherry
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
 		// default body size
-		// TODO: change so that it's based on the vertices intead.
+		// TODO: delete this.
+		cherry::Vec3 pBodySize;
 
 	protected:
 		// constructor used for default primitives

@@ -887,6 +887,30 @@ void cherry::Object::CalculateMeshBody()
 	meshBodyMin = CalculateMeshBodyMinimum(vertices, verticesTotal); // minimum values
 }
 
+// default physics body size
+cherry::Vec3 cherry::Object::GetPBodySize()
+{
+	return this->pBodySize;
+}
+
+// default physics body size
+float cherry::Object::GetPBodyWidth()
+{
+	return this->GetPBodySize().GetX() / 2;
+}
+
+// default physics body size
+float cherry::Object::GetPBodyHeight()
+{
+	return this->GetPBodySize().GetY() / 2;
+}
+
+// default physics body size
+float cherry::Object::GetPBodyDepth()
+{
+	return this->GetPBodySize().GetZ() / 2;
+}
+
 // updates the object
 void cherry::Object::Update(float deltaTime)
 {
