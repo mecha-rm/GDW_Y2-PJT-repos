@@ -2,11 +2,23 @@
 #include "LightManager.h"
 #include "utils/Utils.h"
 
+std::vector<cherry::LightList*> cherry::LightManager::lightLists = std::vector<cherry::LightList*>();
+
+// destructor
+cherry::LightManager::~LightManager()
+{
+	for (LightList* ll : lightLists)
+	{
+		delete ll;
+	}
+
+	lightLists.clear();
+}
+
 // checks if a scene name has been taken.
 bool cherry::LightManager::SceneLightListExists(const std::string sceneName)
 {
 	// checks if the scene name has been used.
-
 	for (cherry::LightList * ll : lightLists)
 	{
 		if (ll->GetSceneName() == sceneName)
@@ -16,8 +28,17 @@ bool cherry::LightManager::SceneLightListExists(const std::string sceneName)
 	return false;
 }
 
+// gets a light list via its index in the list.
+cherry::LightList* cherry::LightManager::GetSceneLightListByIndex(unsigned int index)
+{
+	if (index >= lightLists.size()) // index out of bounds
+		return nullptr;
+
+	return lightLists[index];
+}
+
 // returns a light list for a scene.
-cherry::LightList* cherry::LightManager::GetSceneLightList(std::string sceneName)
+cherry::LightList* cherry::LightManager::GetSceneLightListByName(std::string sceneName)
 {
 	// finds if a scene exists
 	for (cherry::LightList* ll : lightLists)
@@ -33,7 +54,7 @@ cherry::LightList* cherry::LightManager::GetSceneLightList(std::string sceneName
 }
 
 // adds a scene to the light manager.
-bool cherry::LightManager::AddSceneLightList(const std::string sceneName)
+bool cherry::LightManager::CreateSceneLightList(const std::string sceneName)
 {
 	// if the scene name already exists in the list.
 	if (SceneLightListExists(sceneName))
@@ -49,8 +70,12 @@ bool cherry::LightManager::AddSceneLightList(const std::string sceneName)
 }
 
 // adds a light to the scene.
-bool cherry::LightManager::AddLightToSceneLightList(const std::string sceneName, cherry::Light * light, bool addScene)
+bool cherry::LightManager::AddLightToSceneLightList(cherry::Light * light, bool addScene)
 {
+	if (light == nullptr) // light is nullptr
+		return false;
+
+	std::string sceneName = light->GetScene();
 	// finds the scene
 	for (cherry::LightList* ll : lightLists)
 	{
@@ -65,8 +90,8 @@ bool cherry::LightManager::AddLightToSceneLightList(const std::string sceneName,
 	// if the scene should be added if it doesn't already exist.
 	if (addScene)
 	{
-		AddSceneLightList(sceneName); // adds the scene
-		GetSceneLightList(sceneName)->AddLight(light); // adds the light
+		CreateSceneLightList(sceneName); // adds the scene
+		GetSceneLightListByName(sceneName)->AddLight(light); // adds the light
 		return true;
 	}
 
@@ -77,7 +102,7 @@ bool cherry::LightManager::AddLightToSceneLightList(const std::string sceneName,
 cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
 {
 	// gets the light list
-	cherry::LightList* sceneLight = GetSceneLightList(sceneName);
+	cherry::LightList* sceneLight = GetSceneLightListByName(sceneName);
 
 	if (sceneLight != nullptr)
 	{
@@ -87,6 +112,46 @@ cherry::Light* cherry::LightManager::GetSceneLightsMerged(std::string sceneName)
 	{
 		return nullptr;
 	}
+}
+
+// destroys a light list via its index
+bool cherry::LightManager::DestroySceneLightListByIndex(unsigned int index)
+{
+	LightList* lgtList = GetSceneLightListByIndex(index);
+
+	if (lgtList != nullptr) // if the object isn't a nullptr
+	{
+		util::removeFromVector(lightLists, lgtList);
+		delete lgtList;
+
+		return true;
+	}
+	else // if the object is a nullptr
+	{
+		return false;
+	}
+}
+
+// destroys the light list via its pointer.
+bool cherry::LightManager::DestroySceneLightListByPointer(cherry::LightList* ll)
+{
+	if (util::removeFromVector(lightLists, ll)) // in list
+	{
+		delete ll;
+		return true;
+	}
+	else // was not in list
+	{
+		return false;
+	}
+}
+
+// destroys a scene light list via its name
+bool cherry::LightManager::DestroySceneLightListByName(std::string sceneName)
+{
+	LightList* ll = GetSceneLightListByName(sceneName); // destroys the light list.
+
+	return DestroySceneLightListByPointer(ll);
 }
 
 // LIGHT LIST
@@ -169,6 +234,8 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 
 	Material::Sptr material; // the material
 	Shader::Sptr phong = std::make_shared<Shader>(); // shader
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png"); // texture
+
 	glm::vec3 temp; // temporary vector
 	
 	int lightCount = 0; // total amount of lights
@@ -202,21 +269,89 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
 	}
 
+	
 	// albedo values (with sampler)
 	if (sampler != nullptr)
 	{
-		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
+		material->Set("s_Albedos[0]", albedo, sampler);
+		material->Set("s_Albedos[1]", albedo, sampler);
+		material->Set("s_Albedos[2]", albedo, sampler);
 	}
 	else // no sampler provided
 	{
-		material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
-		material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
-		material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
+		material->Set("s_Albedos[0]", albedo);
+		material->Set("s_Albedos[1]", albedo);
+		material->Set("s_Albedos[2]", albedo);
 	}
 
 	 
 	// returns the material
 	return material;
+}
+
+// removes a light via its index
+cherry::Light* cherry::LightList::RemoveLightByIndex(unsigned int index)
+{
+	if (index >= lights.size()) // bounds checking
+		return nullptr;
+
+	Light * ll = lights.at(index);
+
+	if (util::removeFromVector(lights, ll)) // success
+	{
+		return ll;
+	}
+	else // failure
+	{
+		return nullptr;
+	}
+}
+
+// removes a light via its pointer
+cherry::Light* cherry::LightList::RemoveLightByPointer(cherry::Light* light)
+{
+	if (light == nullptr) // nullptr passed.
+		return nullptr;
+
+	if (util::removeFromVector(lights, light)) // removed successfully
+	{
+		return light;
+	}
+	else // failure
+	{
+		return nullptr;
+	}
+}
+
+// deletes a light via its index.
+bool cherry::LightList::DeleteLightByIndex(unsigned int index)
+{
+	Light* ll = RemoveLightByIndex(index);
+
+	if (ll != nullptr) // light exists
+	{
+		delete ll;
+		return true;
+	}
+	else // light doesn't exist
+	{
+		return false;
+	}
+}
+
+// deletes the light via its pointer.
+bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
+{
+	if (ll == nullptr) // nullptr passed
+		return false;
+
+	if (RemoveLightByPointer(ll) != nullptr) // if the light was removed successfully
+	{
+		delete ll;
+		return true;
+	}
+	else // not removed successfully
+	{
+		return false;
+	}
 }

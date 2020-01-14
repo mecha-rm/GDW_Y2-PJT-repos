@@ -61,7 +61,7 @@ void cherry::PhysicsBody::SetObject(cherry::Object* obj)
 	object = obj; 
 	if (object != nullptr) // adds the body to the scene, and gives it the material
 	{
-		body->CreateEntity(object->GetScene(), material);
+		body->CreateEntity(object->GetSceneName(), material);
 		body->SetVisible(false);
 	}
 }
@@ -319,7 +319,7 @@ cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, float width, float
 	body = new cherry::PrimitiveCube(width, height, depth, COLOUR);
 	// body->SetPosition(position);
 	if(object != nullptr)
-		body->CreateEntity(object->GetScene(), material);
+		body->CreateEntity(object->GetSceneName(), material);
 }
 
 // location of the physics body and its dimensions
@@ -372,7 +372,7 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 	body = new cherry::PrimitiveUVSphere(radius, 15, 15, COLOUR);
 
 	if(object != nullptr)
-		body->CreateEntity(object->GetScene(), object->GetMaterial());
+		body->CreateEntity(object->GetSceneName(), object->GetMaterial());
 	
 }
 

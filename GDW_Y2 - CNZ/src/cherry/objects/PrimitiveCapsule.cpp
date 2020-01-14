@@ -255,6 +255,8 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	CalculateNormals();
 	InvertNormals();
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 }

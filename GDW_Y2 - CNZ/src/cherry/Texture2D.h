@@ -81,6 +81,10 @@ namespace cherry
 		// loading from the file so that we don't have to manually apply a texture.
 		static Sptr LoadFromFile(const std::string& fileName, bool loadAlpha = true);
 
+		// gets the limit on the width of the texture. This is the same as the height.
+		// this is based on the GPU of the user.
+		static int GetMaximumSideLength();
+
 		// gets the width of the image.
 		uint32_t GetWidth() const;
 

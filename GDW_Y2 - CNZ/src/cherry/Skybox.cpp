@@ -95,7 +95,7 @@ cherry::Shader::Sptr cherry::Skybox::GenerateShader() const
 cherry::Mesh::Sptr cherry::Skybox::GenerateMesh() const { return Mesh::MakeInvertedCube(); }
 
 // adds a skybox to a scene
-void cherry::Skybox::AddSkyboxToScene(cherry::Scene * scene)
+void cherry::Skybox::AddSkyboxToScene(cherry::Scene * scene) const
 {
 	// adds the shader, mesh, and textured cube.
 	scene->SkyboxShader = GenerateShader();

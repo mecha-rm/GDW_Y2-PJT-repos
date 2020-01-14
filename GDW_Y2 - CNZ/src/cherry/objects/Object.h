@@ -49,17 +49,22 @@ namespace cherry
 		// adding the material and loading in the mtl file afterwards allows it to keep values that aren't changed by the mtl file.
 		Object(std::string filePath, std::string scene, Material::Sptr material, std::string mtl, bool dynamicObj = false);
 
-
+		// copy constructor.
+		Object(const cherry::Object&);
 
 		// destructor
 		virtual ~Object();
 
 		// gets the file path of the requested object.
 		// if there is no file path, it will return a string with the ("") character inside it.
-		std::string GetFilePath() const;
+		virtual const std::string & GetFilePath() const;
 
 		// gets the scene the object is part of.
-		std::string GetScene() const;
+		std::string GetSceneName() const;
+
+		// sets a new scene for the object to be part of. This removes the object from the list its currently part of.
+		// if the scene doesn't exist, then a new one is created.
+		void SetScene(std::string newScene);
 
 		// gets the name of the object.
 		std::string GetName() const;
@@ -107,7 +112,7 @@ namespace cherry
 		Mesh::Sptr& GetMesh();
 
 		// gets the material for the object.
-		Material::Sptr& GetMaterial();
+		const Material::Sptr& GetMaterial() const;
 
 		// returns whether or not the object is visible
 		bool IsVisible() const;
@@ -264,6 +269,23 @@ namespace cherry
 		// translates the object by the provided values.
 		void Translate(float x, float y, float z);
 
+		// Rotate functions
+
+
+		// gets the parent object.
+		// const cherry::Object* GetParent() const;
+
+		// sets the object for the parent.
+		// void SetParent(const cherry::Object * newParent);
+
+		// removes the parent by making it a nullptr.
+		// void RemoveParent();
+
+		// adds a child to the object.
+		// bool AddChild(cherry::Object* child);
+
+		// removes a child from the object.
+		// bool RemoveChid(cherry::Object * child);
 
 		// adds a physics body; returns true if added. The same physics body can't be added twice.
 		bool AddPhysicsBody(cherry::PhysicsBody * body);
@@ -328,8 +350,20 @@ namespace cherry
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
 
+		// get mesh body maximum.
+		const cherry::Vec3 & GetMeshBodyMaximum() const;
+
+		// calculates the upper limits of the mesh body
+		static cherry::Vec3 CalculateMeshBodyMaximum(const Vertex * vertices, const unsigned int VERTEX_COUNT);
+
+		// get the mesh body minimum.
+		const cherry::Vec3 & GetMeshBodyMinimum() const;
+
+		// calculates the lower limits of the mesh body
+		static cherry::Vec3 CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT);
+
 		// TODO: remove this?
-		// default physics body size
+	// default physics body size
 		cherry::Vec3 GetPBodySize();
 
 		// default physics body size
@@ -341,9 +375,8 @@ namespace cherry
 		// default physics body size
 		float GetPBodyDepth();
 
-
 		// updates the object
-		void Update(float deltaTime);
+		virtual void Update(float deltaTime);
 
 		// toString
 		virtual std::string ToString() const;
@@ -373,6 +406,7 @@ namespace cherry
 		template<typename T>
 		const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
 
+
 		// template<typename T>
 		// void CalculateNormals(std::vector<);
 
@@ -381,9 +415,12 @@ namespace cherry
 		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
 		bool dynamicObject = false;
 
-		// parent object
-		// Object * parent = nullptr;
 
+		// parent objects
+		// TODO: make an object be capable of having multiple parents
+		// const cherry::Object* parent = nullptr;
+
+		// child objects
 		// std::vector<Object*> children;
 
 		// the string for the file path
@@ -407,11 +444,16 @@ namespace cherry
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
 		// default body size
+		// TODO: delete this.
 		cherry::Vec3 pBodySize;
 
 	protected:
 		// constructor used for default primitives
 		Object();
+
+		// calculates the limits of the mesh (i.e. the highest and lowest vertex positions). This does not account for animations.
+		// only call this once the vertices have all been found and accounted for.
+		void CalculateMeshBody();
 
 		// object name
 		std::string name = "";
@@ -437,6 +479,10 @@ namespace cherry
 		// the mesh
 		Mesh::Sptr mesh;
 
+		// mesh body size
+		cherry::Vec3 meshBodyMin; // minimum vertex positions
+
+		cherry::Vec3 meshBodyMax; // maximum vertex positions
 
 		// the color of the model.
 		// cherry::Vec4 color;

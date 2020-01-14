@@ -16,13 +16,17 @@ namespace cherry
 		glm::vec3 Scale = glm::vec3(1.0f);
 
 		// does our TRS for us.
-		glm::mat4 GetWorldTransform() const {
-			return
-				glm::translate(glm::mat4(1.0f), Position) *
-				glm::mat4_cast(glm::quat(glm::radians(EulerRotation))) *
-				glm::scale(glm::mat4(1.0f), Scale)
-				;
-		}
+		glm::mat4 GetWorldTransform() const;
+
+		// glm::mat4 GetParentTransform() const {
+		// 
+		// }
+
+		// glm::mat4 parent{ 
+		// 	1.0F, 0.0F, 0.0F, 0.0F,
+		// 	0.0F, 1.0F, 0.0F, 0.0F,
+		// 	0.0F, 0.0F, 1.0F, 0.0F,
+		// 	0.0F, 0.0F, 0.0F, 1.0F};
 	};
 
 	struct UpdateBehaviour {

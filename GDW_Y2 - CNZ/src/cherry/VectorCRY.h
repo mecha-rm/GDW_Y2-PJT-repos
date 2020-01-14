@@ -29,8 +29,11 @@ namespace cherry
 		// converts glm::Vec2 to cherry::Vec2
 		Vec2(glm::vec2 vec);
 
+		// copy constructor
+		Vec2(const Vec2&);
+
 		// desturctor 
-		~Vec2();
+		~Vec2() = default;
 
 		// gets the x-value
 		float GetX() const;
@@ -49,6 +52,7 @@ namespace cherry
 		float& operator[](const int index); // editing
 
 		// equality operator
+		Vec2 operator=(const Vec2&);
 		bool operator==(const Vec2&) const; // checking if two vectors are equal
 
 		Vec2 operator*(float) const; // scalar multiplication
@@ -85,6 +89,8 @@ namespace cherry
 
 		// vector object from util::math namespace. This is where the information is stored.
 		util::math::Vec2 v;
+		float* const x; // pointer to v.x
+		float* const y; // pointer to v.y
 	} Vector2;
 
 
@@ -101,7 +107,10 @@ namespace cherry
 		// converts glm::vec3 to cherry::Vec3
 		Vec3(glm::vec3 vec);
 
-		~Vec3();
+		// copy constructor
+		Vec3(const Vec3&);
+
+		~Vec3() = default;
 
 		// gets the x-value
 		float GetX() const;
@@ -126,6 +135,7 @@ namespace cherry
 		const float& operator[](const int index) const; // reading
 		float& operator[](const int index); // editing
 
+		Vec3 operator=(const Vec3&); // equality operator
 		bool operator==(const Vec3&) const; // checking if two vectors are equal
 
 		Vec3 operator*(float) const; // scalar multiplication
@@ -162,6 +172,9 @@ namespace cherry
 
 		// util::math::vector 3 
 		util::math::Vec3 v;
+		float* const x; // pointer to v.x
+		float* const y; // pointer to v.y
+		float* const z; // pointer to v.z
 
 	} Vector3;
 
@@ -177,6 +190,11 @@ namespace cherry
 
 		// glm::vector4 conversion
 		Vec4(glm::vec4 vec);
+
+		// copy constructor
+		Vec4(const Vec4&);
+
+		~Vec4() = default;
 
 		// gets the x-value
 		float GetX() const;
@@ -207,6 +225,7 @@ namespace cherry
 		const float& operator[](const int index) const; // reading
 		float& operator[](const int index); // editing
 
+		Vec4 operator=(const Vec4&); // equality operator
 		bool operator==(const Vec4&) const; // checking if two vectors are equal
 
 		Vec4 operator*(float) const; // scalar multiplication
@@ -243,5 +262,11 @@ namespace cherry
 
 		// vec4 object from util::math
 		util::math::Vec4 v;
+
+		float* const x; // pointer to v.x
+		float* const y; // pointer to v.y
+		float* const z; // pointer to v.z
+		float* const w; // pointer to v.w
+
 	} Vector4;
 }

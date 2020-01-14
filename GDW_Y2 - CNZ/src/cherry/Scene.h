@@ -17,6 +17,9 @@ namespace cherry
 
 		Scene() = default;
 
+		// EX: creates a scene, providing it its name.
+		Scene(std::string name) : myName(name) {}
+
 		virtual ~Scene() = default;
 
 		virtual void OnOpen() {};

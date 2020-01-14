@@ -2,13 +2,45 @@
 #include "..\utils\Utils.h"
 
 // TODO: save scene to a string so that UI can carry over
-// creates an iamge by taking in a file path.
-cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront) : Object()
+// creates an iamge by taking in a file path. Images call CreateEntity automatically.
+cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront) :
+	Image(filePath, scene, Vec2(0, 0), Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
+{
+
+}
+
+// image with size
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, cherry::Vec2(width, height), cherry::Vec4(0.0F, 0.0F, 1.0F, 1.0F), doubleSided, duplicateFront)
+{
+}
+
+// image with size
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, size, cherry::Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
+{
+}
+
+// image with uvs.
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, cherry::Vec2(0.0F, 0.0F), uvs, doubleSided, duplicateFront)
+{
+}
+
+// image with size and uvs
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, cherry::Vec2(width, height), uvs, doubleSided, duplicateFront)
+{
+}
+
+// image creation with size and uvs.
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Object(), doubleSided(doubleSided), duplicatedFront(duplicateFront)
 {
 	std::ifstream file(filePath, std::ios::in); // opens the file
-	// file.open(filePath, std::ios::in); // opens file
+// file.open(filePath, std::ios::in); // opens file
 
-	// file access failure check.
+// file access failure check.
 	if (!file)
 	{
 		safe = false; // file cannot be used
@@ -29,12 +61,18 @@ cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, 
 
 	this->filePath = filePath; // saves the file path
 	file.close(); // closing the file since the read was successful.
-	
-	LoadImage(scene, doubleSided, duplicateFront); // loads in the image
+
+	LoadImage(scene, size, uvs); // loads in the image
 }
 
 // destructor
 cherry::Image::~Image() { }
+
+// returns the file path for the image.
+const std::string& cherry::Image::GetFilePath() const { return filePath; }
+
+// returns the maximum side length of the image.
+int cherry::Image::GetMaximumSideLength() { return Texture2D::GetMaximumSideLength(); }
 
 // gets the width
 uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
@@ -42,44 +80,106 @@ uint32_t cherry::Image::GetWidth() const { return dimensions.x; }
 // gets the height
 uint32_t cherry::Image::GetHeight() const { return dimensions.y; }
 
+// converts a range of pixels to uvs.
+cherry::Vec4 cherry::Image::ConvertImagePixelsToUVSpace(cherry::Vec4 pixelArea, float imageWidth, float imageHeight, bool fromTop)
+{
+	cherry::Vec4 temp;
+	// not working for some reason.
+	if (fromTop) // based on the top of the image
+	{
+		temp = Vec4(
+			pixelArea.v.x / imageWidth,
+			1.0F - ((imageHeight - pixelArea.v.y) / imageHeight),
+			pixelArea.v.z / imageWidth,
+			1.0F - ((imageHeight - pixelArea.v.w) / imageHeight)
+		);
+	}
+	else // based on the bottom of the image.
+	{
+		temp = Vec4(
+			pixelArea.v.x / imageWidth,
+			pixelArea.v.y / imageHeight,
+			pixelArea.v.z / imageWidth,
+			pixelArea.v.w / imageHeight
+		);
+	}
+
+	return temp;
+}
+
+// returns 'true' if the image is visible on both sides.
+bool cherry::Image::IsDoubleSided() const { return doubleSided; }
+
+// returns true if the front and the back of the image is the same.
+bool cherry::Image::HasDuplicatedFront() const { return duplicatedFront; }
+
+// returns the sampler.
+const cherry::TextureSampler::Sptr const cherry::Image::GetTextureSampler() const
+{
+	return sampler;
+}
+
 // loads an image
-bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicateFront)
+bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4 uvs)
 {
 	// gets the iamge
+	// NOTE: if the image is too large, the process will fail.
 	Texture2D::Sptr img = Texture2D::LoadFromFile(filePath);
-	
+
+	// the four uvs
+	glm::vec2 uvBL(uvs.v.x, uvs.v.y); // (0, 0)
+	glm::vec2 uvBR(uvs.v.z, uvs.v.y); // (1, 0)
+	glm::vec2 uvTL(uvs.v.x, uvs.v.w); // (0, 1)
+	glm::vec2 uvTR(uvs.v.z, uvs.v.w); // (1, 1)
+
 	// TODO: make a shader that doesn't use lighting but has textures?
 	// mapping the image to the plane
 	Shader::Sptr shader;
 	Material::Sptr material;
 	SamplerDesc description; // texture description
-	TextureSampler::Sptr sampler;
+	// TextureSampler::Sptr sampler; // now global variable
 	
-	// saving the width and height
-	dimensions.x = img->GetWidth();
-	dimensions.y = img->GetHeight();
-
+	// saving the width and height for the image. If the provided size is NOT (0, 0), then that is used instead.
+	// also checks to see if the cropped space is within the boundsof the image.
+	if (size.v == Vec2(0, 0).v && 
+		(uvs.v.x != 0 || uvs.v.y != 0 || uvs.v.z != 1 || uvs.v.w != 1))
+	{
+		// if the whole image isn't being used, then the uvs are used to make the image size. 
+		dimensions.x = img->GetWidth() * uvs.v.z - img->GetWidth() * uvs.v.x;
+		dimensions.y = img->GetHeight() * uvs.v.w - img->GetHeight() * uvs.v.y;
+	}
+	else // whole image is to be used.
+	{
+		dimensions = glm::u32vec2(img->GetWidth(), img->GetHeight());
+	}
 	
-	// glm::float32_t; // glm float
+	// image is too large to be loaded.
+	if(dimensions.x > GetMaximumSideLength() || dimensions.y > GetMaximumSideLength())
+	{
+		std::cout << "File too large to be read." << std::endl;
+		safe = false;
+	}
 
-	if(duplicateFront) // the front and back are the same
+	if(duplicatedFront) // the front and back are the same
 	{ 
 		// creates a cube that gets squished so that it appears to be a plane.
 		// the front and back of the cube (which become the front and back of the plane)
 		verticesTotal = 8;
+
+		// Position, Colour, Normals, and UVs
 		vertices = new Vertex[verticesTotal]
 		{
 			//  x			  y				  z		   r	 g	   b	 a		 // normals
-			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvBL}}, // default: (0, 0) ~ bottom left
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvBR}}, // default: (1, 0) ~ bottom right
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvTL}}, // default: (0, 1) ~ top left
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvTR}}, // default: (1, 1) ~ top right
 
 			// replication of what's shown above.
-			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {1.0F, 0.0F}},
-			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {0.0F, 0.0F}},
-			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {1.0F, 1.0F}},
-			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {0.0F, 1.0F}},
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {uvBR}}, // default: (1, 0)
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {uvBL}}, // default: (0, 0)
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {uvTR}}, // default: (1, 1)
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, -1.0F}, {uvTL}}, // default: (0, 1)
 		};
 
 		// indices
@@ -102,13 +202,15 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 	else // the front and back are different
 	{
 		verticesTotal = 4;
+
+		// Position, Colour, Normals, and UVs
 		vertices = new Vertex[verticesTotal]
 		{
 			//  x			  y				  z		   r	 g	   b	 a		 // normals
-			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+			{{ -(float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvBL}}, // default: (0, 0) ~ bottom left
+			{{  (float)(dimensions.x) / 2.0F, -(float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvBR}}, // default: (1, 0) ~ bottom right
+			{{ -(float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvTL}}, // default: (0, 1) ~ top left
+			{{  (float)(dimensions.x) / 2.0F,  (float)(dimensions.y) / 2.0F, 0.0f }, { 1.0f, 1.0f, 1.0f, 1.0f }, {0.0F, 0.0F, 1.0F}, {uvTR}}, // default: (1, 1) ~ top right
 		};
 
 		// indices
@@ -118,14 +220,14 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 			2, 1, 3
 		};
 	}
-	// Position, Colour, Normals, and UVs
-
 	
+
+	CalculateMeshBody(); // calculates the limits of the mesh body.
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	
-	if (duplicateFront) // if the front and back are the same, then both should be shown.
+	if (duplicatedFront) // if the front and back are the same, then both should be shown.
 	{
 		mesh->cullFaces = true; // hide the backfaces.
 	}
@@ -146,7 +248,13 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 
 	shader = std::make_shared<Shader>();
 	// TODO: probably shouldn't use lighting shader since it's an image
-	shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
+
+	// if the image is animated
+	// if (animated)
+	// 	shader->Load("res/lighting-morph.vs.glsl", "res/blinn-phong-morph.fs.glsl");
+	// else
+	// 	shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
+	shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
 
 	// lighting has no strong effect on images currnetly
 	material = std::make_shared<Material>(shader);
@@ -159,9 +267,9 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 	material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
 	material->Set("a_LightAttenuation[0]", 1.0f);
 	
-	material->Set("s_Albedos[0]", Texture2D::LoadFromFile(filePath), sampler);
-	material->Set("s_Albedos[1]", Texture2D::LoadFromFile(filePath), sampler);
-	material->Set("s_Albedos[2]", Texture2D::LoadFromFile(filePath), sampler);
+	material->Set("s_Albedos[0]", img, sampler);
+	material->Set("s_Albedos[1]", img, sampler);
+	material->Set("s_Albedos[2]", img, sampler);
 
 
 
@@ -174,4 +282,11 @@ bool cherry::Image::LoadImage(std::string scene, bool doubleSided, bool duplicat
 	// creates the entity for the image
 	CreateEntity(scene, material);
 	return true;
+}
+
+// update
+void cherry::Image::Update(float deltaTime)
+{
+	// SetRotationDegrees(GetRotationDegrees() + Vec3(30.0F * deltaTime, 0, 0));
+	Object::Update(deltaTime);
 }

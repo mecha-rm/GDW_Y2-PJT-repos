@@ -67,6 +67,7 @@ namespace cherry
 
 		// adds a frame to the list. If 'true' is passed, then the frame was added successfully.
 		// the same frame cannot be put into the list twice.
+		// TODO: check to make sure it's the right kind of frame.
 		bool AddFrame(AnimationFrame * frame);
 
 		// removes the provided frame
@@ -163,6 +164,7 @@ namespace cherry
 		// for inherited classes to specify their derived type.
 		// 0: generic
 		// 1: morph target
+		// 3: image animation
 		Animation(int id);
 
 		int id = 0;

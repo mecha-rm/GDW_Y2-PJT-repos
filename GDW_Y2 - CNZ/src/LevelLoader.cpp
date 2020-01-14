@@ -67,7 +67,7 @@ bool Level::loadLevel(std::string levelPath) {
 
 	else {
 		this->map = getMap(levelCSV);
-		this->properties = getMapProperties(levelCSV);
+		// this->properties = getMapProperties(levelCSV);
 		return true;
 	}
 }

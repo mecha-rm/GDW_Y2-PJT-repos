@@ -42,7 +42,7 @@ bool cherry::SceneManager::SetCurrentScene(const std::string& name) {
 void cherry::SceneManager::RegisterScene(const std::string& name, Scene* scene) {
 	LOG_ASSERT(!HasScene(name), "A scene with that name already exists!");
 	if (scene == nullptr)
-		scene = new Scene();
+		scene = new Scene(name); // EX: now passes the scene's name.
 
 	// we just reference it and put it in. Everything else is done internally.
 	_KnownScenes[name] = scene;

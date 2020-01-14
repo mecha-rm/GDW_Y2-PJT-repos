@@ -81,6 +81,8 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 	CalculateNormals();
 	InvertNormals();
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	
