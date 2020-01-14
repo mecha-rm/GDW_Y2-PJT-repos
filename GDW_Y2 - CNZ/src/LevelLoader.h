@@ -8,7 +8,7 @@
 class Level {
 public:
 	Level();
-	Level(std::string legendPath, std::string levelPath);
+	Level(std::string legendPath, std::string levelPath, std::string sceneName);
 
 	std::map<std::string, std::string> legend; // legend lookup table
 	std::vector<std::vector<std::string>> map; // 2d vector of strings, the scene map

@@ -226,7 +226,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 		enemyGroups[i][j]->alive = true;
 		enemyGroups[i][j]->SetRotationXDegrees(90);
 		enemyGroups[i][j]->SetRotationZDegrees(180);
-		AddObject(enemyGroups[i][j]);
+		AddObjectToScene(enemyGroups[i][j]);
 
 		if (j % 2 == 0) {
 			count++;
@@ -240,7 +240,7 @@ void cnz::CNZ_Game::LoadContent()
 {
 	// srand(time(NULL)); // move to Game.h
 
-	Level test = Level("res/loader/legend.csv", "res/loader/map1.csv");
+	Level test = Level("res/loader/legend.csv", "res/loader/map1.csv", "sceneName");
 
 	Game::LoadContent(); // calls the load content
 
@@ -533,11 +533,11 @@ void cnz::CNZ_Game::LoadContent()
     spawnEnemyGroup(19);
 
 	// add objects
-	AddObject(playerObj);
-	AddObject(testObj);
+	AddObjectToScene(playerObj);
+	AddObjectToScene(testObj);
 	int x = -27;
 	for (int i = 0; i < obstacles.size(); i++) {
-		AddObject(obstacles[i]);
+		AddObjectToScene(obstacles[i]);
 
 		if (i > 0 && i < 11) {
 			obstacles[i]->SetRotationXDegrees(90);
@@ -623,7 +623,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			auto tempObj = projectilePBs[i]->GetObject();
 			tempObj->RemovePhysicsBody(projectilePBs[i]);
 			tempObj->SetPosition(1000, 1000, 1000);
-			RemoveObject(projectilePBs[i]->GetObject());
+			DeleteObjectFromScene(projectilePBs[i]->GetObject());
 		}
 	}
 
@@ -702,7 +702,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				}
 				
 				enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
-				RemoveObject(enemiesInRange[i]);
+				DeleteObjectFromScene(enemiesInRange[i]);
 				kills++;
 				cout << kills << endl;
 			}
@@ -752,7 +752,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					}
 
 					enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
-					RemoveObject(enemiesInRange[i]);
+					DeleteObjectFromScene(enemiesInRange[i]);
 					kills++;
 					cout << kills << endl;
 				}
@@ -771,7 +771,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					}
 
 					enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
-					RemoveObject(enemiesInRange[i]);
+					DeleteObjectFromScene(enemiesInRange[i]);
 					kills++;
 					cout << kills << endl;
 				}
@@ -809,7 +809,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				projList[projList.size() - 1]->active = true;
 				projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
 				projList[projList.size() - 1]->SetDirVec(projList[projList.size() - 1]->GetPosition(), projList[projList.size() - 1]->GetPosition() + cherry::Vec3(0, 10, 0.1));
-				AddObject(projList[projList.size() - 1]);
+				AddObjectToScene(projList[projList.size() - 1]);
 			}
 			//enemyGroups[i][j]->Update(deltaTime);
 		}
@@ -824,7 +824,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-				RemoveObject(projList[i]);
+				DeleteObjectFromScene(projList[i]);
 				projList.erase(projList.begin() + i);
 				projTimeList.erase(projTimeList.begin() + i);
 			}

@@ -1,8 +1,15 @@
 #include "LevelLoader.h"
 
-Level::Level(std::string legendPath, std::string levelPath) {
+Level::Level() {
+	// uh, don't use this.
+}
+
+Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) {
+	this->sceneName = sceneName;
+
 	if (!loadLegend(legendPath)) { // wasn't valid
 		std::cout << "Legend CSV is NOT VALID. Exiting." << std::endl;
+		// TODO: not have a call to exit() in the final build.
 		exit(1);
 	}
 
@@ -11,6 +18,7 @@ Level::Level(std::string legendPath, std::string levelPath) {
 
 		if (!loadLevel(levelPath)) {
 			std::cout << "Level CSV is NOT VALID. Exiting." << std::endl;
+			// TODO: not have a call to exit() in the final build.
 			exit(1);
 		}
 
@@ -67,7 +75,6 @@ bool Level::loadLevel(std::string levelPath) {
 
 	else {
 		this->map = getMap(levelCSV);
-		this->properties = getMapProperties(levelCSV);
 		return true;
 	}
 }
