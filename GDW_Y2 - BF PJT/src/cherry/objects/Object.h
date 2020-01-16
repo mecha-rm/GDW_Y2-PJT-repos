@@ -123,6 +123,22 @@ namespace cherry
 		// sets whether the object is visible or not.
 		void SetVisible(bool visible);
 
+		// TODO: save in the Mesh class whether to draw in perspective or othographic.
+		// returns 'true' if the object is drawn in perspective mode.
+		// by default, the object is drawn in perspective mode.
+		bool IsPerspectiveObject() const;
+
+		// sets if the object should be drawn in perspective mode.
+		void SetPerspectiveObject(bool perspective);
+
+		// returns 'true' if the object is drawn in orthographic mode.
+		bool IsOrthographicObject() const;
+
+		// sets if the object should be drawn in orthographic mode.
+		void SetOrthographicObject(bool orthographic);
+
+
+
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
@@ -362,19 +378,6 @@ namespace cherry
 		// calculates the lower limits of the mesh body
 		static cherry::Vec3 CalculateMeshBodyMinimum(const Vertex* vertices, const unsigned int VERTEX_COUNT);
 
-		// TODO: remove this?
-	// default physics body size
-		cherry::Vec3 GetPBodySize();
-
-		// default physics body size
-		float GetPBodyWidth();
-
-		// default physics body size
-		float GetPBodyHeight();
-
-		// default physics body size
-		float GetPBodyDepth();
-
 		// updates the object
 		virtual void Update(float deltaTime);
 
@@ -446,6 +449,7 @@ namespace cherry
 		// default body size
 		// TODO: delete this.
 		cherry::Vec3 pBodySize;
+
 
 	protected:
 		// constructor used for default primitives

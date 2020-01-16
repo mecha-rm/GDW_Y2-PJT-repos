@@ -98,6 +98,19 @@ namespace cherry
 		// sets whether the mesh is visible or not.
 		void SetVisible(bool visible);
 
+		// returns 'true' if the mesh is drawn in perspective mode (default mode).
+		bool IsPerspectiveMesh() const;
+
+		// sets if the mesh should be drawn in perspective mode.
+		void SetPerspectiveMesh(bool perspective);
+
+		// returns 'true' if the mesh is drawn in orthographic mode.
+		bool IsOrthographicMesh() const;
+
+		// sets if the mesh should be drawn in orthographic mode.
+		void SetOrthographicMesh(bool orthographic);
+
+
 		// morph for regular vertices.
 		// note that this does NOT delete the provided vertices array.
 		void Morph(Vertex* vertices, size_t numVerts);
@@ -133,6 +146,10 @@ namespace cherry
 
 		// boolan for visibility
 		bool visible = true;
+
+		// if 'true', it is drawn in perspective.
+		// if 'false', then the object is drawn in orthgoraphic.
+		bool perspectiveMesh = true;
 
 		// TODO: implement method of redrawing the mesh in multiple locations
 		// cherry::Vec3 offset; // offset for each draw call

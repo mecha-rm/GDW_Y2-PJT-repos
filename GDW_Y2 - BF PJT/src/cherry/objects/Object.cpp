@@ -106,12 +106,12 @@ cherry::Object::Object(const cherry::Object& obj)
 	indices = new uint32_t[indicesTotal];
 	
 	// copying vertices
-	for (int i = 0; i < verticesTotal; i++)
-		vertices[i] = Vertex(tempVerts[i]);
-	
-	// copying indices
-	for (int i = 0; i < indicesTotal; i++)
-		indices[i] = tempIndices[i];
+	// for (int i = 0; i < verticesTotal; i++)
+	// 	vertices[i] = Vertex(tempVerts[i]);
+	// 
+	// // copying indices
+	// for (int i = 0; i < indicesTotal; i++)
+	// 	indices[i] = tempIndices[i];
 	
 
 	name = obj.GetName();
@@ -146,13 +146,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			bodies.push_back(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			bodies.push_back(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
 			sphere = nullptr;
 			break;
 		}
@@ -262,6 +262,22 @@ void cherry::Object::SetVisible() { mesh->SetVisible(); }
 
 // sets whether the object is visible.
 void cherry::Object::SetVisible(bool visible) { mesh->SetVisible(visible); }
+
+
+// returns 'true' if the object is drawn in perspective.
+bool cherry::Object::IsPerspectiveObject() const { return mesh->IsPerspectiveMesh(); }
+
+// sets if the object is drawn in perspective mode.
+void cherry::Object::SetPerspectiveObject(bool perspective) { mesh->SetPerspectiveMesh(perspective); }
+
+// returns 'true' if the object is drawn in orthographic mode.
+bool cherry::Object::IsOrthographicObject() const { return mesh->IsOrthographicMesh(); }
+
+// sets if the object should be drawn in orthographic perpsective.
+void cherry::Object::SetOrthographicObject(bool orthographic) { mesh->SetOrthographicMesh(orthographic); }
+
+
+
 
 // creates the object.
 bool cherry::Object::LoadObject(bool loadMtl)
@@ -885,30 +901,6 @@ void cherry::Object::CalculateMeshBody()
 {
 	meshBodyMax = CalculateMeshBodyMaximum(vertices, verticesTotal); // maximum values
 	meshBodyMin = CalculateMeshBodyMinimum(vertices, verticesTotal); // minimum values
-}
-
-// default physics body size
-cherry::Vec3 cherry::Object::GetPBodySize()
-{
-	return this->pBodySize;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyWidth()
-{
-	return this->GetPBodySize().GetX() / 2;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyHeight()
-{
-	return this->GetPBodySize().GetY() / 2;
-}
-
-// default physics body size
-float cherry::Object::GetPBodyDepth()
-{
-	return this->GetPBodySize().GetZ() / 2;
 }
 
 // updates the object

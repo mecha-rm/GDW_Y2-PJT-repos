@@ -208,8 +208,21 @@ bool cherry::Mesh::IsVisible() { return visible; }
 // toggle's visibility
 void cherry::Mesh::SetVisible() { visible = !visible; }
 
-// sets whether the object is visible or not.
+// sets whether the mesh is visible or not.
 void cherry::Mesh::SetVisible(bool visible) { this->visible = visible; }
+
+// returns 'true' if the object is drawn in perspective.
+bool cherry::Mesh::IsPerspectiveMesh() const { return perspectiveMesh; }
+
+// sets if the mesh is drawn in perspective mode.
+void cherry::Mesh::SetPerspectiveMesh(bool perspective) { perspectiveMesh = perspective; }
+
+// returns 'true' if the mesh is drawn in orthographic mode.
+bool cherry::Mesh::IsOrthographicMesh() const { return !perspectiveMesh; }
+
+// sets if the mesh should be drawn in orthographic perspective.
+void cherry::Mesh::SetOrthographicMesh(bool orthographic) { perspectiveMesh = !orthographic; }
+
 
 // morph for regular vertices
 void cherry::Mesh::Morph(Vertex* vertices, size_t numVerts)

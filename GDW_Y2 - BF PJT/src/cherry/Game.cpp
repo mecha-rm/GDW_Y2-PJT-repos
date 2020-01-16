@@ -756,13 +756,13 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
-	UICamera = std::make_shared<Camera>();
-	UICamera->SetPosition(0, 0, 12); // try adjusting the position of the perspecitve cam and orthographic cam
-	UICamera->LookAt(glm::vec3(0));
-	
-	// TODO: maybe just have the one camera that switches between orthographic mode and perspective mode?
-	UICamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f), false);
-	UICamera->SetOrthographicMode(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f), true);
+	// UICamera = std::make_shared<Camera>();
+	// UICamera->SetPosition(0, 0, 12); // try adjusting the position of the perspecitve cam and orthographic cam
+	// UICamera->LookAt(glm::vec3(0));
+	// 
+	// // TODO: maybe just have the one camera that switches between orthographic mode and perspective mode?
+	// UICamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f), false);
+	// UICamera->SetOrthographicMode(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f), true);
 
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
@@ -923,10 +923,9 @@ void cherry::Game::LoadContent()
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		 // testing the copy constructor.
-		 // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, 10.0F);
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetScale(5.0F);
-
+		  objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		  objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
+		  objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
 
 		// liquid
 		{
@@ -1026,6 +1025,16 @@ void cherry::Game::LoadContent()
 		
 			// image->GetAnimation(0)->Play();
 			
+		}
+
+		// image (UI element)
+		{
+			cherry::Image* image = new Image("res/images/codename_zero_logo.png", GetCurrentSceneName(), false, false);
+
+			image->SetPosition(0.0F, 0.0F, 1.0F);
+			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
+			image->SetScale(0.005F);
+			objectList->objects.push_back(image);
 		}
 
 		// version 1 (finds .mtl file automatically)
@@ -1475,6 +1484,14 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 				(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
+			// if the mesh should be drawn in a different mode from what is currently set.
+			if ((renderer.Mesh->IsPerspectiveMesh() && !camera->InPerspectiveMode()) ^
+				renderer.Mesh->IsOrthographicMesh() && !camera->InOrthographicMode())
+			{
+				camera->SwitchViewMode();
+			}
+
+			// the faces should or should not be culled. Since faces should be culled by default, it's turned back on.
 			if (!renderer.Mesh->cullFaces)
 			{
 				glDisable(GL_CULL_FACE);

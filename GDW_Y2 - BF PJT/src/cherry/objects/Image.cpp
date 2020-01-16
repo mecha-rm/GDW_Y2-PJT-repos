@@ -263,8 +263,8 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
 	material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
 	material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower[0]", 0.0f);
-	material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
+	material->Set("a_LightSpecPower[0]", 1.0f);
+	material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
 	material->Set("a_LightAttenuation[0]", 1.0f);
 	
 	material->Set("s_Albedos[0]", img, sampler);
