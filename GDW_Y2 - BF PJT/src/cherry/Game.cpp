@@ -829,7 +829,7 @@ void cherry::Game::LoadContent()
 		// Shader was originally compiled here.
 	// // Create and compile shader
 	// myShader = std::make_shared<Shader>();
-	// myShader->Load("res/shader.vert.glsl", "res/shader.frag.glsl");
+	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
@@ -944,7 +944,7 @@ void cherry::Game::LoadContent()
 			water->SetRefractionIndex(1.0f, 1.34f);
 			water->SetEnvironment(GetCurrentScene()->Skybox);
 
-			water->SetPosition(0.0F, 0.0F, -50.0F);
+			water->SetPosition(0.0F, 0.0F, 0.0F);
 			water->SetVisible(true);
 			AddObjectToScene(water);
 		}
@@ -994,7 +994,7 @@ void cherry::Game::LoadContent()
 				Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 395, 198), 5530, 198, false), true, false);
 
 			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
-			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			cherry::ImageAnimation* imgAnime = new ImageAnimation(); 
 			
 			// 14 frames
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
@@ -1025,7 +1025,7 @@ void cherry::Game::LoadContent()
 		
 			// image->GetAnimation(0)->Play();
 			
-		}
+		} 
 
 		// image (UI element)
 		{
@@ -1033,7 +1033,8 @@ void cherry::Game::LoadContent()
 
 			image->SetPosition(0.0F, 0.0F, 1.0F);
 			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
-			image->SetScale(0.005F);
+			image->SetScale(0.003F);
+			image->SetVisible(false);
 			objectList->objects.push_back(image);
 		}
 
@@ -1107,7 +1108,7 @@ void cherry::Game::LoadContent()
 		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
-	}
+	} 
 	
 	// Switching a scene.
 	// CreateScene("AIS", false);
@@ -1115,8 +1116,8 @@ void cherry::Game::LoadContent()
 	// SetCurrentScene("AIS", false);
 
 	// Create and compile shader
-	myShader = std::make_shared<Shader>();
-	myShader->Load("res/shader.vert.glsl", "res/shader.frag.glsl");
+	// myShader = std::make_shared<Shader>();
+	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 }
@@ -1372,6 +1373,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
 
+	// TODO: put this into a function so that the current registry and ui registry can be passed in seperately.
+	// copy past mesh renderer component and make ui rendere component?
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
 			return false;
@@ -1400,7 +1403,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		glDepthMask(GL_FALSE);
 
 		// Make sure no samplers are bound to slot 0
-		TextureSampler::Unbind(0);
+		TextureSampler::Unbind(0); 
 		// Set up the shader
 		scene->SkyboxShader->Bind();
 
@@ -1408,7 +1411,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		scene->SkyboxShader->SetUniform("a_View", glm::mat4(glm::mat3(
 			camera->GetView()
 		)));
-		scene->SkyboxShader->SetUniform("a_Projection", camera->Projection);
+		scene->SkyboxShader->SetUniform("a_Projection", camera->Projection); 
 
 		scene->Skybox->Bind(0);
 		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
@@ -1430,9 +1433,9 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 	Shader::Sptr boundShader = nullptr;
 	// A view will let us iterate over all of our entities that have the given component types
 	auto view = ecs.view<MeshRenderer>();
-
+	
 	for (const auto& entity : view) {
-		// Get our shader
+		// Get our shader 
 		const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
 		// Early bail if mesh is invalid
 		if (renderer.Mesh == nullptr || renderer.Material == nullptr)

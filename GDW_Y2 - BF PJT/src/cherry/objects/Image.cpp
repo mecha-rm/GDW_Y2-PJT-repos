@@ -3,39 +3,39 @@
 
 // TODO: save scene to a string so that UI can carry over
 // creates an iamge by taking in a file path. Images call CreateEntity automatically.
-cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront) :
-	Image(filePath, scene, Vec2(0, 0), Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront, bool camLock) :
+	Image(filePath, scene, Vec2(0, 0), Vec4(0, 0, 1, 1), doubleSided, duplicateFront, camLock)
 {
 
 }
 
 // image with size
-cherry::Image::Image(std::string filePath, std::string scene, float width, float height, bool doubleSided, bool duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, bool doubleSided, bool duplicateFront, bool camLock)
 	: Image(filePath, scene, cherry::Vec2(width, height), cherry::Vec4(0.0F, 0.0F, 1.0F, 1.0F), doubleSided, duplicateFront)
 {
 }
 
 // image with size
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided, bool duplicateFront)
-	: Image(filePath, scene, size, cherry::Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided, bool duplicateFront, bool camLock)
+	: Image(filePath, scene, size, cherry::Vec4(0, 0, 1, 1), doubleSided, duplicateFront, camLock)
 {
 }
 
 // image with uvs.
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
-	: Image(filePath, scene, cherry::Vec2(0.0F, 0.0F), uvs, doubleSided, duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
+	: Image(filePath, scene, cherry::Vec2(0.0F, 0.0F), uvs, doubleSided, duplicateFront, camLock)
 {
 }
 
 // image with size and uvs
-cherry::Image::Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
-	: Image(filePath, scene, cherry::Vec2(width, height), uvs, doubleSided, duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
+	: Image(filePath, scene, cherry::Vec2(width, height), uvs, doubleSided, duplicateFront, camLock)
 {
 }
 
 // image creation with size and uvs.
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
-	: Object(), doubleSided(doubleSided), duplicatedFront(duplicateFront)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
+	: Object(), doubleSided(doubleSided), duplicatedFront(duplicateFront), cameraLock(camLock)
 {
 	std::ifstream file(filePath, std::ios::in); // opens the file
 // file.open(filePath, std::ios::in); // opens file
@@ -249,28 +249,44 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	shader = std::make_shared<Shader>();
 	// TODO: probably shouldn't use lighting shader since it's an image
 
-	// if the image is animated
-	// if (animated)
-	// 	shader->Load("res/lighting-morph.vs.glsl", "res/blinn-phong-morph.fs.glsl");
-	// else
-	// 	shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
-	shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
+	if (cameraLock)
+	{
+		shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
 
-	// lighting has no strong effect on images currnetly
-	material = std::make_shared<Material>(shader);
-	material->Set("a_LightCount", 1);
-	material->Set("a_LightPos[0]", { 0, 0, 0 });
-	material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower[0]", 1.0f);
-	material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
-	material->Set("a_LightAttenuation[0]", 1.0f);
-	
-	material->Set("s_Albedos[0]", img, sampler);
-	material->Set("s_Albedos[1]", img, sampler);
-	material->Set("s_Albedos[2]", img, sampler);
+		// lighting has no strong effect on images currnetly
+		material = std::make_shared<Material>(shader);
+		material->Set("a_LightCount", 1);
+		material->Set("a_LightPos[0]", { 0, 0, 0 });
+		material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
+		material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
+		material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
+		material->Set("a_LightSpecPower[0]", 1.0f);
+		material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
+		material->Set("a_LightAttenuation[0]", 1.0f);
 
+		material->Set("s_Albedos[0]", img, sampler);
+		material->Set("s_Albedos[1]", img, sampler);
+		material->Set("s_Albedos[2]", img, sampler);
+	}
+	else
+	{
+		shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
+
+		// lighting has no strong effect on images currnetly
+		material = std::make_shared<Material>(shader);
+		material->Set("a_LightCount", 1);
+		material->Set("a_LightPos[0]", { 0, 0, 0 });
+		material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
+		material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
+		material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
+		material->Set("a_LightSpecPower[0]", 1.0f);
+		material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
+		material->Set("a_LightAttenuation[0]", 1.0f);
+
+		material->Set("s_Albedos[0]", img, sampler);
+		material->Set("s_Albedos[1]", img, sampler);
+		material->Set("s_Albedos[2]", img, sampler);
+	}
 
 
 	// TODO: should probably do error checking, but this is fine for now.

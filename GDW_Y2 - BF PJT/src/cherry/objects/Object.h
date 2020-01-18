@@ -446,10 +446,6 @@ namespace cherry
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
-		// default body size
-		// TODO: delete this.
-		cherry::Vec3 pBodySize;
-
 
 	protected:
 		// constructor used for default primitives

@@ -8,7 +8,7 @@ layout (location = 4) in vec3 inTexWeights; // multiple textures with varying op
 
 layout (location = 0) out vec4 outColor;
 
-uniform vec3  a_CameraPos;
+uniform vec3 a_CameraPos;
 
 #define MAX_LIGHTS 10
 uniform int a_LightCount; // total amount of lights

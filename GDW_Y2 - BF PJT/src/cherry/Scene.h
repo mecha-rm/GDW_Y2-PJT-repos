@@ -33,6 +33,7 @@ namespace cherry
 		void SetName(const std::string& name) { myName = name; }
 	private:
 		entt::registry myRegistry;
+		// TODO: second registry for UI
 		std::string myName;
 	};
 }

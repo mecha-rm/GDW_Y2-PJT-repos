@@ -495,7 +495,7 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	this->material = material; // saves the material.
 	
 							   // sets up the Update function for the entity. This gets automatically called.
-	auto& ecs = GetRegistry(scene);
+	auto& ecs = GetRegistry(scene); // TODO: add bool to check for UI registry call.
 	entt::entity entity = ecs.create();
 
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);

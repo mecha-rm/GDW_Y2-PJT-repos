@@ -256,7 +256,7 @@ namespace cherry
 		cherry::Vec3 cameraPos;
 
 		// A shared pointer to our shader.
-		Shader::Sptr myShader;
+		// Shader::Sptr myShader;
 
 		// a vector of the sceneLists created for the game.
 		// std::vector<Object*> objects;
