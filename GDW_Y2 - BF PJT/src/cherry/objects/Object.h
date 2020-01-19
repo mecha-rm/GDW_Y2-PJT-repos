@@ -137,23 +137,16 @@ namespace cherry
 		// sets if the object should be drawn in orthographic mode.
 		void SetOrthographicObject(bool orthographic);
 
+		// TODO: rename it so that it makes more sense.
+		// if 'true', the screen position of the mesh is fixed regardless of the camera position or orientation.
+		// the mesh itself can still be moved, but it will be uneffected by the movement in the camera.
+		bool GetFixedScreenPosition() const;
 
+		// if 'true', the mesh will say in the same place on screen.
+		void SetFixedScreenPosition(bool fixed);
 
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
-
-		/*
-		 * returns the registry as a numeric value.
-			* (0) No Regirstry
-			* (1) Main/Primary Registry
-			* (2) Secondary Registry
-		*/
-		int GetRegistryNumber() const;
-		 
-		// sets the registry. It can be either (1) for the primary registry, or (2) for the secondary registry.
-		// if an invalid value is passed, the registry stays the same. Setting the registry automatically creates the entity.
-		void SetRegistryNumber(int registryNumber);
-
 
 		// gets the transformation from local space to world space.
 		glm::mat4 GetWorldTransformation() const;
@@ -428,10 +421,6 @@ namespace cherry
 
 		std::string scene = "";
 
-		// the registry the object is part of.
-		// 0 is no registry, 1 is priamry, and 2 is secondary.
-		int registryNumber = 0;
-
 		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
 		bool dynamicObject = false;
 
@@ -455,14 +444,8 @@ namespace cherry
 		// becomes 'true' when an object intersects something.
 		bool intersection = false;
 
-		// used for object transformations
-		// entt::registry ecs;
-		// the entity for the object
-		// entt::entity entity;
-
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
-
 
 	protected:
 		// constructor used for default primitives

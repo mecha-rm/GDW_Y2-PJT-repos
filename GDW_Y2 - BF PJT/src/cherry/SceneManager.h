@@ -41,12 +41,6 @@ namespace cherry
 
 	// We can make some macros to shorten our calls
 #define CurrentScene() SceneManager::Current()
-
 #define CurrentRegistry() SceneManager::Current()->Registry()
-#define CurrentPrimaryRegistry() SceneManager::Current()->PrimaryRegistry() // EX: primary/main registry
-#define CurrentSecondaryRegistry() SceneManager::Current()->SecondaryRegistry() // EX: secondary registry
-
 #define GetRegistry(name) SceneManager::Get(name)->Registry()
-#define GetPrimaryRegistry(name) SceneManager::Get(name)->PrimaryRegistry() // EX: primary/main registry
-#define GetSecondaryRegistry(name) SceneManager::Get(name)->SecondaryRegistry() // EX: secondary registry
 }

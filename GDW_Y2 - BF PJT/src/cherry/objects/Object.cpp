@@ -276,6 +276,18 @@ bool cherry::Object::IsOrthographicObject() const { return mesh->IsOrthographicM
 // sets if the object should be drawn in orthographic perpsective.
 void cherry::Object::SetOrthographicObject(bool orthographic) { mesh->SetOrthographicMesh(orthographic); }
 
+// if 'true', the screen position of the object is fixed regardless of the camera.
+bool cherry::Object::GetFixedScreenPosition() const
+{
+	if (mesh != nullptr)
+		return mesh->GetFixedScreenPosition();
+	else
+		return false;
+}
+
+// sets if the screen position is fixed.
+void cherry::Object::SetFixedScreenPosition(bool fixed) { mesh->SetFixedScreenPosition(fixed); }
+
 
 
 
@@ -495,10 +507,7 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	this->material = material; // saves the material.
 	
 	// sets up the Update function for the entity. This gets automatically called.
-	auto& ecs = (registryNumber == 2) ? GetSecondaryRegistry(scene) : GetRegistry(scene);
-
-	if (registryNumber < 1) // registry number hasn't been set.
-		registryNumber = 1;
+	auto& ecs = GetRegistry(scene);
 
 	// the entity to be set.
 	entt::entity entity = ecs.create();
@@ -511,10 +520,7 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	auto tform = [&](entt::entity e, float dt) 
 	{
-		auto& transform = (registryNumber == 2) ? CurrentSecondaryRegistry(scene).get_or_assign<TempTransform>(e) :
-			CurrentRegistry().get_or_assign<TempTransform>(e);
-		
-		// auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
+		auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
 
 		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // updates the position
 		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
@@ -527,25 +533,6 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	auto& up = ecs.get_or_assign<UpdateBehaviour>(entity);
 	up.Function = tform;
-}
-
-// gets the registry number
-int cherry::Object::GetRegistryNumber() const { return registryNumber; }
-
-// sets the registry
-void cherry::Object::SetRegistryNumber(int registryNumber)
-{
-	switch (registryNumber)
-	{
-	case 1:
-	case 2:
-		this->registryNumber = registryNumber;
-		break;
-	default:
-		return;
-	}
-
-	CreateEntity(scene, material);
 }
 
 // gets the transformation into world space.

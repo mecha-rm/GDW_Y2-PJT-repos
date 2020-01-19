@@ -223,6 +223,12 @@ bool cherry::Mesh::IsOrthographicMesh() const { return !perspectiveMesh; }
 // sets if the mesh should be drawn in orthographic perspective.
 void cherry::Mesh::SetOrthographicMesh(bool orthographic) { perspectiveMesh = !orthographic; }
 
+// gets whether the screen position of the mesh is fixed regardless of the orientation or position of the camera. 
+bool cherry::Mesh::GetFixedScreenPosition() const { return fixedScreenPosition; }
+
+// sets if the mesh has a fixed screen position or not.
+void cherry::Mesh::SetFixedScreenPosition(bool fixed) { fixedScreenPosition = fixed; }
+
 
 // morph for regular vertices
 void cherry::Mesh::Morph(Vertex* vertices, size_t numVerts)

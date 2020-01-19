@@ -260,12 +260,6 @@ namespace cherry
 
 	private:
 
-		// renders the skybox if it is visible and actually exists
-		void __RenderSkybox(Camera::Sptr& camera);
-
-		// renders a registry
-		void __RenderRegistry(entt::registry & ecs, Camera::Sptr & camera);
-
 		// Stores the main window that the game is running in
 		GLFWwindow* myWindow;
 
