@@ -121,6 +121,14 @@ namespace cherry
 
 		glm::mat4 Projection; // the projection (i.e. space that the camera sees)
 
+		// if 'true', then items in registry 1 are rendered.  If false, then items in registry 1 aren't rendered.
+		// registry 1 doubles as the main registry. This is true by default.
+		bool registry1 = true;
+
+		// if 'true', then items in registry 2 are rendered. If false, then items in registry 2 aren't rendered.
+		// this is false by default.
+		bool register2 = false;
+
 	private:
 
 		// the perspective bool

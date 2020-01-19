@@ -26,14 +26,21 @@ namespace cherry
 
 		virtual void OnClose() {};
 
+		// returns the main/primary registry
 		entt::registry& Registry() { return myRegistry; }
+
+		// returns the primary/main registry
+		entt::registry& PrimaryRegistry() { return myRegistry; }
+
+		// returns the secondary registry
+		entt::registry& SecondaryRegistry() { return myRegistry2; }
 
 		const std::string& GetName() const { return myName; }
 
 		void SetName(const std::string& name) { myName = name; }
 	private:
-		entt::registry myRegistry;
-		// TODO: second registry for UI
+		entt::registry myRegistry; // primary/main registry
+		entt::registry myRegistry2; // secondary registry
 		std::string myName;
 	};
 }

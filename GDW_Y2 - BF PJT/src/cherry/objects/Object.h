@@ -142,6 +142,19 @@ namespace cherry
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
+		/*
+		 * returns the registry as a numeric value.
+			* (0) No Regirstry
+			* (1) Main/Primary Registry
+			* (2) Secondary Registry
+		*/
+		int GetRegistryNumber() const;
+		 
+		// sets the registry. It can be either (1) for the primary registry, or (2) for the secondary registry.
+		// if an invalid value is passed, the registry stays the same. Setting the registry automatically creates the entity.
+		void SetRegistryNumber(int registryNumber);
+
+
 		// gets the transformation from local space to world space.
 		glm::mat4 GetWorldTransformation() const;
 
@@ -414,6 +427,10 @@ namespace cherry
 		// void CalculateNormals(std::vector<);
 
 		std::string scene = "";
+
+		// the registry the object is part of.
+		// 0 is no registry, 1 is priamry, and 2 is secondary.
+		int registryNumber = 0;
 
 		// saves whether an object is static or dynamic. If it's dynamic, that means there's mesh deformation.
 		bool dynamicObject = false;

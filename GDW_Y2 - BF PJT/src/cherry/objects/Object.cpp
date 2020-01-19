@@ -494,9 +494,15 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	this->scene = scene; // saves the scene
 	this->material = material; // saves the material.
 	
-							   // sets up the Update function for the entity. This gets automatically called.
-	auto& ecs = GetRegistry(scene); // TODO: add bool to check for UI registry call.
+	// sets up the Update function for the entity. This gets automatically called.
+	auto& ecs = (registryNumber == 2) ? GetSecondaryRegistry(scene) : GetRegistry(scene);
+
+	if (registryNumber < 1) // registry number hasn't been set.
+		registryNumber = 1;
+
+	// the entity to be set.
 	entt::entity entity = ecs.create();
+
 
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
 	mr.Material = this->material;
@@ -505,7 +511,10 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	auto tform = [&](entt::entity e, float dt) 
 	{
-		auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
+		auto& transform = (registryNumber == 2) ? CurrentSecondaryRegistry(scene).get_or_assign<TempTransform>(e) :
+			CurrentRegistry().get_or_assign<TempTransform>(e);
+		
+		// auto& transform = CurrentRegistry().get_or_assign<TempTransform>(e);
 
 		transform.Position = glm::vec3(position.v.x, position.v.y, position.v.z); // updates the position
 		transform.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z); // updates the rotation
@@ -518,6 +527,25 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 
 	auto& up = ecs.get_or_assign<UpdateBehaviour>(entity);
 	up.Function = tform;
+}
+
+// gets the registry number
+int cherry::Object::GetRegistryNumber() const { return registryNumber; }
+
+// sets the registry
+void cherry::Object::SetRegistryNumber(int registryNumber)
+{
+	switch (registryNumber)
+	{
+	case 1:
+	case 2:
+		this->registryNumber = registryNumber;
+		break;
+	default:
+		return;
+	}
+
+	CreateEntity(scene, material);
 }
 
 // gets the transformation into world space.

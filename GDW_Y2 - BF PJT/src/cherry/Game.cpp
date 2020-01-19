@@ -156,7 +156,8 @@ cherry::Game::Game() :
 }
 
 // creates window with a width, height, and whether or not it's in full screen.
-cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug) : Game()
+cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug, bool _imgui) 
+	: Game()
 {
 	// setting the values
 	memcpy(myWindowTitle, windowTitle, strlen(windowTitle) + 1);
@@ -164,6 +165,7 @@ cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool
 	fullScreen = _fullScreen;
 	loadDefaults = _defaults; // loads the engine default values
 	debugMode = _debug; // debug functionality.
+	imguiMode = _imgui;
 }
 
 // destructor
@@ -756,13 +758,16 @@ void cherry::Game::LoadContent()
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(glm::ortho(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f), false);
 
-	// UICamera = std::make_shared<Camera>();
-	// UICamera->SetPosition(0, 0, 12); // try adjusting the position of the perspecitve cam and orthographic cam
-	// UICamera->LookAt(glm::vec3(0));
-	// 
-	// // TODO: maybe just have the one camera that switches between orthographic mode and perspective mode?
-	// UICamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f), false);
-	// UICamera->SetOrthographicMode(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f), true);
+	// secondary camera, which is used for UI for the game.
+	myCamera2 = std::make_shared<Camera>();
+	myCamera2->SetPosition(0, 0, 10); // try adjusting the position of the perspecitve cam and orthographic cam
+	myCamera2->LookAt(glm::vec3(0));
+	
+	// this camera is used for UI elements
+	myCamera2->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f), false);
+	myCamera2->SetOrthographicMode(glm::ortho(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f), true);
+	myCamera2->registry1 = true;
+	myCamera2->register2 = true;
 
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
@@ -923,9 +928,9 @@ void cherry::Game::LoadContent()
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		 // testing the copy constructor.
-		  objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
-		  objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
-		  objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
+		  // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		  // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
+		  // objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
 
 		// liquid
 		{
@@ -944,8 +949,8 @@ void cherry::Game::LoadContent()
 			water->SetRefractionIndex(1.0f, 1.34f);
 			water->SetEnvironment(GetCurrentScene()->Skybox);
 
-			water->SetPosition(0.0F, 0.0F, 0.0F);
-			water->SetVisible(true);
+			water->SetPosition(0.0F, 0.0F, -30.0F);
+			water->SetVisible(false);
 			AddObjectToScene(water);
 		}
 		  
@@ -958,7 +963,7 @@ void cherry::Game::LoadContent()
 			terrain->SetMinimumHeight(-5.0F);
 			terrain->SetMaximumHeight(10.0F); 
 			terrain->SetPosition(0.0F, 0.0F, -15.0F); 
-			terrain->SetVisible(true); 
+			terrain->SetVisible(false); 
 			AddObjectToScene(terrain); 
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
@@ -1018,7 +1023,8 @@ void cherry::Game::LoadContent()
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
 			image->AddAnimation(imgAnime, false);
-			
+			image->SetVisible(false);
+
 			objectList->objects.push_back(image);
 			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
 			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.1F);
@@ -1030,11 +1036,11 @@ void cherry::Game::LoadContent()
 		// image (UI element)
 		{
 			cherry::Image* image = new Image("res/images/codename_zero_logo.png", GetCurrentSceneName(), false, false);
-
-			image->SetPosition(0.0F, 0.0F, 1.0F);
+			// image->SetRegistryNumber(2);
+			image->SetPosition(0.0F, 0.0F, -1.0F);
 			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
 			image->SetScale(0.003F);
-			image->SetVisible(false);
+			image->SetVisible(true);
 			objectList->objects.push_back(image);
 		}
 
@@ -1166,6 +1172,15 @@ void cherry::Game::Update(float deltaTime) {
 			func.Function(e, deltaTime);
 		}
 	}
+
+	// // secondary registry
+	// view = CurrentSecondaryRegistry().view<UpdateBehaviour>();
+	// for (const auto& e : view) {
+	// 	auto& func = CurrentSecondaryRegistry().get<UpdateBehaviour>(e);
+	// 	if (func.Function) {
+	// 		func.Function(e, deltaTime);
+	// 	}
+	// }
 }
 
 void cherry::Game::InitImGui() {
@@ -1247,9 +1262,13 @@ void cherry::Game::Run()
 		float deltaTime = thisFrame - prevFrame;
 		Update(deltaTime);
 		Draw(deltaTime);
-		ImGuiNewFrame();
-		DrawGui(deltaTime);
-		ImGuiEndFrame();
+
+		if (imguiMode) // if 'true', then the imGui frame is shown.
+		{
+			ImGuiNewFrame();
+			DrawGui(deltaTime);
+			ImGuiEndFrame();
+		}
 		prevFrame = thisFrame;
 		// Present our image to windows
 		glfwSwapBuffers(myWindow);
@@ -1272,32 +1291,17 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 
 // draws to a given viewpoint. The code that was originally here was moved to _RenderScne
 void cherry::Game::Draw(float deltaTime) {
-	// TODO: set up ability to have multiple views.
-	// bool singleView = true;
-
+	// viewport size (full screen)
 	glm::ivec4 viewport = {
 	0, 0,
 	myWindowSize.x, myWindowSize.y
 	};
-	__RenderScene(viewport, myCamera, true);
+	
+	// renders the scene
+	__RenderScene(viewport, myCamera, true, 0, glm::vec4(1.0F), true);
 
-	// TODO: find out why MyView is equal to nan 
-	// __RenderScene(viewport, UICamera, false); // comment-out if you decide not to clear.
-
-	// bottom of the window
-	//glm::ivec4 viewport1 = {
-	//	0, 0,
-	//	myWindowSize.x, myWindowSize.y / 2
-	//};
-	//__RenderScene(viewport1, myCamera);
-
-
-	//// top of the window
-	//glm::ivec4 viewport2 = {
-	//	0, myWindowSize.y / 2,
-	//	myWindowSize.x, myWindowSize.y / 2
-	//};
-	//__RenderScene(viewport2, myCamera);
+	// rendering the user interface/hud view
+	__RenderScene(viewport, myCamera2, false, 0, glm::vec4(1.0F), false);
 
 }
 
@@ -1338,13 +1342,8 @@ void cherry::Game::DrawGui(float deltaTime) {
 }
 
 // Now handles rendering the scene.
-void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool clear)
+void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
-	static bool wireframe = false; // used to switch between fill mode and wireframe mode for draw calls.
-	static bool drawBodies = false; // set to 'true' to draw the bodies
-
-	int border = 0; // the border for the viewpoint
-	glm::vec4 borderColor = { 1.0F, 1.0F, 1.0F, 1.0F }; // border colour
 
 	// Set viewport to entire region
 	// glViewport(viewport.x, viewport.y, viewport.z, viewport.w); // not neded since viewpoint doesn't change the clear call.
@@ -1358,8 +1357,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 	// Set viewport to be inset slightly (the amount is the border width)
 	// the offsets are used to move the border relative to the viewpoint.
-	glViewport(viewport.x + border, viewport.y + border, viewport.z - 2 * border, viewport.w - 2 * border);
-	glScissor(viewport.x + border, viewport.y + border, viewport.z - 2 * border, viewport.w - 2 * border);
+	glViewport(viewport.x + borderSize, viewport.y + borderSize, viewport.z - 2 * borderSize, viewport.w - 2 * borderSize);
+	glScissor(viewport.x + borderSize, viewport.y + borderSize, viewport.z - 2 * borderSize, viewport.w - 2 * borderSize);
 
 	// Clear our new inset area with the scene clear color
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
@@ -1368,11 +1367,60 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 	// no longer needed?
 	// myShader->Bind();
+	
+	if (drawSkybox) // if 'true', the skybox is drawn.
+		__RenderSkybox(camera);
 
+	if(camera->registry1) // primary registry
+		__RenderRegistry(CurrentRegistry(), camera); 
 
-	// We'll grab a reference to the ecs to make things easier
-	auto& ecs = CurrentRegistry();
+	if(camera->register2) // secondary registry
+		__RenderRegistry(CurrentSecondaryRegistry(), camera);  
+}
 
+// renders the skybox.
+void cherry::Game::__RenderSkybox(Camera::Sptr& camera)
+{
+	// SKYBOX //
+	auto scene = CurrentScene();
+	// Draw the skybox after everything else, if the scene has one
+	if (scene->Skybox)
+	{
+		// Disable culling
+		glDisable(GL_CULL_FACE); // we disable face culling if the cube map is screwed up.
+		// Set our depth test to less or equal (because we are at 1.0f)
+		glDepthFunc(GL_LEQUAL);
+		// Disable depth writing
+		glDepthMask(GL_FALSE);
+
+		// Make sure no samplers are bound to slot 0
+		TextureSampler::Unbind(0);
+		// Set up the shader
+		scene->SkyboxShader->Bind();
+
+		// casting the mat4 down to a mat3, then putting it back into a mat4, which is done to remove the camera's translation.
+		scene->SkyboxShader->SetUniform("a_View", glm::mat4(glm::mat3(
+			camera->GetView()
+		)));
+		scene->SkyboxShader->SetUniform("a_Projection", camera->Projection);
+
+		scene->Skybox->Bind(0);
+		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
+
+		// draws the skybox if it is to be visible.
+		if (scene->SkyboxMesh->IsVisible())
+			scene->SkyboxMesh->Draw();
+
+		// Restore our state
+		glDepthMask(GL_TRUE);
+		glEnable(GL_CULL_FACE);
+		glDepthFunc(GL_LESS);
+	}
+}
+
+// rendering the registry
+void cherry::Game::__RenderRegistry(entt::registry & ecs, Camera::Sptr & camera)
+{
 	// TODO: put this into a function so that the current registry and ui registry can be passed in seperately.
 	// copy past mesh renderer component and make ui rendere component?
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
@@ -1390,50 +1438,12 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			return lhs.Material < rhs.Material;
 		});
 
-	// SKYBOX //
-	auto scene = CurrentScene();
-	// Draw the skybox after everything else, if the scene has one
-	if (scene->Skybox)
-	{
-		// Disable culling
-		glDisable(GL_CULL_FACE); // we disable face culling if the cube map is screwed up.
-		// Set our depth test to less or equal (because we are at 1.0f)
-		glDepthFunc(GL_LEQUAL);
-		// Disable depth writing
-		glDepthMask(GL_FALSE);
-
-		// Make sure no samplers are bound to slot 0
-		TextureSampler::Unbind(0); 
-		// Set up the shader
-		scene->SkyboxShader->Bind();
-
-		// casting the mat4 down to a mat3, then putting it back into a mat4, which is done to remove the camera's translation.
-		scene->SkyboxShader->SetUniform("a_View", glm::mat4(glm::mat3(
-			camera->GetView()
-		)));
-		scene->SkyboxShader->SetUniform("a_Projection", camera->Projection); 
-
-		scene->Skybox->Bind(0);
-		scene->SkyboxShader->SetUniform("s_Skybox", 0); // binds our skybox to slot 0.
-
-		// draws the skybox if it is to be visible.
-		if(scene->SkyboxMesh->IsVisible())
-			scene->SkyboxMesh->Draw();
-
-		// Restore our state
-		glDepthMask(GL_TRUE);
-		glEnable(GL_CULL_FACE);
-		glDepthFunc(GL_LESS);
-	}
-
-
-
 	// These will keep track of the current shader and material that we have bound
 	Material::Sptr mat = nullptr;
 	Shader::Sptr boundShader = nullptr;
 	// A view will let us iterate over all of our entities that have the given component types
 	auto view = ecs.view<MeshRenderer>();
-	
+
 	for (const auto& entity : view) {
 		// Get our shader 
 		const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
@@ -1455,11 +1465,11 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 		// We'll need some info about the entities position in the world
 		const TempTransform& transform = ecs.get_or_assign<TempTransform>(entity);
-		
+
 		// Get the object's transformation
 		// TODO: set up parent system
 		glm::mat4 worldTransform = transform.GetWorldTransform();
-		
+
 		// Our normal matrix is the inverse-transpose of our object's world rotation
 		// Recall that everything's backwards in GLM
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
