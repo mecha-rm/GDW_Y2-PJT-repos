@@ -168,6 +168,12 @@ namespace cherry
 
 		glm::ivec2 myWindowSize; // saves the window size
 
+		// object manager
+		std::shared_ptr<cherry::ObjectManager> objManager;
+
+		// object list
+		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
+
 	private:
 
 		// Stores the main window that the game is running in
@@ -192,11 +198,9 @@ namespace cherry
 		// a vector of the sceneLists created for the game.
 		// std::vector<Object*> objects;
 
-		// object manager
-		std::shared_ptr<cherry::ObjectManager> objManager;
+		
 
-		// object list
-		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
+		
 
 		// the lights in the current scene
 		// std::vector<Light*>* lights; // TODO: replace with light manager

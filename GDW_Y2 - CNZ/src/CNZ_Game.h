@@ -4,9 +4,9 @@
 #include "Enemies.h"
 #include "Obstacle.h"
 #include "cherry/PhysicsBody.h"
+#include "Projectile.h"
 #include "cherry/animate/Path.h"
 #include <ctime>
-#include "Projectile.h"
 #include "LevelLoader.h"
 
 //Enemy Sub-classes

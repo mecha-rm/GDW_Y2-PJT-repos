@@ -1,12 +1,13 @@
-Legend,Name,Symbol
-,Origin,O
-,Wall,W
-,Dumpster,D
-,Lamp post,L
-,Lamp post corner,LC
-,Lamp post middle,LM
-,Barrel,B
-,Katana,K
-,Pillar,P
-,Manhole cover,M
-,Road,R
+Legend,Symbol,Name
+,O,Origin
+,W,Wall
+,D,Dumpster
+,L,Lamp post
+,LC,Lamp post corner
+,LM,Lamp post middle
+,B,Barrel
+,K,Katana
+,P,Pillar
+,M,Manhole cover
+,R,Road
+,S,Sidewalk

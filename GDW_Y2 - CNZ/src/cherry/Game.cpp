@@ -587,7 +587,7 @@ void cherry::Game::LoadContent()
 	
 	matStatic->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
 	matStatic->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
-	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"),sampler);
+	matStatic->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"), sampler);
 
 	currentScene = "Cherry"; // the name of the m_Scene
 	scenes.push_back(currentScene); // saving the m_Scene
