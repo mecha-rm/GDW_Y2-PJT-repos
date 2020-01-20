@@ -120,6 +120,7 @@ namespace cnz
 		bool a = false;
 		bool s = false;
 		bool d = false;
+		bool ls = false;
 		bool cw = true;
 		bool ca = true;
 		bool cs = true;

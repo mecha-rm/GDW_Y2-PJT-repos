@@ -1,6 +1,9 @@
 #include "CNZ_Game.h"
 #include <GLM/gtc/matrix_transform.hpp> // camera modes
 
+float GetDistance(cherry::Vec3 one, cherry::Vec3 two);
+cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two);
+cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent);
 
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
@@ -68,6 +71,10 @@ void cnz::CNZ_Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_D: // right
 		d = true;
 		break;
+
+	case GLFW_KEY_LEFT_SHIFT:
+		ls = true;
+		break;
 	}
 }
 
@@ -121,6 +128,10 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_D: // right
 		d = false;
+		break;
+	
+	case GLFW_KEY_LEFT_SHIFT:
+		ls = false;
 		break;
 	}
 }
@@ -225,7 +236,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
 		enemyGroups[i][j]->alive = true;
 		enemyGroups[i][j]->SetRotationXDegrees(90);
-		enemyGroups[i][j]->SetRotationZDegrees(180);
+		//enemyGroups[i][j]->SetRotationZDegrees(180);
 		AddObjectToScene(enemyGroups[i][j]);
 
 		if (j % 2 == 0) {
@@ -679,6 +690,26 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	playerObj->UpdateAngle(myCamera, GetCursorPosX(), GetCursorPosY(), GetWindowWidth(), GetWindowHeight());
 	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 	
+	// dodge code
+	if (ls) {
+		cherry::Vec3 temp;
+		if (w) {
+			temp.SetY(temp.GetY() - 1.0f);
+		}
+		if (s) {
+			temp.SetY(temp.GetY() + 1.0f);
+		}
+		if (a) {
+			temp.SetX(temp.GetX() + 1.0f);
+		}
+		if (d) {
+			temp.SetX(temp.GetX() - 1.0f);
+		}
+
+		playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
+
+		ls = false;
+	}
 	
 	// dash code
 	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
@@ -795,36 +826,47 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// Path update
 	testObj->Update(deltaTime);
 	
-	//Spawn projectiles
+	//Enemy AI
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
+			//Look at player
+			enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
+			enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle() - 90), true);
+
 			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false && enemyGroups[i][j]->alive == true) {
-				enemyGroups[i][j]->attacking = true;
-				projList.push_back(new Projectile(arrowBase));
-				projTimeList.push_back(0);
-				//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
-				//projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
-				projList[projList.size() - 1]->SetWhichGroup(i);
-				projList[projList.size() - 1]->SetWhichEnemy(j);
-				projList[projList.size() - 1]->active = true;
-				projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
-				projList[projList.size() - 1]->SetDirVec(projList[projList.size() - 1]->GetPosition(), projList[projList.size() - 1]->GetPosition() + cherry::Vec3(0, 10, 0.1));
-				AddObjectToScene(projList[projList.size() - 1]);
+				if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 10.0f) {
+					//Spawn projectiles
+					enemyGroups[i][j]->attacking = true;
+					projList.push_back(new Projectile(arrowBase));
+					projTimeList.push_back(0);
+					//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+					//projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
+					projList[projList.size() - 1]->SetWhichGroup(i);
+					projList[projList.size() - 1]->SetWhichEnemy(j);
+					projList[projList.size() - 1]->active = true;
+					projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
+					projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+					AddObjectToScene(projList[projList.size() - 1]);
+				}
+				else {
+					//Move towards player				
+					enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 50.0f * deltaTime));
+				}
 			}
-			//enemyGroups[i][j]->Update(deltaTime);
+			enemyGroups[i][j]->Update(deltaTime);
 		}
 	}
 
 	//Update Projectiles
 	for (int i = 0; i < projList.size(); i++) {
 		if (projList[i]->active == true) {
-			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (0.1f * deltaTime)));
+			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
 			projTimeList[i]++;
 			if (projTimeList[i] >= 60 * 5) {
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-				DeleteObjectFromScene(projList[i]);
+				//DeleteObjectFromScene(projList[i]);
 				projList.erase(projList.begin() + i);
 				projTimeList.erase(projTimeList.begin() + i);
 			}
@@ -881,4 +923,44 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	// calls the main game Update function to go through every object.
 	Game::Update(deltaTime);
+}
+
+//Get Distance Between two Vectors in xy axis
+float GetDistance(cherry::Vec3 one, cherry::Vec3 two) {
+	float x = two.GetX() - one.GetX();
+	float y = two.GetY() - one.GetY();
+
+	return sqrt(pow(x, 2) + pow(y, 2));
+}
+
+//Gets unit direction vector between two vectors
+cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two) {
+	cherry::Vec3 newVec = two - one;
+	newVec.SetZ(0.0f);
+	float temp = (newVec.GetX() * newVec.GetX() + newVec.GetY() * newVec.GetY());
+
+	return newVec / temp;
+}
+
+//Lerp between two vectors in xy axis
+cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent) {
+
+	glm::vec3 temp;
+	glm::vec2 xyStart;
+	glm::vec2 xyEnd;
+	cherry::Vec2 xyCur;
+
+	xyStart.x = start.GetX();
+	xyStart.y = start.GetY();
+
+	xyEnd.x = end.GetX();
+	xyEnd.y = end.GetY() + 5.0f;
+
+	xyCur = cherry::Vec2::Lerp(xyStart, xyEnd, percent);
+
+	temp.x = xyCur.GetX();
+	temp.y = xyCur.GetY();
+	temp.z = 20.0f;
+
+	return temp;
 }

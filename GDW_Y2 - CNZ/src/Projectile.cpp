@@ -18,6 +18,10 @@ void Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
 	arrowDirVec.SetZ(arrowDirVec.GetZ() / temp);
 }
 
+void Projectile::SetDirVec(cherry::Vec3 dirVec) {
+	arrowDirVec = dirVec;
+}
+
 bool Projectile::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
