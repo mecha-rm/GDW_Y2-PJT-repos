@@ -168,9 +168,9 @@ cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 	return closestBody;
 }
 
-vector<cherry::Object*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
+vector<cnz::Enemies*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
 {
-	vector<cherry::Object*> enemies;
+	vector<cnz::Enemies*> enemies;
 
 	cherry::Vec3 delta;
 	float angleFromPlayer;
@@ -186,7 +186,7 @@ vector<cherry::Object*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
 
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
 			if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
-				enemies.push_back(enemyPBs[i]->GetObject());
+				enemies.push_back(enemyGroups[enemyLocationi[i]][enemyLocationj[i]]);
 			}
 		}
 	}
@@ -237,6 +237,8 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 		enemyPBs.push_back(enemyGroups[i][j]->GetPhysicsBodies()[0]);
 		enemyGroups[i][j]->alive = true;
 		enemyGroups[i][j]->SetRotationXDegrees(90);
+		enemyLocationi.push_back(i);
+		enemyLocationj.push_back(j);
 		//enemyGroups[i][j]->SetRotationZDegrees(180);
 		AddObjectToScene(enemyGroups[i][j]);
 
@@ -252,7 +254,7 @@ void cnz::CNZ_Game::LoadContent()
 {
 	// srand(time(NULL)); // move to Game.h
 
-	bool levelLoading = true;
+	bool levelLoading = false;
 
 	Game::LoadContent(); // calls the load content
 
@@ -296,6 +298,7 @@ void cnz::CNZ_Game::LoadContent()
 	else { // for testing, loads a level for testing collision, showing all objects and test paths and such
 		playerObj = new Player("res/objects/hero/charactoereee.obj", GetCurrentScene(), matStatic); // creates the player.
 		testObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates the not player.
+		indicatorObj = new Player("res/objects/monkey.obj", GetCurrentScene(), matStatic); // creates indicator for dash being ready
 
 		sentry = new Enemies("res/objects/enemies/Enemy_Bow.obj", GetCurrentScene(), matStatic);
 		oracle = new Enemies("res/objects/enemies/Enemy_Spear.obj", GetCurrentScene(), matStatic);
@@ -751,7 +754,98 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		ls = false;
 	}
 	
+	//Enemy AI
+	for (int i = 0; i < enemyGroups.size(); i++) {
+		for (int j = 0; j < enemyGroups[i].size(); j++) {
+			if (enemyGroups[i][j]->alive == true) {
+				//Look at player
+				enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetModelPosition(), playerObj->GetPhysicsBodies()[0]->GetModelPosition());
+				enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle()), true);
+
+				if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 10.0f) {
+						//Spawn projectiles
+						enemyGroups[i][j]->attacking = true;
+						projList.push_back(new Projectile(arrowBase));
+						projTimeList.push_back(0);
+						//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+						//projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
+						projList[projList.size() - 1]->SetWhichGroup(i);
+						projList[projList.size() - 1]->SetWhichEnemy(j);
+						projList[projList.size() - 1]->active = true;
+						projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
+						projList[projList.size() - 1]->SetRotationDegrees(enemyGroups[i][j]->GetRotationDegrees());
+						projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+						AddObjectToScene(projList[projList.size() - 1]);
+					}
+					else {
+						//Move towards player				
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 100.0f * deltaTime));
+					}
+				}
+				else if (enemyGroups[i][j]->WhoAmI() == "Marauder" && enemyGroups[i][j]->attacking == false) {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 2.0f) {
+						//Attack
+					}
+					else {
+						//Move towards player				
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+					}
+				}
+				else if (enemyGroups[i][j]->WhoAmI() == "Oracle" && enemyGroups[i][j]->attacking == false) {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 5.0f) {
+						//Attack
+					}
+					else {
+						//Move towards player				
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+					}
+				}
+				else if (enemyGroups[i][j]->WhoAmI() == "Bastion" && enemyGroups[i][j]->attacking == false) {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 2.0f) {
+						//Attack
+					}
+					else {
+						//Move towards player				
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+					}
+				}
+				else if (enemyGroups[i][j]->WhoAmI() == "Mechaspider" && enemyGroups[i][j]->attacking == false) {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 6.0f) {
+						//Attack
+					}
+					else {
+						//Move towards player				
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+					}
+				}
+				enemyGroups[i][j]->Update(deltaTime);
+			}
+		}
+	}
+
+	//Update Projectiles
+	for (int i = 0; i < projList.size(); i++) {
+		if (projList[i]->active == true) {
+			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
+			projTimeList[i]++;
+			if (projTimeList[i] >= 60 * 5) {
+				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
+				projList[i]->active = false;
+				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
+				DeleteObjectFromScene(projList[i]);
+				projList.erase(projList.begin() + i);
+				projTimeList.erase(projTimeList.begin() + i);
+			}
+		}
+	}
+
 	// dash code
+	if (playerObj->GetDashTime() >= 1.0f) {
+		//Display indicator
+
+	}
+
 	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
 	{
 		cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
@@ -761,17 +855,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 		cherry::PhysicsBody* closestObstacle = getClosestObstacle();
 		if (closestObstacle == nullptr) {
-			vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dashVec);
+			vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dashVec);
 			for (int i = 0; i < enemiesInRange.size(); i++) {
 				cherry::Object* curEnemy = enemiesInRange[i];
 				int epbvSize = enemyPBs.size();
 				for (int j = 0; j < epbvSize; j++) {
 					if (enemiesInRange[i]->GetPhysicsBodies()[0] == enemyPBs[j]) {
 						enemyPBs.erase(enemyPBs.begin() + j);
+						enemyLocationi.erase(enemyLocationi.begin() + j);
+						enemyLocationj.erase(enemyLocationj.begin() + j);
 						epbvSize -= 1;
 					}
 				}
 				
+				enemiesInRange[i]->alive = false;
 				enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
 				DeleteObjectFromScene(enemiesInRange[i]);
 				kills++;
@@ -811,17 +908,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					dPN.SetY(tempY);
 				}
 
-				vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dPN);
+				vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dPN);
 				for (int i = 0; i < enemiesInRange.size(); i++) {
 					cherry::Object* curEnemy = enemiesInRange[i];
 					int epbvSize = enemyPBs.size();
 					for (int j = 0; j < epbvSize; j++) {
 						if (enemiesInRange[i]->GetPhysicsBodies()[0] == enemyPBs[j]) {
 							enemyPBs.erase(enemyPBs.begin() + j);
+							enemyLocationi.erase(enemyLocationi.begin() + j);
+							enemyLocationj.erase(enemyLocationj.begin() + j);
 							epbvSize -= 1;
 						}
 					}
 
+					enemiesInRange[i]->alive = false;
 					enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
 					DeleteObjectFromScene(enemiesInRange[i]);
 					kills++;
@@ -830,17 +930,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
 			else {
-				vector<cherry::Object*> enemiesInRange = getEnemiesInDash(dashVec);
+				vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dashVec);
 				for (int i = 0; i < enemiesInRange.size(); i++) {
 					cherry::Object* curEnemy = enemiesInRange[i];
 					int epbvSize = enemyPBs.size();
 					for (int j = 0; j < epbvSize; j++) {
 						if (enemiesInRange[i]->GetPhysicsBodies()[0] == enemyPBs[j]) {
 							enemyPBs.erase(enemyPBs.begin() + j);
+							enemyLocationi.erase(enemyLocationi.begin() + j);
+							enemyLocationj.erase(enemyLocationj.begin() + j);
 							epbvSize -= 1;
 						}
 					}
 
+					enemiesInRange[i]->alive = false;
 					enemiesInRange[i]->RemovePhysicsBody(enemiesInRange[i]->GetPhysicsBodies()[0]);
 					DeleteObjectFromScene(enemiesInRange[i]);
 					kills++;
@@ -865,53 +968,6 @@ void cnz::CNZ_Game::Update(float deltaTime)
 
 	// Path update
 	testObj->Update(deltaTime);
-	
-	//Enemy AI
-	for (int i = 0; i < enemyGroups.size(); i++) {
-		for (int j = 0; j < enemyGroups[i].size(); j++) {
-			//Look at player
-			enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition());
-			enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle() - 90), true);
-
-			if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false && enemyGroups[i][j]->alive == true) {
-				if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 10.0f) {
-					//Spawn projectiles
-					enemyGroups[i][j]->attacking = true;
-					projList.push_back(new Projectile(arrowBase));
-					projTimeList.push_back(0);
-					//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
-					//projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
-					projList[projList.size() - 1]->SetWhichGroup(i);
-					projList[projList.size() - 1]->SetWhichEnemy(j);
-					projList[projList.size() - 1]->active = true;
-					projList[projList.size() - 1]->SetPosition(enemyGroups[i][j]->GetPosition());
-					projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-					AddObjectToScene(projList[projList.size() - 1]);
-				}
-				else {
-					//Move towards player				
-					enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 50.0f * deltaTime));
-				}
-			}
-			enemyGroups[i][j]->Update(deltaTime);
-		}
-	}
-
-	//Update Projectiles
-	for (int i = 0; i < projList.size(); i++) {
-		if (projList[i]->active == true) {
-			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
-			projTimeList[i]++;
-			if (projTimeList[i] >= 60 * 5) {
-				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
-				projList[i]->active = false;
-				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-				//DeleteObjectFromScene(projList[i]);
-				projList.erase(projList.begin() + i);
-				projTimeList.erase(projTimeList.begin() + i);
-			}
-		}
-	}
 
 	//// update physics bodies
 	// player PB

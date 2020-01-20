@@ -62,18 +62,12 @@ glm::vec3 cnz::Enemies::GetVec3Angle() { return this->worldAngle; }
 //Update Angle given enemy position and what they should look at
 void cnz::Enemies::UpdateAngle(cherry::Vec3 one, cherry::Vec3 two) {
 
-	cherry::Vec3 firstLine = (one + cherry::Vec3(0, 5, 0)) - one;
+	cherry::Vec3 firstLine = (one + cherry::Vec3(0, -5, 0)) - one;
 	cherry::Vec3 secLine = two - one;
 
-	//if (one.GetX() < two.GetX()) {
-		//Clockwise
-		float dot = one.GetX() * two.GetX() + one.GetY() * two.GetY();  // dot product between[x1, y1] and [x2, y2]
-		float det = one.GetX() * two.GetY() - one.GetY() * two.GetX();  // determinant
-		SetAngle(atan2(det, dot), true);  // atan2(y, x) or atan2(sin, cos)
-	//}
-	//else {
-		//Counter-clockwise
-	//}
+	float dotProduct = firstLine.GetX() * secLine.GetX() + firstLine.GetY() * secLine.GetY();
+	float determinant = firstLine.GetX() * secLine.GetY() - firstLine.GetY() * secLine.GetX();
+	SetAngle(atan2(determinant, dotProduct), false);
 }
 
 // sets the angle
