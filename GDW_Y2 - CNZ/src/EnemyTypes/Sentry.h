@@ -10,8 +10,6 @@ namespace cnz {
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
-		void updateArrow(cherry::Vec3 dirVec, float speed, float dt);
-
 		void Update(float dt);
 
 	private:

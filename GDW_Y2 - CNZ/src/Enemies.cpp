@@ -59,47 +59,15 @@ float cnz::Enemies::GetRadianAngle() { return radianAngle; }
 
 glm::vec3 cnz::Enemies::GetVec3Angle() { return this->worldAngle; }
 
-void cnz::Enemies::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height) {
+//Update Angle given enemy position and what they should look at
+void cnz::Enemies::UpdateAngle(cherry::Vec3 one, cherry::Vec3 two) {
 
-	float a = atanf((float)ypos / (float)xpos);
+	cherry::Vec3 firstLine = (one + cherry::Vec3(0, -5, 0)) - one;
+	cherry::Vec3 secLine = two - one;
 
-	if (ypos <= 0 && xpos <= 0) {
-		a = 90 * (M_PI / 180.0f) - a;
-		a += 90.0f * (M_PI / 180.0f);
-	}
-
-	if (ypos > 0 && xpos <= 0) {
-		a = 90 * (M_PI / 180.0f) - a;
-		a += 90.0f * (M_PI / 180.0f);
-	}
-
-	if (ypos >= 0 && xpos >= 0) {
-		a = 90 * (M_PI / 180.0f) - a;
-		a += 270.0f * (M_PI / 180.0f);
-	}
-
-	if (ypos < 0 && xpos >= 0) {
-		a = 90 * (M_PI / 180.0f) - a;
-		a += 270.0f * (M_PI / 180.0f);
-	}
-
-	this->radianAngle = a;
-	this->degreeAngle = a * (180.0f / M_PI);
-
-	// Update world angle
-	glm::mat4 pv = camera->GetViewProjection();
-	pv = glm::inverse(pv);
-	glm::vec4 pos = glm::vec4(xpos / width, ypos / height, 0.0f, 1.0f);
-	pv *= pos;
-
-
-	pos.w = 1.0 / pos.w;
-	pos.x *= pos.w;
-	pos.y *= pos.w;
-	pos.z *= pos.w;
-
-	this->worldAngle = glm::vec3(pos.x, pos.y, pos.z);
-	glm::quat rotation = glm::quat(this->worldAngle);
+	float dotProduct = firstLine.GetX() * secLine.GetX() + firstLine.GetY() * secLine.GetY();
+	float determinant = firstLine.GetX() * secLine.GetY() - firstLine.GetY() * secLine.GetX();
+	SetAngle(atan2(determinant, dotProduct), false);
 }
 
 // sets the angle

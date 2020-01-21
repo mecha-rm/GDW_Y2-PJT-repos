@@ -14,17 +14,7 @@ void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 	attacking = true;
 }
 
-void cnz::Sentry::updateArrow(cherry::Vec3 dirVec, float speed, float dt)
-{
-	arrow->SetPosition(arrow->GetPosition() + (dirVec * (speed * dt)));
-	if (arrow->GetPosition().GetX() >= (dirVec * 200.0f).GetX() && arrow->GetPosition().GetY() >= (dirVec * 200.0f).GetY()) {
-		//attacking = false;
-	}
-}
-
 void cnz::Sentry::Update(float dt)
 {
-	if (attacking == true) {
-		updateArrow(arrowDirVec, 20.0f, dt);
-	}
+	Enemies::Update(dt);
 }

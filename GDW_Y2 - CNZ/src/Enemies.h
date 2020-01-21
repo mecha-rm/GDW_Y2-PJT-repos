@@ -52,8 +52,8 @@ namespace cnz
 		// gets object angle in world space in vector 3
 		glm::vec3 GetVec3Angle();
 
-		// Update function to get new angle based on mouse position
-		void UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height);
+		//Update Angle given enemy position and what they should look at
+		void UpdateAngle(cherry::Vec3 one, cherry::Vec3 two);
 
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
 		void SetAngle(float angle, bool isDegrees);
