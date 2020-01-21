@@ -757,15 +757,19 @@ void cherry::Game::LoadContent()
 
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f, false);
+	// myCamera->followTarget = true;
+	// myCamera->fixedTargetDistance = true;
+	myCamera->targetOffset = cherry::Vec3(0, 5, 12);
 
 	// secondary camera, which is used for UI for the game.
-	myCamera2 = std::make_shared<Camera>();
-	myCamera2->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
-	myCamera2->LookAt(glm::vec3(0));
+	myCameraX = std::make_shared<Camera>();
+	myCameraX->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
+	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
+	myCameraX->LookAt(glm::vec3(0));
 	
 	// this camera is used for UI elements
-	myCamera2->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
-	myCamera2->SetOrthographicMode(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f, true);
+	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
+	myCameraX->SetOrthographicMode(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f, true);
 
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
@@ -857,7 +861,7 @@ void cherry::Game::LoadContent()
 	);
 
 	CreateScene("Cherry", skybox, true); // creates the scene
-	GetCurrentScene()->SkyboxMesh->SetVisible(false); // makes the skybox invisible
+	GetCurrentScene()->SkyboxMesh->SetVisible(true); // makes the skybox invisible
 
 	ObjectManager::CreateSceneObjectList(GetCurrentSceneName()); // creating an object list for the scene
 	objectList = ObjectManager::GetSceneObjectListByName(GetCurrentSceneName()); // getting the object list.
@@ -900,7 +904,7 @@ void cherry::Game::LoadContent()
 		 objectList->objects.push_back(new PrimitiveCircle());
 		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
-		 
+		  
 		 objectList->objects.push_back(new PrimitiveCone());
 		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
@@ -947,8 +951,8 @@ void cherry::Game::LoadContent()
 			water->SetRefractionIndex(1.0f, 1.34f);
 			water->SetEnvironment(GetCurrentScene()->Skybox);
 
-			water->SetPosition(0.0F, 0.0F, -30.0F);
-			water->SetVisible(false);
+			water->SetPosition(0.0F, 0.0F, -70.0F);
+			water->SetVisible(true);
 			AddObjectToScene(water);
 		}
 		  
@@ -961,7 +965,7 @@ void cherry::Game::LoadContent()
 			terrain->SetMinimumHeight(-5.0F);
 			terrain->SetMaximumHeight(10.0F); 
 			terrain->SetPosition(0.0F, 0.0F, -15.0F); 
-			terrain->SetVisible(false); 
+			terrain->SetVisible(true); 
 			AddObjectToScene(terrain); 
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
@@ -1021,11 +1025,11 @@ void cherry::Game::LoadContent()
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
 			image->AddAnimation(imgAnime, false);
-			image->SetVisible(false);
+			image->SetVisible(true);
 
 			objectList->objects.push_back(image);
-			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, -100.0F);
-			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.1F);
+			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, 1.0F);
+			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.01F);
 		
 			// image->GetAnimation(0)->Play();
 			
@@ -1034,13 +1038,14 @@ void cherry::Game::LoadContent()
 		// image (UI element)
 		{
 			cherry::Image* image = new Image("res/images/codename_zero_logo.png", GetCurrentSceneName(), false, false);
-			// image->SetRegistryNumber(2);
-			image->SetPosition(0.0F, 0.0F, 0.0F);
+			image->SetPosition(-88.0F, -47.0F, 0.0F);
 			image->SetFixedScreenPosition(true);
+			// image->SetPositionByScreenPortion(Vec2(0.5, 0.5), Vec2(myWindowSize), Vec2(0.5, 0.5));
 			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
-			image->SetScale(0.05F);
+			image->SetScale(0.02F);
+			image->SetAlpha(0.8F);
 			image->SetVisible(true);
-			objectList->objects.push_back(image);
+			objectList->objects.push_back(image); 
 		}
 
 		// version 1 (finds .mtl file automatically)
@@ -1133,7 +1138,7 @@ void cherry::Game::UnloadContent() {
 void cherry::Game::Update(float deltaTime) {
 
 	glm::vec3 camTranslate{}; // movement for the camera this given frame.
-	float camTransInc = 5.0F; // increment for camera movement
+	float camTransInc = 8.0F; // increment for camera movement
 
 	// TODO: remove this line.
 	// <the update loop for all sceneLists was originally here.>
@@ -1157,6 +1162,9 @@ void cherry::Game::Update(float deltaTime) {
 	// 	objectList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
 	// else if (d)
 	// 	objectList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
+
+	myCamera->Update(deltaTime);
+	myCameraX->Update(deltaTime);
 
 	// updates the object list
 	objectList->Update(deltaTime);
@@ -1280,10 +1288,18 @@ void cherry::Game::Run()
 // resizes the window without skewing the sceneLists, and changes the cameras accordingly.
 void cherry::Game::Resize(int newWidth, int newHeight)
 {
-	myWindowSize = { newWidth, newHeight }; // updating window size
-
 	// for some reason, calling the functions and having them be used directly didn't work.
 	// so all the values are being saved first.
+	glm::vec2 orthoSizePro{ (float)newWidth / myWindowSize.x ,(float)newHeight / myWindowSize.y };
+
+	// TODO: keep objects in proper place. Do note that this goes through all objects and should probably be optimized somehow.
+	// moving all the object
+	// for (Object* obj : objectList->GetObjects())
+	// {
+	// 	obj->SetPositionX(obj->GetPositionX() / myWindowSize.x * newWidth);
+	// 	obj->SetPositionY(obj->GetPositionY() / myWindowSize.y * newHeight);
+	// }
+
 
 	// perspective variables
 	float p_fovy = myCamera->GetFieldOfView();
@@ -1292,49 +1308,43 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	float p_zFar = myCamera->GetFarPerspective(); // far plane (distance)
 
 	// orthographic variables
-	float o_left = myCamera->GetLeftOrthographic() * newWidth / (float)newHeight;
-	float o_right = myCamera->GetRightOrthographic() * newWidth / (float)newHeight;
-	float o_bottom = myCamera->GetBottomOrthographic();
-	float o_top = myCamera->GetTopOrthographic();
+	float o_left = myCamera->GetLeftOrthographic() * orthoSizePro.x;
+	float o_right = myCamera->GetRightOrthographic() * orthoSizePro.x;
+	float o_bottom = myCamera->GetBottomOrthographic() * orthoSizePro.y;
+	float o_top = myCamera->GetTopOrthographic() * orthoSizePro.y;
 	float o_zNear = myCamera->GetNearOrthographic();
 	float o_zFar = myCamera->GetFarOrthographic();
 
 	// changing the camera modes to adjust for the new window size. 
 	// The camera mode isn't changed, just it's values (i.e. if it's in perspective mode, it stays in perspective mode).
 	
-	// resizing the camera's perspective mode
-	// TODO: take out this comment.
-	// myCamera->SetPerspectiveMode(glm::radians(60.0f), newWidth / (float)newHeight, 0.01f, 1000.0f, myCamera->InPerspectiveMode());
-	
+	// resizing the camera's perspective mode and orthographic mode.
 	myCamera->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCamera->InPerspectiveMode());
-
-	// resizing hte camera's orthographic mode.
-	// TODO: take out this comment
-	// myCamera->SetOrthographicMode(-5.0f * newWidth / (float)newHeight, 5.0f * newWidth / (float)newHeight, -5.0f, 5.0f, 0.0f, 100.0f, myCamera->InOrthographicMode());
-
-	// resizing the orthographic mode
 	myCamera->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCamera->InOrthographicMode());
 	
 	// secondary camera settings
-	// resizing the ui/hud camera (cam 2)
-	p_fovy = myCamera2->GetFieldOfView();
+	// resizing the ui/hud camera (camera x)
+	p_fovy = myCameraX->GetFieldOfView();
 	// p_aspect = newWidth / (float)newHeight; // aspect ratio  
-	p_zNear = myCamera2->GetNearPerspective(); // near plane (distance)
-	p_zFar = myCamera2->GetFarPerspective(); // far plane (distance)
+	p_zNear = myCameraX->GetNearPerspective(); // near plane (distance)
+	p_zFar = myCameraX->GetFarPerspective(); // far plane (distance)
 
 	// orthographic variables
-	o_left = myCamera2->GetLeftOrthographic() * newWidth / (float)newHeight;
-	o_right = myCamera2->GetRightOrthographic() * newWidth / (float)newHeight;
-	o_bottom = myCamera2->GetBottomOrthographic();
-	o_top = myCamera2->GetTopOrthographic();
-	o_zNear = myCamera2->GetNearOrthographic();
-	o_zFar = myCamera2->GetFarOrthographic();
+	o_left = myCameraX->GetLeftOrthographic() * orthoSizePro.x;
+	o_right = myCameraX->GetRightOrthographic() * orthoSizePro.x;
+	o_bottom = myCameraX->GetBottomOrthographic() * orthoSizePro.y;
+	o_top = myCameraX->GetTopOrthographic() * orthoSizePro.y;
+	o_zNear = myCameraX->GetNearOrthographic();
+	o_zFar = myCameraX->GetFarOrthographic();
 
-	myCamera2->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCamera2->InPerspectiveMode());
-	myCamera2->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCamera2->InOrthographicMode());
+	myCameraX->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCameraX->InPerspectiveMode());
+	myCameraX->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCameraX->InOrthographicMode());
+
+	// saving the new window size.
+	myWindowSize = { newWidth, newHeight }; // updating window size
 }
 
-// draws to a given viewpoint. The code that was originally here was moved to _RenderScne
+// draws to a given viewpoint. The code that was originally here was moved to _RenderScene
 void cherry::Game::Draw(float deltaTime) {
 	// viewport size (full screen)
 	glm::ivec4 viewport = {
@@ -1483,7 +1493,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 			// if the object is to have a fixed screen position.
 			if(renderer.Mesh->GetFixedScreenPosition())
-				boundShader->SetUniform("a_CameraPos", myCamera2->GetPosition()); // uses Hud/UI camera
+				boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
 			else 
 				boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
 
@@ -1509,7 +1519,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		// Update the MVP using the item's transform
 		if (renderer.Mesh->GetFixedScreenPosition())
 		{
-			mat->GetShader()->SetUniform("a_ModelViewProjection", myCamera2->GetViewProjection() * worldTransform);
+			mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
 		}
 		else
 		{

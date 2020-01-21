@@ -712,14 +712,20 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			cherry::Vec3 dP = closestObstacle->GetModelPosition() - playerObj->GetPosition();
 			cherry::Vec3 dPN;
 			
+			cherry::Vec3 plyrMeshBody = (playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum());
+			cherry::Vec3 obstMeshBody{};
+			
+			if(closestObstacle->GetObject() != nullptr) // checking for nullptr.
+				obstMeshBody = (closestObstacle->GetObject()->GetMeshBodyMaximum() - closestObstacle->GetObject()->GetMeshBodyMinimum());
+
 			if (dP.GetLength() < tempDist) {
 				if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
 					float tempX = 0;
 					if (dP.GetX() < 0) {
-						tempX = dP.GetX() + ((playerObj->GetPBodySize().GetX() / 4) + (closestObstacle->GetObject()->GetPBodySize().GetX() / 4));
+						tempX = dP.GetX() + ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
 					}
 					else {
-						tempX = dP.GetX() - ((playerObj->GetPBodySize().GetX() / 4) + (closestObstacle->GetObject()->GetPBodySize().GetX() / 4));
+						tempX = dP.GetX() - ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
 					}
 					float angle = getXYAngle(dP);
 					float tempY = tempX / tanf(angle);
@@ -729,10 +735,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				else {
 					float tempY = 0;
 					if (dP.GetY() < 0) {
-						tempY = dP.GetY() + ((playerObj->GetPBodySize().GetY() / 4) + (closestObstacle->GetObject()->GetPBodySize().GetY() / 4));
+						tempY = dP.GetY() + ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
 					}
 					else {
-						tempY = dP.GetY() - ((playerObj->GetPBodySize().GetY() / 4) + (closestObstacle->GetObject()->GetPBodySize().GetY() / 4));
+						tempY = dP.GetY() - ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
 					}
 					float angle = getXYAngle(dP);
 					float tempX = tempY * tanf(angle);

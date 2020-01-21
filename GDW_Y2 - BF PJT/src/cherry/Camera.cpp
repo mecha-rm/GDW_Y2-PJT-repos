@@ -8,6 +8,7 @@
 // constructor
 cherry::Camera::Camera() : myPosition(glm::vec3(0)), myView(glm::mat4(1.0f)), Projection(glm::mat4(100.0f))
 {
+
 	// mat4 used for perspective and orthographic. They are initialized as being empty matrices (i.e. all values are 0).
 	perspective = glm::mat4();
 	orthographic = glm::mat4();
@@ -138,7 +139,11 @@ void cherry::Camera::SetPosition(const cherry::Vec3& pos) { SetPosition(glm::vec
 
 // calculates our rotation component of our view matrix.
 // camera position, where we want to look, and a up vector.
-void cherry::Camera::LookAt(const glm::vec3& target, const glm::vec3& up) {
+void cherry::Camera::LookAt(const glm::vec3& target, const glm::vec3& up) 
+{
+	lookingAt = target;
+	this->up = up;
+
 	myView = glm::lookAt(myPosition, target, up);
 }
 
@@ -168,5 +173,31 @@ void cherry::Camera::Move(const glm::vec3& local) {
 		// Our rotation is some value in space, so we take the inverse of it, and multiply it by the transformation we just did.
 		// We also invert it because GLM works backwards.
 		myPosition = -glm::inverse(glm::mat3(myView)) * myView[3];
+	}
+}
+
+// gets if the camera is following a target or not.
+bool cherry::Camera::IsFollowingTarget() const { return followTarget; }
+
+// sets if the camera should follow the target.
+void cherry::Camera::SetFollowingTarget(bool follow) { followTarget = follow; }
+
+// if the cmaera shoudl use the camera's offset.
+bool cherry::Camera::HasFixedTargetDistance() const { return fixedTargetDistance; }
+
+// sets whether the camera's position should use the target's offset.
+void cherry::Camera::SetFixedTargetDistance(bool fixedDist) { fixedTargetDistance = fixedDist; }
+
+// updates the camera
+void cherry::Camera::Update(float deltaTime)
+{
+	// if the camera should be looking at a target, it does so.
+	if (followTarget)
+	{
+		// sets the camera's new position.
+		if (fixedTargetDistance)
+			SetPosition(target->GetPosition() + targetOffset);
+
+		LookAt(target->GetPositionGLM(), up);
 	}
 }

@@ -96,7 +96,11 @@ namespace cherry
 		// returns 'true' if the front and back of the image is the same.
 		bool HasDuplicatedFront() const;
 
+		// gets the texture sampler
 		const cherry::TextureSampler::Sptr const GetTextureSampler() const;
+
+		// sets the alpha value.
+		void SetAlpha(float a) override;
 
 		// add update function
 		void Update(float deltaTime);
@@ -116,9 +120,6 @@ namespace cherry
 		glm::u32vec2 dimensions;
 
 		TextureSampler::Sptr sampler;
-
-		// image is animated.
-		bool animated = false;
 
 		// becomes 'true' if the image is double sided.
 		bool doubleSided = false;

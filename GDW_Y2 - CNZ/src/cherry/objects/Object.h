@@ -364,16 +364,16 @@ namespace cherry
 
 		// TODO: remove this?
 	// default physics body size
-		cherry::Vec3 GetPBodySize();
-
-		// default physics body size
-		float GetPBodyWidth();
-
-		// default physics body size
-		float GetPBodyHeight();
-
-		// default physics body size
-		float GetPBodyDepth();
+		// cherry::Vec3 GetPBodySize();
+		// 
+		// // default physics body size
+		// float GetPBodyWidth();
+		// 
+		// // default physics body size
+		// float GetPBodyHeight();
+		// 
+		// // default physics body size
+		// float GetPBodyDepth();
 
 		// updates the object
 		virtual void Update(float deltaTime);

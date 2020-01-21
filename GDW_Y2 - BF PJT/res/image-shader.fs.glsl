@@ -8,6 +8,8 @@ layout (location = 4) in vec3 inTexWeights; // multiple textures with varying op
 
 layout (location = 0) out vec4 outColor;
 
+uniform float a_Alpha; // the overall alpha value of the entity.
+
 uniform vec3 a_CameraPos;
 
 #define MAX_LIGHTS 10
@@ -99,6 +101,8 @@ void main() {
     finalResult.y = finalResult.y / lightsTotal;
     finalResult.z = finalResult.z / lightsTotal;
     finalResult.w = finalResult.w / lightsTotal;
+    
+    finalResult.w = finalResult.w * a_Alpha;
 
 	// Write the output
 	outColor = finalResult;

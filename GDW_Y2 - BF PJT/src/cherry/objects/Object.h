@@ -16,7 +16,8 @@
 #include "..\Material.h"
 #include "..\animate\AnimationManager.h"
 #include "..\animate\Path.h"
-// #include "..\Physics.h"
+#include "..\Target.h"
+
 
 namespace cherry
 {
@@ -114,6 +115,14 @@ namespace cherry
 		// gets the material for the object.
 		const Material::Sptr& GetMaterial() const;
 
+		// gets the alpha value of the object.
+		virtual float GetAlpha() const;
+
+		// sets the alpha value of the mesh. It goes from the range [0, 1].
+		// if the alpha value is set to 1.0, transparency is turned off. 
+		// Some items need transparency, so if that's the case this and the getter function should be overloaded.
+		virtual void SetAlpha(float a);
+
 		// returns whether or not the object is visible
 		bool IsVisible() const;
 
@@ -168,6 +177,34 @@ namespace cherry
 		// sets the position
 		void SetPosition(glm::vec3 newPos);
 
+		// gets the x-position
+		float GetPositionX() const;
+
+		// sets the x-position.
+		void SetPositionX(float x);
+
+		// gets the y-position
+		float GetPositionY() const;
+
+		// sets the y-position.
+		void SetPositionY(float y);
+
+		// gets the z-position
+		float GetPositionZ() const;
+
+		// sets the z-position.
+		void SetPositionZ(float z);
+
+		/*
+		 * sets the position of the object proportional to the size of the screen. This should only be used if using an orthographic camera.
+		 * this is designed after screen space, meaning that the values range from (0, 0) to (1, 1).
+		 * Variables:
+		 *** newPos: the new position. 
+		 *** windowSize: the window size.
+		 *** origin: the origin for the screen. The length and height of the screen are conisdered to always be (1.0, 1.0).
+		 ***** if the origin is (0.5, 0.5), the screen's size is in the range of [-0.5, -0.5] to [0.5, 0.5]
+		*/
+		void SetPositionByScreenPortion(const cherry::Vec2 newPos, const cherry::Vec2 windowSize, const cherry::Vec2 origin);
 
 
 		// gets the rotation as a GLM vector
@@ -285,13 +322,48 @@ namespace cherry
 		void SetScaleZ(float scaleZ);
 
 
+
+
+		// Transformation Functions
 		// translates the object
-		void Translate(Vec3 translation);
+		void Translate(cherry::Vec3 translation);
 
 		// translates the object by the provided values.
 		void Translate(float x, float y, float z);
 
-		// Rotate functions
+		// rotates in the order of x-y-z.
+		void Rotate(cherry::Vec3 theta, bool inDegrees);
+
+		// rotates in the order of x-y-z.
+		void Rotate(float x, float y, float z, bool inDegrees);
+
+		// rotate x-axis
+		void RotateX(float x, bool inDegrees);
+
+		// rotate y-axis
+		void RotateY(float y, bool inDegrees);
+
+		// rotate z-axis
+		void RotateZ(float z, bool inDegrees);
+
+		// pushes forward on the y and z axis in a direction determined by the x-rotation.
+		// 'fromY'determines whether the rotation starts from y = 0 or z = 0.
+		//	* true: (y, 0) is considered a rotation of 0. 
+		//	* false: (0, z) is considered a rotation of 0.
+		void ForwardX(float scalar, bool fromY);
+
+		// pushes forward on the x and z axis in a direction determined by the y-rotation.
+		// 'fromX'determines whether the rotation starts from x = 0 or z = 0.
+		//	* true: (x, 0) is considered a rotation of 0. 
+		//	* false: (0, z) is considered a rotation of 0.
+		void ForwardY(float scalar, bool fromX);
+
+		// pushes forward on the x and y axis in a direction determined by the z-rotation.
+		// 'fromX'determines whether the rotation starts from y = 0 or x = 0.
+		//	* true: (x, 0) is considered a rotation of 0. 
+		//	* false: (0, y) is considered a rotation of 0.
+		void ForwardZ(float scalar, bool fromX);
+
 
 
 		// gets the parent object.
@@ -369,8 +441,16 @@ namespace cherry
 		// clears all nodes from the path.
 		void ClearPath();
 
+		// TODO: add function for following a target.
+
 		// if 'true' is passed, the object follows the path, if it exists.
 		void UsePath(bool follow);
+
+		// gets the object as a target. This target gets updated each frame to match up with the current position.
+		const std::shared_ptr<cherry::Target>& GetObjectAsTarget() const;
+
+		// returns 'true' if the object is following a target.
+		// void FollowTarget(bool tgt);
 
 		// get mesh body maximum.
 		const cherry::Vec3 & GetMeshBodyMaximum() const;
@@ -402,6 +482,15 @@ namespace cherry
 
 		// following the path
 		bool followPath = false;
+
+		// a target to be followed by the object.
+		std::shared_ptr<cherry::Target> target = std::make_shared<cherry::Target>();
+
+		// the offset from the target's position.
+		cherry::Vec3 targetOffset{};
+
+		// if 'true', the target is followed.
+		bool followTarget = false;
 
 	private:
 		// void setMesh(Mesh::sptr);
@@ -447,6 +536,9 @@ namespace cherry
 		// saves the rotation on the x, y, and z axis in DEGREES.
 		cherry::Vec3 rotation = { 0.0F, 0.0F, 0.0F };
 
+		// the object as a target.
+		std::shared_ptr<cherry::Target> leaderTarget = std::make_shared<cherry::Target>();
+
 	protected:
 		// constructor used for default primitives
 		Object();
@@ -489,6 +581,9 @@ namespace cherry
 
 		// the material of the object.
 		Material::Sptr material;
+
+		// the alpha value for the mesh.
+		float alpha = 1.0F;
 
 		// the position of the object.
 		cherry::Vec3 position = { 0.0F, 0.0F, 0.0F };

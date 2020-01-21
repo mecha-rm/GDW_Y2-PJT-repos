@@ -3,10 +3,9 @@
 #include <GLM/glm.hpp>
 #include <GLM/glm.hpp>
 #include <glm/gtc/quaternion.hpp>
-
 #include <memory>
 
-#include "VectorCRY.h"
+#include "Target.h"
 
 namespace cherry
 {
@@ -141,11 +140,45 @@ namespace cherry
 		// moves the camera
 		void Move(const glm::vec3& local);
 
+		// if 'true', the camera is following a target.
+		bool IsFollowingTarget() const;
+
+		// set if the cmaera should be following its target.
+		void SetFollowingTarget(bool follow);
+
+		// if 'true', then the camera stays a fixed position away from the target if it follows the taregt.
+		// if 'false', then the camera's position stays the same.
+		bool HasFixedTargetDistance() const;
+
+		// sets whether the camera's position should use the target's offset.
+		void SetFixedTargetDistance(bool fixedDist);
+
+		// updates the camera. If the camera has a target it should be looking at, it looks at that target.
+		void Update(float deltaTime);
+
+		// camera pointer.
 		typedef std::shared_ptr<Camera> Sptr;
 
-		glm::mat4 Projection; // the projection (i.e. space that the camera sees)
+		// the projection (i.e. space that the camera sees)
+		glm::mat4 Projection;
+
+		// a target that the camera can lock onto. Use 'followTarget' to have the camera use the target.
+		// if you want the camera to be a fixed distance away, change the position offset.
+		std::shared_ptr<cherry::Target> target = std::make_shared<cherry::Target>();
+
+		// an offset of the target's position
+		cherry::Vec3 targetOffset{};
+
+		// if 'true', then the camera will follow the target.
+		bool followTarget = false;
+
+		// if 'true', the camera stays a fixed distance from the target 'target offset'
+		bool fixedTargetDistance = false;
 
 	private:
+		
+		glm::vec3 lookingAt{}; // the location being looked at.
+		glm::vec3 up{ 0, 0, 1 }; // the up parameter for the camera.
 
 		// the perspective bool
 		bool perspectiveMode = true;

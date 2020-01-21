@@ -194,7 +194,7 @@ namespace cherry
 		Camera::Sptr myCamera;
 
 		// the secondary camera, which is used for overlaying a hud.
-		Camera::Sptr myCamera2;
+		Camera::Sptr myCameraX;
 
 		// Target;
 		

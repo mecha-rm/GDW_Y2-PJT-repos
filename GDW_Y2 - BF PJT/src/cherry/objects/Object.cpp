@@ -254,6 +254,22 @@ cherry::Mesh::Sptr& cherry::Object::GetMesh() { return mesh; }
 // gets the material
 const cherry::Material::Sptr& cherry::Object::GetMaterial() const { return material; }
 
+// gets the alpha value of the object.
+float cherry::Object::GetAlpha() const { return alpha; }
+
+// sets the alpha value of the object.
+void cherry::Object::SetAlpha(float a)
+{
+	// TODO: this currently doesn't work for primitives.
+	// bounds checking
+	alpha = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
+
+	// if the object doesn't have a 100% alpha value, then it won't need to be sorted for proper transparency.
+	material->HasTransparency = (alpha < 1.0F) ? true: false;
+
+	material->Set("a_Alpha", alpha);
+}
+
 // returns if the object is visible
 bool cherry::Object::IsVisible() const { return mesh->IsVisible(); }
 
@@ -506,6 +522,8 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	this->scene = scene; // saves the scene
 	this->material = material; // saves the material.
 	
+	SetAlpha(alpha); // sets the alpha for the entity, which is by default 1.0 (full opacity).
+
 	// sets up the Update function for the entity. This gets automatically called.
 	auto& ecs = GetRegistry(scene);
 
@@ -547,18 +565,46 @@ cherry::Vec3 cherry::Object::GetPosition() const { return position; }
 // gets the object's position as a glm vector
 glm::vec3 cherry::Object::GetPositionGLM() const { return glm::vec3(position.v.x, position.v.y, position.v.z); }
 
-void cherry::Object::SetPosition(float x, float y, float z) { SetPosition(glm::vec3(x, y, z)); }
-
 // sets the position
-void cherry::Object::SetPosition(glm::vec3 newPos) { position = cherry::Vec3(newPos); }
+void cherry::Object::SetPosition(float x, float y, float z) { SetPosition(glm::vec3(x, y, z)); }
 
 // setting a new position
 void cherry::Object::SetPosition(cherry::Vec3 newPos) { position = newPos; }
 
+// sets the position
+void cherry::Object::SetPosition(glm::vec3 newPos) { position = cherry::Vec3(newPos); }
+
+// gets the x-position
+float cherry::Object::GetPositionX() const { return position.v.x; }
+
+// sets the x-position
+void cherry::Object::SetPositionX(float x) { position.v.x = x; }
+
+// gets the y-position
+float cherry::Object::GetPositionY() const { return position.v.y; }
+
+// sets the y-position
+void cherry::Object::SetPositionY(float y) { position.v.y = y; }
+
+// gets the z-position
+float cherry::Object::GetPositionZ() const { return position.v.z; }
+
+// sets the z-position
+void cherry::Object::SetPositionZ(float z) { position.v.z = z; }
+
+// sets the position by the screen portion.
+void cherry::Object::SetPositionByScreenPortion(const cherry::Vec2 newPos, const cherry::Vec2 windowSize, const cherry::Vec2 origin)
+{
+	// making sure the window is of an absolute value.
+	glm::vec2 windowAbs(abs(windowSize.v.x), abs(windowSize.v.y));
+
+	// takes the actual position and shifts it so that it aligns with the world origin of (0.5, 0.5) across teh screen size.
+	position.v.x = (newPos.v.x * windowAbs.x) + ((0.5F - origin.v.x) * windowAbs.x);
+	position.v.y = (newPos.v.y * windowAbs.y) + ((0.5F - origin.v.y) * windowAbs.y);
+}
 
 
 // ROTATION FUNCTIONS
-
 // gets the rotation in the requested form as a GLM vector.
 glm::vec3 cherry::Object::GetRotationGLM(bool inDegrees) const { return inDegrees ? GetRotationDegreesGLM() : GetRotationRadiansGLM(); }
 
@@ -699,10 +745,85 @@ void cherry::Object::SetScaleZ(float scaleZ) { scale.v.z = scaleZ; }
 
 
 // translates the object
-void cherry::Object::Translate(Vec3 translation) { position += translation; }
+void cherry::Object::Translate(cherry::Vec3 translation) { position += translation; }
 
 // translates the object
 void cherry::Object::Translate(float x, float y, float z) { Translate(Vec3(x, y, z)); }
+
+// rotates in the order of x-y-z
+void cherry::Object::Rotate(cherry::Vec3 theta, bool inDegrees) 
+{ 
+	if (inDegrees) // in degrees
+	{
+		rotation += theta; // rotation is stored in radians.
+	}
+	else // in radians
+	{
+		rotation.v.x += util::math::radiansToDegrees(theta.v.x);
+		rotation.v.y += util::math::radiansToDegrees(theta.v.y);
+		rotation.v.z += util::math::radiansToDegrees(theta.v.z);
+	}	
+}
+
+// rotates in the order of x-y-z
+void cherry::Object::Rotate(float x, float y, float z, bool inDegrees) { Rotate(cherry::Vec3(x, y, z), inDegrees); }
+
+// rotate x-axis
+void cherry::Object::RotateX(float x, bool inDegrees) { Rotate(x, 0, 0, inDegrees); }
+
+// rotate y-axis
+void cherry::Object::RotateY(float y, bool inDegrees) { Rotate(0, y, 0, inDegrees); }
+
+// rotate z-axis
+void cherry::Object::RotateZ(float z, bool inDegrees) { Rotate(0, 0, z, inDegrees); }
+
+// pushes forward in the direction of the x-axis roation.
+void cherry::Object::ForwardX(float scalar, bool fromY)
+{
+	cherry::Vec3 temp{};
+
+	// from the y-axis
+	if (fromY)
+		temp = util::math::rotateX(util::math::Vec3(0, scalar, 0), GetRotationDegrees().v.x, true);
+	// from the z-axis
+	else
+		temp = util::math::rotateX(util::math::Vec3(0, 0, scalar), GetRotationDegrees().v.x, true);
+
+	Translate(temp);
+}
+
+// pushes forward in the direction of the y-axis roation.
+void cherry::Object::ForwardY(float scalar, bool fromX)
+{
+	cherry::Vec3 temp{};
+
+	// from the x-axis
+	if (fromX)
+		temp = util::math::rotateY(util::math::Vec3(scalar, 0, 0), GetRotationDegrees().v.y, true);
+	// from the z-axis
+	else
+		temp = util::math::rotateY(util::math::Vec3(0, 0, scalar), GetRotationDegrees().v.y, true);
+
+	Translate(temp);
+}
+
+// pushes forward in the direction of the z-axis roation.
+void cherry::Object::ForwardZ(float scalar, bool fromX)
+{
+	cherry::Vec3 temp{};
+
+	// from the x-axis
+	if(fromX)
+		util::math::rotateZ(util::math::Vec3(scalar, 0, 0), GetRotationDegrees().v.z, true);
+	// from the y-axis
+	else
+		util::math::rotateZ(util::math::Vec3(0, scalar, 0), GetRotationDegrees().v.z, true);
+
+	Translate(temp);
+}
+
+
+
 
 // gets the parent of the object
 // const cherry::Object* cherry::Object::GetParent() const { return parent; }
@@ -857,6 +978,9 @@ void cherry::Object::ClearPath() { path = Path(); }
 // determines whether the object should use the path.
 void cherry::Object::UsePath(bool follow) { followPath = follow; }
 
+// gets the object as a target. The target is updated each frame to match up with the current position.
+const std::shared_ptr<cherry::Target>& cherry::Object::GetObjectAsTarget() const { return leaderTarget; }
+
 // gets the mesh body maximum.
 const cherry::Vec3 & cherry::Object::GetMeshBodyMaximum() const { return meshBodyMax; }
 
@@ -936,10 +1060,16 @@ void cherry::Object::Update(float deltaTime)
 			animations.GetCurrentAnimation()->Update(deltaTime);
 	}	
 
+	// if the object is meant to follow a target.
+	if (followTarget)
+		position = target->GetPosition() + targetOffset;
+
 	// updating the physics bodies
 	for (cherry::PhysicsBody* body : bodies)
 		body->Update(deltaTime);
 
+	// updating the leader target.
+	leaderTarget->SetPosition(position);
 	// SetRotationDegrees(GetRotationDegrees() + Vec3(30.0F, 10.0F, 5.0F) * deltaTime);
 }
 

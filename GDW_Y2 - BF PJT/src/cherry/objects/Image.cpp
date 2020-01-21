@@ -119,6 +119,21 @@ const cherry::TextureSampler::Sptr const cherry::Image::GetTextureSampler() cons
 	return sampler;
 }
 
+// sets the alpha value for the image.
+void cherry::Image::SetAlpha(float a)
+{
+	alpha = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
+
+	// if the image doesn't have a 100% alpha value, then it won't need to be sorted for proper transparency.
+	// however, if the image inherently has transparency (i.e. if it's a png), then transparency is left on.
+	if (alpha < 1.0F || util::equalsIgnoreCase(filePath.substr(filePath.find_last_of(".") + 1), "png"))
+		material->HasTransparency = true;
+	else
+		material->HasTransparency = false;
+
+	material->Set("a_Alpha", alpha);
+}
+
 // loads an image
 bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4 uvs)
 {
@@ -294,6 +309,10 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	{
 		material->HasTransparency = true; // there should be transparency if it's a png
 	}
+
+	// TODO: fix this. The image is travelling in the wrong direction.
+	// images are drawn upside down, so they are rotated to be put rightside up.
+	SetRotationZDegrees(180.0F);
 
 	// creates the entity for the image
 	CreateEntity(scene, material);

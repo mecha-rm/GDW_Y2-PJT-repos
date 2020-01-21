@@ -923,10 +923,9 @@ void cherry::Game::LoadContent()
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		 // testing the copy constructor.
-		 // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, 10.0F);
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetScale(5.0F);
-
+		  objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		  objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
+		  objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
 
 		// liquid
 		{

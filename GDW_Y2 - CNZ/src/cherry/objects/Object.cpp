@@ -106,12 +106,12 @@ cherry::Object::Object(const cherry::Object& obj)
 	indices = new uint32_t[indicesTotal];
 	
 	// copying vertices
-	for (int i = 0; i < verticesTotal; i++)
-		vertices[i] = Vertex(tempVerts[i]);
-	
-	// copying indices
-	for (int i = 0; i < indicesTotal; i++)
-		indices[i] = tempIndices[i];
+	// for (int i = 0; i < verticesTotal; i++)
+	// 	vertices[i] = Vertex(tempVerts[i]);
+	// 
+	// // copying indices
+	// for (int i = 0; i < indicesTotal; i++)
+	// 	indices[i] = tempIndices[i];
 	
 
 	name = obj.GetName();
@@ -146,13 +146,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			bodies.push_back(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			bodies.push_back(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
 			sphere = nullptr;
 			break;
 		}
@@ -886,30 +886,6 @@ void cherry::Object::CalculateMeshBody()
 	meshBodyMax = CalculateMeshBodyMaximum(vertices, verticesTotal); // maximum values
 	meshBodyMin = CalculateMeshBodyMinimum(vertices, verticesTotal); // minimum values
 }
-
-// // default physics body size
-// cherry::Vec3 cherry::Object::GetPBodySize()
-// {
-// 	return this->pBodySize;
-// }
-// 
-// // default physics body size
-// float cherry::Object::GetPBodyWidth()
-// {
-// 	return this->GetPBodySize().GetX() / 2;
-// }
-// 
-// // default physics body size
-// float cherry::Object::GetPBodyHeight()
-// {
-// 	return this->GetPBodySize().GetY() / 2;
-// }
-// 
-// // default physics body size
-// float cherry::Object::GetPBodyDepth()
-// {
-// 	return this->GetPBodySize().GetZ() / 2;
-// }
 
 // updates the object
 void cherry::Object::Update(float deltaTime)
