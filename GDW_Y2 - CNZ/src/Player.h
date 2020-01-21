@@ -26,6 +26,9 @@ namespace cnz
 		// creates the player, taking in the scene, material, and position as well.
 		Player(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos);
 
+		// creates a player object using an Object *. Used for loader, don't use manually
+		Player(cherry::Object obj);
+
 		// loads in the player using a default model. The player takes this model's information.
 		// Player(const cherry::Primitive * model);
 
@@ -91,7 +94,7 @@ namespace cnz
 
 		bool cT, cB, cL, cR;
 
-		cherry::Vec3 pBodySize = cherry::Vec3(4, 4, 4);
+		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 3);
 		bool drawPBody = false;
 
 		// TODO: possibly delete these variables? Object has its own rotation now.
@@ -100,6 +103,8 @@ namespace cnz
 
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
+
+		std::vector<cherry::PhysicsBody*> bodies;
 
 	protected:
 

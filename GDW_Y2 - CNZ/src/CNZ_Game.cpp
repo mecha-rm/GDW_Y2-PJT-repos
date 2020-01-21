@@ -236,6 +236,95 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 	}
 }
 
+void cnz::CNZ_Game::mapSceneObjectsToGame(std::string sceneName) {
+
+	bool visibleBbox = true;
+
+	objList = objManager->GetSceneObjectListByName(sceneName);
+	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
+	std::string curObjStr;
+
+	this->obstacles.clear();
+	this->obstaclePBs.clear();
+	this->playerObj = new Player("res/objects/hero/charactoereee.obj", GetCurrentScene(), matStatic);
+	this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	this->playerObj->SetRotationXDegrees(90);
+	this->playerObj->SetRotationZDegrees(180);
+	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
+
+
+	for (int i = 0; i < allSceneObjects.size(); i++) {
+		curObjStr = allSceneObjects[i]->ToString();
+
+		if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
+			std::cout << "its a wall" << std::endl;
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+			this->obstacles.push_back(allSceneObjects[i]);
+		}
+		else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
+			std::cout << "its a player" << std::endl;
+		}
+		else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
+			std::cout << "its a dumpster" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
+			std::cout << "its a lamp post" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
+			std::cout << "its a lamp post corner" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
+			std::cout << "its a lamp post middle" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
+			std::cout << "its a barrel" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
+			std::cout << "its a katana" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
+			std::cout << "its a pillar" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
+			std::cout << "its a manhole" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("Road.blend") != std::string::npos) { // road
+			std::cout << "its a road" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+		else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
+			std::cout << "its a sidewalk" << std::endl;
+			this->obstacles.push_back(allSceneObjects[i]);
+			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
+		}
+	}
+
+	if (visibleBbox) {
+		this->playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+
+		for (int i = 0; i < obstaclePBs.size(); i++) {
+			obstaclePBs[i]->SetVisible(true);
+		}
+	}
+}
+
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
@@ -258,21 +347,29 @@ void cnz::CNZ_Game::LoadContent()
 		objManager->AddSceneObjectList(map1.getSceneName());
 
 		//// GET SCENE OBJECT LISTS
-		// objList = objManager->GetSceneObjectListByName(sceneName);
 		objList = objManager->GetSceneObjectListByName(map1.getSceneName());
-
-		//// PUT OBJECTS INT SCENE OBJECT LIST
-		for (int i = 0; i < map1.objList.size(); i++) {
-			objList->AddObject(&map1.objList[i]);
-		}
+		
+		// do this in Update() as well, and only here for start scene
 
 		//// REGISTER SCENES
 		// SceneManager::RegisterScene(sceneName);
 		cherry::SceneManager::RegisterScene(map1.getSceneName());
 
 		//// SET CURRENT SCENE
-		// SceneManager::SetCurrentScene(sceneName);
+		SetCurrentScene(map1.getSceneName());
 		cherry::SceneManager::SetCurrentScene(map1.getSceneName());
+
+		//// PUT OBJECTS IN OBJECT LIST
+		std::vector<cherry::Object*> map1objList = map1.getObjects();
+
+		auto temp = GetCurrentScene();
+		//// ADD OBJECTS TO SCENE
+		for (int i = 0; i < map1objList.size(); i++) {
+			AddObjectToScene(map1objList[i], map1.getSceneName());
+		}
+
+		// only do this for starting scene, and do for current scene right after scene switch
+		mapSceneObjectsToGame(map1.getSceneName());
 
 		//// Stuff I dont need to change for now (stays as is in Game.cpp)
 		// lightManager->AddSceneLightList(sceneName);
@@ -628,6 +725,7 @@ void cnz::CNZ_Game::LoadContent()
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
+
 	this->playerPrevPos = playerObj->GetPosition();
 
 	float moveInc = -10.0F; // the movement incrementer.
@@ -874,6 +972,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	//// update physics bodies
 	// player PB
 	playerObj->GetPhysicsBodies()[0]->SetModelPosition(playerObj->GetPosition());
+	playerObj->GetPhysicsBodies()[0]->SetWorldPosition(playerObj->GetPosition());
 	// enemy PBs
 	for (int i = 0; i < enemyPBs.size(); i++) {
 		enemyPBs[i]->SetModelPosition(enemyPBs[i]->GetObject()->GetPosition());

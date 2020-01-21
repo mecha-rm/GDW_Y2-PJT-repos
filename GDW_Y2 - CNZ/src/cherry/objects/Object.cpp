@@ -714,6 +714,11 @@ float cherry::Object::GetPBodyDepth()
 // updates the object
 void cherry::Object::Update(float deltaTime)
 {
+
+	if (this == nullptr) {
+		return;
+	}
+
 	// TODO: remove this for the final version.
 	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
 	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);

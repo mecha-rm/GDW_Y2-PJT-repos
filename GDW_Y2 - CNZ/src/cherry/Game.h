@@ -151,6 +151,8 @@ namespace cherry
 
 		// gets the current m_Scene
 		std::string GetCurrentScene() const;
+		// sets the current m_Scene
+		void SetCurrentScene(std::string sceneName);
 
 
 		// set to 'true' for debug functionality.

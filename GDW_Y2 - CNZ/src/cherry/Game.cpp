@@ -1169,3 +1169,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera)
 
 // returns the current m_Scene
 std::string cherry::Game::GetCurrentScene() const { return currentScene; }
+
+void cherry::Game::SetCurrentScene(std::string sceneName) {
+	this->currentScene = sceneName;
+}

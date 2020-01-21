@@ -38,6 +38,7 @@ public:
 	float getPBodyHeight();
 	float getPBodyDepth();
 
+
 private:
 	// pbody stuff. self explanatory
 	cherry::Vec3 pBodySize = cherry::Vec3(4, 4, 4);
@@ -49,4 +50,7 @@ private:
 
 	// object angle in world space (vec3, so 3d angle)
 	glm::vec3 worldAngle;
+
+	// a vector of physics bodies
+	std::vector<cherry::PhysicsBody*> bodies;
 };

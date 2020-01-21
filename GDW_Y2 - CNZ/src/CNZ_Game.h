@@ -58,6 +58,10 @@ namespace cnz
 
 		void spawnEnemyGroup(int i);
 
+		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
+		void mapSceneObjectsToGame(std::string sceneName);
+
+
 	protected:
 
 		// overwritten function for loading in game content.
@@ -96,7 +100,7 @@ namespace cnz
 		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
 
-		std::vector<Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
+		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
