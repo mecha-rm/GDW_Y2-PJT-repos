@@ -161,19 +161,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->getPBodySize()));
@@ -188,19 +188,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -215,19 +215,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -242,19 +242,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -269,19 +269,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -296,19 +296,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -323,19 +323,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -350,19 +350,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -377,19 +377,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -404,19 +404,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
@@ -431,19 +431,19 @@ std::vector<cherry::Object*> Level::getObjects() {
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(x * cellOffset, y * cellOffset, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(x * cellOffset + properties[0], y * cellOffset + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));

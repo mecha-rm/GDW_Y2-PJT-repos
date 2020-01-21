@@ -58,5 +58,5 @@ private:
 	cherry::Material::Sptr matStatic; // the static material
 	cherry::Material::Sptr matDynamic; // the dynamic material
 
-	const int cellOffset = 8;
+	const float cellOffset = 6.25f;
 };

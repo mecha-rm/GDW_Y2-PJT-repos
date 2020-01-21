@@ -343,7 +343,7 @@ void cnz::CNZ_Game::LoadContent()
 {
 	// srand(time(NULL)); // move to Game.h
 
-	bool levelLoading = false;
+	bool levelLoading = true;
 
 	Game::LoadContent(); // calls the load content
 
