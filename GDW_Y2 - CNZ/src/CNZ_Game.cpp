@@ -251,7 +251,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 
 void cnz::CNZ_Game::mapSceneObjectsToGame(std::string sceneName) {
 
-	bool visibleBbox = true;
+	bool visibleBbox = false;
 
 	objList = objManager->GetSceneObjectListByName(sceneName);
 	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();

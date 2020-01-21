@@ -463,8 +463,8 @@ std::vector<float> Level::getObjProps(int y, int x) {
 	std::vector<float> properties;
 	std::string cell = this->map[y][x];
 	int strLen = cell.size();
-	int firstDash = cell.find("-");
-	int secondDash = cell.find("-", firstDash + 1); // find first period after index firstDash. Should return second dash.
+	int firstDash = cell.find("~");
+	int secondDash = cell.find("~", firstDash + 1); // find first period after index firstDash. Should return second dash.
 
 
 	// CASES
