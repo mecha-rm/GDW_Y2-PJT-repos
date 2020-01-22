@@ -50,6 +50,8 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges, bool 
 		indiIndex++; // increases the index for indices
 	}
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// creating the mesh
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	mesh->cullFaces = !doubleSided;

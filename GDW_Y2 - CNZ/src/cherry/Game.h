@@ -7,10 +7,14 @@
 #include <GLM/glm.hpp>
 
 // File Includes
+#include "Camera.h" // camera
 #include "Shader.h"
 #include "Mesh.h"
+
+
+#include "SceneManager.h"
+#include "Skybox.h"
 #include "objects/ObjectManager.h"
-#include "Camera.h" // camera
 #include "LightManager.h"
 
 // System Library Includes
@@ -85,29 +89,94 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
-		// adds an object to the m_Scene. Only call this if the object being passed already has a m_Scene registered.
-		// if false is returned, then the object is already in the m_Scene.
-		bool AddObjectToScene(cherry::Object* obj);
+		// creates a scene. If 'makeCurrent' is true, then this scene is made the current scene.
+		// this also returns the scene created. Since no skybox is provided, a default one is made.
+		bool CreateScene(const std::string sceneName, const bool makeCurrent);
 
-		// adds an object to the current registry of the game.
-		bool AddObjectToScene(cherry::Object* obj, std::string scene);
+		// nothing happens if the scene already exists
+		// this also returns the scene created.
+		bool CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent);
+
+		// gets the current scene.
+		cherry::Scene* GetScene(std::string sceneName) const;
+
+		// gets the current scene.
+		cherry::Scene* GetCurrentScene() const;
+
+		// sets the current scene. If the scene doesn't exist, then nothing happens.
+		// if 'createScene' is true, then a new scene is made if it doesn't exist, which causes 'true' to be returned.
+		bool SetCurrentScene(std::string sceneName, bool createScene);
+
+		// returns the name of the current scene. If the scene doesn't exist, an empty string of "" is returned.
+		const std::string & GetCurrentSceneName() const;
+
+		// destroys all scenes.
+		void DestroyScenes();
+
+
+		// sets the skybox for the current scene, and whether it should be visible or not.
+		void SetSkybox(cherry::Skybox & skybox, const bool visible = true);
+
+		// sets the skybox for the provided scene, and whether it should be visible or not.
+		void SetSkybox(cherry::Skybox& skybox, const std::string sceneName, const bool visible = true);
+
+		// gets whether the skybox is visible for the current scene or not.
+		bool GetSkyboxVisible() const;
+
+		// gets whether the skybox is visible in the provided scene or not.
+		bool GetSkyboxVisible(std::string sceneName) const;
+
+		// changes whether the skybox is visible or not for the current scene.
+		void SetSkyboxVisible(bool skybox);
+
+		// changes whether the skybox is visible or not for the provided scene.
+		void SetSkyboxVisible(bool skybox, std::string sceneName);
+
+		// gets the total amount of sceneLists
+		unsigned int GetObjectCount() const;
+
+		// gets the object list for the scene.
+		cherry::ObjectList * GetSceneObjectList() const;
+
+		// returns the object list for the provided scene.
+		cherry::ObjectList* GetSceneObjectList(std::string scene);
+
+		// replace with object manager
+		// gets an object from the current scene
+		cherry::Object * GetCurrentSceneObjectByIndex(unsigned int index) const;
+
+		// gets an object from the provided scene
+		cherry::Object * GetSceneObjectByIndex(std::string scene, unsigned int index) const;
+
+		// gets a scene object, finding it via its name (must be in the current scene)
+		cherry::Object* GetCurrentSceneObjectByName(std::string name) const;
+
+		// gets a scene object from the provided scene, finding it via its name (must be in the current scene)
+		cherry::Object* GetSceneObjectByName(std::string scene, std::string name) const;
+
+		// TODO: add function; adds an object to the requested scen's list.
+		// bool AddObjectToScene(std::string sceneName, cherry::Object* obj);
+
+		// adds an object to the scene stored in it. Only call this if the object has already been given a scene..
+		// if false is returned, then the object is already in the requested scene, or the scene didn't exist.
+		bool AddObjectToScene(cherry::Object* obj);
 
 		// TODO: rename to DeleteObject?
 		// removes an object from the game. If a 'false' is returned, then the object was never in the m_Scene.
 		bool DeleteObjectFromScene(cherry::Object* obj);
 
-		// replace with object manager
-		// gets an object from the current scene
-		cherry::Object* GetSceneObject(unsigned int index) const;
+		// LIGHTS
+		// gets the light list for the current scene.
+		cherry::LightList* GetSceneLightList() const;
 
-		// gets an object from the provided scene
-		cherry::Object * GetSceneObject(unsigned int index, std::string scene) const;
+		// gets the light list for the provided scene.
+		cherry::LightList* GetSceneLightList(std::string sceneName);
 
-		// gets a scene object, finding it via its name (must be in the current scene)
-		cherry::Object* GetSceneObjectByName(std::string name) const;
+		// adds a light to the scene
+		bool AddLightToScene(cherry::Light * light);
 
-		// gets the total amount of sceneLists
-		unsigned int GetObjectCount() const;
+		// removes a light from the scene.
+		bool DeleteLightFromScene(cherry::Light * light);
 
 		// runs the game
 		void Run();
@@ -121,6 +190,9 @@ namespace cherry
 		 
 		// the object used for the camera
 		Camera::Sptr myCamera;
+
+		// the camera for the ui.
+		Camera::Sptr UICamera;
 		
 
 	protected:
@@ -147,17 +219,14 @@ namespace cherry
 		void DrawGui(float deltaTime);
 
 		// used for rendering the scene to multiple viewpoints.
-		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera);
-
-		// gets the current m_Scene
-		std::string GetCurrentScene() const;
+		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool clear = true);
 
 
 		// set to 'true' for debug functionality.
 		bool debugMode = false;
 
 		// list of scenes
-		std::vector<std::string> scenes;
+		// std::vector<std::string> scenes;
 
 		// the m_Scene material
 		Material::Sptr matStatic; // the static material
@@ -187,22 +256,20 @@ namespace cherry
 		// A shared pointer to our shader.
 		Shader::Sptr myShader;
 
-		std::string currentScene = ""; // the current m_Scene
-
 		// a vector of the sceneLists created for the game.
 		// std::vector<Object*> objects;
 
 		// object manager
-		std::shared_ptr<cherry::ObjectManager> objManager;
+		// std::shared_ptr<cherry::ObjectManager> objManager; // now static like it should've been.
 
 		// object list
-		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
+		cherry::ObjectList* objectList = nullptr; // objManager deletion handles this
 
 		// the lights in the current scene
 		// std::vector<Light*>* lights; // TODO: replace with light manager
 
 		// light manager
-		std::shared_ptr<cherry::LightManager> lightManager;
+		// std::shared_ptr<cherry::LightManager> lightManager; (now static)
 
 		// holds the list of lights
 		cherry::LightList* lightList; // lightManager deletion handles this

@@ -62,7 +62,7 @@ namespace cherry
 		Mesh::Sptr GenerateMesh() const;
 
 		// adds the skybox to the scene provided.
-		void AddSkyboxToScene(cherry::Scene * scene);
+		void AddSkyboxToScene(cherry::Scene * scene) const;
 		
 
 	private:

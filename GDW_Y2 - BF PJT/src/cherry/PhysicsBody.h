@@ -62,7 +62,6 @@ namespace cherry
 		// sets the world position of the body
 		void SetWorldPosition(glm::vec3 wpos);
 
-
 		// gets the rotation of the body (in degrees)
 		cherry::Vec3 GetRotationDegrees() const;
 
@@ -193,6 +192,12 @@ namespace cherry
 
 		// sets the radius; if a negative is passed, the absolute value is received.
 		void SetRadius(float r);
+
+		// gets the diameter.
+		float GetDiameter() const;
+
+		// sets the diameter
+		void SetDiameter(float diameter);
 
 		// update loop
 		void Update(float deltaTime);

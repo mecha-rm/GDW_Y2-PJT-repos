@@ -38,27 +38,24 @@ namespace cherry
 
 		// creates a morph animation frame with the vertices and normals seperated.
 		// this takes position 0.
-		MorphAnimationFrame(glm::vec3 * vertices, glm::vec3 * normals, unsigned int valNum, float units = 1.0F);
+		MorphAnimationFrame(glm::vec3 * vertices, glm::vec4 * colors, glm::vec3 * normals, glm::vec2 * uvs, unsigned int valNum, float units = 1.0F);
 
 		// receives the verts to lerp to for this given frame, with units determining how long the lerp process takes from the last frame.
-		MorphAnimationFrame(cherry::Vertex* pose, unsigned int vertsTotal, float units = 1.0F);
+		MorphAnimationFrame(cherry::Vertex* newPose, unsigned int vertsTotal, float units = 1.0F);
 
 		// receives the verts to lerp to for this given frame
 		// units determines the length of the lerp between the previous frame; default 1 second.
 		// this takes position1 and normal1 from the provided pose values
-		MorphAnimationFrame(cherry::MorphVertex * pose, unsigned int vertsTotal, float units = 1.0F);
+		MorphAnimationFrame(cherry::MorphVertex * newPose, unsigned int vertsTotal, float units = 1.0F);
 
 		// the name of the file for the morph target animation frame; only takes .obj files for now.
 		// units determines the length of the lerp between the previous frame; default 1 second.
 		MorphAnimationFrame(std::string filePath, float units = 1.0F);
 
 		~MorphAnimationFrame();
-
-		// gets the vertices for this frame.
-		glm::vec3 * GetVertices() const;
-
-		// gets the normals for this frame
-		glm::vec3* GetNormals() const;
+		
+		// returns the pose
+		const cherry::Vertex* const GetPose() const;
 
 		// gets the value amount, which is the same for vertices and 
 		unsigned int GetValueAmount() const;
@@ -76,15 +73,10 @@ namespace cherry
 	private:
 		// the pose for this frame
 		// MorphVertex* pose;
-
-		// array of vertices
-		glm::vec3 * vertices;
-
-		// array of normals
-		glm::vec3 * normals;
+		Vertex* pose; // vertices, colors, normals, and uvs
 
 		// total amount of vertices
-		unsigned int valNum;
+		unsigned int verticesTotal;
 
 		// the value of 't'
 		// float t = 0;

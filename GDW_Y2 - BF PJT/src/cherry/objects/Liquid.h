@@ -44,10 +44,10 @@ namespace cherry
 		void SetWave(unsigned int waveNum, float xDir, float yDir, float steepness, float waveLength);
 
 		// gets the alpha value of the wave
-		float GetAlpha() const;
+		float GetAlpha() const override;
 
 		// sets the alpha value for the liquid (0 - 1)
-		void SetAlpha(float a);
+		void SetAlpha(float a) override;
 
 		// gets the colours as a GLM vector, which is in a [0, 1] range. It is in RGBA format.
 		glm::vec4 GetColorGLM() const;

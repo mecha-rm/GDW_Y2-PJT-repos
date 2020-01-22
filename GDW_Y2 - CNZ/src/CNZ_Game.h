@@ -100,7 +100,7 @@ namespace cnz
 		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
-		std::vector<int> projTimeList; //list of projectile timers
+		std::vector<float> projTimeList; //list of projectile timers
 
 
 		cnz::Player* testObj = nullptr; // object for the player.

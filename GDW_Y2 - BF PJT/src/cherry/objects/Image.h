@@ -17,7 +17,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 *****	If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 
 		/*
 		 * creates an image with the size, taking in the size of the image. The entire image is used to, so the uvs range from [0, 1].
@@ -27,7 +27,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 ***** If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, float width, float height, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, float width, float height, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 		
 		/*
 		 * creates an image with the size, taking in the size of the image. The entire image is used to, so the uvs range from [0, 1].
@@ -38,7 +38,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 ***** If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 
 		/*
 		 * creates an image, and adds it to the provided scene (CreateEntity is called automatically).
@@ -48,7 +48,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 *****	If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 
 		/*
 		 * creates an image with a provided width, height, and uv coordinates.
@@ -57,7 +57,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 *****	If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 
 		/*
 		 * creates an image with a provided width, height, and uv coordinates.
@@ -67,7 +67,7 @@ namespace cherry
 		 *** duplicateFront: makes the front and back of the image the exact same if true.
 		 *****	If false, the back is a reflection of the front. If this is 'true', the value of 'doubleSided' is disregarded.
 		*/
-		Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false);
+		Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided = true, bool duplicateFront = false, bool camLock = false);
 
 
 		// destructor
@@ -96,7 +96,11 @@ namespace cherry
 		// returns 'true' if the front and back of the image is the same.
 		bool HasDuplicatedFront() const;
 
+		// gets the texture sampler
 		const cherry::TextureSampler::Sptr const GetTextureSampler() const;
+
+		// sets the alpha value.
+		void SetAlpha(float a) override;
 
 		// add update function
 		void Update(float deltaTime);
@@ -117,14 +121,14 @@ namespace cherry
 
 		TextureSampler::Sptr sampler;
 
-		// image is animated.
-		bool animated = false;
-
 		// becomes 'true' if the image is double sided.
 		bool doubleSided = false;
 
 		// duplicated front.
 		bool duplicatedFront = false;
+
+		// camera lock; lodks the image to the camera.
+		bool cameraLock = false;
 
 	protected:
 

@@ -4,6 +4,7 @@
 #include "Primitives.h"
 #include "Image.h"
 #include "Liquid.h"
+#include "Terrain.h"
 
 namespace cherry
 {
@@ -18,46 +19,53 @@ namespace cherry
 		~ObjectManager();
 
 		// checks if a list for a scene exists. If so, a 'true' is returned.
-		bool SceneObjectListExists(std::string sceneName) const;
+		static bool SceneObjectListExists(std::string sceneName);
 
 		// gets the object list for the scene by index. A nullptr is returned if the scene doesn't have a list.
-		cherry::ObjectList* GetSceneObjectListByIndex(unsigned int index) const;
+		static cherry::ObjectList* GetSceneObjectListByIndex(unsigned int index);
 
 		// gets the object list for the scene. A nullptr is returned if the scene doesn't have a list.
-		cherry::ObjectList* GetSceneObjectListByName(std::string sceneName) const;
+		static cherry::ObjectList* GetSceneObjectListByName(std::string sceneName);
 
 		// adds an object using the provided scene. If successful, a true is returned.
 		// if a list for the scene already exists, then a new list isn't made, and a false is returned.
-		bool AddSceneObjectList(std::string scene);
+		static bool CreateSceneObjectList(std::string scene);
 
 		// adds an object to the cooresponding scene object list. If successful, 'true' is passed.
 		// only call this function if the object has already been given a scene.
 		// if the scene doesn't exist, or the object is already part of that scene, a false is passed.
 		// However, if addSceneList is set to 'true', a list for that scene is created, and 'true' is returned.
-		bool AddObjectToSceneObjectList(Object * obj, bool addSceneList = true);
+		static bool AddObjectToSceneObjectList(cherry::Object * obj, bool addSceneList = true);
 
-		// AddObject(scene)
+		// removes an object from its scene object list.
+		// if 'true' is returned, then the object was removed successfully. 
+		// If false, the object either wasn't in the list, or the list didn't exist.
+		static bool RemoveObjectFromSceneObjectList(cherry::Object* obj);
+
+		// delets an object from its scene object list.
+		// if a 'false' is returned, then the object was null, or the list didn't exist.
+		static bool DeleteObjectFromSceneObjectList(cherry::Object* obj);
 
 		// deletes a scene object list by using its index.
-		bool DeleteSceneObjectListByIndex(unsigned int index);
+		static bool DestroySceneObjectListByIndex(unsigned int index);
 
 		// deletes an object list via finding its pointer.
-		bool DeleteSceneObjectListByPointer(cherry::ObjectList * obj);
+		static bool DestroySceneObjectListByPointer(cherry::ObjectList * objList);
 		
 		// deletes a scene list via the name of the scene.
-		bool DeleteSceneObjectListByName(std::string sceneName);
+		static bool DestroySceneObjectListByName(std::string sceneName);
 
 		// standard operators
 		// reading
-		const cherry::ObjectList & operator[](const int index) const;
+		// const cherry::ObjectList & operator[](const int index) const;
 
 		// editing
-		cherry::ObjectList & operator[](const int index);
+		// cherry::ObjectList & operator[](const int index);
 
 	private:
 
 		// a vector that contains a series of pointer vectors that all contain teir list of sceneLists
-		std::vector<cherry::ObjectList *> objectLists;
+		static std::vector<cherry::ObjectList *> objectLists;
 
 	protected:
 

@@ -26,6 +26,8 @@ cherry::PrimitivePlane::PrimitivePlane(float width, float height, bool doubleSid
 		2, 1, 3
 	}; 
 
+	CalculateMeshBody(); // calculates the limits of the mesh body.
+
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 	mesh->cullFaces = !doubleSided;

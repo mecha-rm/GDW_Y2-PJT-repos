@@ -98,6 +98,26 @@ namespace cherry
 		// sets whether the mesh is visible or not.
 		void SetVisible(bool visible);
 
+		// returns 'true' if the mesh is drawn in perspective mode (default mode).
+		bool IsPerspectiveMesh() const;
+
+		// sets if the mesh should be drawn in perspective mode.
+		void SetPerspectiveMesh(bool perspective);
+
+		// returns 'true' if the mesh is drawn in orthographic mode.
+		bool IsOrthographicMesh() const;
+
+		// sets if the mesh should be drawn in orthographic mode.
+		void SetOrthographicMesh(bool orthographic);
+
+		// if 'true', the screen position of the mesh is fixed regardless of the camera position or orientation.
+		// the mesh itself can still be moved, but it will be uneffected by the movement in the camera.
+		bool GetFixedScreenPosition() const;
+
+		// if 'true', the mesh will say in the same place on screen.
+		void SetFixedScreenPosition(bool fixed);
+
+
 		// morph for regular vertices.
 		// note that this does NOT delete the provided vertices array.
 		void Morph(Vertex* vertices, size_t numVerts);
@@ -133,6 +153,13 @@ namespace cherry
 
 		// boolan for visibility
 		bool visible = true;
+
+		// if 'true', it is drawn in perspective.
+		// if 'false', then the object is drawn in orthgoraphic.
+		bool perspectiveMesh = true;
+
+		// if 'true', the screen positon is fixed regardless of the placement of the camera.
+		bool fixedScreenPosition = false;
 
 		// TODO: implement method of redrawing the mesh in multiple locations
 		// cherry::Vec3 offset; // offset for each draw call

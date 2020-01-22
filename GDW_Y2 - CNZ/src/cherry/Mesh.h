@@ -21,6 +21,7 @@ namespace cherry
 	};
 
 	// Morph Vertex Struct - used for morph targets
+	// Edit: morph targets don't need colour or UVs. They were added to try and do something else, but that didn't work.
 	struct MorphVertex {
 		glm::vec3 Position; // vertex position
 		glm::vec4 Color; // vertex colour
@@ -29,10 +30,14 @@ namespace cherry
 
 		
 		glm::vec3 Position1; // position 1 for deformation animation
+		glm::vec4 Color1; // colour 1 ()
 		glm::vec3 Normal1; // normal 1 for deformation animation
+		glm::vec2 UV1; // UV 1 (used for texture animation)
 
 		glm::vec3 Position2; // position 2 for deformation animation
+		glm::vec4 Color2; // colour 2 
 		glm::vec3 Normal2; // normal 2 for deformation animation
+		glm::vec2 UV2; // UV 2 (used for texture animation)
 	};
 
 	// Mesh Class - creates meshes so that sceneLists can appear on screen.
@@ -47,6 +52,7 @@ namespace cherry
 		// Creates a new mesh from the given vertices and indices
 		Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices);
 
+		// 
 		Mesh(Vertex* vertices, size_t numVerts, uint32_t* indices, size_t numIndices, bool wireframe);
 
 		// Creates a new mesh for morph target animation.
@@ -92,11 +98,17 @@ namespace cherry
 		// sets whether the mesh is visible or not.
 		void SetVisible(bool visible);
 
+		// morph for regular vertices.
+		// note that this does NOT delete the provided vertices array.
+		void Morph(Vertex* vertices, size_t numVerts);
+
 		// morphs the mesh using the provided vertices as targets. This only takes the positions and normals from the provided vertices.
+		// note that this does NOT delete the provided vertices array.
 		void Morph(MorphVertex* vertices, size_t numVerts);
 
 		// converts an array of vertices to a morph vertex. Position1 and Normal1 are made the same as Position1 and Normal.
-		static MorphVertex* ConvertToMorphVertexArray(const Vertex* verts, const size_t numVerts);
+		// remember to delete the original verts array once this function is finished.
+		static MorphVertex* ConvertToMorphVertexArray(const Vertex* const verts, const size_t numVerts);
 
 		// creates an inverted cube; moved from Game.cpp
 		static cherry::Mesh::Sptr MakeInvertedCube();

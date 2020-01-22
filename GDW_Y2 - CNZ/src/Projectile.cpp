@@ -1,11 +1,10 @@
 #include "Projectile.h"
 
-Projectile::Projectile(Projectile* arrow)
+Projectile::Projectile(const Projectile & arrow) : Object(arrow)
 {
-	this->arrow = arrow;
-	*this = *arrow;
-	pBodySize = arrow->GetPBodySize();
-	drawPBody = arrow->GetDrawPBody();
+	// *this = arrow;
+	pBodySize = arrow.GetPBodySize();
+	drawPBody = arrow.GetDrawPBody();
 }
 
 void Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
@@ -30,27 +29,27 @@ bool Projectile::SetDrawPBody(bool draw)
 	}
 }
 
-bool Projectile::GetDrawPBody()
+bool Projectile::GetDrawPBody() const
 {
 	return this->drawPBody;
 }
 
-cherry::Vec3 Projectile::GetPBodySize()
+cherry::Vec3 Projectile::GetPBodySize() const
 {
 	return this->pBodySize;
 }
 
-float Projectile::GetPBodyWidth()
+float Projectile::GetPBodyWidth() const
 {
 	return this->GetPBodySize().GetX() / 2;
 }
 
-float Projectile::GetPBodyHeight()
+float Projectile::GetPBodyHeight() const
 {
 	return this->GetPBodySize().GetY() / 2;
 }
 
-float Projectile::GetPBodyDepth()
+float Projectile::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;
 }

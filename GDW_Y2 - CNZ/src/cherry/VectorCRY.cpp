@@ -4,19 +4,19 @@
 
 // VECTOR 2 //
 // constructor
-cherry::Vec2::Vec2() : v(util::math::Vec2()) {}
+cherry::Vec2::Vec2() : v(util::math::Vec2()), x(&v.x), y(&v.y) {}
 
 // constructor
-cherry::Vec2::Vec2(float x, float y) : v(util::math::Vec2(x, y)) {}
+cherry::Vec2::Vec2(float x, float y) : v(util::math::Vec2(x, y)), x(&v.x), y(&v.y) {}
 
 // converts from util::math::vec2 to cherry::vec2
-cherry::Vec2::Vec2(util::math::Vec2 vec) : v(util::math::Vec2(vec)) {}
+cherry::Vec2::Vec2(util::math::Vec2 vec) : v(util::math::Vec2(vec)), x(&v.x), y(&v.y) {}
 
 // converts a glm vector to a cherry::vector
-cherry::Vec2::Vec2(glm::vec2 vec) : v(util::math::Vec2(vec.x, vec.y)) {}
+cherry::Vec2::Vec2(glm::vec2 vec) : v(util::math::Vec2(vec.x, vec.y)), x(&v.x), y(&v.y) {}
 
-// destructor - deletes pointer
-cherry::Vec2::~Vec2() { }
+// copy constructor
+cherry::Vec2::Vec2(const Vec2& v2) : v(util::math::Vec2()), x(&v.x), y(&v.y) { v = v2.v; }
 
 // gets the x-value
 float cherry::Vec2::GetX() const { return v.x; }
@@ -37,6 +37,9 @@ const float& cherry::Vec2::operator[](const int index) const { return v[index]; 
 
 // operator [] (writing)
 float& cherry::Vec2::operator[](const int index) { return v[index]; }
+
+// equals operator
+cherry::Vec2 cherry::Vec2::operator=(const Vec2& v2) { return (v = v2.v); }
 
 // checking if two vectors are equal
 bool cherry::Vec2::operator==(const Vec2& v2) const { return v == v2.v; }
@@ -94,19 +97,19 @@ std::string cherry::Vec2::ToString() const { return v.toString(); }
 
 // VECTOR 3 //
 // constructor
-cherry::Vec3::Vec3() : v(util::math::Vec3()) {}
+cherry::Vec3::Vec3() : v(util::math::Vec3()), x(&v.x), y(&v.y), z(&v.z) {}
 
 // constructor
-cherry::Vec3::Vec3(float x, float y, float z) : v(util::math::Vec3(x, y, z)) {}
+cherry::Vec3::Vec3(float x, float y, float z) : v(util::math::Vec3(x, y, z)), x(&v.x), y(&v.y), z(&v.z) {}
 
 // converts from util::math::vec3 to cherry::vec3
-cherry::Vec3::Vec3(util::math::Vec3 vec) : v(util::math::Vec3(vec)) {}
+cherry::Vec3::Vec3(util::math::Vec3 vec) : v(util::math::Vec3(vec)), x(&v.x), y(&v.y), z(&v.z) {}
 
 // converts a glm vector to a cherry::vector
-cherry::Vec3::Vec3(glm::vec3 vec) : v(util::math::Vec3(vec.x, vec.y, vec.z)) {}
+cherry::Vec3::Vec3(glm::vec3 vec) : v(util::math::Vec3(vec.x, vec.y, vec.z)), x(&v.x), y(&v.y), z(&v.z) {}
 
-// destructor - deletes pointer (already deleted?)
-cherry::Vec3::~Vec3() { /*delete v;*/ }
+// copy constructor
+cherry::Vec3::Vec3(const Vec3& vec) : v(util::math::Vec3()), x(&v.x), y(&v.y), z(&v.z) { v = vec.v; }
 
 // gets the x-value
 float cherry::Vec3::GetX() const { return v.x; }
@@ -132,6 +135,9 @@ const float& cherry::Vec3::operator[](const int index) const { return v[index]; 
 
 // operator [] (editing)
 float& cherry::Vec3::operator[](const int index) { return v[index]; }
+
+// equality operator
+cherry::Vec3 cherry::Vec3::operator=(const Vec3& vec) { return v = vec.v; }
 
 // checking if two vectors are equal
 bool cherry::Vec3::operator==(const Vec3& v2) const { return v == v2.v; }
@@ -190,16 +196,19 @@ std::string cherry::Vec3::ToString() const { return v.toString(); }
 
 // VECTOR 4 //
 // constructor
-cherry::Vec4::Vec4() : v(util::math::Vec4()) {}
+cherry::Vec4::Vec4() : v(util::math::Vec4()), x(&v.x), y(&v.y), z(&v.z), w(&v.w) {}
 
 // constructor
-cherry::Vec4::Vec4(float x, float y, float z, float w) : v(util::math::Vec4(x, y, z, w)) {}
+cherry::Vec4::Vec4(float x, float y, float z, float w) : v(util::math::Vec4(x, y, z, w)), x(&v.x), y(&v.y), z(&v.z), w(&v.w) {}
 
 // converts from util::math::vec4 to cherry::vec4
-cherry::Vec4::Vec4(util::math::Vec4 vec) : v(util::math::Vec4(vec)) {}
+cherry::Vec4::Vec4(util::math::Vec4 vec) : v(util::math::Vec4(vec)), x(&v.x), y(&v.y), z(&v.z), w(&v.w) {}
 
 // converts from util::glm::vec4 to cherry::vec4
-cherry::Vec4::Vec4(glm::vec4 vec) : v(util::math::Vec4(vec.x, vec.y, vec.z, vec.w)) {}
+cherry::Vec4::Vec4(glm::vec4 vec) : v(util::math::Vec4(vec.x, vec.y, vec.z, vec.w)), x(&v.x), y(&v.y), z(&v.z), w(&v.w) {}
+
+// copy constructor
+cherry::Vec4::Vec4(const Vec4& vec) : v(util::math::Vec4()), x(&v.x), y(&v.y), z(&v.z), w(&v.w) { v = vec.v; }
 
 // gets the x-value
 float cherry::Vec4::GetX() const { return v.x; }
@@ -231,6 +240,9 @@ const float& cherry::Vec4::operator[](const int index) const { return v[index]; 
 
 // operator [] (editing)
 float& cherry::Vec4::operator[](const int index) { return v[index]; }
+
+// =operator
+cherry::Vec4 cherry::Vec4::operator=(const Vec4& vec) { return (v = vec.v); }
 
 // checking if two vectors are equal
 bool cherry::Vec4::operator==(const Vec4& v2) const { return v == v2.v; }

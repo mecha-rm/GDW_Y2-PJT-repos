@@ -19,6 +19,7 @@ namespace cherry
 	// VECTOR 2
 	typedef struct Vec2
 	{
+	public:
 		Vec2();
 
 		Vec2(float x, float y);
@@ -89,14 +90,19 @@ namespace cherry
 
 		// vector object from util::math namespace. This is where the information is stored.
 		util::math::Vec2 v;
+
+	private:
 		float* const x; // pointer to v.x
 		float* const y; // pointer to v.y
+
+	protected:
 	} Vector2;
 
 
 	// VECTOR 3 //
-	typedef struct Vec3 {
-
+	typedef struct Vec3 
+	{
+	public:
 		Vec3();
 
 		Vec3(float x, float y, float z);
@@ -172,15 +178,20 @@ namespace cherry
 
 		// util::math::vector 3 
 		util::math::Vec3 v;
+
+	private:
 		float* const x; // pointer to v.x
 		float* const y; // pointer to v.y
 		float* const z; // pointer to v.z
+
+	protected:
 
 	} Vector3;
 
 	// VECTOR 4 //
 	typedef struct Vec4
 	{
+	public:
 		Vec4();
 
 		Vec4(float x, float y, float z, float w);
@@ -263,10 +274,12 @@ namespace cherry
 		// vec4 object from util::math
 		util::math::Vec4 v;
 
+	private:
 		float* const x; // pointer to v.x
 		float* const y; // pointer to v.y
 		float* const z; // pointer to v.z
 		float* const w; // pointer to v.w
 
+	protected:
 	} Vector4;
 }
