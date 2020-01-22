@@ -19,6 +19,7 @@ public:
 	}
 
 	void SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos);
+	void SetDirVec(cherry::Vec3 dirVec);
 
 	cherry::Vec3 GetDirectionVec() { return arrowDirVec; }
 

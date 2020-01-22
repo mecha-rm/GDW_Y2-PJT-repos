@@ -237,6 +237,12 @@ namespace cherry
 
 		glm::ivec2 myWindowSize; // saves the window size
 
+		// object manager
+		std::shared_ptr<cherry::ObjectManager> objManager;
+
+		// object list
+		cherry::ObjectList* objList = nullptr; // objManager deletion handles this
+
 	private:
 
 		// Stores the main window that the game is running in

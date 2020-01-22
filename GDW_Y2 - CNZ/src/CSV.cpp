@@ -25,6 +25,7 @@ std::string CSV::getRow(int num, int num2) {
 	else {
 		if (num2 >= rows[num].size()) {
 			std::cout << "x value too big" << std::endl;
+			return "";
 		}
 	}
 

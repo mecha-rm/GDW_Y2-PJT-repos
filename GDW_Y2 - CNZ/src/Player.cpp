@@ -29,6 +29,10 @@ cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::
 	position = pos;
 }
 
+cnz::Player::Player(cherry::Object obj) : Object(obj) {
+	position = obj.GetPosition();
+}
+
 // TODO: either fix this, or remove it.
 // copies a primitive (doesn't work)
 //cnz::Player::Player(const cherry::Primitive * model)
@@ -116,7 +120,28 @@ void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double y
 }
 
 void cnz::Player::Update(float deltaTime) {
-	Object::Update(deltaTime);
+	// Object::Update(deltaTime);
+	if (this == nullptr) {
+		return;
+	}
+
+	// TODO: remove this for the final version.
+	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
+
+	// runs the path and sets the new position
+	if (followPath)
+		position = path.Run(deltaTime);
+
+	// if the animation is playing
+	if (animations.GetCurrentAnimation() != nullptr) {
+		animations.GetCurrentAnimation()->isPlaying();
+		animations.GetCurrentAnimation()->Update(deltaTime);
+	}
+
+	// updating the physics bodies
+	for (cherry::PhysicsBody* body : bodies)
+		body->Update(deltaTime);
 }
 
 // sets the angle
