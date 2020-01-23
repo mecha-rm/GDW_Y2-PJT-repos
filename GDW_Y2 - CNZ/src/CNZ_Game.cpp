@@ -137,7 +137,9 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 	}
 }
 
-//////////////////TODO: Why is this defined in here??????????????????????? Should it not be in some sort of PhysicsBody file or something?////////////////////////
+//// TODO: Why is this defined in here? Should it not be in some sort of PhysicsBody file or something?
+//// ^ no particular reason. It could also be defined in the Player class. It doesn't have anything to do with PhysicsBodies specifically
+//// so it should not be defined there IMO.
 // returns the physics body of the closest obstacle to the player, in the direction that the player is facing.
 // Used later to verify if the player is allowed to dash the full distance in their intended direction
 cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
@@ -252,7 +254,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 void cnz::CNZ_Game::mapSceneObjectsToGame(std::string sceneName) {
 
 	bool visibleBbox = false;
-
+	
 	objList = objManager->GetSceneObjectListByName(sceneName);
 	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
 	std::string curObjStr;
