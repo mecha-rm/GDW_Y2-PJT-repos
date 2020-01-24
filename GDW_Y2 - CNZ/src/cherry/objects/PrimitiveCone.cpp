@@ -3,15 +3,24 @@
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
 
-cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int segments)
+cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int segments, cherry::Vec4 color)
 	: radius(abs(radius)), height(abs(height))
 {
 	radius = abs(radius);
+
 	height = abs(height);
 
 	// limits segments
 	if (segments < 3)
 		segments = 3;
+
+	// bounds checking for the colour
+	color.v.x = (color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x;
+	color.v.y = (color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y;
+	color.v.z = (color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z;
+	color.v.w = (color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w;
+
+	this->color = color; // saving the colour.
 
 	float rFactor = 0; // the rotation factor
 	float rInc = glm::radians(360.0F / (float)segments); // incrementer for rotations (in degrees)
@@ -32,7 +41,7 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 	indices = new uint32_t[indicesTotal];
 
 	// top vertex. The normal points directly upwards
-	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	// adds in all the vertices
 	for (int i = 1; i < verticesTotal - 1; i++)
@@ -45,13 +54,13 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
 		normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
 
-		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 		rFactor += rInc; // increases the rotation factor
 	}
 
 	// bottom, centre vertex.
-	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	ind0 = 0;
 	ind1 = 1;

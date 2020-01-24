@@ -18,13 +18,13 @@ cnz::Player::Player(std::string modelFile, cherry::Vec3 pos) : Object(modelFile)
 }
 
 // creates the player at the world's origin
-cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::Sptr material)
-	: Player(modelPath, scene, material, cherry::Vec3())
+cnz::Player::Player(std::string modelPath, std::string scene)
+	: Player(modelPath, scene, cherry::Vec3())
 {}
 
 // creates the player in hte provided scene
-cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos)
-	:Object(modelPath, scene, material)
+cnz::Player::Player(std::string modelPath, std::string scene, cherry::Vec3 pos)
+	:Object(modelPath, scene, true)
 {
 	position = pos;
 }

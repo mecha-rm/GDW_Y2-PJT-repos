@@ -24,7 +24,7 @@ cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows,
 		(color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w
 	);
 
-	baseColor = clr; // saving the base colour
+	color = clr; // saving the base colour
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)

@@ -15,6 +15,8 @@ cnz::Enemies::Enemies(Enemies* obj, std::string scene)
 	degreeAngle = obj->GetDegreeAngle();
 	radianAngle = obj->GetRadianAngle();
 	worldAngle = obj->GetVec3Angle();
+
+	CreateEntity(scene, GetMaterial());
 }
 
 // creates an Enemies with 

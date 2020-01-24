@@ -32,7 +32,7 @@ public:
 
 
 	// return scene name as string
-	std::string getSceneName();
+	std::string getSceneName() const;
 
 	// load legend into map
 	bool loadLegend(std::string legendPath);

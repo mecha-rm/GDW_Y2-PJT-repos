@@ -74,6 +74,8 @@ namespace cnz
 		
 		int curWave = 0; //Current enemy wave
 
+		cherry::ObjectList* objList = nullptr;
+
 		cnz::Player * playerObj = nullptr; // object for the player.
 
 		//Weapons

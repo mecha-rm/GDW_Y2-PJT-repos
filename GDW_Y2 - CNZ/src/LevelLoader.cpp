@@ -30,7 +30,7 @@ Level::Level(std::string legendPath, std::string levelPath, std::string sceneNam
 	}
 }
 
-std::string Level::getSceneName() {
+std::string Level::getSceneName() const {
 	return this->sceneName;
 }
 
@@ -134,7 +134,10 @@ std::vector<std::vector<std::string>> Level::getMap(CSV level) {
 }
 
 std::vector<cherry::Object*> Level::getObjects() {
+
 	int offsetX, offsetY;
+
+	cherry::Vec3 objBodySize;
 
 	// put objects into list
 	for (int y = 0; y < this->map.size(); y++) {
@@ -144,7 +147,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 			if (legend[curObj] == "Origin") { // origin point
 				offsetX = -x;
 				offsetY = -y;
-				cnz::Player* playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->getSceneName(), matStatic); // creates the player.
+				cnz::Player* playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->getSceneName()); // creates the player.
 				playerObj->SetRotation(cherry::Vec3(0, 0, 0), true); // fixes rotation
 				playerObj->SetRotationXDegrees(90);
 				playerObj->SetRotationZDegrees(180);
@@ -157,7 +160,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				// from the CNZ_Game class' methods.
 			}
 			else if (legend[curObj] == "Wall") { // wall
-				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2_-_Wall_Tile.obj", this->getSceneName(), cherry::Vec3(4, 4, 1));
+				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->getSceneName(), cherry::Vec3(4, 4, 1), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -176,7 +181,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->getPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				//obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -184,7 +189,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Dumpster") { // Dumpster
-				Obstacle* obj = new Obstacle("res/objects/props/Dumpster.obj", this->getSceneName(), cherry::Vec3(10, 2, 2));
+				Obstacle* obj = new Obstacle("res/objects/props/Dumpster.obj", this->getSceneName(), cherry::Vec3(10, 2, 2), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -203,7 +210,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -211,7 +218,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post") { // Lamp post
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->getSceneName(), cherry::Vec3(1, 1, 6));
+				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->getSceneName(), cherry::Vec3(1, 1, 6), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -230,7 +239,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -238,7 +247,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post corner") { // Lamp post corner
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->getSceneName(), cherry::Vec3(1, 1, 6));
+				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->getSceneName(), cherry::Vec3(1, 1, 6), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -257,7 +268,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -265,7 +276,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post middle") { // lamp post middle
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->getSceneName(), cherry::Vec3(1, 1, 6));
+				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->getSceneName(), cherry::Vec3(1, 1, 6), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -284,7 +297,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -292,7 +305,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Barrel") { // barrel
-				Obstacle* obj = new Obstacle("res/objects/props/drum.obj", this->getSceneName(), cherry::Vec3(2, 2, 2));
+				Obstacle* obj = new Obstacle("res/objects/props/drum.obj", this->getSceneName(), cherry::Vec3(2, 2, 2), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -311,7 +326,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -319,7 +334,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Katana") { // katana
-				Obstacle* obj = new Obstacle("res/objects/weapons/katana.obj", this->getSceneName(), cherry::Vec3(1, 1, 2));
+				Obstacle* obj = new Obstacle("res/objects/weapons/katana.obj", this->getSceneName(), cherry::Vec3(1, 1, 2), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -338,7 +355,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -346,7 +363,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Pillar") { // pillar
-				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->getSceneName(), cherry::Vec3(2, 2, 4));
+				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->getSceneName(), cherry::Vec3(2, 2, 4), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -365,7 +384,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -373,7 +392,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Manhole cover") { // manhole cover
-				Obstacle* obj = new Obstacle("res/objects/props/manhole.obj", this->getSceneName(), cherry::Vec3(1, 1, 0.5));
+				Obstacle* obj = new Obstacle("res/objects/props/manhole.obj", this->getSceneName(), cherry::Vec3(1, 1, 0.5), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -392,7 +413,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -400,7 +421,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Road") { // road
-				Obstacle* obj = new Obstacle("res/objects/props/Road.obj", this->getSceneName(), cherry::Vec3(4, 4, 0.25));
+				Obstacle* obj = new Obstacle("res/objects/props/Road.obj", this->getSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -419,7 +442,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
@@ -427,7 +450,9 @@ std::vector<cherry::Object*> Level::getObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Sidewalk") { // sidewalk
-				Obstacle* obj = new Obstacle("res/objects/props/sidewalk.obj", this->getSceneName(), cherry::Vec3(4, 4, 0.25));
+				Obstacle* obj = new Obstacle("res/objects/props/sidewalk.obj", this->getSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+
 				std::vector<float> properties = getObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -446,7 +471,7 @@ std::vector<cherry::Object*> Level::getObjects() {
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
 				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);

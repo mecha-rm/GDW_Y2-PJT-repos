@@ -46,7 +46,7 @@ private:
 
 	// TODO: possibly delete these variables? Object has its own rotation now.
 	// object angle in screen space (degrees or radians)
-	float degreeAngle, radianAngle;
+	float degreeAngle = 0, radianAngle = 0;
 
 	// object angle in world space (vec3, so 3d angle)
 	glm::vec3 worldAngle;

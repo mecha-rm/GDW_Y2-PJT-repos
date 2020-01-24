@@ -490,10 +490,10 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		std::string fpStr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 		mtllib = fpStr + mtllib;
 
-		// generates the material
-		material = (dynamicObject) ? 
-			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS) :
-			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS);
+		// generates the material. The version generated depends on whether the object uses morph targets or not.
+		material = (dynamicObject) ?
+			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS) :
+			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS);
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.

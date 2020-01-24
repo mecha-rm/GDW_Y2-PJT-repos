@@ -17,16 +17,6 @@ namespace cherry
 
 		// does our TRS for us.
 		glm::mat4 GetWorldTransform() const;
-
-		// glm::mat4 GetParentTransform() const {
-		// 
-		// }
-
-		// glm::mat4 parent{ 
-		// 	1.0F, 0.0F, 0.0F, 0.0F,
-		// 	0.0F, 1.0F, 0.0F, 0.0F,
-		// 	0.0F, 0.0F, 1.0F, 0.0F,
-		// 	0.0F, 0.0F, 0.0F, 1.0F};
 	};
 
 	struct UpdateBehaviour {

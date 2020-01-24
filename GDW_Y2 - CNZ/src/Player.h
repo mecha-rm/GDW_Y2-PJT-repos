@@ -21,10 +21,10 @@ namespace cnz
 		Player(std::string modelPath, cherry::Vec3 pos);
 
 		// creates the player, taking in the scene and material as well.
-		Player(std::string modelPath, std::string scene, cherry::Material::Sptr material);
+		Player(std::string modelPath, std::string scene);
 
 		// creates the player, taking in the scene, material, and position as well.
-		Player(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos);
+		Player(std::string modelPath, std::string scene, cherry::Vec3 pos);
 
 		// creates a player object using an Object *. Used for loader, don't use manually
 		Player(cherry::Object obj);

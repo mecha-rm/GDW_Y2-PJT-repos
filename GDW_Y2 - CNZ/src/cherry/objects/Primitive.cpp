@@ -6,11 +6,20 @@ cherry::Primitive::Primitive() : cherry::Object()
 	
 }
 
+// copy constructor.
+// cherry::Primitive::Primitive(const cherry::Primitive& prim) : Object(prim)
+// {
+// 	baseColor = prim.GetColor();
+// }
+
 // destructor
 cherry::Primitive::~Primitive()
 {
 	// delete[] indices; // TODO: fix deletions
 }
+
+// gets the base colour of the primitive.
+cherry::Vec4 cherry::Primitive::GetColor() const { return color; }
 
 // calculates the normals of the primitive.
 void cherry::Primitive::CalculateNormals()

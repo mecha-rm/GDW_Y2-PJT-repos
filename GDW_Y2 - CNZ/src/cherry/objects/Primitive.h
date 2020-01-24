@@ -12,13 +12,13 @@ namespace cherry
 	public:
 		Primitive();
 
+		// copy constructor.
+		// Primitive(const cherry::Primitive&);
+
 		~Primitive();
 
 		// gets the base color of the primitive.
-		// cherry::Vec4 GetBaseColor() const;
-
-		// gets the base color of the primitive.
-		// glm::vec4 GetBaseColor() const;
+		cherry::Vec4 GetColor() const;
 
 		// would this work?
 		// virtual std::string ToString() = 0;
@@ -26,7 +26,7 @@ namespace cherry
 	private:
 		// cherry::Vec4 baseColor; // the base color of the object.
 
-
+		// maybe add a primitive object counter.
 	protected:
 
 		// calculates the normals for the primitive.
@@ -36,6 +36,7 @@ namespace cherry
 		// changes the direction of the normals. Only call this if vertices are set.
 		void InvertNormals();
 
-		cherry::Vec4 baseColor{ 1.0F, 1.0F, 1.0F, 1.0F }; // the base color of the object.
+		// colour
+		cherry::Vec4 color{ 1.0F, 1.0F, 1.0F, 1.0F }; // the base color of the object.
 	};
 }
