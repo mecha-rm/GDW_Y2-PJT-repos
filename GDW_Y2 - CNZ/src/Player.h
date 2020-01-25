@@ -47,13 +47,13 @@ namespace cnz
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
-		float GetDegreeAngle();
+		float GetDegreeAngle() const;
 
 		// gets object angle in screen space in radians
-		float GetRadianAngle();
+		float GetRadianAngle() const;
 
 		// gets object angle in world space in vector 3
-		glm::vec3 GetVec3Angle();
+		glm::vec3 GetVec3Angle() const;
 
 		// Update function to get new angle based on mouse position
 		void UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height);
@@ -68,24 +68,26 @@ namespace cnz
 		void SetAngle(glm::vec3 angle);
 
 		// get dash vector3 from angle and distance to dash
-		glm::vec3 GetDash(float dist);
+		glm::vec3 GetDash(float dist) const;
 
 		// get dash dist
-		float GetDashDist() { return this->dashDist; };
+		float GetDashDist() const { return this->dashDist; };
 
 		// set draw pbody
-		bool setDrawPBody(bool draw);
+		bool SetDrawPBody(bool draw);
 
 		// get draw pbody
-		bool getDrawPBody();
+		bool GetDrawPBody() const;
 
 		// get pbody size
-		cherry::Vec3 getPBodySize();
+		cherry::Vec3 GetPBodySize() const;
 
 		// get pbody width, height and depth.
-		float getPBodyWidth();
-		float getPBodyHeight();
-		float getPBodyDepth();
+		float GetPBodyWidth() const;
+
+		float GetPBodyHeight() const;
+
+		float GetPBodyDepth() const;
 
 	private:
 		bool dash = false;

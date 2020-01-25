@@ -25,18 +25,18 @@ public:
 	void SetAngle(glm::vec3 angle);
 
 	// set draw pbody
-	bool setDrawPBody(bool draw);
+	bool SetDrawPBody(bool draw);
 
 	// get draw pbody
-	bool getDrawPBody();
+	bool GetDrawPBody() const;
 
 	// get pbody size
-	cherry::Vec3 getPBodySize();
+	cherry::Vec3 GetPBodySize() const;
 
 	// get pbody width, height and depth.
-	float getPBodyWidth();
-	float getPBodyHeight();
-	float getPBodyDepth();
+	float GetPBodyWidth() const;
+	float GetPBodyHeight() const;
+	float GetPBodyDepth() const;
 
 
 private:

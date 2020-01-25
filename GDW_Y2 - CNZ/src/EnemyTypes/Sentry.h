@@ -1,12 +1,19 @@
-#include "../Enemies.h"
 #pragma once
+#include "Enemy.h"
 
 //Sentry class
 namespace cnz {
-	class Sentry : public cnz::Enemies
+	class Sentry : public cnz::Enemy
 	{
 	public:
-		Sentry(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) { description = "Sentry"; };
+
+		Sentry() = default;
+
+		// copy constructor.
+		Sentry(const cnz::Sentry&);
+
+		// copies the enemy and sets its scene.
+		Sentry(const cnz::Enemy* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 

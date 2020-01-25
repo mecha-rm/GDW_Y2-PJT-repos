@@ -10,7 +10,7 @@ public:
 
 	Projectile(std::string modelFile, std::string sceneName) : Projectile(modelFile, sceneName, cherry::Vec3()) {}
 
-	// sets the Enemies file, and position
+	// sets the Enemy file, and position
 	Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos) : Object(modelFile, sceneName, true)
 	{
 		position = pos;

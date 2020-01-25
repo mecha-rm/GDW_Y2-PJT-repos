@@ -140,7 +140,7 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 //////////////////TODO: Why is this defined in here??????????????????????? Should it not be in some sort of PhysicsBody file or something?////////////////////////
 // returns the physics body of the closest obstacle to the player, in the direction that the player is facing.
 // Used later to verify if the player is allowed to dash the full distance in their intended direction
-cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
+cherry::PhysicsBody* cnz::CNZ_Game::GetClosestObstacle()
 {
 	cherry::PhysicsBody* closestBody = nullptr;
 	float cbDist = 0.0f;
@@ -151,8 +151,8 @@ cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 		delta.SetX(obstaclePBs[i]->GetModelPosition().GetX() - playerObj->GetPosition().GetX());
 		delta.SetY(obstaclePBs[i]->GetModelPosition().GetY() - playerObj->GetPosition().GetY());
 
-		angleFromPlayer = getXYAngle(delta);
-		dAngle = angleFromPlayer - getXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
+		angleFromPlayer = GetXYAngle(delta);
+		dAngle = angleFromPlayer - GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
 		
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
 			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway.
@@ -168,9 +168,9 @@ cherry::PhysicsBody* cnz::CNZ_Game::getClosestObstacle()
 	return closestBody;
 }
 
-vector<cnz::Enemies*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
+vector<cnz::Enemy*> cnz::CNZ_Game::GetEnemiesInDash(cherry::Vec3 dashVec)
 {
-	vector<cnz::Enemies*> enemies;
+	vector<cnz::Enemy*> enemies;
 
 	cherry::Vec3 delta;
 	float angleFromPlayer;
@@ -181,8 +181,8 @@ vector<cnz::Enemies*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
 		delta.SetX(enemyPBs[i]->GetModelPosition().GetX() - playerObj->GetPosition().GetX());
 		delta.SetY(enemyPBs[i]->GetModelPosition().GetY() - playerObj->GetPosition().GetY());
 
-		angleFromPlayer = getXYAngle(delta);
-		dAngle = angleFromPlayer - getXYAngle(dashVec);
+		angleFromPlayer = GetXYAngle(delta);
+		dAngle = angleFromPlayer - GetXYAngle(dashVec);
 
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
 			if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
@@ -195,12 +195,12 @@ vector<cnz::Enemies*> cnz::CNZ_Game::getEnemiesInDash(cherry::Vec3 dashVec)
 
 // test func to get angle in xy axes of a vec. use only when you stored delta x, delta y and delta z in a vec3.
 // this doesnt make sense to use on a position, but rather only on a difference in position
-float cnz::CNZ_Game::getXYAngle(cherry::Vec3 vec)
+float cnz::CNZ_Game::GetXYAngle(cherry::Vec3 vec)
 {
 	return atanf(vec.GetX() / vec.GetY());
 }
 
-void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
+void cnz::CNZ_Game::SpawnEnemyGroup(int i = -1)
 {
 	int percent = rand() % 100;
 	
@@ -249,7 +249,7 @@ void cnz::CNZ_Game::spawnEnemyGroup(int i = -1)
 	}
 }
 
-void cnz::CNZ_Game::mapSceneObjectsToGame(std::string sceneName) {
+void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 
 	bool visibleBbox = false;
 
@@ -263,7 +263,7 @@ void cnz::CNZ_Game::mapSceneObjectsToGame(std::string sceneName) {
 	this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 	this->playerObj->SetRotationXDegrees(90);
 	this->playerObj->SetRotationZDegrees(180);
-	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
+	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 
 
 	for (int i = 0; i < allSceneObjects.size(); i++) {
@@ -352,30 +352,30 @@ void cnz::CNZ_Game::LoadContent()
 		Level map1 = Level("res/loader/legend.csv", "res/loader/map1.csv", "map1");
 
 		//// ADD SCENE NAMES TO SCENE LIST
-		// set scene name as string, or keep using levelName->getSceneName();
-		// cherry::ObjectManager::CreateSceneObjectList(map1.getSceneName());
+		// set scene name as string, or keep using levelName->GetSceneName();
+		// cherry::ObjectManager::CreateSceneObjectList(map1.GetSceneName());
 
-		cherry::SceneManager::RegisterScene(map1.getSceneName());
+		cherry::SceneManager::RegisterScene(map1.GetSceneName());
 
 		//// CREATE SCENE OBJECT LISTS
 		// cherry::ObjectManager::CreateSceneObjectList(sceneName);
-		cherry::ObjectManager::CreateSceneObjectList(map1.getSceneName());
+		cherry::ObjectManager::CreateSceneObjectList(map1.GetSceneName());
 
 		//// GET SCENE OBJECT LISTS
-		objList = cherry::ObjectManager::GetSceneObjectListByName(map1.getSceneName());
+		objList = cherry::ObjectManager::GetSceneObjectListByName(map1.GetSceneName());
 		
 		// do this in Update() as well, and only here for start scene
 
 		//// REGISTER SCENES
 		// SceneManager::RegisterScene(sceneName);
-		// cherry::SceneManager::RegisterScene(map1.getSceneName());
+		// cherry::SceneManager::RegisterScene(map1.GetSceneName());
 
 		//// SET CURRENT SCENE
-		SetCurrentScene(map1.getSceneName(), true);
-		cherry::SceneManager::SetCurrentScene(map1.getSceneName());
+		SetCurrentScene(map1.GetSceneName(), true);
+		cherry::SceneManager::SetCurrentScene(map1.GetSceneName());
 
 		//// PUT OBJECTS IN OBJECT LIST
-		std::vector<cherry::Object*> map1objList = map1.getObjects();
+		std::vector<cherry::Object*> map1objList = map1.GetObjects();
 
 		auto temp = GetCurrentScene();
 		//// ADD OBJECTS TO SCENE
@@ -384,7 +384,7 @@ void cnz::CNZ_Game::LoadContent()
 		}
 
 		// only do this for starting scene, and do for current scene right after scene switch
-		mapSceneObjectsToGame(map1.getSceneName());
+		MapSceneObjectsToGame(map1.GetSceneName());
 
 		//// Stuff I dont need to change for now (stays as is in Game.cpp)
 		// lightManager->AddSceneLightList(sceneName);
@@ -394,15 +394,15 @@ void cnz::CNZ_Game::LoadContent()
 		// material stuff that happens in Game.cpp
 
 		//Jonah Load Enemy Stuff
-		sentry = new Enemies("res/objects/enemies/Enemy_Bow.obj", GetCurrentSceneName(), matStatic);
-		oracle = new Enemies("res/objects/enemies/Enemy_Spear.obj", GetCurrentSceneName(), matStatic);
-		marauder = new Enemies("res/objects/enemies/Enemy_Sword.obj", GetCurrentSceneName(), matStatic);
-		bastion = new Enemies("res/objects/weapons/shield.obj", GetCurrentSceneName(), matStatic);
-		mechaspider = new Enemies("res/objects/enemies/Spider.obj", GetCurrentSceneName(), matStatic);
+		sentry = new Enemy("res/objects/enemies/Enemy_Bow.obj", GetCurrentSceneName(), matStatic);
+		oracle = new Enemy("res/objects/enemies/Enemy_Spear.obj", GetCurrentSceneName(), matStatic);
+		marauder = new Enemy("res/objects/enemies/Enemy_Sword.obj", GetCurrentSceneName(), matStatic);
+		bastion = new Enemy("res/objects/weapons/shield.obj", GetCurrentSceneName(), matStatic);
+		mechaspider = new Enemy("res/objects/enemies/Spider.obj", GetCurrentSceneName(), matStatic);
 		arrowBase = new Projectile("res/objects/weapons/arrow.obj", GetCurrentSceneName());
 
 		for (int i = 0; i < 20; i++) {
-			enemyGroups.push_back(std::vector<Enemies*>());
+			enemyGroups.push_back(std::vector<Enemy*>());
 		}
 
 		//Easy
@@ -564,10 +564,10 @@ void cnz::CNZ_Game::LoadContent()
 		// 		AddObjectToScene(enemyGroups[i][j]);
 
 		//Number corresponds with enemygroups first index
-		spawnEnemyGroup(19);
+		SpawnEnemyGroup(19);
 
 		indicatorObj = new Player("res/objects/GDW_1_Y2 - Wall Tile.obj", GetCurrentSceneName()); // creates indicator for dash being ready
-		indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->getPBodySize()));
+		indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
 		AddObjectToScene(indicatorObj);
 
 		//// setting up the camera
@@ -664,15 +664,15 @@ void cnz::CNZ_Game::LoadContent()
 
 
 		// attach pbody
-		playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->getPBodySize()));
-		testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->getPBodySize()));
-		wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->getPBodySize()));
-		wall2->AddPhysicsBody(new cherry::PhysicsBodyBox(wall2->GetPosition(), wall2->getPBodySize()));
-		wall3->AddPhysicsBody(new cherry::PhysicsBodyBox(wall3->GetPosition(), wall3->getPBodySize()));
-		wall4->AddPhysicsBody(new cherry::PhysicsBodyBox(wall4->GetPosition(), wall4->getPBodySize()));
-		wall5->AddPhysicsBody(new cherry::PhysicsBodyBox(wall5->GetPosition(), wall5->getPBodySize()));
-		wall6->AddPhysicsBody(new cherry::PhysicsBodyBox(wall6->GetPosition(), wall6->getPBodySize()));
-		wall7->AddPhysicsBody(new cherry::PhysicsBodyBox(wall7->GetPosition(), wall7->getPBodySize()));
+		playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+		testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->GetPBodySize()));
+		wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->GetPBodySize()));
+		wall2->AddPhysicsBody(new cherry::PhysicsBodyBox(wall2->GetPosition(), wall2->GetPBodySize()));
+		wall3->AddPhysicsBody(new cherry::PhysicsBodyBox(wall3->GetPosition(), wall3->GetPBodySize()));
+		wall4->AddPhysicsBody(new cherry::PhysicsBodyBox(wall4->GetPosition(), wall4->GetPBodySize()));
+		wall5->AddPhysicsBody(new cherry::PhysicsBodyBox(wall5->GetPosition(), wall5->GetPBodySize()));
+		wall6->AddPhysicsBody(new cherry::PhysicsBodyBox(wall6->GetPosition(), wall6->GetPBodySize()));
+		wall7->AddPhysicsBody(new cherry::PhysicsBodyBox(wall7->GetPosition(), wall7->GetPBodySize()));
 
 		// set pbody pos and maybe rotation for static objects
 		//testObj->GetPhysicsBodies()[0]->SetModelPosition(testObj->GetPosition());
@@ -731,12 +731,12 @@ void cnz::CNZ_Game::LoadContent()
 		road->SetPosition(0, -30, -1);
 		manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
 
-		if (!playerObj->setDrawPBody(true)) {
+		if (!playerObj->SetDrawPBody(true)) {
 			std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
 		}
 
 		// add pbs to correct list for collisions
-		// enemy PBs are added to the list in spawnEnemyGroup.
+		// enemy PBs are added to the list in SpawnEnemyGroup.
 		for (int i = 0; i < obstacles.size(); i++) {
 			auto temp = obstacles[i]->GetPhysicsBodies();
 			if (temp.size() != 0) {
@@ -975,9 +975,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		playerObj->SetDash(true);
 		playerObj->SetDashTime(0.0f);
 
-		cherry::PhysicsBody* closestObstacle = getClosestObstacle();
+		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
 		if (closestObstacle == nullptr) {
-			vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dashVec);
+			vector<cnz::Enemy*> enemiesInRange = GetEnemiesInDash(dashVec);
 			for (int i = 0; i < enemiesInRange.size(); i++) {
 				cherry::Object* curEnemy = enemiesInRange[i];
 				int epbvSize = enemyPBs.size();
@@ -1017,7 +1017,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					else {
 						tempX = dP.GetX() - ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
 					}
-					float angle = getXYAngle(dP);
+					float angle = GetXYAngle(dP);
 					float tempY = tempX / tanf(angle);
 					dPN.SetX(tempX);
 					dPN.SetY(tempY);
@@ -1030,13 +1030,13 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					else {
 						tempY = dP.GetY() - ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
 					}
-					float angle = getXYAngle(dP);
+					float angle = GetXYAngle(dP);
 					float tempX = tempY * tanf(angle);
 					dPN.SetX(tempX);
 					dPN.SetY(tempY);
 				}
 
-				vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dPN);
+				vector<cnz::Enemy*> enemiesInRange = GetEnemiesInDash(dPN);
 				for (int i = 0; i < enemiesInRange.size(); i++) {
 					cherry::Object* curEnemy = enemiesInRange[i];
 					int epbvSize = enemyPBs.size();
@@ -1058,7 +1058,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
 			else {
-				vector<cnz::Enemies*> enemiesInRange = getEnemiesInDash(dashVec);
+				vector<cnz::Enemy*> enemiesInRange = GetEnemiesInDash(dashVec);
 				for (int i = 0; i < enemiesInRange.size(); i++) {
 					cherry::Object* curEnemy = enemiesInRange[i];
 					int epbvSize = enemyPBs.size();

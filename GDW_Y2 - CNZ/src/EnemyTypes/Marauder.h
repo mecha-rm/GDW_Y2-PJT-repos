@@ -1,16 +1,15 @@
-#include "../Enemies.h"
 #pragma once
+#include "Enemy.h"
 
 //Marauder class
 namespace cnz {
-	class Marauder : public cnz::Enemies
+	class Marauder : public cnz::Enemy
 	{
 	public:
-		Marauder(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) 
-		{ 
-			description = "Marauder"; 
+		// copy constructor.
+		Marauder(const cnz::Marauder&);
 
-		};
+		Marauder(cnz::Enemy* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 

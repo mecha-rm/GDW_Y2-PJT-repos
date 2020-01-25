@@ -161,7 +161,12 @@ cherry::Object::Object(const cherry::Object& obj)
 	// TODO: add animation manager
 	// TODO: copy physics bodies
 
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	// if the file is an obj file, then the indices shouldn't be used for the mesh.
+	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	else // runtime mesh
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 }
 
