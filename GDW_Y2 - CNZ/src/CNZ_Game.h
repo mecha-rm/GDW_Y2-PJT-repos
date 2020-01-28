@@ -108,6 +108,7 @@ namespace cnz
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers
 
+		cherry::Skybox* skyboxObj;
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		cnz::Player* indicatorObj = nullptr; // object for the dash indicator.
@@ -131,6 +132,8 @@ namespace cnz
 		bool s = false;
 		bool d = false;
 		bool ls = false;
+		bool spaceP = false;
+		bool spaceR = false;
 		bool cw = true;
 		bool ca = true;
 		bool cs = true;

@@ -20,13 +20,14 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
 		
 	// creating the material
 	material = std::make_shared<Material>(shader);
-	material->Set("a_LightPos", { 0, 0, 0 });
-	material->Set("a_LightColor", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientColor", { 1.0f, 1.0f, 1.0f });
-	material->Set("a_AmbientPower", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-	material->Set("a_LightSpecPower", 0.0f);
-	material->Set("a_LightShininess", 0.0f); // MUST be a float
-	material->Set("a_LightAttenuation", 1.0f);
+	material->Set("a_LightCount", 1);
+	material->Set("a_LightPos[0]", { 0, 0, 0 });
+	material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
+	material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
+	material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
+	material->Set("a_LightSpecPower[0]", 0.0f);
+	material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
+	material->Set("a_LightAttenuation[0]", 1.0f);
 
 	material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
 	material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));

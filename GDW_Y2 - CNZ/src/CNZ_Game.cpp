@@ -22,7 +22,7 @@ void cnz::CNZ_Game::MouseButtonPressed(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
-		this->mbLP = true;
+		//this->mbLP = true;
 		break;
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
@@ -36,7 +36,7 @@ void cnz::CNZ_Game::MouseButtonReleased(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
-		this->mbLR = true;
+		//this->mbLR = true;
 		break;
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
@@ -56,7 +56,9 @@ void cnz::CNZ_Game::KeyPressed(GLFWwindow* window, int key)
 	switch (key) // checks the keys
 	{
 	case GLFW_KEY_SPACE:
-		myCamera->SwitchViewMode();
+		//myCamera->SwitchViewMode();
+		spaceP = true;
+		mbLP = true;
 		break;
 
 	case GLFW_KEY_W: // up
@@ -133,6 +135,10 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 	
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = false;
+		break;
+	case GLFW_KEY_SPACE:
+		mbLR = true;
+		spaceR = true;
 		break;
 	}
 }
@@ -394,6 +400,13 @@ void cnz::CNZ_Game::LoadContent()
 		// for all lights:
 		// lightList->AddLight(new Light(sceneName, Vec3(), Vec3(), Vec3(), float, float, float, float);
 		// material stuff that happens in Game.cpp
+
+		//Skybox stuff
+		skyboxObj = new cherry::Skybox("res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg", 
+									   "res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg", 
+									   "res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg");
+		skyboxObj->AddSkyboxToScene(GetCurrentScene());
+		SetSkybox(*skyboxObj, GetCurrentSceneName());
 
 		//Jonah Load Enemy Stuff
 		sentry = new Enemy("res/objects/enemies/Enemy_Bow.obj", GetCurrentSceneName(), matStatic);
@@ -797,7 +810,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			auto tempObj = projectilePBs[i]->GetObject();
 			tempObj->RemovePhysicsBody(projectilePBs[i]);
 			tempObj->SetPosition(1000, 1000, 1000);
-			DeleteObjectFromScene(projectilePBs[i]->GetObject());
+			//DeleteObjectFromScene(projectilePBs[i]->GetObject());
 		}
 	}
 
@@ -882,14 +895,14 @@ void cnz::CNZ_Game::Update(float deltaTime)
 				enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetModelPosition(), playerObj->GetPhysicsBodies()[0]->GetModelPosition());
 				enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle()), true);
 
-				if (enemyGroups[i][j]->WhoAmI() == "Sentry" && enemyGroups[i][j]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 10.0f) {
+				if (enemyGroups[i][j]->WhoAmI() == "Sentry") {
+					if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) < 10.0f && enemyGroups[i][j]->attacking == false) {
 						//Spawn projectiles
 						enemyGroups[i][j]->attacking = true;
 						projList.push_back(new Projectile(*arrowBase));
 						projTimeList.push_back(0);
-						//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
-						//projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
+						projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+						projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
 						projList[projList.size() - 1]->SetWhichGroup(i);
 						projList[projList.size() - 1]->SetWhichEnemy(j);
 						projList[projList.size() - 1]->active = true;
@@ -898,9 +911,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 						projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
 						AddObjectToScene(projList[projList.size() - 1]);
 					}
-					else {
+					else if (GetDistance(playerObj->GetPosition(), enemyGroups[i][j]->GetPosition()) > 10.0f){
 						//Move towards player				
-						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 100.0f * deltaTime));
+						enemyGroups[i][j]->SetPosition(enemyGroups[i][j]->GetPosition() + (GetUnitDirVec(enemyGroups[i][j]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 					}
 				}
 				else if (enemyGroups[i][j]->WhoAmI() == "Marauder" && enemyGroups[i][j]->attacking == false) {
@@ -948,14 +961,15 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	for (int i = 0; i < projList.size(); i++) {
 		if (projList[i]->active == true) {
 			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
-			projTimeList[i]++;
-			if (projTimeList[i] >= 60 * 5) {
+			projTimeList[i] += deltaTime;
+			if (projTimeList[i] >= 5) {
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-				//DeleteObjectFromScene(projList[i]);
+				DeleteObjectFromScene(projList[i]);
 				projList.erase(projList.begin() + i);
 				projTimeList.erase(projTimeList.begin() + i);
+				projectilePBs.erase(projectilePBs.begin() + i);
 			}
 		}
 	}
