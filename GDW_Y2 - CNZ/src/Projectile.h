@@ -44,7 +44,7 @@ public:
 	float GetPBodyDepth() const;
 
 private:
-	cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
+	cherry::Vec3 pBodySize = cherry::Vec3(0.1f, 0.1f, 0.1f);
 	bool drawPBody = false;
 
 	cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);

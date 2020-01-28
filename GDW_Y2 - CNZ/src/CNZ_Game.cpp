@@ -862,7 +862,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			auto tempObj = projectilePBs[i]->GetObject();
 			tempObj->RemovePhysicsBody(projectilePBs[i]);
 			tempObj->SetPosition(1000, 1000, 1000);
-			//DeleteObjectFromScene(projectilePBs[i]->GetObject());
+			//sDeleteObjectFromScene(projectilePBs[i]->GetObject());
 		}
 	}
 
@@ -953,7 +953,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 						enemyGroups[i][j]->attacking = true;
 						projList.push_back(new Projectile(*arrowBase));
 						projTimeList.push_back(0);
-						projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPosition(), enemyGroups[i][j]->GetPBodySize()));
+						projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
 						projectilePBs.push_back(projList[projList.size() - 1]->GetPhysicsBodies()[0]);
 						projList[projList.size() - 1]->SetWhichGroup(i);
 						projList[projList.size() - 1]->SetWhichEnemy(j);
@@ -1013,6 +1013,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	for (int i = 0; i < projList.size(); i++) {
 		if (projList[i]->active == true) {
 			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
+			projList[i]->GetPhysicsBodies()[0]->SetWorldPosition(projList[i]->GetPosition());
+			projList[i]->GetPhysicsBodies()[0]->SetModelPosition(cherry::Vec3(0,0,0));
 			projTimeList[i] += deltaTime;
 			if (projTimeList[i] >= 5) {
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
