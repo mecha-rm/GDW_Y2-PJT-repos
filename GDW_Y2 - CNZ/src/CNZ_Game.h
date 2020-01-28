@@ -76,6 +76,8 @@ namespace cnz
 
 		cherry::ObjectList* objList = nullptr;
 
+		cherry::LightList* tempList;
+
 		cnz::Player * playerObj = nullptr; // object for the player.
 
 		//Weapons
@@ -144,6 +146,8 @@ namespace cnz
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
+
+		bool showPBs = false;
 
 	};
 }
