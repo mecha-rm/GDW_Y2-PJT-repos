@@ -16,6 +16,7 @@
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
 #include "LightManager.h"
+#include "audio/AudioComponent.h"
 
 // System Library Includes
 #include <iostream>
@@ -198,6 +199,9 @@ namespace cherry
 
 		// Target;
 		
+		// TODO: make private?
+		// audio component for the scene
+		cherry::AudioComponent audioEngine = cherry::AudioComponent();
 
 	protected:
 		void Initialize();
@@ -312,6 +316,7 @@ namespace cherry
 		bool mouseEnter = false;
 
 		unsigned int hitBoxIndex = -1;
+
 	};
 
 

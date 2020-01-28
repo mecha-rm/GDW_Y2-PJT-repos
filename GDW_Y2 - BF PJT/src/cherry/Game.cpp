@@ -428,6 +428,7 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 			SceneManager::SetCurrentScene(sceneName);
 		}
 
+		
 		return true;
 	}
 }
@@ -1188,6 +1189,10 @@ void cherry::Game::Update(float deltaTime) {
 	// 		func.Function(e, deltaTime);
 	// 	}
 	// }
+
+	// TODO: determine why this crashes.
+	// updates the audio engine 
+	// audioEngine.Update();
 }
 
 void cherry::Game::InitImGui() {
@@ -1280,8 +1285,10 @@ void cherry::Game::Run()
 		// Present our image to windows
 		glfwSwapBuffers(myWindow);
 	}
-	UnloadContent();
-	ShutdownImGui();
+
+	UnloadContent(); // unload all content
+	ShutdownImGui(); // shutdown imGui
+	audioEngine.Shutdown(); // shutdown the audio component.
 	Shutdown();
 }
 

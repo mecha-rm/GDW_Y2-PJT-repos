@@ -91,6 +91,8 @@
     <ClCompile Include="external\toolkit\Sys.cpp" />
     <ClCompile Include="src\cherry\animate\MorphAnimation.cpp" />
     <ClCompile Include="src\cherry\animate\Path.cpp" />
+    <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
+    <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\Light.cpp" />
     <ClCompile Include="src\cherry\LightManager.cpp" />
@@ -140,6 +142,17 @@
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="external\fmod\fmod.h" />
+    <ClInclude Include="external\fmod\fmod.hpp" />
+    <ClInclude Include="external\fmod\fmod_codec.h" />
+    <ClInclude Include="external\fmod\fmod_common.h" />
+    <ClInclude Include="external\fmod\fmod_dsp.h" />
+    <ClInclude Include="external\fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="external\fmod\fmod_errors.h" />
+    <ClInclude Include="external\fmod\fmod_output.h" />
+    <ClInclude Include="external\fmod\fmod_studio.h" />
+    <ClInclude Include="external\fmod\fmod_studio.hpp" />
+    <ClInclude Include="external\fmod\fmod_studio_common.h" />
     <ClInclude Include="src\cherry\animate\AnimationManager.h" />
     <ClInclude Include="src\cherry\animate\Animation.h" />
     <ClInclude Include="external\entt\entt.hpp" />
@@ -359,6 +372,8 @@
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
+    <ClInclude Include="src\cherry\audio\AudioComponent.h" />
+    <ClInclude Include="src\cherry\audio\AudioEngine.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\Light.h" />
@@ -413,6 +428,10 @@
     <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="external\fmod\fmod64.lib" />
+    <Library Include="external\fmod\fmodstudio_vc.lib" />
+    <Library Include="lib\fmod64.lib" />
+    <Library Include="lib\fmodstudio_vc.lib" />
     <Library Include="lib\glfw3.lib" />
   </ItemGroup>
   <ItemGroup>
