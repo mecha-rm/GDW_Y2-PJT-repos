@@ -8,7 +8,7 @@ namespace cherry
 	public:
 		// creates a cylinder
 		// segments: the amount of segments for the depth of the cylinder
-		PrimitiveCylinder(float radius = 1.0F, float height = 1.0F, unsigned int segments = 10);
+		PrimitiveCylinder(float radius = 1.0F, float height = 1.0F, unsigned int segments = 10, cherry::Vec4 color = cherry::Vec4( 1.0F, 1.0F, 1.0F, 1.0F ));
 
 		// gets the radius
 		float GetRadius() const;

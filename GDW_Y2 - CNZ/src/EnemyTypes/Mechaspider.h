@@ -1,12 +1,15 @@
-#include "../Enemies.h"
 #pragma once
+#include "Enemy.h"
 
 //Mechaspider class
 namespace cnz {
-	class Mechaspider : public cnz::Enemies
+	class Mechaspider : public cnz::Enemy
 	{
 	public:
-		Mechaspider(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) { description = "Mechaspider"; };
+		// copy constructor
+		Mechaspider(const cnz::Mechaspider&);
+
+		Mechaspider(cnz::Enemy* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 

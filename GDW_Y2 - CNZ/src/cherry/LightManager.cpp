@@ -1,5 +1,7 @@
 // LightManager - manages all lights for the game
 #include "LightManager.h"
+
+#include "objects/ObjectManager.h"
 #include "utils/Utils.h"
 
 std::vector<cherry::LightList*> cherry::LightManager::lightLists = std::vector<cherry::LightList*>();
@@ -96,6 +98,30 @@ bool cherry::LightManager::AddLightToSceneLightList(cherry::Light * light, bool 
 	}
 
 	return false;
+}
+
+// applies lights to the objects provided.
+void cherry::LightManager::ApplyLightsToObjects(cherry::ObjectList* objList)
+{
+	cherry::LightList* ll;
+	
+	if (objList == nullptr)
+		return;
+
+	ll = LightManager::GetSceneLightListByName(objList->GetSceneName());
+
+	// light doesn't exist.
+	if (ll == nullptr)
+		return;
+
+
+	// going through each object and applying the lights.
+	cherry::Material::Sptr mat;
+	for (cherry::Object* object : objList->GetObjects())
+	{
+		mat = object->GetMaterial();
+		ll->ApplyLights(mat, MAX_LIGHTS);
+	}
 }
 
 // gets all lights in the scene as a single light.
@@ -240,9 +266,9 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	
 	int lightCount = 0; // total amount of lights
 
-	// Must align with MAX_LIGHTS. It is set to allow for 10 lights.
+	// Must align with the macro MAX_LIGHTS, which is defined in the light manager and the shaders.
 	// TODO: add const to cap lights instead
-	lightCount = (lights.size() > 10) ? 10 : lights.size();
+	lightCount = (lights.size() > MAX_LIGHTS) ? MAX_LIGHTS : lights.size();
 
 	// used to make the albedo // TODO: fix shaders
 	phong->Load(vs.c_str(), fs.c_str()); // the shader
@@ -287,6 +313,34 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	 
 	// returns the material
 	return material;
+}
+
+// applies the lighting to the material.
+void cherry::LightList::ApplyLights(cherry::Material::Sptr & material, int lightCount)
+{
+	glm::vec3 temp; // temporary glm::vector
+
+	// setting the light count.
+	material->Set("a_LightCount", (abs(lightCount) < MAX_LIGHTS) ? abs(lightCount) : MAX_LIGHTS);
+
+	// goes through each light, getting the values.
+	for (int i = 0; i < lightCount; i++)
+	{
+		temp = lights.at(i)->GetAmbientColorGLM();
+		material->Set("a_AmbientColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // ambient colour
+
+		material->Set("a_AmbientPower[" + std::to_string(i) + "]", lights.at(i)->GetAmbientPower()); // ambient power
+		material->Set("a_LightSpecPower[" + std::to_string(i) + "]", lights.at(i)->GetLightSpecularPower()); // specular power
+
+		temp = lights.at(i)->GetLightPositionGLM();
+		material->Set("a_LightPos[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // position
+
+		temp = lights.at(i)->GetLightColorGLM();
+		material->Set("a_LightColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // light colour
+
+		material->Set("a_LightShininess[" + std::to_string(i) + "]", lights.at(i)->GetLightShininess()); // shininess
+		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
+	}
 }
 
 // removes a light via its index

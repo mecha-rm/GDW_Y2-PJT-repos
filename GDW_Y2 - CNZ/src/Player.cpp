@@ -18,13 +18,13 @@ cnz::Player::Player(std::string modelFile, cherry::Vec3 pos) : Object(modelFile)
 }
 
 // creates the player at the world's origin
-cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::Sptr material)
-	: Player(modelPath, scene, material, cherry::Vec3())
+cnz::Player::Player(std::string modelPath, std::string scene)
+	: Player(modelPath, scene, cherry::Vec3())
 {}
 
 // creates the player in hte provided scene
-cnz::Player::Player(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos)
-	:Object(modelPath, scene, material)
+cnz::Player::Player(std::string modelPath, std::string scene, cherry::Vec3 pos)
+	:Object(modelPath, scene, true)
 {
 	position = pos;
 }
@@ -70,11 +70,11 @@ void cnz::Player::SetDashTime(float dashTime) { this->dashTime = dashTime; }
 
 
 // TODO: holdovers from object class. May not be needed?
-float cnz::Player::GetDegreeAngle() { return degreeAngle; }
+float cnz::Player::GetDegreeAngle() const { return degreeAngle; }
 
-float cnz::Player::GetRadianAngle() { return radianAngle; }
+float cnz::Player::GetRadianAngle() const { return radianAngle; }
 
-glm::vec3 cnz::Player::GetVec3Angle() { return this->worldAngle; }
+glm::vec3 cnz::Player::GetVec3Angle() const { return this->worldAngle; }
 
 void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height) {
 
@@ -160,7 +160,7 @@ void cnz::Player::SetAngle(float angle, bool isDegrees) {
 
 void cnz::Player::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
-glm::vec3 cnz::Player::GetDash(float dist) {
+glm::vec3 cnz::Player::GetDash(float dist) const {
 	glm::vec3 dash;
 	// glm is backwards so both need to be negative to dash in the correct direction.
 	// afaik GetDegreeAngle() is not working correctly so we use Radians converted to degrees instead.
@@ -170,7 +170,7 @@ glm::vec3 cnz::Player::GetDash(float dist) {
 	return dash;
 }
 
-bool cnz::Player::setDrawPBody(bool draw)
+bool cnz::Player::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
 		this->drawPBody = false;
@@ -182,27 +182,27 @@ bool cnz::Player::setDrawPBody(bool draw)
 	}
 }
 
-bool cnz::Player::getDrawPBody()
+bool cnz::Player::GetDrawPBody() const
 {
 	return this->drawPBody;
 }
 
-cherry::Vec3 cnz::Player::getPBodySize()
+cherry::Vec3 cnz::Player::GetPBodySize() const
 {
 	return this->pBodySize;
 }
 
-float cnz::Player::getPBodyWidth()
+float cnz::Player::GetPBodyWidth() const
 {
-	return this->getPBodySize().GetX() / 2;
+	return this->GetPBodySize().GetX() / 2;
 }
 
-float cnz::Player::getPBodyHeight()
+float cnz::Player::GetPBodyHeight() const
 {
-	return this->getPBodySize().GetY() / 2;
+	return this->GetPBodySize().GetY() / 2;
 }
 
-float cnz::Player::getPBodyDepth()
+float cnz::Player::GetPBodyDepth() const
 {
-	return this->getPBodySize().GetZ() / 2;
+	return this->GetPBodySize().GetZ() / 2;
 }

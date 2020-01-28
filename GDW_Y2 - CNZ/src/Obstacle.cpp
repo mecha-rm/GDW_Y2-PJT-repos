@@ -26,7 +26,7 @@ void Obstacle::SetAngle(glm::vec3 angle) {
 	this->worldAngle = angle;
 }
 
-bool Obstacle::setDrawPBody(bool draw) {
+bool Obstacle::SetDrawPBody(bool draw) {
 	if (this->GetPhysicsBodyCount() == 0) {
 		this->drawPBody = false;
 		return false;
@@ -37,22 +37,22 @@ bool Obstacle::setDrawPBody(bool draw) {
 	}
 }
 
-bool Obstacle::getDrawPBody() {
+bool Obstacle::GetDrawPBody() const {
 	return this->drawPBody;
 }
 
-cherry::Vec3 Obstacle::getPBodySize() {
+cherry::Vec3 Obstacle::GetPBodySize() const {
 	return this->pBodySize;
 }
 
-float Obstacle::getPBodyWidth() {
-	return this->getPBodySize().GetX() / 2;
+float Obstacle::GetPBodyWidth() const {
+	return this->GetPBodySize().GetX() / 2;
 }
 
-float Obstacle::getPBodyHeight() {
-	return this->getPBodySize().GetY() / 2;
+float Obstacle::GetPBodyHeight() const {
+	return this->GetPBodySize().GetY() / 2;
 }
 
-float Obstacle::getPBodyDepth() {
-	return this->getPBodySize().GetZ() / 2;
+float Obstacle::GetPBodyDepth() const {
+	return this->GetPBodySize().GetZ() / 2;
 }

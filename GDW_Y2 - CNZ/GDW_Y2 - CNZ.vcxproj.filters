@@ -27,7 +27,6 @@
     <ClCompile Include="src\cherry\TextureSampler.cpp" />
     <ClCompile Include="src\cherry\utils\math\Interpolation.cpp" />
     <ClCompile Include="src\CSV.cpp" />
-    <ClCompile Include="src\Enemies.cpp" />
     <ClCompile Include="src\EnemyTypes\Bastion.cpp" />
     <ClCompile Include="src\EnemyTypes\Marauder.cpp" />
     <ClCompile Include="src\EnemyTypes\Mechaspider.cpp" />
@@ -73,6 +72,8 @@
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
     <ClCompile Include="src\cherry\Target.cpp" />
     <ClCompile Include="src\cherry\WorldTransform.cpp" />
+    <ClCompile Include="src\EnemyTypes\Enemy.cpp" />
+    <ClCompile Include="src\EnemyTypes\Enemies.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -310,7 +311,6 @@
     <ClInclude Include="src\cherry\utils\math\Interpolation.h" />
     <ClInclude Include="src\cherry\WorldTransform.h" />
     <ClInclude Include="src\CSV.h" />
-    <ClInclude Include="src\Enemies.h" />
     <ClInclude Include="src\EnemyTypes\Bastion.h" />
     <ClInclude Include="src\EnemyTypes\Marauder.h" />
     <ClInclude Include="src\EnemyTypes\Mechaspider.h" />
@@ -358,6 +358,8 @@
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\Target.h" />
+    <ClInclude Include="src\EnemyTypes\Enemy.h" />
+    <ClInclude Include="src\EnemyTypes\Enemies.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />

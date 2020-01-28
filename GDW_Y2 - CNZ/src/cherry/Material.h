@@ -68,6 +68,8 @@ namespace cherry
 
 	private:
 
+		bool FileExists(std::string filePath);
+
 		// TODO: put this function in its own dedicated file.
 		// parses the line, gets the values as data type T, and stores them in a vector.
 		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.

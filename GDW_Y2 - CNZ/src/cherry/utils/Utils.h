@@ -79,6 +79,9 @@ namespace util
 		return val;
 	}
 
+	// returns 'true' if a file can be opened successsfully, and false if it cannot.
+	bool fileAccessible(const std::string & filePath);
+
 	// returns the minimum between two values.
 	// the less than operator (<) must be overloaded for this function to work.
 	template<typename T>
@@ -91,7 +94,7 @@ namespace util
 
 	// caps 'val' using lowerBound and upperBound. The (<) and (>) operators must be overloaded for this function. 
 	template<typename T>
-	T cap(T val, T lowerBound, T upperBound) { return (val < lowerBound) ? lowerBound : (val > upperBound) ? upperBound : val;};
+	T clamp(T val, T lowerBound, T upperBound) { return (val < lowerBound) ? lowerBound : (val > upperBound) ? upperBound : val; };
 
 	template<typename T>
 	bool addToVector(std::vector<T*>& vector, T* val) // adds an element to a pointer vector if it isn't already in there. Because this is a template, the definition is placed here.

@@ -100,6 +100,7 @@ void cherry::Liquid::SetAlpha(float a)
 
 	material->Set("a_WaterAlpha", a);
 	color.v.w = a; // saving the alpha value
+	alpha = a; // the alpha variable in the object class. This isn't used for liquids, but is set regardless.
 }
 
 // gets the colour as a GLM vector.

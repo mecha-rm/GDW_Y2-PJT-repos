@@ -4,9 +4,13 @@
 #include "Light.h"
 #include <vector>
 
+// the maximum amount of lights
+// if changed, make sure it is adjusted in the shaders as well.
+#define MAX_LIGHTS 10
 
 namespace cherry
 {
+	class ObjectList;
 	class LightList;
 
 	class LightManager
@@ -37,6 +41,8 @@ namespace cherry
 		// if 'addScene' is true, then the scene is added if its name couldn't be found, and the light is added to said scene's list.
 		static bool AddLightToSceneLightList(cherry::Light * light, bool addScene = false);
 		
+		// applies the lights to the object list. If a light list for this object list doesn't exist, nothing happens.
+		static void ApplyLightsToObjects(cherry::ObjectList* objList);
 
 		// returns the average of all lights in the scene, returning them as a single light.
 		// TODO: create a lighting shader that takes multiple lights.
@@ -82,12 +88,16 @@ namespace cherry
 		// gets the scene lights averaged together
 		cherry::Light* GetLightsMerged();
 
-		// generates a material out of the light list (first 10 in hte list)
+		// generates a material out of the light list (first 10 in the list)
 		// TODO: add indexes of lights to be used.
 		// generates a material without a sampler
 		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs) const;
 		
+		// generates the material, providing it with the sampler.
 		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const;
+
+		// applies the lights to the provided material.
+		void ApplyLights(cherry::Material::Sptr & material, int lightCount);
 
 		// removes a light by its index.
 		cherry::Light* RemoveLightByIndex(unsigned int index);

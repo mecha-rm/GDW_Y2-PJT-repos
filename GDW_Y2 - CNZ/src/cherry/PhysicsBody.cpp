@@ -380,7 +380,13 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 float cherry::PhysicsBodySphere::GetRadius() const { return radius; }
 
 // sets the radius
-void cherry::PhysicsBodySphere::SetRadius(float r) { radius = r; }
+void cherry::PhysicsBodySphere::SetRadius(float r) { radius = abs(r); }
+
+// returns the diameter.
+float cherry::PhysicsBodySphere::GetDiameter() const { return radius * 2; }
+
+// sets the diameter.
+void cherry::PhysicsBodySphere::SetDiameter(float diameter) { radius = abs(diameter/ 2.0F); }
 
 // update
 void cherry::PhysicsBodySphere::Update(float deltaTime)

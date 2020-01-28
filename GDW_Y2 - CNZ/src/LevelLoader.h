@@ -10,7 +10,7 @@
 
 // object types so that we are able to create the objects in the loader
 #include "Player.h"
-#include "Enemies.h"
+#include "EnemyTypes/Enemies.h"
 #include "Obstacle.h"
 #include "cherry/PhysicsBody.h"
 #include "Projectile.h"
@@ -32,26 +32,26 @@ public:
 
 
 	// return scene name as string
-	std::string getSceneName();
+	std::string GetSceneName() const;
 
 	// load legend into map
-	bool loadLegend(std::string legendPath);
+	bool LoadLegend(std::string legendPath);
 
 	// load level into 2d vector
-	bool loadLevel(std::string levelPath);
+	bool LoadLevel(std::string levelPath);
 
 	// get level size
-	std::vector<int> getMapSize(CSV level);
+	std::vector<int> GetMapSize(CSV level);
 
 	// get level symbols loaded into 2d vector called map
-	std::vector<std::vector<std::string>> getMap(CSV level);
+	std::vector<std::vector<std::string>> GetMap(CSV level);
 
 
 	// return vector of all objects in level
-	std::vector<cherry::Object*> getObjects();
+	std::vector<cherry::Object*> GetObjects();
 
 	// return properties of object at specific location on map
-	std::vector<float> getObjProps(int y, int x);
+	std::vector<float> GetObjProps(int y, int x);
 
 private:
 	// the m_Scene material

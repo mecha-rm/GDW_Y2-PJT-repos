@@ -18,7 +18,7 @@ CSV::CSV(std::string csvPath) {
 	}
 }
 
-std::string CSV::getRow(int num, int num2) {
+std::string CSV::GetRow(int num, int num2) {
 	if (num >= rows.size()) {
 		std::cout << "y value too big" << std::endl;
 	}
@@ -36,6 +36,6 @@ std::vector<std::string> const& CSV::operator[](std::size_t index) const {
 	return rows[index];
 }
 
-std::size_t CSV::size() const {
+std::size_t CSV::Size() const {
 	return rows.size();
 }

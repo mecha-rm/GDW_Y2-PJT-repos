@@ -3,10 +3,11 @@
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
 
-cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments, cherry::Vec4 clr)
+cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments, cherry::Vec4 color)
 	: radius(abs(radius)), height(abs(height))
 {
 	radius = abs(radius);
+
 	height = abs(height);
 
 	// todo: account for height
@@ -20,6 +21,14 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	
 	// accounts for half-circle and middle
 	capSegments = (capSegments * 2 + 1);
+
+	// bounds checking for the colour
+	color.v.x = (color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x;
+	color.v.y = (color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y;
+	color.v.z = (color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z;
+	color.v.w = (color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w;
+	
+	this->color = color; // saving the colour.
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
@@ -114,7 +123,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -141,7 +150,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			// radius * 2 to account for the top and bottom cap
 			posVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -151,7 +160,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {clr.v.x, clr.v.y, clr.v.z, clr.v.w}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 
 	// starting values for the indice drawing.
 

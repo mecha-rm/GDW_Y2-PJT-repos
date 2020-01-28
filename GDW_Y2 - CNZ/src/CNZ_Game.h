@@ -1,7 +1,7 @@
 #pragma once
 #include "cherry/Game.h"
 #include "Player.h"
-#include "Enemies.h"
+#include "EnemyTypes/Enemies.h"
 #include "Obstacle.h"
 #include "cherry/PhysicsBody.h"
 #include "Projectile.h"
@@ -45,21 +45,21 @@ namespace cnz
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
 		// get closest obstacle within a certain degrees of where the player is facing
-		cherry::PhysicsBody* getClosestObstacle();
+		cherry::PhysicsBody* GetClosestObstacle();
 
 		// gets a list of enemies within a certain degrees of where the player is facing
 		// we require the dash vector so that we can use a smaller one if the player is dashing towards an obstacle that
 		// would case the dash to end when they collide with that obstacle.
-		vector<cnz::Enemies*> getEnemiesInDash(cherry::Vec3 dashVec);
+		vector<cnz::Enemy*> GetEnemiesInDash(cherry::Vec3 dashVec);
 
 		// get the angle at which a Vec3 is facing in X and Y axis. 
 		// can also be used to find the angle between two positions by getting passing in their difference
-		float getXYAngle(cherry::Vec3 vec);
+		float GetXYAngle(cherry::Vec3 vec);
 
-		void spawnEnemyGroup(int i);
+		void SpawnEnemyGroup(int i);
 
 		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
-		void mapSceneObjectsToGame(std::string sceneName);
+		void MapSceneObjectsToGame(std::string sceneName);
 
 
 	protected:
@@ -73,6 +73,8 @@ namespace cnz
 	private:
 		
 		int curWave = 0; //Current enemy wave
+
+		cherry::ObjectList* objList = nullptr;
 
 		cnz::Player * playerObj = nullptr; // object for the player.
 
@@ -93,15 +95,15 @@ namespace cnz
 		
 
 		//Load enemies // Create multiple enemies using these with only loading one .obj
-		cnz::Enemies* sentry = nullptr; //Sentry enemy : Bowman
-		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
-		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
-		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
-		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
+		cnz::Enemy* sentry = nullptr; //Sentry enemy : Bowman
+		cnz::Enemy* oracle = nullptr; //Oracle enemy : Polearmsman
+		cnz::Enemy* marauder = nullptr; //Marauder enemy : Swordsman
+		cnz::Enemy* bastion = nullptr; //Bastion enemy : Shield guy
+		cnz::Enemy* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
 
 		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.
-		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<std::vector<Enemy*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers

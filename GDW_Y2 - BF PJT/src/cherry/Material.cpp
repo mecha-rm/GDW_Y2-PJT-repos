@@ -155,7 +155,12 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// gets the folder path if there is one.
 			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 
-			Set("s_Albedos[0]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
+			// getting the file.
+			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
+
+			// if the file exists and is accessible, then the texture is set.
+			if(util::fileAccessible(file))
+				Set("s_Albedos[0]", Texture2D::LoadFromFile(file));
 		}
 		// diffuse map (i.e. texture). This is set to Albedo[1] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Kd")
@@ -163,7 +168,12 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// gets the folder path if there is one.
 			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 
-			Set("s_Albedos[1]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
+			// getting the file.
+			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
+
+			// if the file exists and is accessible, then the texture is set.
+			if (util::fileAccessible(file))
+				Set("s_Albedos[1]", Texture2D::LoadFromFile(file));
 		}
 		// specular map (i.e. texture). This is set to Albedo[2] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ks")
@@ -171,7 +181,12 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// gets the folder path if there is one.
 			std::string tstr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 
-			Set("s_Albedos[2]", Texture2D::LoadFromFile(tstr + line.substr(line.find_first_of(" ") + 1)));
+			// getting the file.
+			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
+
+			// if the file exists and is accessible, then the texture is set.
+			if(util::fileAccessible(file))
+				Set("s_Albedos[2]", Texture2D::LoadFromFile(file));
 		}
 		
 		// Index of Refraction (Optical Density)

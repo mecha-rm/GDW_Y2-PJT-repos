@@ -1,5 +1,17 @@
 #include "Sentry.h"
 
+// copy constructor
+cnz::Sentry::Sentry(const cnz::Sentry& sentry)
+	: Enemy(sentry)
+{
+}
+
+// copies the enemy and replaces its scene.
+cnz::Sentry::Sentry(const cnz::Enemy* obj, std::string scene) : cnz::Enemy(obj, scene)
+{
+	description = "Sentry";
+}
+
 void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 	arrowDirVec = aimPos - startPos;
@@ -16,5 +28,5 @@ void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 
 void cnz::Sentry::Update(float dt)
 {
-	Enemies::Update(dt);
+	Enemy::Update(dt);
 }

@@ -161,7 +161,12 @@ cherry::Object::Object(const cherry::Object& obj)
 	// TODO: add animation manager
 	// TODO: copy physics bodies
 
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	// if the file is an obj file, then the indices shouldn't be used for the mesh.
+	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	else // runtime primitive
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 }
 
@@ -490,10 +495,10 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		std::string fpStr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 		mtllib = fpStr + mtllib;
 
-		// generates the material
-		material = (dynamicObject) ? 
-			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS) :
-			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS);
+		// generates the material. The version generated depends on whether the object uses morph targets or not.
+		material = (dynamicObject) ?
+			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS) :
+			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS);
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.

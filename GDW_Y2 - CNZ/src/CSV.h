@@ -9,12 +9,13 @@
 // Basically we're reconstructing the CSV into an object.
 class CSV {
 public:
-	CSV();
+	CSV() = default;
+
 	CSV(std::string csvPath);
 
-	std::string getRow(int num, int num2);
+	std::string GetRow(int num, int num2);
 	std::vector<std::string> const& operator[](std::size_t index) const;
-	std::size_t size() const;
+	std::size_t Size() const;
 
 private:
 	// rows[y][x]
