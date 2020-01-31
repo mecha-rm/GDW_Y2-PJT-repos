@@ -303,6 +303,7 @@ namespace cherry
 		cherry::Vec2 mousePos;
 
 		// double XcursorPos, YcursorPos;
+		// TODO: change to array
 		bool mbLeft = false, mbMiddle = false, mbRight = false;
 
 		// window size

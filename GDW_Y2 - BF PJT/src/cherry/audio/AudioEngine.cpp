@@ -293,6 +293,12 @@ float cherry::AudioEngine::VolumeTodb(float volume)
 	return 20.0f * log10f(volume);
 }
 
+void cherry::AudioEngine::SetGlobalParameter(const std::string& strParameterName, float fValue)
+{
+	cherry::AudioEngine::ErrorCheck(implementation->mpStudioSystem->setParameterByName(strParameterName.c_str(), fValue));
+
+}
+
 int cherry::AudioEngine::ErrorCheck(FMOD_RESULT result)
 {
 	if (result != FMOD_OK)

@@ -152,7 +152,6 @@ cherry::Game::Game() :
 	myModelTransform(glm::mat4(1)), // my model transform
 	myWindowSize(600, 600) // window size (default)
 {
-	srand(time(0));
 }
 
 // creates window with a width, height, and whether or not it's in full screen.
@@ -736,6 +735,12 @@ void cherry::Game::Initialize() {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE); // TODO: uncomment when showcasing game.
 	glEnable(GL_SCISSOR_TEST); // used for rendering multiple windows (TODO: maybe turn off if we aren't using multiple windows?)
+
+	// seeding the randomizer
+	srand(time(0));
+
+	// initalizies the audio engine
+	audioEngine.Init();
 }
 
 void cherry::Game::Shutdown() {
@@ -1131,6 +1136,15 @@ void cherry::Game::LoadContent()
 	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
+
+	// TODO: streamline, and replace audio file (WE DON'T OWN IT)
+	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
+	audioEngine.LoadBank("res/audio/Master", FMOD_STUDIO_LOAD_BANK_NORMAL);
+
+	// Load an event
+	audioEngine.LoadEvent("Music", "{84a26086-1e10-4505-a437-99ff0ff2a354}");
+	// Play the event
+	audioEngine.PlayEvent("Music");
 }
 
 void cherry::Game::UnloadContent() {
@@ -1192,7 +1206,7 @@ void cherry::Game::Update(float deltaTime) {
 
 	// TODO: determine why this crashes.
 	// updates the audio engine 
-	// audioEngine.Update();
+	audioEngine.Update();
 }
 
 void cherry::Game::InitImGui() {
