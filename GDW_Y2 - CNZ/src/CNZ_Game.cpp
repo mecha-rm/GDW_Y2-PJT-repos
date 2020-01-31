@@ -442,9 +442,9 @@ void cnz::CNZ_Game::LoadContent()
 		// material stuff that happens in Game.cpp
 
 		//Skybox stuff
-		skyboxObj = new cherry::Skybox("res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg", 
-									   "res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg", 
-									   "res/images/cubemaps/Blue-Cubemap.jpg", "res/images/cubemaps/Blue-Cubemap.jpg");
+		skyboxObj = new cherry::Skybox("res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
+									   "res/images/cubemaps/oFloor.jpg", "res/images/cubemaps/oSky.jpg", 
+									   "res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg");
 		skyboxObj->AddSkyboxToScene(GetCurrentScene());
 		SetSkybox(*skyboxObj, GetCurrentSceneName());
 
