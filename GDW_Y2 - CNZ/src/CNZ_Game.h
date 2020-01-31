@@ -112,8 +112,11 @@ namespace cnz
 
 		cherry::Skybox* skyboxObj;
 
+		cherry::Object* indArrow;
+		cherry::MorphAnimation* indArrowAnim;
+
 		cnz::Player* testObj = nullptr; // object for the player.
-		cnz::Player* indicatorObj = nullptr; // object for the dash indicator.
+		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
 		bool mbLP = false, mbLR = false;
 
 		vector<cherry::PhysicsBody*> obstaclePBs;
@@ -133,6 +136,7 @@ namespace cnz
 		bool a = false;
 		bool s = false;
 		bool d = false;
+		bool f = false;
 		bool ls = false;
 		bool spaceP = false;
 		bool spaceR = false;

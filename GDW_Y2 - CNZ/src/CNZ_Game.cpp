@@ -74,7 +74,9 @@ void cnz::CNZ_Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_D: // right
 		d = true;
 		break;
-
+	case GLFW_KEY_F: // right
+		f = true;
+		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = true;
 		break;
@@ -131,6 +133,9 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_D: // right
 		d = false;
+		break;
+	case GLFW_KEY_F: // right
+		f = false;
 		break;
 	
 	case GLFW_KEY_LEFT_SHIFT:
@@ -621,8 +626,18 @@ void cnz::CNZ_Game::LoadContent()
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(19);
 
-		indicatorObj = new Player("res/objects/GDW_1_Y2 - Wall Tile.obj", GetCurrentSceneName()); // creates indicator for dash being ready
-		indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
+		indArrowAnim = new MorphAnimation();
+		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
+		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+		
+		indArrow = new Object("res/objects/Arrow_Start.obj", GetCurrentSceneName(), matDynamic, false, true);
+		indArrow->SetRotationXDegrees(90);
+		indArrow->AddAnimation(indArrowAnim);
+		//AddObjectToScene(indArrow);
+
+		indicatorObj = new Object("res/objects/Arrow_End.obj", GetCurrentSceneName(), matStatic, false, false); // creates indicator for dash being ready
+		indicatorObj->SetRotationXDegrees(90);
+		//indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
 		AddObjectToScene(indicatorObj);
 
 		//// setting up the camera
@@ -939,10 +954,28 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		ls = false;
 	}
 	
+	int enemyCount = 0;
+
 	//Enemy AI
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
 			if (enemyGroups[i][j]->alive == true) {
+				enemyCount++;
+				if (f == true && enemyGroups[i][j]->stunned == false) {
+					enemyGroups[i][j]->stunned = true;
+					enemyGroups[i][j]->stunTimer = 0;
+				}
+				else if (enemyGroups[i][j]->stunned == true) {
+					if (enemyGroups[i][j]->stunTimer >= 5.0f) {
+						enemyGroups[i][j]->stunned = false;
+					}
+					else {
+						enemyGroups[i][j]->stunTimer += deltaTime;
+					}
+				}
+			}
+
+			if (enemyGroups[i][j]->alive == true && enemyGroups[i][j]->stunned == false) {
 				//Look at player
 				enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
 				enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle()), true);
@@ -1009,6 +1042,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		}
 	}
 
+	if (enemyCount == 0) {
+		SpawnEnemyGroup();
+	}
 	//Update Projectiles
 	for (int i = 0; i < projList.size(); i++) {
 		if (projList[i]->active == true) {
@@ -1031,7 +1067,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// dash code
 	if (playerObj->GetDashTime() >= 1.0f) {
 		//Display indicator
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 2));
+		//indArrowAnim->Play();
+		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+ 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
 	else {
 		//Hide indicator
