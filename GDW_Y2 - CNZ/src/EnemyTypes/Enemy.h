@@ -80,7 +80,8 @@ namespace cnz
 		float GetPBodyDepth() const;
 
 	private:
-		cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
+										//		   z?		something is really funky here...
+		cherry::Vec3 pBodySize = cherry::Vec3(1, 2, 1);
 		bool drawPBody = false;
 
 		// TODO: possibly delete these variables? Object has its own rotation now.
