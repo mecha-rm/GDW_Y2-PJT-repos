@@ -867,20 +867,6 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		}
 	}
 
-	// find all projectiles that player is colliding with
-	for (int i = 0; i < projectilePBs.size(); i++) {
-		projectilePBs[i]->SetModelPosition(projectilePBs[i]->GetObject()->GetPosition()); // update pb
-		projectilePBs[i]->SetVisible(true);
-
-		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projectilePBs[i]);
-		if (collision) { // check for collision and delete
-			auto tempObj = projectilePBs[i]->GetObject();
-			tempObj->RemovePhysicsBody(projectilePBs[i]);
-			tempObj->SetPosition(1000, 1000, 1000);
-			//sDeleteObjectFromScene(projectilePBs[i]->GetObject());
-		}
-	}
-
 	cs = true;
 	cw = true;
 	ca = true;
@@ -1052,7 +1038,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			projList[i]->GetPhysicsBodies()[0]->SetWorldPosition(projList[i]->GetPosition());
 			projList[i]->GetPhysicsBodies()[0]->SetModelPosition(cherry::Vec3(0,0,0));
 			projTimeList[i] += deltaTime;
-			if (projTimeList[i] >= 5) {
+			if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projectilePBs[i])) {
+				projList[i]->RemovePhysicsBody(projectilePBs[i]);
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
