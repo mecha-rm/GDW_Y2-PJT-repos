@@ -899,8 +899,6 @@ void cherry::Game::LoadContent()
 		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
 		 
-		 
-		 
 		 objectList->objects.push_back(new PrimitiveCircle());
 		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
 		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);

@@ -26,3 +26,7 @@ GDW_Y2 - CNZ/bin/x64/Debug/GDW_Y2 - CNZ.pdb
 GDW_Y2 - CNZ/GDW_Y2 - CNZ.vcxproj
 
 GDW_Y2 - CNZ/GDW_Y2 - CNZ.vcxproj.filters
+
+*.pdb
+
+*.ilk

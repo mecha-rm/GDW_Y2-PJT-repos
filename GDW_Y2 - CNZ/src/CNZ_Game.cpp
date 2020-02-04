@@ -376,6 +376,9 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	// GL debug output
+	glEnable(GL_DEBUG_OUTPUT);
+
 	using namespace cherry;
 
 	// srand(time(NULL)); // move to Game.h
@@ -821,6 +824,7 @@ void cnz::CNZ_Game::LoadContent()
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
+	GLenum test = glGetError();
 
 	this->playerPrevPos = playerObj->GetPosition();
 	if (showPBs) {

@@ -63,7 +63,6 @@ namespace cnz
 
 
 	protected:
-
 		// overwritten function for loading in game content.
 		virtual void LoadContent();
 
