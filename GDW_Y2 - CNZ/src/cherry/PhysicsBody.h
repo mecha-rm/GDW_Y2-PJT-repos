@@ -108,7 +108,7 @@ namespace cherry
 
 	protected:
 		// the colour of the physics bodies (RGBA)
-		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 0.45F };
+		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 1.0F };
 
 		// the object the body is attachted to.
 		cherry::Object* object = nullptr;
