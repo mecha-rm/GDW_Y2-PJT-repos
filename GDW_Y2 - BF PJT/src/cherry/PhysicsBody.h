@@ -16,7 +16,7 @@ namespace cherry
 		// sets the id for a specific physics body, and its position.
 		PhysicsBody(int id, cherry::Vec3 pos);
 
-		~PhysicsBody();
+		virtual ~PhysicsBody();
 
 		/*
 		 * gets the identifier for the physics body
@@ -37,16 +37,16 @@ namespace cherry
 		cherry::PhysicsBody* AttachToObject(cherry::Object * newObj);
 
 		// gets the model (local space) position as a GLM vector
-		glm::vec3 GetModelPositionGLM() const;
+		glm::vec3 GetLocalPositionGLM() const;
 
 		// gets the model (local space) position as a GLM vector
-		cherry::Vec3 GetModelPosition() const;
+		cherry::Vec3 GetLocalPosition() const;
 
 		// sets the model (local space) position
-		void SetModelPosition(cherry::Vec3 mpos);
+		void SetLocalPosition(cherry::Vec3 lPos);
 
 		// set model (local space) position (GLM version)
-		void SetModelPosition(glm::vec3 mpos);
+		void SetLocalPosition(glm::vec3 lPos);
 
 
 		// gets the world position as a glm vector
@@ -57,10 +57,10 @@ namespace cherry
 		cherry::Vec3 GetWorldPosition() const;
 
 		// sets the world position of the body
-		void SetWorldPosition(cherry::Vec3 wpos);
+		// void SetWorldPosition(cherry::Vec3 wpos);
 
 		// sets the world position of the body
-		void SetWorldPosition(glm::vec3 wpos);
+		// void SetWorldPosition(glm::vec3 wpos);
 
 		// gets the rotation of the body (in degrees)
 		cherry::Vec3 GetRotationDegrees() const;
@@ -103,12 +103,12 @@ namespace cherry
 	private:
 		int id = 0; // identifier; check this value for downcasting
 
-		// rotation
+		// rotation (in degrees)
 		cherry::Vec3 rotation;
 
 	protected:
 		// the colour of the physics bodies (RGBA)
-		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 0.45F };
+		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 1.0F };
 
 		// the object the body is attachted to.
 		cherry::Object* object = nullptr;
@@ -124,6 +124,10 @@ namespace cherry
 
 		// material for body when drawn to hte screen
 		Material::Sptr material;
+
+		// TODO: create function for this.
+		// the alpha value of all physics bodies.
+		static float alpha;
 	};
 
 	// the object for a rectangular physics body

@@ -1072,10 +1072,15 @@ void cherry::Game::LoadContent()
 		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
 		// 	"res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
+		PhysicsBodyBox* temp = new PhysicsBodyBox(Vec3(0.0F, 0.0F, 0.0F), 1.0F, 2.5F, 1.0F);
+		// temp->SetRotationDegrees(Vec3(0, 0, 30.0F));
+		// temp->SetScale(Vec3(2.0F, 2.0F, 2.0F));
+		objectList->objects.at(objectList->objects.size() - 1)->AddPhysicsBody(temp);
+		objectList->objects.at(objectList->objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(true);
 
-		objectList->objects.at(objectList->objects.size() - 1)->AddPhysicsBody(new PhysicsBodyBox(1.0F, 2.5F, 1.0F));
-		objectList->objects.at(objectList->objects.size() - 1)->GetPhysicsBodies()[0]->SetVisible(false);
-
+		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(Vec3(2.0F, 2.0F, 2.0F));
+		// objectList->objects.at(objectList->objects.size() - 1)->SetRotationZDegrees(45.0F);
+		
 		// path
 		Path path = Path();
 		path.AddNode(8.0F, 0.0F, 0.0F);

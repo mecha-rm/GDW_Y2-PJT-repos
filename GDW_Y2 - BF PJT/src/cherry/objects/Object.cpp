@@ -146,13 +146,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			AddPhysicsBody(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetLocalPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			AddPhysicsBody(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetLocalPosition(), sphere->GetRadius()));
 			sphere = nullptr;
 			break;
 		}
@@ -270,9 +270,11 @@ void cherry::Object::SetAlpha(float a)
 	alpha = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
 
 	// if the object doesn't have a 100% alpha value, then it won't need to be sorted for proper transparency.
-	material->HasTransparency = (alpha < 1.0F) ? true: false;
-
-	material->Set("a_Alpha", alpha);
+	if (material != nullptr)
+	{
+		material->HasTransparency = (alpha < 1.0F) ? true : false;
+		material->Set("a_Alpha", alpha);
+	}
 }
 
 // returns if the object is visible
