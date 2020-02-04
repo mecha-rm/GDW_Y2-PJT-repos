@@ -265,8 +265,6 @@ void cnz::CNZ_Game::SpawnEnemyGroup(int i = -1)
 
 void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 
-	bool visibleBbox = false;
-
 	objList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
 	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
 	std::string curObjStr;
@@ -371,14 +369,6 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-	}
-
-	if (visibleBbox) {
-		this->playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-
-		for (int i = 0; i < obstaclePBs.size(); i++) {
-			obstaclePBs[i]->SetVisible(true);
 		}
 	}
 }
@@ -835,6 +825,15 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	this->playerPrevPos = playerObj->GetPosition();
 	if (showPBs) {
 		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+		for (int i = 0; i < obstaclePBs.size(); i++) {
+			obstaclePBs[i]->SetVisible(true);
+		}
+		for (int i = 0; i < enemyPBs.size(); i++) {
+			enemyPBs[i]->SetVisible(true);
+		}
+		for (int i = 0; i < projectilePBs.size(); i++) {
+			projectilePBs[i]->SetVisible(true);
+		}
 	}
 
 	float moveInc = -10.0F; // the movement incrementer.
