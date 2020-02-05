@@ -162,7 +162,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 			else if (legend[curObj] == "Wall") { // wall
 				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), cherry::Vec3(4, 4, 1), true);
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-
+				
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers

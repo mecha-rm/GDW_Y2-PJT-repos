@@ -45,6 +45,8 @@ namespace cnz
 		bool attacking = false;
 		cherry::Object* arrow = nullptr;
 		bool alive = false;
+		bool stunned = false;
+		float stunTimer;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees

@@ -74,7 +74,9 @@ void cnz::CNZ_Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_D: // right
 		d = true;
 		break;
-
+	case GLFW_KEY_F: // right
+		f = true;
+		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = true;
 		break;
@@ -131,6 +133,9 @@ void cnz::CNZ_Game::KeyReleased(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_D: // right
 		d = false;
+		break;
+	case GLFW_KEY_F: // right
+		f = false;
 		break;
 	
 	case GLFW_KEY_LEFT_SHIFT:
@@ -260,8 +265,6 @@ void cnz::CNZ_Game::SpawnEnemyGroup(int i = -1)
 
 void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 
-	bool visibleBbox = false;
-
 	objList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
 	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
 	std::string curObjStr;
@@ -368,19 +371,14 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 	}
-
-	if (visibleBbox) {
-		this->playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-
-		for (int i = 0; i < obstaclePBs.size(); i++) {
-			obstaclePBs[i]->SetVisible(true);
-		}
-	}
 }
 
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	// GL debug output
+	glEnable(GL_DEBUG_OUTPUT);
+
 	using namespace cherry;
 
 	// srand(time(NULL)); // move to Game.h
@@ -621,8 +619,18 @@ void cnz::CNZ_Game::LoadContent()
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(19);
 
-		indicatorObj = new Player("res/objects/GDW_1_Y2 - Wall Tile.obj", GetCurrentSceneName()); // creates indicator for dash being ready
-		indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
+		indArrowAnim = new MorphAnimation();
+		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
+		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+		
+		indArrow = new Object("res/objects/Arrow_Start.obj", GetCurrentSceneName(), matDynamic, false, true);
+		indArrow->SetRotationXDegrees(90);
+		indArrow->AddAnimation(indArrowAnim);
+		//AddObjectToScene(indArrow);
+
+		indicatorObj = new Object("res/objects/Arrow_End.obj", GetCurrentSceneName(), matStatic, false, false); // creates indicator for dash being ready
+		indicatorObj->SetRotationXDegrees(90);
+		//indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
 		AddObjectToScene(indicatorObj);
 
 		//// setting up the camera
@@ -816,10 +824,20 @@ void cnz::CNZ_Game::LoadContent()
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
+	GLenum test = glGetError();
 
 	this->playerPrevPos = playerObj->GetPosition();
 	if (showPBs) {
 		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+		for (int i = 0; i < obstaclePBs.size(); i++) {
+			obstaclePBs[i]->SetVisible(true);
+		}
+		for (int i = 0; i < enemyPBs.size(); i++) {
+			enemyPBs[i]->SetVisible(true);
+		}
+		for (int i = 0; i < projectilePBs.size(); i++) {
+			projectilePBs[i]->SetVisible(true);
+		}
 	}
 
 	float moveInc = -10.0F; // the movement incrementer.
@@ -849,20 +867,6 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyPBs[i]);
 		if (collision) {
 			playerEnemyCollisions.push_back(enemyPBs[i]);
-		}
-	}
-
-	// find all projectiles that player is colliding with
-	for (int i = 0; i < projectilePBs.size(); i++) {
-		projectilePBs[i]->SetModelPosition(projectilePBs[i]->GetObject()->GetPosition()); // update pb
-		projectilePBs[i]->SetVisible(true);
-
-		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projectilePBs[i]);
-		if (collision) { // check for collision and delete
-			auto tempObj = projectilePBs[i]->GetObject();
-			tempObj->RemovePhysicsBody(projectilePBs[i]);
-			tempObj->SetPosition(1000, 1000, 1000);
-			//sDeleteObjectFromScene(projectilePBs[i]->GetObject());
 		}
 	}
 
@@ -939,10 +943,28 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		ls = false;
 	}
 	
+	int enemyCount = 0;
+
 	//Enemy AI
 	for (int i = 0; i < enemyGroups.size(); i++) {
 		for (int j = 0; j < enemyGroups[i].size(); j++) {
 			if (enemyGroups[i][j]->alive == true) {
+				enemyCount++;
+				if (f == true && enemyGroups[i][j]->stunned == false) {
+					enemyGroups[i][j]->stunned = true;
+					enemyGroups[i][j]->stunTimer = 0;
+				}
+				else if (enemyGroups[i][j]->stunned == true) {
+					if (enemyGroups[i][j]->stunTimer >= 5.0f) {
+						enemyGroups[i][j]->stunned = false;
+					}
+					else {
+						enemyGroups[i][j]->stunTimer += deltaTime;
+					}
+				}
+			}
+
+			if (enemyGroups[i][j]->alive == true && enemyGroups[i][j]->stunned == false) {
 				//Look at player
 				enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
 				enemyGroups[i][j]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyGroups[i][j]->GetDegreeAngle()), true);
@@ -1009,6 +1031,9 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		}
 	}
 
+	if (enemyCount == 0) {
+		SpawnEnemyGroup();
+	}
 	//Update Projectiles
 	for (int i = 0; i < projList.size(); i++) {
 		if (projList[i]->active == true) {
@@ -1016,7 +1041,8 @@ void cnz::CNZ_Game::Update(float deltaTime)
 			projList[i]->GetPhysicsBodies()[0]->SetWorldPosition(projList[i]->GetPosition());
 			projList[i]->GetPhysicsBodies()[0]->SetModelPosition(cherry::Vec3(0,0,0));
 			projTimeList[i] += deltaTime;
-			if (projTimeList[i] >= 5) {
+			if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projectilePBs[i])) {
+				projList[i]->RemovePhysicsBody(projectilePBs[i]);
 				enemyGroups[projList[i]->GetWhichGroup()][projList[i]->GetWhichEnemy()]->attacking = false;
 				projList[i]->active = false;
 				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
@@ -1031,7 +1057,10 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	// dash code
 	if (playerObj->GetDashTime() >= 1.0f) {
 		//Display indicator
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 2));
+		//indArrowAnim->Play();
+		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+ 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
 	else {
 		//Hide indicator
