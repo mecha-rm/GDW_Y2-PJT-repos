@@ -210,11 +210,17 @@ cherry::Vec3 cherry::PhysicsBody::GetWorldPosition() const
 
 
 
+// gets the local rotation in degrees
+glm::vec3 cherry::PhysicsBody::GetLocalRotationDegreesGLM() const
+{
+	return glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z);
+}
+
 // gets rotation in degrees
-cherry::Vec3 cherry::PhysicsBody::GetRotationDegrees() const { return rotation; }
+cherry::Vec3 cherry::PhysicsBody::GetLocalRotationDegrees() const { return rotation; }
 
 // set rotation in degrees
-void cherry::PhysicsBody::SetRotationDegrees(Vec3 degrees) 
+void cherry::PhysicsBody::SetLocalRotationDegrees(Vec3 degrees) 
 { 
 	rotation = degrees;
 
@@ -225,8 +231,16 @@ void cherry::PhysicsBody::SetRotationDegrees(Vec3 degrees)
 	}
 }
 
+// gets the local rotation in radians.
+glm::vec3 cherry::PhysicsBody::GetLocalRotationRadiansGLM() const
+{
+	cherry::Vec3 temp = GetLocalRotationRadians();
+
+	return glm::vec3(temp.v.x, temp.v.y, temp.v.z);
+}
+
 // get rotation in radians
-cherry::Vec3 cherry::PhysicsBody::GetRotationRadians() const 
+cherry::Vec3 cherry::PhysicsBody::GetLocalRotationRadians() const 
 { 
 	// returns the vec3
 	return Vec3(
@@ -237,7 +251,7 @@ cherry::Vec3 cherry::PhysicsBody::GetRotationRadians() const
 }
 
 // set rotation in radians
-void cherry::PhysicsBody::SetRotationRadians(Vec3 radians)
+void cherry::PhysicsBody::SetLocalRotationRadians(Vec3 radians)
 {
 	rotation = Vec3(
 		util::math::radiansToDegrees(rotation.v.x),
@@ -252,12 +266,53 @@ void cherry::PhysicsBody::SetRotationRadians(Vec3 radians)
 	}
 }
 
+// gets the world rotation in degrees.
+glm::vec3 cherry::PhysicsBody::GetWorldRotationDegreesGLM() const
+{
+	if (body != nullptr)
+		return body->GetRotationDegreesGLM();
+	else
+		return GetLocalRotationDegreesGLM();
+}
+
+// gets the world rotation of the body.
+cherry::Vec3 cherry::PhysicsBody::GetWorldRotationDegrees() const 
+{ 
+	if (body != nullptr)
+		return body->GetRotationDegrees();
+	else
+		return rotation;
+}
+
+// gets the world rotation in radians.
+cherry::Vec3 cherry::PhysicsBody::GetWorldRotationRadiansGLM() const
+{
+	if (body != nullptr)
+		return body->GetRotationRadiansGLM();
+	else
+		return GetLocalRotationRadiansGLM();
+}
+
+// gets the world rotation in radians.
+cherry::Vec3 cherry::PhysicsBody::GetWorldRotationRadians() const
+{
+	if (body != nullptr)
+		return body->GetRotationRadians();
+	else
+		return GetLocalRotationRadians();
+}
+
+
+
+
+// gets the local scale of the physics body.
+glm::vec3 cherry::PhysicsBody::GetLocalScaleGLM() const { return glm::vec3(scale.v.x, scale.v.y, scale.v.z); }
 
 // gets the scale
-cherry::Vec3 cherry::PhysicsBody::GetScale() const { return scale; }
+cherry::Vec3 cherry::PhysicsBody::GetLocalScale() const { return scale; }
 
 // sets the scale of the object
-void cherry::PhysicsBody::SetScale(cherry::Vec3 newScale) 
+void cherry::PhysicsBody::SetLocalScale(cherry::Vec3 newScale) 
 { 
 	scale = newScale; 
 
@@ -273,6 +328,24 @@ void cherry::PhysicsBody::SetScale(cherry::Vec3 newScale)
 	}
 	
 	body->SetScale(bodyScale);
+}
+
+// gets the world scale.
+glm::vec3 cherry::PhysicsBody::GetWorldScaleGLM() const
+{
+	if (body != nullptr)
+		return body->GetScaleGLM();
+	else
+		return glm::vec3(scale.v.x, scale.v.y, scale.v.z);
+}
+
+// gets the world scale of the physics body.
+cherry::Vec3 cherry::PhysicsBody::GetWorldScale() const
+{
+	if (body != nullptr)
+		return body->GetScale();
+	else
+		return scale;
 }
 
 
@@ -423,8 +496,8 @@ void cherry::PhysicsBody::Update(float deltaTime)
 	
 
 	// updating the physics body.
-	SetScale(scale);
-	SetRotationDegrees(rotation);
+	SetLocalScale(scale);
+	SetLocalRotationDegrees(rotation);
 	SetLocalPosition(position);
 }
 

@@ -56,6 +56,8 @@ namespace cherry
 		// if no object is attached, then the model position is returned.
 		cherry::Vec3 GetWorldPosition() const;
 
+
+
 		// sets the world position of the body
 		// void SetWorldPosition(cherry::Vec3 wpos);
 
@@ -63,24 +65,51 @@ namespace cherry
 		// void SetWorldPosition(glm::vec3 wpos);
 
 		// gets the rotation of the body (in degrees)
-		cherry::Vec3 GetRotationDegrees() const;
+		glm::vec3 GetLocalRotationDegreesGLM() const;
+
+		// gets the rotation of the body (in degrees)
+		cherry::Vec3 GetLocalRotationDegrees() const;
 
 		// sets the rotation in degrees
-		void SetRotationDegrees(Vec3 degrees);
+		void SetLocalRotationDegrees(Vec3 degrees);
 		
+		// gets the local rotation in radians.
+		glm::vec3 GetLocalRotationRadiansGLM() const;
+
 		// gets rotation of the physics body in radians
-		cherry::Vec3 GetRotationRadians() const;
+		cherry::Vec3 GetLocalRotationRadians() const;
 
 		// sets rotation in radians
-		void SetRotationRadians(Vec3 radians);
+		void SetLocalRotationRadians(Vec3 radians);
+
+		// gets the world rotation in degrees.
+		glm::vec3 GetWorldRotationDegreesGLM() const;
+
+		// gets the world rotation in degrees.
+		cherry::Vec3 GetWorldRotationDegrees() const;
+
+		// gets the world rotation in radians.
+		cherry::Vec3 GetWorldRotationRadiansGLM() const;
+
+		// gets the world rotation in radians.
+		cherry::Vec3 GetWorldRotationRadians() const;
 
 
-		// gets the scale of the body
-		cherry::Vec3 GetScale() const;
+
+		// gets the local scale of the physics body.
+		glm::vec3 GetLocalScaleGLM() const;
+
+		// gets the local scale of the body
+		cherry::Vec3 GetLocalScale() const;
 
 		// sets the scale of the body.
-		void SetScale(cherry::Vec3 newScale);
+		void SetLocalScale(cherry::Vec3 newScale);
 
+		// gets the world scale of the object.
+		glm::vec3 GetWorldScaleGLM() const;
+
+		// gets the world scale of the body.
+		cherry::Vec3 GetWorldScale() const;
 		
 		// calculates collision between two physics bodies if an equation for it is available.
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
