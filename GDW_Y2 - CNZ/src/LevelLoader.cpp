@@ -160,7 +160,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				// from the CNZ_Game class' methods.
 			}
 			else if (legend[curObj] == "Wall") { // wall
-				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), cherry::Vec3(4, 4, 1), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), cherry::Vec3(4, 4, 1), true);
+				}
+				else {
+					obj = new Obstacle(*this->wall);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 				
 				std::vector<float> properties = GetObjProps(y, x);
@@ -189,7 +195,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Dumpster") { // Dumpster
-				Obstacle* obj = new Obstacle("res/objects/props/Dumpster.obj", this->GetSceneName(), cherry::Vec3(10, 2, 2), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/Dumpster.obj", this->GetSceneName(), cherry::Vec3(10, 2, 2), true);
+				}
+				else {
+					obj = new Obstacle(*this->dumpster);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -218,7 +230,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post") { // Lamp post
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				}
+				else {
+					obj = new Obstacle(*this->lampPost);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -247,7 +265,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post corner") { // Lamp post corner
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				}
+				else {
+					obj = new Obstacle(*this->lampPostCorner);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -276,7 +300,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post middle") { // lamp post middle
-				Obstacle* obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+				}
+				else {
+					obj = new Obstacle(*this->lampPostMiddle);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -305,7 +335,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Barrel") { // barrel
-				Obstacle* obj = new Obstacle("res/objects/props/drum.obj", this->GetSceneName(), cherry::Vec3(2, 2, 2), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/drum.obj", this->GetSceneName(), cherry::Vec3(2, 2, 2), true);
+				}
+				else {
+					obj = new Obstacle(*this->barrel);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -334,7 +370,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Katana") { // katana
-				Obstacle* obj = new Obstacle("res/objects/weapons/katana.obj", this->GetSceneName(), cherry::Vec3(1, 1, 2), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/weapons/katana.obj", this->GetSceneName(), cherry::Vec3(1, 1, 2), true);
+				}
+				else {
+					obj = new Obstacle(*this->katana);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -363,7 +405,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Pillar") { // pillar
-				Obstacle* obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->GetSceneName(), cherry::Vec3(2, 2, 4), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->GetSceneName(), cherry::Vec3(2, 2, 4), true);
+				}
+				else {
+					obj = new Obstacle(*this->pillar);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -392,7 +440,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Manhole cover") { // manhole cover
-				Obstacle* obj = new Obstacle("res/objects/props/manhole.obj", this->GetSceneName(), cherry::Vec3(1, 1, 0.5), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/manhole.obj", this->GetSceneName(), cherry::Vec3(1, 1, 0.5), true);
+				}
+				else {
+					obj = new Obstacle(*this->manHoleCover);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -421,7 +475,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Road") { // road
-				Obstacle* obj = new Obstacle("res/objects/props/Road.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/Road.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				}
+				else {
+					obj = new Obstacle(*this->road);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);
@@ -450,7 +510,13 @@ std::vector<cherry::Object*> Level::GetObjects() {
 				this->objList.push_back(obj);
 			}
 			else if (legend[curObj] == "Sidewalk") { // sidewalk
-				Obstacle* obj = new Obstacle("res/objects/props/sidewalk.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				Obstacle* obj;
+				if (this->wall == nullptr) {
+					obj = new Obstacle("res/objects/props/sidewalk.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+				}
+				else {
+					obj = new Obstacle(*this->sidewalk);
+				}
 				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 
 				std::vector<float> properties = GetObjProps(y, x);

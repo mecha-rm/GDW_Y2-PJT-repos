@@ -58,5 +58,18 @@ private:
 	cherry::Material::Sptr matStatic; // the static material
 	cherry::Material::Sptr matDynamic; // the dynamic material
 
+	// Obstacles
+	Obstacle* wall = nullptr;
+	Obstacle* dumpster = nullptr;
+	Obstacle* lampPost = nullptr;
+	Obstacle* lampPostCorner = nullptr;
+	Obstacle* lampPostMiddle = nullptr;
+	Obstacle* barrel = nullptr;
+	Obstacle* katana = nullptr;
+	Obstacle* pillar = nullptr;
+	Obstacle* manHoleCover = nullptr;
+	Obstacle* road = nullptr;
+	Obstacle* sidewalk = nullptr;
+
 	const float cellOffset = 6.25f;
 };
