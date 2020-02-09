@@ -825,17 +825,11 @@ void cnz::CNZ_Game::LoadContent()
 // Update function
 void cnz::CNZ_Game::Update(float deltaTime)
 {
-	GLenum test = glGetError();
+	//GLenum test = glGetError();
 
 	this->playerPrevPos = playerObj->GetPosition();
 	if (showPBs) {
 		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-		for (int i = 0; i < obstaclePBs.size(); i++) {
-			obstaclePBs[i]->SetVisible(true);
-		}
-		for (int i = 0; i < enemyPBs.size(); i++) {
-			enemyPBs[i]->SetVisible(true);
-		}
 		for (int i = 0; i < projectilePBs.size(); i++) {
 			projectilePBs[i]->SetVisible(true);
 		}
@@ -855,9 +849,6 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		if (collision) {
 			playerObstacleCollisions.push_back(obstaclePBs[i]);
 		}
-		else {
-			//std::cout << i << " is not a collision." << std::endl;
-		}
 	}
 
 	// find all enemies the player is colliding with
@@ -876,31 +867,47 @@ void cnz::CNZ_Game::Update(float deltaTime)
 	ca = true;
 	cd = true;
 
+
+	// TODO: actually fix collisions... and allow player to move out if colliding in all directions. (AKA when all of the above booleans are false)
 	// check what directions the player can move in based on its collisions with obstacles in the scene.
 	if (playerObstacleCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
 		// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
 		for (int i = 0; i < playerObstacleCollisions.size(); i++) {
-			cherry::Vec3 dP = playerObstacleCollisions[i]->GetLocalPosition() - playerObj->GetPosition();
-			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
-				if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
-					cs = false;
-				}
-				else if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
-					cw = false;
-				}
+			cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
+			//cherry::Vec3 dP = playerObstacleCollisions[i]->GetLocalPosition() - playerObj->GetPosition();
+			
+			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+				cs = false;
 			}
-			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
-				if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
-					ca = false;
-				}
-				else if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
-					cd = false;
-				}
+			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+				cw = false;
 			}
+			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+				ca = false;
+			}
+			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+				cd = false;
+			}
+			//if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
+			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+			//		cs = false;
+			//	}
+			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+			//		cw = false;
+			//	}
+			//}
+			//else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
+			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+			//		ca = false;
+			//	}
+			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+			//		cd = false;
+			//	}
+			//}
 		}
 	}
 	
-	// side checks
+	//// side checks
 	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) // right of the object
 	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) // left of the object
 	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
