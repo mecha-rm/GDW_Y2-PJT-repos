@@ -1,7 +1,7 @@
 // Physics Body - used to add physics related properties to an object.
 #pragma once
-#include "VectorCRY.h"
-#include "objects/Primitives.h"
+#include "..\VectorCRY.h"
+#include "..\objects/Primitives.h"
 
 namespace cherry
 {
@@ -177,23 +177,35 @@ namespace cherry
 		// local position and dimensions (x, y, z) = (width, height, depth)
 		PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimensions);
 
-		// gets the width (size on x-axis)
-		float GetWidth() const;
+		// gets the width (size on x-axis). This is the base width with no scaling applied.
+		float GetLocalWidth() const;
 
 		// sets width
-		void SetWidth(float newWidth);
+		// void SetWidth(float newWidth);
 
-		// gets the height (size on y-axis)
-		float GetHeight() const;
+		// gets the world width of the hitbox. 
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldWidth() const;
+
+		// gets the height (size on y-axis) with no scaling applied.
+		float GetLocalHeight() const;
 
 		// sets height (size on y-axis)
-		void SetHeight(float newHeight);
+		// void SetHeight(float newHeight);
 
-		// gets the depth (size on z-axis)
-		float GetDepth() const;
+		// gets the world height for the physics body.
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldHeight() const;
+
+		// gets the depth (size on z-axis) with no scaling applied.
+		float GetLocalDepth() const;
 
 		// sets depth (size on z-axis)
-		void SetDepth(float newDepth);
+		// void SetDepth(float newDepth);
+
+		// gets the world depth with no scaling applied.
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldDepth() const;
 
 		// update for bounding box
 		void Update(float deltaTime);
@@ -220,17 +232,25 @@ namespace cherry
 		// position of the sphere (relative to the object's origin), and its radius.
 		PhysicsBodySphere(cherry::Vec3 position, float radius);
 
-		// gets the radius
-		float GetRadius() const;
+		// gets the local radius with no scaling applied.
+		float GetLocalRadius() const;
 
 		// sets the radius; if a negative is passed, the absolute value is received.
-		void SetRadius(float r);
+		// void SetRadius(float r);
 
-		// gets the diameter.
-		float GetDiameter() const;
+		// gets the world radius. This is based on the greatest scale amongst the three axes.
+		// This is scaled up by the scale of the body and the scale of the sphere.
+		float GetWorldRadius() const;
+
+		// gets the diameter with no scaling applied.
+		float GetLocalDiameter() const;
 
 		// sets the diameter
-		void SetDiameter(float diameter);
+		// void SetDiameter(float diameter);
+
+		// gets the world diameter
+		// This is scaled up by the scale of the body and the scale of the sphere.
+		float GetWorldDiameter() const;
 
 		// update loop
 		void Update(float deltaTime);

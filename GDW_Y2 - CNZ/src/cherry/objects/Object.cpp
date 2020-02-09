@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "..\utils\Utils.h"
 #include "..\utils\math\Rotation.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 #include "..\WorldTransform.h"
 
 #include "..\SceneManager.h"
@@ -146,13 +146,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			AddPhysicsBody(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetLocalPosition(), box->GetLocalWidth(), box->GetLocalHeight(), box->GetLocalDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			AddPhysicsBody(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetLocalPosition(), sphere->GetLocalRadius()));
 			sphere = nullptr;
 			break;
 		}
@@ -164,7 +164,7 @@ cherry::Object::Object(const cherry::Object& obj)
 	// if the file is an obj file, then the indices shouldn't be used for the mesh.
 	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
 		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
-	else // runtime mesh
+	else // runtime primitive
 		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
@@ -270,9 +270,11 @@ void cherry::Object::SetAlpha(float a)
 	alpha = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
 
 	// if the object doesn't have a 100% alpha value, then it won't need to be sorted for proper transparency.
-	material->HasTransparency = (alpha < 1.0F) ? true: false;
-
-	material->Set("a_Alpha", alpha);
+	if (material != nullptr)
+	{
+		material->HasTransparency = (alpha < 1.0F) ? true : false;
+		material->Set("a_Alpha", alpha);
+	}
 }
 
 // returns if the object is visible

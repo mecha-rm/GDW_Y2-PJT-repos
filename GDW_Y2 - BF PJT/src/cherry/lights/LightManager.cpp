@@ -1,8 +1,8 @@
 // LightManager - manages all lights for the game
 #include "LightManager.h"
 
-#include "objects/ObjectManager.h"
-#include "utils/Utils.h"
+#include "..\objects/ObjectManager.h"
+#include "..\utils/Utils.h"
 
 std::vector<cherry::LightList*> cherry::LightManager::lightLists = std::vector<cherry::LightList*>();
 

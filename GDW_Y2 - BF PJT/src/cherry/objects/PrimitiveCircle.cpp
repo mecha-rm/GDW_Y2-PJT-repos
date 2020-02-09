@@ -39,7 +39,7 @@ cherry::PrimitiveCircle::PrimitiveCircle(float radius, unsigned int edges, bool 
 	{
 		// rotates the vector
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
-		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, 0.0F), rFactor);
+		cherry::Vec3 tempVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, 0.0F), rFactor, false);
 
 		// vertex (position, colour, and normal)
 		vertices[i] = { {tempVec.v.x, tempVec.v.y, tempVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 1.0F} };

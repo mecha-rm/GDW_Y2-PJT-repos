@@ -13,7 +13,7 @@
 #include "MeshRenderer.h"
 #include "Texture2D.h"
 
-#include "PhysicsBody.h"
+#include "physics/PhysicsBody.h"
 #include "utils/Utils.h"
 #include "WorldTransform.h"
 
@@ -1072,6 +1072,7 @@ void cherry::Game::LoadContent()
 		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
 		// 	"res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
 		
+		// PhysicsBodyBox* temp = new PhysicsBodyBox(Vec3(0.0F, 0.0F, 0.0F), 1.0F, 3.0F, 1.0F);
 		PhysicsBodyBox* temp = new PhysicsBodyBox(Vec3(0.0F, 1.0F, 0.0F), 1.0F, 3.0F, 1.0F);
 		// temp->SetRotationDegrees(Vec3(0, 0, 30.0F));
 		// temp->SetScale(Vec3(2.0F, 2.0F, 2.0F));
@@ -1188,6 +1189,54 @@ void cherry::Game::Update(float deltaTime) {
 
 	// updates the object list
 	objectList->Update(deltaTime);
+
+	// if collisions should be checked.
+	if (collisionMode)
+	{
+		// collision calculations
+	mainLoop:
+		for (cherry::Object* obj1 : objectList->objects) // object 1
+		{
+			if (obj1 == nullptr)
+				continue;
+
+			if (obj1->GetIntersection() == true) // already colliding with something.
+				continue;
+
+			for (cherry::Object* obj2 : objectList->objects) // object 2
+			{
+				if (obj1 == obj2 || obj2 == nullptr) // if the two sceneLists are the same.
+					continue;
+
+				if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
+					continue;
+
+				// gets the vectors from both sceneLists
+				std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
+				std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
+
+				// goes through each collision body
+				for (cherry::PhysicsBody* pb1 : pbods1)
+				{
+					for (cherry::PhysicsBody* pb2 : pbods2)
+					{
+						bool col = PhysicsBody::Collision(pb1, pb2);
+
+						if (col == true) // if collision has occurred.
+						{
+							obj1->SetIntersection(true);
+							// obj1->setColor(255, 0, 0);
+							obj2->SetIntersection(true);
+							// obj2->setColor(255, 0, 0);
+							// std::cout << "Hit!" << std::endl;
+
+							goto mainLoop; // goes back to the main loop
+						}
+					}
+				}
+			}
+		}
+	}
 
 	// moved to the bottom of the update.
 	// called to Update the position and rotation of hte sceneLists.

@@ -3,7 +3,7 @@
 #include "Player.h"
 #include "EnemyTypes/Enemies.h"
 #include "Obstacle.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 #include "Projectile.h"
 #include "cherry/animate/Path.h"
 #include <ctime>
@@ -96,11 +96,11 @@ namespace cnz
 		
 
 		//Load enemies // Create multiple enemies using these with only loading one .obj
-		cnz::Enemy* sentry = nullptr; //Sentry enemy : Bowman
-		cnz::Enemy* oracle = nullptr; //Oracle enemy : Polearmsman
-		cnz::Enemy* marauder = nullptr; //Marauder enemy : Swordsman
-		cnz::Enemy* bastion = nullptr; //Bastion enemy : Shield guy
-		cnz::Enemy* mechaspider = nullptr; //Mechaspider enemy : Land mine
+		cnz::Sentry* sentry = nullptr; //Sentry enemy : Bowman
+		cnz::Oracle* oracle = nullptr; //Oracle enemy : Polearmsman
+		cnz::Marauder* marauder = nullptr; //Marauder enemy : Swordsman
+		cnz::Bastion* bastion = nullptr; //Bastion enemy : Shield guy
+		cnz::Mechaspider* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
 
 		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.

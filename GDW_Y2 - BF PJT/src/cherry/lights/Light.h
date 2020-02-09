@@ -1,8 +1,8 @@
 // Light (Source) - used to create lights
 #pragma once
 
-#include "VectorCRY.h" // includes cherry::Vectors, and glm::vectors
-#include "Material.h"
+#include "..\VectorCRY.h" // includes cherry::Vectors, and glm::vectors
+#include "..\Material.h"
 
 
 namespace cherry

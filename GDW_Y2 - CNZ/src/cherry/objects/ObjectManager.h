@@ -135,6 +135,9 @@ namespace cherry
 
 		std::vector<cherry::Object*> objects; // the vector of sceneLists
 
+		// if 'true', collision is checked between objects.
+		// bool checkCollision = true;
+
 	private:
 		std::string scene = ""; // the scene te object is in. TODO: make consts?
 

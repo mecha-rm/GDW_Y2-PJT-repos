@@ -44,7 +44,9 @@ namespace util
 		typedef class Vec2 : public Vec
 		{
 		public:
-			Vec2(float x = 0.0F, float y = 0.0F);
+			Vec2() = default;
+
+			Vec2(float x, float y);
 
 			// istream
 			friend std::istream& operator>>(std::istream&, Vec2&);
@@ -105,7 +107,9 @@ namespace util
 		typedef class Vec3 : public Vec
 		{
 		public:
-			Vec3(float x = 0.0F, float y = 0.0F, float z = 0.0F);
+			Vec3() = default;
+
+			Vec3(float x, float y, float z);
 
 			Vec3(Vec2 vec, float z = 0.0F);
 
@@ -171,7 +175,9 @@ namespace util
 		typedef class Vec4 : public Vec
 		{
 		public:
-			Vec4(float x = 0.0F, float y = 0.0F, float z = 0.0F, float w = 0.0F);
+			Vec4() = default;
+
+			Vec4(float x, float y, float z, float w);
 
 			Vec4(Vec3 vec, float w = 0.0F);
 

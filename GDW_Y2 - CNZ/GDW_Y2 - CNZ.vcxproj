@@ -92,13 +92,15 @@
     <ClCompile Include="src\cherry\animate\MorphAnimation.cpp" />
     <ClCompile Include="src\cherry\animate\Path.cpp" />
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
+    <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
+    <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
     <ClCompile Include="src\cherry\Light.cpp" />
     <ClCompile Include="src\cherry\LightManager.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\objects\Liquid.cpp" />
     <ClCompile Include="src\cherry\objects\ObjectManager.cpp" />
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
-    <ClCompile Include="src\cherry\Physics.cpp" />
+    <ClCompile Include="src\cherry\physics\Physics.cpp" />
     <ClCompile Include="src\cherry\Skybox.cpp" />
     <ClCompile Include="src\cherry\Target.cpp" />
     <ClCompile Include="src\cherry\Texture2D.cpp" />
@@ -132,7 +134,7 @@
     <ClCompile Include="src\cherry\objects\PrimitiveDiamond.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveSphere.cpp" />
-    <ClCompile Include="src\cherry\PhysicsBody.cpp" />
+    <ClCompile Include="src\cherry\physics\PhysicsBody.cpp" />
     <ClCompile Include="src\cherry\Scene.cpp" />
     <ClCompile Include="src\cherry\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
@@ -154,6 +156,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
+    <ClInclude Include="external\fmod\fmod.h" />
+    <ClInclude Include="external\fmod\fmod.hpp" />
+    <ClInclude Include="external\fmod\fmod_codec.h" />
+    <ClInclude Include="external\fmod\fmod_common.h" />
+    <ClInclude Include="external\fmod\fmod_dsp.h" />
+    <ClInclude Include="external\fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="external\fmod\fmod_errors.h" />
+    <ClInclude Include="external\fmod\fmod_output.h" />
+    <ClInclude Include="external\fmod\fmod_studio.h" />
+    <ClInclude Include="external\fmod\fmod_studio.hpp" />
+    <ClInclude Include="external\fmod\fmod_studio_common.h" />
     <ClInclude Include="external\glad\glad.h" />
     <ClInclude Include="external\GLFW\glfw3.h" />
     <ClInclude Include="external\GLFW\glfw3native.h" />
@@ -374,13 +387,15 @@
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
     <ClInclude Include="src\cherry\animate\Path.h" />
     <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
+    <ClInclude Include="src\cherry\audio\AudioComponent.h" />
+    <ClInclude Include="src\cherry\audio\AudioEngine.h" />
     <ClInclude Include="src\cherry\Light.h" />
     <ClInclude Include="src\cherry\LightManager.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\objects\Liquid.h" />
     <ClInclude Include="src\cherry\objects\ObjectManager.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
-    <ClInclude Include="src\cherry\Physics.h" />
+    <ClInclude Include="src\cherry\physics\Physics.h" />
     <ClInclude Include="src\cherry\Skybox.h" />
     <ClInclude Include="src\cherry\Target.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
@@ -416,7 +431,7 @@
     <ClInclude Include="src\cherry\objects\PrimitivePlane.h" />
     <ClInclude Include="src\cherry\objects\Primitives.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveSphere.h" />
-    <ClInclude Include="src\cherry\PhysicsBody.h" />
+    <ClInclude Include="src\cherry\physics\PhysicsBody.h" />
     <ClInclude Include="src\cherry\Scene.h" />
     <ClInclude Include="src\cherry\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />
@@ -555,7 +570,11 @@
     <None Include="external\GLM\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <Library Include="external\fmod\fmod64.lib" />
+    <Library Include="external\fmod\fmodstudio_vc.lib" />
     <Library Include="lib\cherry.lib" />
+    <Library Include="lib\fmod64.lib" />
+    <Library Include="lib\fmodstudio_vc.lib" />
     <Library Include="lib\glfw3.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

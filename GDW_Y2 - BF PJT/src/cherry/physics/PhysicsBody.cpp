@@ -1,10 +1,10 @@
 // Physics Body - used to add physics related properties to an object.
 #include "PhysicsBody.h"
-#include "utils/math/Collision.h"
-#include "objects/PrimitiveCube.h"
-#include "WorldTransform.h"
+#include "..\utils/math/Collision.h"
+#include "..\objects/PrimitiveCube.h"
+#include "..\WorldTransform.h"
 
-#include "utils/math/Rotation.h"
+#include "..\utils/math/Rotation.h"
 
 float cherry::PhysicsBody::alpha = 0.80F;
 
@@ -363,17 +363,57 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 	// OBB Collision
 	if (p1->GetId() == 1 && p2->GetId() == 1)
 	{
+		float val1 = 0, val2 = 0; // used to fast track collisio
+
 		// downcasts the sceneLists
 		cherry::PhysicsBodyBox * temp1 = (cherry::PhysicsBodyBox*)p1;
 		cherry::PhysicsBodyBox * temp2 = (cherry::PhysicsBodyBox*)p2;
 
-		// calculation (aabb)
-		// return util::math::aabbCollision(temp1->GetWorldPosition().v, temp1->GetWidth(), temp1->GetHeight(), temp1->GetDepth(),
-		// 								 temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
+		{
+			util::math::Box3D b1; // A
+			util::math::Box3D b2; // B
 
-		// calculation (obb)
-		return util::math::aabbCollision(temp1->GetWorldPosition().v, temp1->GetWidth(), temp1->GetHeight(), temp1->GetDepth(),
-			temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
+			// box 1 (start)
+			b1.position = temp1->GetWorldPosition().v;
+			b1.width = temp1->GetWorldWidth();
+			b1.height = temp1->GetWorldHeight();
+			b1.depth = temp1->GetWorldDepth();
+
+			// box 2 (start)
+			b2.position = temp2->GetWorldPosition().v;
+			b2.width = temp2->GetWorldWidth();
+			b2.height = temp2->GetWorldHeight();
+			b2.depth = temp2->GetWorldDepth();
+
+			// checks if collision is possible.
+			val1 = max(b1.width, max(b1.height, b1.depth));
+			val2 = max(b2.width, max(b2.height, b2.depth));
+
+			// creates a sphere to encompass each box.
+			// since the sphere is the smallest possible will containing the box...
+			// if the distance between the boxes is larger than it, there can't possibly be collision.
+			if ((b1.position - b2.position).length() >= val1 / 2.0F + val2 / 2.0F)
+				return false;
+
+
+			// box 1 (end)
+			b1.rotation = temp1->GetWorldRotationDegrees().v;
+			b1.rotationOrder[0] = 'x';
+			b1.rotationOrder[1] = 'y';
+			b1.rotationOrder[2] = 'z';
+
+			// box 2(end)
+			b2.rotation = temp2->GetWorldRotationDegrees().v;
+			b2.rotationOrder[0] = 'x';
+			b2.rotationOrder[1] = 'y';
+			b2.rotationOrder[2] = 'z';
+
+			// if the objects haven't been rotated, a regular aabb check is done.
+			if (b1.rotation == Vec3(0, 0, 0).v && b2.rotation == Vec3(0, 0, 0).v)
+				return util::math::aabbCollision(b1, b2); // aabb
+			else
+				return util::math::obbCollision(b1, true, b2, true); // obb
+		}
 	}
 	// Sphere Collision
 	else if (p1->GetId() == 2 && p2->GetId() == 2)
@@ -383,9 +423,9 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 		cherry::PhysicsBodySphere* temp2 = (cherry::PhysicsBodySphere*)p2;
 
 		// calculation
-		return util::math::sphereCollision(temp1->GetWorldPosition().v, temp1->GetRadius(), temp2->GetWorldPosition().v, temp2->GetRadius());
+		return util::math::sphereCollision(temp1->GetWorldPosition().v, temp1->GetLocalRadius(), 
+			temp2->GetWorldPosition().v, temp2->GetLocalRadius());
 	}
-
 	// AABB - Sphere Collision
 	else if ((p1->GetId() == 1 && p2->GetId() == 2) || (p1->GetId() == 2 && p2->GetId() == 1))
 	{
@@ -395,13 +435,44 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 			return Collision(p2, p1);
 		}
 
+		// gets the maixmum bounds of the box.
+		float val = 0;
+
 		// p1 is a sphere, p2 is an aabb
 		cherry::PhysicsBodySphere* temp1 = (cherry::PhysicsBodySphere*)p1;
 		cherry::PhysicsBodyBox* temp2 = (cherry::PhysicsBodyBox*)p2;
 
-		// calculation
-		return util::math::sphereAABBCollision(temp1->GetWorldPosition().v, temp1->GetRadius(),
-			temp2->GetWorldPosition().v, temp2->GetWidth(), temp2->GetHeight(), temp2->GetDepth());
+		// sphere
+		util::math::Sphere sphere;
+		sphere.position = temp1->GetWorldPosition().v;
+		sphere.radius = temp1->GetWorldRadius();
+
+		// box (start)
+		util::math::Box3D box;
+		box.position = temp2->GetWorldPosition().v;
+		box.width = temp2->GetWorldWidth();
+		box.height = temp2->GetWorldHeight();
+		box.depth = temp2->GetWorldDepth();
+
+		// gets the maximum axis length for the box.
+		val = max(box.width, max(box.height, box.depth));
+
+		// checks to see if the objects are close enough for collision to be possible.
+		if ((sphere.position - box.position).length() >= sphere.radius + val / 2.0F)
+			return false;
+
+		// box (end)
+		// since there could be collision, the rest of the values are received.
+		box.rotation = temp2->GetWorldRotationDegrees().v;
+		box.rotationOrder[0] = 'x';
+		box.rotationOrder[1] = 'y';
+		box.rotationOrder[2] = 'z';
+
+		// if the box hasn't been rotated, a regular AABB check is done.
+		if (box.rotation == Vec3(0, 0, 0).v)
+			return util::math::sphereAABBCollision(sphere, box);
+		else // rotated box
+			return util::math::sphereOBBCollision(sphere, box, true);
 	}
 
 	return false;
@@ -533,22 +604,31 @@ cherry::PhysicsBodyBox::PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimen
 {}
 
 // gets the width
-float cherry::PhysicsBodyBox::GetWidth() const { return width; }
+float cherry::PhysicsBodyBox::GetLocalWidth() const { return width; }
 
 // sets the width
-void cherry::PhysicsBodyBox::SetWidth(float newWidth) { width = newWidth; }
+// void cherry::PhysicsBodyBox::SetWidth(float newWidth) { width = newWidth; }
+
+// gets the world width of the physics body.
+float cherry::PhysicsBodyBox::GetWorldWidth() const { return width * GetWorldScale().v.x; }
 
 // returns the height
-float cherry::PhysicsBodyBox::GetHeight() const { return height; }
+float cherry::PhysicsBodyBox::GetLocalHeight() const { return height; }
 
 // sets the height
-void cherry::PhysicsBodyBox::SetHeight(float newHeight) { height = newHeight; }
+// void cherry::PhysicsBodyBox::SetHeight(float newHeight) { height = newHeight; }
+
+// gets the world height for the phyics body.
+float cherry::PhysicsBodyBox::GetWorldHeight() const { return height * GetWorldScale().v.y; }
 
 // returns depth
-float cherry::PhysicsBodyBox::GetDepth() const { return depth; }
+float cherry::PhysicsBodyBox::GetLocalDepth() const { return depth; }
 
 // sets the depth
-void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
+// void cherry::PhysicsBodyBox::SetDepth(float newDepth) { depth = newDepth; }
+
+// gets the world depth
+float cherry::PhysicsBodyBox::GetWorldDepth() const { return depth * GetWorldScale().v.z; }
 
 // update
 void cherry::PhysicsBodyBox::Update(float deltaTime)
@@ -585,16 +665,27 @@ cherry::PhysicsBodySphere::PhysicsBodySphere(cherry::Vec3 position, float radius
 }
 
 // gets the radius
-float cherry::PhysicsBodySphere::GetRadius() const { return radius; }
+float cherry::PhysicsBodySphere::GetLocalRadius() const { return radius; }
 
 // sets the radius
-void cherry::PhysicsBodySphere::SetRadius(float r) { radius = abs(r); }
+// void cherry::PhysicsBodySphere::SetRadius(float r) { radius = abs(r); }
+
+// gets the world radius
+float cherry::PhysicsBodySphere::GetWorldRadius() const
+{
+	cherry::Vec3 ws = GetWorldScale(); // gets the world scale.
+
+	return radius * max(ws.v.x, max(ws.v.y, ws.v.z));
+}
 
 // returns the diameter.
-float cherry::PhysicsBodySphere::GetDiameter() const { return radius * 2; }
+float cherry::PhysicsBodySphere::GetLocalDiameter() const { return radius * 2; }
 
 // sets the diameter.
-void cherry::PhysicsBodySphere::SetDiameter(float diameter) { radius = abs(diameter/ 2.0F); }
+// void cherry::PhysicsBodySphere::SetDiameter(float diameter) { radius = abs(diameter/ 2.0F); }
+
+// gets teh world diameter
+float cherry::PhysicsBodySphere::GetWorldDiameter() const { return GetWorldRadius() * 2; }
 
 // update
 void cherry::PhysicsBodySphere::Update(float deltaTime)

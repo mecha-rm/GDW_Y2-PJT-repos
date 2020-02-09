@@ -6,8 +6,11 @@ namespace cnz {
 	class Sentry : public cnz::Enemy
 	{
 	public:
+		// constructor
+		Sentry(std::string scene);
 
-		Sentry() = default;
+		// constructor
+		Sentry(std::string scene, cherry::Material::Sptr mat);
 
 		// copy constructor.
 		Sentry(const cnz::Sentry&);

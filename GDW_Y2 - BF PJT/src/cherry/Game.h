@@ -15,7 +15,7 @@
 #include "SceneManager.h"
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
-#include "LightManager.h"
+#include "lights/LightManager.h"
 #include "audio/AudioComponent.h"
 
 // System Library Includes
@@ -250,6 +250,9 @@ namespace cherry
 		// if false, then they are not used.
 		bool imguiMode = false;
 
+		// if 'true', collisions are checked by the Game class.
+		bool collisionMode = true;
+
 		// list of scenes
 		// std::vector<std::string> scenes;
 
@@ -260,12 +263,12 @@ namespace cherry
 		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
-		glm::ivec2 myWindowSize; // saves the window size
-
 	private:
 
 		// Stores the main window that the game is running in
 		GLFWwindow* myWindow;
+
+		glm::ivec2 myWindowSize; // saves the window size
 
 		// static glm::vec2 resolution;
 

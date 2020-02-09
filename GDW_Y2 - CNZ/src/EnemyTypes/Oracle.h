@@ -6,6 +6,12 @@ namespace cnz {
 	class Oracle : public cnz::Enemy
 	{
 	public:
+		// constructor
+		Oracle(std::string scene);
+
+		// constructor
+		Oracle(std::string scene, cherry::Material::Sptr mat);
+
 		// copy constuctor
 		Oracle(const cnz::Oracle&);
 

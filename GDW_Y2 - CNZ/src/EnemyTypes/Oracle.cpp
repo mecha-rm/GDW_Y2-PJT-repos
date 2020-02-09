@@ -1,5 +1,17 @@
 #include "Oracle.h"
 
+// constructor
+cnz::Oracle::Oracle(std::string scene)
+	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, true)
+{
+}
+
+// constructor
+cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
+	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, mat)
+{
+}
+
 // copy constructor
 cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 {

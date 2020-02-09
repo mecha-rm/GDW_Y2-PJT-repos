@@ -1,7 +1,7 @@
 // PrimitiveSphere
 #include "PrimitiveSphere.h"
 #include "..\utils\math\Rotation.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 
 #include <iostream>
 

@@ -6,6 +6,12 @@ namespace cnz {
 	class Mechaspider : public cnz::Enemy
 	{
 	public:
+		// constructor
+		Mechaspider(std::string scene);
+
+		// constructor
+		Mechaspider(std::string scene, cherry::Material::Sptr mat);
+
 		// copy constructor
 		Mechaspider(const cnz::Mechaspider&);
 

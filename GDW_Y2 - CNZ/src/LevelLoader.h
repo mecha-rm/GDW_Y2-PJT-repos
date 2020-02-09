@@ -12,7 +12,7 @@
 #include "Player.h"
 #include "EnemyTypes/Enemies.h"
 #include "Obstacle.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 #include "Projectile.h"
 
 class Level {

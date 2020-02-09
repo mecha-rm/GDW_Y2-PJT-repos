@@ -94,8 +94,8 @@
     <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
     <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
-    <ClCompile Include="src\cherry\Light.cpp" />
-    <ClCompile Include="src\cherry\LightManager.cpp" />
+    <ClCompile Include="src\cherry\lights\Light.cpp" />
+    <ClCompile Include="src\cherry\lights\LightManager.cpp" />
     <ClCompile Include="src\cherry\Camera.cpp" />
     <ClCompile Include="src\cherry\Game.cpp" />
     <ClCompile Include="src\cherry\Material.cpp" />
@@ -114,8 +114,8 @@
     <ClCompile Include="src\cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="src\cherry\objects\PrimitiveSphere.cpp" />
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
-    <ClCompile Include="src\cherry\Physics.cpp" />
-    <ClCompile Include="src\cherry\PhysicsBody.cpp" />
+    <ClCompile Include="src\cherry\physics\Physics.cpp" />
+    <ClCompile Include="src\cherry\physics\PhysicsBody.cpp" />
     <ClCompile Include="src\cherry\Scene.cpp" />
     <ClCompile Include="src\cherry\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
@@ -131,8 +131,10 @@
     <ClCompile Include="src\cherry\utils\math\Interpolation.cpp" />
     <ClCompile Include="src\cherry\utils\math\LargeInt.cpp" />
     <ClCompile Include="src\cherry\utils\math\Matrix.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Point.cpp" />
     <ClCompile Include="src\cherry\utils\math\Quaternion.cpp" />
     <ClCompile Include="src\cherry\utils\math\Rotation.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Shape.cpp" />
     <ClCompile Include="src\cherry\utils\math\Vector.cpp" />
     <ClCompile Include="src\cherry\utils\Utils.cpp" />
     <ClCompile Include="src\cherry\VectorCRY.cpp" />
@@ -376,8 +378,8 @@
     <ClInclude Include="src\cherry\audio\AudioEngine.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
-    <ClInclude Include="src\cherry\Light.h" />
-    <ClInclude Include="src\cherry\LightManager.h" />
+    <ClInclude Include="src\cherry\lights\Light.h" />
+    <ClInclude Include="src\cherry\lights\LightManager.h" />
     <ClInclude Include="src\cherry\Camera.h" />
     <ClInclude Include="src\cherry\Game.h" />
     <ClInclude Include="src\cherry\Material.h" />
@@ -397,8 +399,8 @@
     <ClInclude Include="src\cherry\objects\Primitives.h" />
     <ClInclude Include="src\cherry\objects\PrimitiveSphere.h" />
     <ClInclude Include="src\cherry\animate\Path.h" />
-    <ClInclude Include="src\cherry\Physics.h" />
-    <ClInclude Include="src\cherry\PhysicsBody.h" />
+    <ClInclude Include="src\cherry\physics\Physics.h" />
+    <ClInclude Include="src\cherry\physics\PhysicsBody.h" />
     <ClInclude Include="src\cherry\Scene.h" />
     <ClInclude Include="src\cherry\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />
@@ -417,8 +419,10 @@
     <ClInclude Include="src\cherry\utils\math\LargeInt.h" />
     <ClInclude Include="src\cherry\utils\math\MathLib.h" />
     <ClInclude Include="src\cherry\utils\math\Matrix.h" />
+    <ClInclude Include="src\cherry\utils\math\Point.h" />
     <ClInclude Include="src\cherry\utils\math\Quaternion.h" />
     <ClInclude Include="src\cherry\utils\math\Rotation.h" />
+    <ClInclude Include="src\cherry\utils\math\Shape.h" />
     <ClInclude Include="src\cherry\utils\math\Vector.h" />
     <ClInclude Include="src\cherry\utils\Utils.h" />
     <ClInclude Include="src\cherry\utils\UtilsLib.h" />

@@ -6,6 +6,12 @@ namespace cnz {
 	class Marauder : public cnz::Enemy
 	{
 	public:
+		// constructor
+		Marauder(std::string scene);
+
+		// constructor
+		Marauder(std::string scene, cherry::Material::Sptr mat);
+
 		// copy constructor.
 		Marauder(const cnz::Marauder&);
 

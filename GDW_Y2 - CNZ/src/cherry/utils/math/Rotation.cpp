@@ -68,11 +68,13 @@ util::math::Mat3 util::math::getRotationMatrix(float angle, bool inDegrees, char
 	}
 
 	// returns empty matrix by default.
-	return Mat3();
+	return Mat3(1.0F, 0.0F, 0.0F,
+				0.0F, 1.0F, 0.0F,
+				0.0F, 0.0F, 1.0F);
 }
 
 // gets rotation matrix on the z-axis
-util::math::Mat3 util::math::getRotationMatrixZ(float angle, bool inDegrees) { return Mat3(angle, inDegrees, 'z'); }
+util::math::Mat3 util::math::getRotationMatrixZ(float angle, bool inDegrees) { return util::math::getRotationMatrix(angle, inDegrees, 'z'); }
 
 // returns a rotation matrix for the x-axis
 util::math::Mat3 util::math::getRotationMatrixX(float angle, bool inDegrees) { return util::math::getRotationMatrix(angle, inDegrees, 'x'); }

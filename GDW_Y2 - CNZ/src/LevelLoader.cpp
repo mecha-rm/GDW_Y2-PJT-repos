@@ -188,7 +188,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				//obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
@@ -223,8 +223,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -258,8 +257,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -293,8 +291,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -328,8 +325,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -363,8 +359,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -398,8 +393,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -433,8 +427,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -468,8 +461,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -503,8 +495,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -538,8 +529,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 				}
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
-				obj->GetPhysicsBodies()[0]->SetModelPosition(obj->GetPosition());
-				obj->GetPhysicsBodies()[0]->SetWorldPosition(obj->GetPosition());
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(obj->GetPosition());
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);

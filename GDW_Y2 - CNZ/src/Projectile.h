@@ -1,6 +1,6 @@
 #pragma once
 #include "cherry/objects/Object.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 
 class Projectile : public cherry::Object
 {

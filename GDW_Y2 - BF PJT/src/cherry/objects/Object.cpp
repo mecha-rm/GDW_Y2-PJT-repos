@@ -2,7 +2,7 @@
 #include "Object.h"
 #include "..\utils\Utils.h"
 #include "..\utils\math\Rotation.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 #include "..\WorldTransform.h"
 
 #include "..\SceneManager.h"
@@ -146,13 +146,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			AddPhysicsBody(new PhysicsBodyBox(box->GetLocalPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetLocalPosition(), box->GetLocalWidth(), box->GetLocalHeight(), box->GetLocalDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			AddPhysicsBody(new PhysicsBodySphere(sphere->GetLocalPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetLocalPosition(), sphere->GetLocalRadius()));
 			sphere = nullptr;
 			break;
 		}

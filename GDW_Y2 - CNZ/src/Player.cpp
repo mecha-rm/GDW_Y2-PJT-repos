@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "cherry/objects/Primitive.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 
 // creates a player with 
 cnz::Player::Player(std::string modelFile) : Player(modelFile, cherry::Vec3()) {}

@@ -25,7 +25,7 @@ namespace util
 		float radiansToDegrees(float radians);
 
 		// gets a rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
-		// axis is used to determine what axis to rotate on (x, y, z). If any other symbol is passed, a zero matrix is returned.
+		// axis is used to determine what axis to rotate on (x, y, z). If any other symbol is passed, an identity matrix is returned.
 		Mat3 getRotationMatrix(float angle, bool inDegrees, char axis);
 
 		// gets a z-axis rotation matrix using variable 'theta'. 'InDegrees' tells the program if the angle passed is in degrees or radians.
@@ -43,35 +43,35 @@ namespace util
 
 		// rotates a point with a provided angle and axis. 'Axis'can only be 'x', 'y', or 'z'.
 		// if an unusable point is provided, then it returns the point provided, unrotated.
-		Vec3 rotate(const Vec3& vec, float angle, char axisOfRotation, bool inDegrees = false);
+		Vec3 rotate(const Vec3& vec, float angle, char axisOfRotation, bool inDegrees);
 
 		// rotates on the z-axis using matrices
-		Vec3 rotateZ(const Vec3& vec, float angle, bool inDegrees = false);
+		Vec3 rotateZ(const Vec3& vec, float angle, bool inDegrees);
 
 		// rotates on the x-axis using matrices
-		Vec3 rotateX(const Vec3&, float angle, bool inDegrees = false);
+		Vec3 rotateX(const Vec3&, float angle, bool inDegrees);
 
 		// rotates on the y-axis using matrices
-		Vec3 rotateY(const Vec3&, float angle, bool inDegrees = false);
+		Vec3 rotateY(const Vec3&, float angle, bool inDegrees);
 
 		// quaternion rotation of a 2D vector
-		Vec2 rotateQuat(const Vec2& vec, float angle, char axisOfRotation, bool inDegrees = false);
+		Vec2 rotateQuat(const Vec2& vec, float angle, char axisOfRotation, bool inDegrees);
 
 		// rotates a 3D vector via quaternions.
-		Vec3 rotateQuat(const Vec3& vec, float angle, char axisOfRotation, bool inDegrees = false);
+		Vec3 rotateQuat(const Vec3& vec, float angle, char axisOfRotation, bool inDegrees);
 
 		// rotates a 3D vector via quaternions in a provided direction.
 		// rotates a vector in the direction of 'direcOfRotation'. The boolean 'isNormalized' is used to determine whether the provided direction has already been normalized. If not, it is normalized.
-		Vec3 rotateQuat(const Vec3& vec, float angle, const Vec3& direcOfRotation, bool isNormalized, bool inDegrees = false);
+		Vec3 rotateQuat(const Vec3& vec, float angle, const Vec3& direcOfRotation, bool isNormalized, bool inDegrees);
 
 		// rotate around the z-axis
-		Vec3 rotateQuatZ(const Vec3& vec, float angle, bool inDegrees = false);
+		Vec3 rotateQuatZ(const Vec3& vec, float angle, bool inDegrees);
 
 		// rotate around the x-axis
-		Vec3 rotateQuatX(const Vec3& vec, float angle, bool inDegrees = false);
+		Vec3 rotateQuatX(const Vec3& vec, float angle, bool inDegrees);
 
 		// rotate around the y-axis
-		Vec3 rotateQuatY(const Vec3& vec, float angle, bool inDegrees = false);
+		Vec3 rotateQuatY(const Vec3& vec, float angle, bool inDegrees);
 	}
 }
 

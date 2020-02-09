@@ -1,7 +1,7 @@
 // Physics Body - used to add physics related properties to an object.
 #pragma once
-#include "VectorCRY.h"
-#include "objects/Primitives.h"
+#include "..\VectorCRY.h"
+#include "..\objects/Primitives.h"
 
 namespace cherry
 {
@@ -16,7 +16,7 @@ namespace cherry
 		// sets the id for a specific physics body, and its position.
 		PhysicsBody(int id, cherry::Vec3 pos);
 
-		~PhysicsBody();
+		virtual ~PhysicsBody();
 
 		/*
 		 * gets the identifier for the physics body
@@ -37,16 +37,16 @@ namespace cherry
 		cherry::PhysicsBody* AttachToObject(cherry::Object * newObj);
 
 		// gets the model (local space) position as a GLM vector
-		glm::vec3 GetModelPositionGLM() const;
+		glm::vec3 GetLocalPositionGLM() const;
 
 		// gets the model (local space) position as a GLM vector
-		cherry::Vec3 GetModelPosition() const;
+		cherry::Vec3 GetLocalPosition() const;
 
 		// sets the model (local space) position
-		void SetModelPosition(cherry::Vec3 mpos);
+		void SetLocalPosition(cherry::Vec3 lPos);
 
 		// set model (local space) position (GLM version)
-		void SetModelPosition(glm::vec3 mpos);
+		void SetLocalPosition(glm::vec3 lPos);
 
 
 		// gets the world position as a glm vector
@@ -56,31 +56,60 @@ namespace cherry
 		// if no object is attached, then the model position is returned.
 		cherry::Vec3 GetWorldPosition() const;
 
-		// sets the world position of the body
-		void SetWorldPosition(cherry::Vec3 wpos);
+
 
 		// sets the world position of the body
-		void SetWorldPosition(glm::vec3 wpos);
+		// void SetWorldPosition(cherry::Vec3 wpos);
+
+		// sets the world position of the body
+		// void SetWorldPosition(glm::vec3 wpos);
 
 		// gets the rotation of the body (in degrees)
-		cherry::Vec3 GetRotationDegrees() const;
+		glm::vec3 GetLocalRotationDegreesGLM() const;
+
+		// gets the rotation of the body (in degrees)
+		cherry::Vec3 GetLocalRotationDegrees() const;
 
 		// sets the rotation in degrees
-		void SetRotationDegrees(Vec3 degrees);
+		void SetLocalRotationDegrees(Vec3 degrees);
 		
+		// gets the local rotation in radians.
+		glm::vec3 GetLocalRotationRadiansGLM() const;
+
 		// gets rotation of the physics body in radians
-		cherry::Vec3 GetRotationRadians() const;
+		cherry::Vec3 GetLocalRotationRadians() const;
 
 		// sets rotation in radians
-		void SetRotationRadians(Vec3 radians);
+		void SetLocalRotationRadians(Vec3 radians);
+
+		// gets the world rotation in degrees.
+		glm::vec3 GetWorldRotationDegreesGLM() const;
+
+		// gets the world rotation in degrees.
+		cherry::Vec3 GetWorldRotationDegrees() const;
+
+		// gets the world rotation in radians.
+		cherry::Vec3 GetWorldRotationRadiansGLM() const;
+
+		// gets the world rotation in radians.
+		cherry::Vec3 GetWorldRotationRadians() const;
 
 
-		// gets the scale of the body
-		cherry::Vec3 GetScale() const;
+
+		// gets the local scale of the physics body.
+		glm::vec3 GetLocalScaleGLM() const;
+
+		// gets the local scale of the body
+		cherry::Vec3 GetLocalScale() const;
 
 		// sets the scale of the body.
-		void SetScale(cherry::Vec3 newScale);
+		void SetLocalScale(cherry::Vec3 newScale);
 
+		// gets the world scale of the object.
+		glm::vec3 GetWorldScaleGLM() const;
+
+		// gets the world scale of the body.
+		cherry::Vec3 GetWorldScale() const;
 		
 		// calculates collision between two physics bodies if an equation for it is available.
 		static bool Collision(PhysicsBody* p1, PhysicsBody* p2);
@@ -103,7 +132,7 @@ namespace cherry
 	private:
 		int id = 0; // identifier; check this value for downcasting
 
-		// rotation
+		// rotation (in degrees)
 		cherry::Vec3 rotation;
 
 	protected:
@@ -124,6 +153,10 @@ namespace cherry
 
 		// material for body when drawn to hte screen
 		Material::Sptr material;
+
+		// TODO: create function for this.
+		// the alpha value of all physics bodies.
+		static float alpha;
 	};
 
 	// the object for a rectangular physics body
@@ -144,23 +177,35 @@ namespace cherry
 		// local position and dimensions (x, y, z) = (width, height, depth)
 		PhysicsBodyBox(cherry::Vec3 position, cherry::Vec3 dimensions);
 
-		// gets the width (size on x-axis)
-		float GetWidth() const;
+		// gets the width (size on x-axis). This is the base width with no scaling applied.
+		float GetLocalWidth() const;
 
 		// sets width
-		void SetWidth(float newWidth);
+		// void SetWidth(float newWidth);
 
-		// gets the height (size on y-axis)
-		float GetHeight() const;
+		// gets the world width of the hitbox. 
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldWidth() const;
+
+		// gets the height (size on y-axis) with no scaling applied.
+		float GetLocalHeight() const;
 
 		// sets height (size on y-axis)
-		void SetHeight(float newHeight);
+		// void SetHeight(float newHeight);
 
-		// gets the depth (size on z-axis)
-		float GetDepth() const;
+		// gets the world height for the physics body.
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldHeight() const;
+
+		// gets the depth (size on z-axis) with no scaling applied.
+		float GetLocalDepth() const;
 
 		// sets depth (size on z-axis)
-		void SetDepth(float newDepth);
+		// void SetDepth(float newDepth);
+
+		// gets the world depth with no scaling applied.
+		// This is scaled up by the scale of the body and the scale of the bounding box.
+		float GetWorldDepth() const;
 
 		// update for bounding box
 		void Update(float deltaTime);
@@ -187,17 +232,25 @@ namespace cherry
 		// position of the sphere (relative to the object's origin), and its radius.
 		PhysicsBodySphere(cherry::Vec3 position, float radius);
 
-		// gets the radius
-		float GetRadius() const;
+		// gets the local radius with no scaling applied.
+		float GetLocalRadius() const;
 
 		// sets the radius; if a negative is passed, the absolute value is received.
-		void SetRadius(float r);
+		// void SetRadius(float r);
 
-		// gets the diameter.
-		float GetDiameter() const;
+		// gets the world radius. This is based on the greatest scale amongst the three axes.
+		// This is scaled up by the scale of the body and the scale of the sphere.
+		float GetWorldRadius() const;
+
+		// gets the diameter with no scaling applied.
+		float GetLocalDiameter() const;
 
 		// sets the diameter
-		void SetDiameter(float diameter);
+		// void SetDiameter(float diameter);
+
+		// gets the world diameter
+		// This is scaled up by the scale of the body and the scale of the sphere.
+		float GetWorldDiameter() const;
 
 		// update loop
 		void Update(float deltaTime);

@@ -33,6 +33,12 @@ namespace cnz
 		// creates the Enemy, taking in the scene, material, and position as well.
 		Enemy(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos);
 
+		// loads a material if 'true' is passed.
+		Enemy(std::string modelPath, std::string scene, bool loadMtl);
+
+		// can load an mtl file and its position.
+		Enemy(std::string modelPath, std::string scene, bool loadMtl, cherry::Vec3 pos);
+
 		// loads in the Enemy using a default model. The Enemy takes this model's information.
 		// Enemy(const cherry::Primitive * model);
 

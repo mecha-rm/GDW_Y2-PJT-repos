@@ -7,6 +7,12 @@ namespace cnz {
 	class Bastion : public cnz::Enemy
 	{
 	public:
+		// constructor
+		Bastion(std::string scene);
+
+		// scene and material
+		Bastion(std::string scene, cherry::Material::Sptr mat);
+
 		Bastion(const cnz::Bastion&);
 
 		Bastion(cnz::Enemy* obj, std::string scene);

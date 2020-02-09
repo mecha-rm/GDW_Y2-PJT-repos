@@ -1,7 +1,7 @@
 #include "Enemy.h"
 
 #include "cherry/objects/Primitive.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 
 // constructor
 cnz::Enemy::Enemy() {}
@@ -32,7 +32,7 @@ cnz::Enemy::Enemy(std::string modelPath, float posX, float posY, float posZ)
 	: Enemy(modelPath, cherry::Vec3(posX, posY, posZ)) {}
 
 // sets the Enemy file, and position
-cnz::Enemy::Enemy(std::string modelFile, cherry::Vec3 pos) : Object(modelFile)
+cnz::Enemy::Enemy(std::string modelFile, cherry::Vec3 pos) : Object(modelFile, false, true)
 {
 	position = pos;
 	// TODO: replace with a more accurate hitbox
@@ -46,7 +46,20 @@ cnz::Enemy::Enemy(std::string modelPath, std::string scene, cherry::Material::Sp
 
 // creates the Enemy in hte provided scene
 cnz::Enemy::Enemy(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos)
-	: Object(modelPath, scene, material)
+	: Object(modelPath, scene, material, false, true)
+{
+	position = pos;
+}
+
+// creates an enemy and loads an mtl file.
+cnz::Enemy::Enemy(std::string modelPath, std::string scene, bool loadMtl)
+	: Object(modelPath, scene, loadMtl, true)
+{
+}
+
+// creates the enemy
+cnz::Enemy::Enemy(std::string modelPath, std::string scene, bool loadMtl, cherry::Vec3 pos)
+	: Enemy(modelPath, scene, loadMtl)
 {
 	position = pos;
 }

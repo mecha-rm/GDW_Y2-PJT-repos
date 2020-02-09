@@ -1,5 +1,17 @@
 #include "Sentry.h"
 
+// enemy
+cnz::Sentry::Sentry(std::string scene)
+	: Enemy("res/objects/enemies/Enemy_Bow.obj", scene, false)
+{
+}
+
+// constructor
+cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
+	: Enemy("res/objects/enemies/Enemy_Bow.obj", scene, mat)
+{
+}
+
 // copy constructor
 cnz::Sentry::Sentry(const cnz::Sentry& sentry)
 	: Enemy(sentry)
