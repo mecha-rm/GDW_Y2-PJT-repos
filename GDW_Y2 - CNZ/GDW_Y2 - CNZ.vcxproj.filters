@@ -15,8 +15,6 @@
     <ClCompile Include="src\cherry\animate\MorphAnimation.cpp" />
     <ClCompile Include="src\cherry\animate\Path.cpp" />
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
-    <ClCompile Include="src\cherry\Light.cpp" />
-    <ClCompile Include="src\cherry\LightManager.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\objects\Liquid.cpp" />
     <ClCompile Include="src\cherry\objects\ObjectManager.cpp" />
@@ -76,6 +74,8 @@
     <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
     <ClCompile Include="src\cherry\physics\PhysicsBody.cpp" />
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
+    <ClCompile Include="src\cherry\lights\LightManager.cpp" />
+    <ClCompile Include="src\cherry\lights\Light.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -299,8 +299,6 @@
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
     <ClInclude Include="src\cherry\animate\Path.h" />
     <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
-    <ClInclude Include="src\cherry\Light.h" />
-    <ClInclude Include="src\cherry\LightManager.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\objects\Liquid.h" />
     <ClInclude Include="src\cherry\objects\ObjectManager.h" />
@@ -375,6 +373,8 @@
     <ClInclude Include="src\cherry\Material.h" />
     <ClInclude Include="src\cherry\physics\PhysicsBody.h" />
     <ClInclude Include="src\cherry\physics\Physics.h" />
+    <ClInclude Include="src\cherry\lights\LightManager.h" />
+    <ClInclude Include="src\cherry\lights\Light.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />

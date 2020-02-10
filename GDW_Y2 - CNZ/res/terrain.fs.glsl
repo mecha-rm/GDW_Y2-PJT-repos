@@ -9,6 +9,8 @@ layout (location = 5) in float inVertHeight; // the local position of the vertex
 
 layout (location = 0) out vec4 outColor;
 
+uniform float a_Alpha; // the overall alpha value of the entity.
+
 uniform sampler2D s_Albedos[3]; // now takes more than one value.
 
 void main() { 
@@ -33,5 +35,5 @@ void main() {
 	vec3 result = albedo.xyz * inColor.xyz; // taking out lighting
 	
 	// Write the output
-	outColor = vec4(result, 1); // * a_ColorMultiplier;
+	outColor = vec4(result, 1 * a_Alpha); // * a_ColorMultiplier;
 }

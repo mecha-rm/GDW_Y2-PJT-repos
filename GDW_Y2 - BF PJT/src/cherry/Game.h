@@ -203,6 +203,10 @@ namespace cherry
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
 
+		// the frame rate of the game.
+		// set the frame rate to 0 (or anything less), to have no framerate cap.
+		static short int FPS;
+
 	protected:
 		void Initialize();
 

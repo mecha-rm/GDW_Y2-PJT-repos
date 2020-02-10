@@ -451,11 +451,11 @@ void cnz::CNZ_Game::LoadContent()
 		SetSkybox(*skyboxObj, GetCurrentSceneName());
 
 		//Jonah Load Enemy Stuff
-		sentry = new Sentry(GetCurrentSceneName(), matStatic);
-		oracle = new Oracle(GetCurrentSceneName(), matStatic);
-		marauder = new Marauder(GetCurrentSceneName(), matStatic);
-		bastion = new Bastion(GetCurrentSceneName(), matStatic);
-		mechaspider = new Mechaspider(GetCurrentSceneName(), matStatic);
+		sentry = new Sentry(GetCurrentSceneName());
+		oracle = new Oracle(GetCurrentSceneName());
+		marauder = new Marauder(GetCurrentSceneName());
+		bastion = new Bastion(GetCurrentSceneName());
+		mechaspider = new Mechaspider(GetCurrentSceneName());
 		arrowBase = new Projectile("res/objects/weapons/arrow.obj", GetCurrentSceneName());
 
 		for (int i = 0; i < 20; i++) {
@@ -822,7 +822,7 @@ void cnz::CNZ_Game::LoadContent()
 		objList->GetObjectByIndex(i)->SetVisible(true);
 	}*/
 
-
+	GetSceneLightList()->Update(0);
 }
 
 // Update function

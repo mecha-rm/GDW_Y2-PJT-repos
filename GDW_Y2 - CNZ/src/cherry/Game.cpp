@@ -141,7 +141,8 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 	}
 }
 
-
+// GAME FUNCTIONS
+short int cherry::Game::FPS = 0;
 
 // Game
 // constructor
@@ -1331,27 +1332,40 @@ void cherry::Game::Run()
 	Initialize();
 	InitImGui();
 	LoadContent();
+
 	static float prevFrame = glfwGetTime();
+	static float frameTime = 0; // the amount of time since the last frame.
 
 	// Run as long as the window is open
 	while (!glfwWindowShouldClose(myWindow)) {
 		// Poll for events from windows
 		// clicks, key presses, closing, all that
 		glfwPollEvents();
-		float thisFrame = glfwGetTime();
+		float thisFrame = glfwGetTime(); // returns 'time' in seconds.
 		float deltaTime = thisFrame - prevFrame;
-		Update(deltaTime);
-		Draw(deltaTime);
-
-		if (imguiMode) // if 'true', then the imGui frame is shown.
+		
+		frameTime += deltaTime;
+		
+		// if there is no frame rate cap, or if enough time has passed.
+		if (FPS == 0 || frameTime > 1.0 / ((float)FPS))
 		{
-			ImGuiNewFrame();
-			DrawGui(deltaTime);
-			ImGuiEndFrame();
+			Update(deltaTime);
+			Draw(deltaTime);
+
+			if (imguiMode) // if 'true', then the imGui frame is shown.
+			{
+				ImGuiNewFrame();
+				DrawGui(deltaTime);
+				ImGuiEndFrame();
+			}
+
+			prevFrame = thisFrame;
+			frameTime = 0; // resetting frame time.
+
+			// Present our image to windows
+			glfwSwapBuffers(myWindow);
 		}
-		prevFrame = thisFrame;
-		// Present our image to windows
-		glfwSwapBuffers(myWindow);
+
 	}
 
 	UnloadContent(); // unload all content

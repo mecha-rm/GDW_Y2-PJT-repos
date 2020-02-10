@@ -6,7 +6,7 @@
 
 // the maximum amount of lights
 // if changed, make sure it is adjusted in the shaders as well.
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 16
 
 namespace cherry
 {
@@ -58,6 +58,8 @@ namespace cherry
 		// deletes a scene list via the name of the scene.
 		static bool DestroySceneLightListByName(std::string sceneName);
 
+		
+
 	private:
 
 		// a vector of light list
@@ -79,10 +81,12 @@ namespace cherry
 		// gets the light count
 		int GetLightCount() const;
 
-		// gets the vector of lights
-		std::vector<cherry::Light*>& GetLights();
+		// gets the vector of lights.
+		// adding or removing values
+		std::vector<cherry::Light*> GetLights();
 
 		// adds a light to the list.
+		// if the list is full, a 'false' is returned, and the light isn't added.
 		bool AddLight(cherry::Light * light);
 
 		// gets the scene lights averaged together
@@ -96,7 +100,11 @@ namespace cherry
 		// generates the material, providing it with the sampler.
 		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const;
 
+		// applies all the lights in the list.
+		void ApplyLights(cherry::Material::Sptr& material);
+
 		// applies the lights to the provided material.
+		// TODO: remove this.
 		void ApplyLights(cherry::Material::Sptr & material, int lightCount);
 
 		// removes a light by its index.
@@ -116,6 +124,9 @@ namespace cherry
 
 		// deletes an object based on its name.
 		// bool DeleteLightByTag(std::string name);
+
+		// updates the lights for the objects its attachted it.
+		void Update(float deltaTime);
 
 		// vector of lights
 		std::vector<cherry::Light *> lights;

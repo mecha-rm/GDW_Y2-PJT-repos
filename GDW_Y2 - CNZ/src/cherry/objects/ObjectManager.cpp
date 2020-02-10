@@ -1,4 +1,5 @@
 #include "ObjectManager.h"
+
 #include "..\utils\Utils.h"
 #include "..\physics/PhysicsBody.h"
 
@@ -341,6 +342,7 @@ void cherry::ObjectList::Update(float deltaTime)
 		obj->Update(deltaTime);
 		obj->SetIntersection(false);
 	}
+
 
 	// collision calculations
 //mainLoop:
