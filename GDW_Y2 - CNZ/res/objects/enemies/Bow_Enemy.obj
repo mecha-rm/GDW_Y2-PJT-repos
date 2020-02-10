@@ -1,6 +1,6 @@
-# Blender v2.80 (sub 75) OBJ File: 'Bow Enemy.blend'
+# Blender v2.80 (sub 75) OBJ File: 'Bow_Enemy.blend'
 # www.blender.org
-mtllib Enemy_Bow.mtl
+mtllib Bow_Enemy.mtl
 o Cube
 v 0.313489 3.282231 -0.030431
 v 0.254706 2.686020 -0.066769

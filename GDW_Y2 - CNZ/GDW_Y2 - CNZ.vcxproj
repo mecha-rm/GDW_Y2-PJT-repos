@@ -94,8 +94,8 @@
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
     <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
     <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
-    <ClCompile Include="src\cherry\Light.cpp" />
-    <ClCompile Include="src\cherry\LightManager.cpp" />
+    <ClCompile Include="src\cherry\lights\Light.cpp" />
+    <ClCompile Include="src\cherry\lights\LightManager.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\objects\Liquid.cpp" />
     <ClCompile Include="src\cherry\objects\ObjectManager.cpp" />
@@ -389,8 +389,8 @@
     <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
     <ClInclude Include="src\cherry\audio\AudioComponent.h" />
     <ClInclude Include="src\cherry\audio\AudioEngine.h" />
-    <ClInclude Include="src\cherry\Light.h" />
-    <ClInclude Include="src\cherry\LightManager.h" />
+    <ClInclude Include="src\cherry\lights\Light.h" />
+    <ClInclude Include="src\cherry\lights\LightManager.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\objects\Liquid.h" />
     <ClInclude Include="src\cherry\objects\ObjectManager.h" />

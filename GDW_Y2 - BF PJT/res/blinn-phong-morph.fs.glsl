@@ -12,7 +12,7 @@ uniform float a_Alpha; // the overall alpha value of the entity.
 
 uniform vec3  a_CameraPos;
 
-#define MAX_LIGHTS 10
+#define MAX_LIGHTS 16
 uniform int a_LightCount; // total amount of lights
 uniform vec3 a_AmbientColor[MAX_LIGHTS];
 uniform float a_AmbientPower[MAX_LIGHTS];

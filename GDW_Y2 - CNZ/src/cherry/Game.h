@@ -203,6 +203,10 @@ namespace cherry
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
 
+		// the frame rate of the game.
+		// set the frame rate to 0 (or anything less), to have no framerate cap.
+		static short int FPS;
+
 	protected:
 		void Initialize();
 
@@ -249,7 +253,6 @@ namespace cherry
 		// if 'true', the  imgui window functions are used.
 		// if false, then they are not used.
 		bool imguiMode = false;
-
 
 		// if 'true', collisions are checked by the Game class.
 		bool collisionMode = true;

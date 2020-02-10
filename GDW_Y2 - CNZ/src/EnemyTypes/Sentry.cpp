@@ -2,13 +2,13 @@
 
 // enemy
 cnz::Sentry::Sentry(std::string scene)
-	: Enemy("res/objects/enemies/Enemy_Bow.obj", scene, false)
+	: Enemy("res/objects/enemies/Bow_Enemy.obj", scene, true)
 {
 }
 
 // constructor
 cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
-	: Enemy("res/objects/enemies/Enemy_Bow.obj", scene, mat)
+	: Enemy("res/objects/enemies/Bow_Enemy.obj", scene, mat)
 {
 }
 

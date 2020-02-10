@@ -191,7 +191,8 @@ std::string cherry::LightList::GetSceneName() const { return scene; }
 int cherry::LightList::GetLightCount() const { return lights.size(); }
 
 // gets the lights as a vector
-std::vector<cherry::Light*>& cherry::LightList::GetLights() { return lights; }
+// TODO: maybe make this const
+std::vector<cherry::Light*> cherry::LightList::GetLights() { return lights; }
 
 // adds a light to the list
 bool cherry::LightList::AddLight(cherry::Light* light)
@@ -199,8 +200,14 @@ bool cherry::LightList::AddLight(cherry::Light* light)
 	if(light == nullptr) // checking for nullptr
 		return false;
 
-	// adding to the vector
 	return util::addToVector(lights, light);
+
+	// limiter
+	// adding to the vector if the vector isn't full.
+	// if (lights.size() < MAX_LIGHTS)
+	// 	return util::addToVector(lights, light);
+	// else
+	// 	return false;
 }
 
 // gets lights averaged
@@ -315,16 +322,20 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	return material;
 }
 
+// applies all the lights in the list.
+void cherry::LightList::ApplyLights(cherry::Material::Sptr& material) { ApplyLights(material,lights.size()); }
+
 // applies the lighting to the material.
 void cherry::LightList::ApplyLights(cherry::Material::Sptr & material, int lightCount)
 {
 	glm::vec3 temp; // temporary glm::vector
+	int enabledLights = (abs(lightCount) < MAX_LIGHTS) ? abs(lightCount) : MAX_LIGHTS;
 
 	// setting the light count.
-	material->Set("a_LightCount", (abs(lightCount) < MAX_LIGHTS) ? abs(lightCount) : MAX_LIGHTS);
+	material->Set("a_LightCount", enabledLights);
 
 	// goes through each light, getting the values.
-	for (int i = 0; i < lightCount; i++)
+	for (int i = 0; i < enabledLights; i++)
 	{
 		temp = lights.at(i)->GetAmbientColorGLM();
 		material->Set("a_AmbientColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // ambient colour
@@ -407,5 +418,22 @@ bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
 	else // not removed successfully
 	{
 		return false;
+	}
+}
+
+// updates the lights for the objects this list is attachted to.
+void cherry::LightList::Update(float deltaTime)
+{
+	ObjectList* objectList = ObjectManager::GetSceneObjectListByName(scene);
+	Material::Sptr tempMat; // tempory material
+
+	if (objectList != nullptr)
+	{
+		// updates the objects.
+		for (Object* obj : objectList->GetObjects())
+		{
+			tempMat = obj->GetMaterial();
+			ApplyLights(tempMat);
+		}
 	}
 }
