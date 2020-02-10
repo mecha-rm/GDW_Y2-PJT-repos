@@ -277,32 +277,34 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 	this->playerObj->SetRotationZDegrees(180);
 	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 
-	cherry::Material::Sptr mat = playerObj->GetMaterial();
-	tempList->ApplyLights(mat, tempList->GetLightCount());
+	
 
 
 	for (int i = 0; i < allSceneObjects.size(); i++) {
 		curObjStr = allSceneObjects[i]->ToString();
 
 		if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
-			std::cout << "its a wall" << std::endl;
+			//std::cout << "its a wall" << std::endl;
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			this->obstacles.push_back(allSceneObjects[i]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
-			std::cout << "its a player" << std::endl;
+			//std::cout << "its a player" << std::endl;
+			this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
+			cherry::Material::Sptr mat = playerObj->GetMaterial();
+			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
-			std::cout << "its a dumpster" << std::endl;
+			//std::cout << "its a dumpster" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
-			std::cout << "its a lamp post" << std::endl;
+			//std::cout << "its a lamp post" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			tempList->AddLight(new cherry::Light(GetCurrentSceneName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
@@ -311,7 +313,7 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
-			std::cout << "its a lamp post corner" << std::endl;
+		//	std::cout << "its a lamp post corner" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			tempList->AddLight(new cherry::Light(GetCurrentSceneName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
@@ -320,7 +322,7 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
-			std::cout << "its a lamp post middle" << std::endl;
+			//std::cout << "its a lamp post middle" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			tempList->AddLight(new cherry::Light(GetCurrentSceneName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
@@ -329,48 +331,49 @@ void cnz::CNZ_Game::MapSceneObjectsToGame(std::string sceneName) {
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
-			std::cout << "its a barrel" << std::endl;
+			//std::cout << "its a barrel" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
-			std::cout << "its a katana" << std::endl;
+			//std::cout << "its a katana" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
-			std::cout << "its a pillar" << std::endl;
+			//std::cout << "its a pillar" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
-			std::cout << "its a manhole" << std::endl;
+			//std::cout << "its a manhole" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Road.blend") != std::string::npos) { // road
-			std::cout << "its a road" << std::endl;
+			//std::cout << "its a road" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
-			std::cout << "its a sidewalk" << std::endl;
+			//std::cout << "its a sidewalk" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			this->obstaclePBs.push_back(allSceneObjects[i]->GetPhysicsBodies()[0]);
 			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
 			tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 	}
+	allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
 }
 
 // loads content

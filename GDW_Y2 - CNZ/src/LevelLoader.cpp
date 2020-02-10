@@ -145,19 +145,11 @@ std::vector<cherry::Object*> Level::GetObjects() {
 			std::string curObj = this->map[y][x].substr(0, 1);
 			
 			if (legend[curObj] == "Origin") { // origin point
-				offsetX = -x;
-				offsetY = -y;
+				offsetX = x;
+				offsetY = y;
 				cnz::Player* playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->GetSceneName()); // creates the player.
-				playerObj->SetRotation(cherry::Vec3(0, 0, 0), true); // fixes rotation
-				playerObj->SetRotationXDegrees(90);
-				playerObj->SetRotationZDegrees(180);
-				playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-				playerObj->GetPhysicsBodies()[0]->SetVisible(false);
-
+				playerObj->SetPosition(glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0));
 				this->objList.push_back(playerObj);
-				// CAN'T ADD OBJECTS TO SCENE FROM LOADER. Once the object list has been created, 
-				// we need to make a function to go through that list and AddObjectToScene(obj);
-				// from the CNZ_Game class' methods.
 			}
 			else if (legend[curObj] == "Wall") { // wall
 				Obstacle* obj;
