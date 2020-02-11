@@ -974,7 +974,7 @@ void cnz::CNZ_Game::Update(float deltaTime)
 					}
 				}
 			}
-
+			 
 			if (enemyGroups[i][j]->alive == true && enemyGroups[i][j]->stunned == false) {
 				//Look at player
 				enemyGroups[i][j]->UpdateAngle(enemyGroups[i][j]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());

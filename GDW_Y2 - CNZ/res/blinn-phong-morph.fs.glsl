@@ -26,7 +26,7 @@ uniform float a_LightAttenuation[MAX_LIGHTS];
 uniform sampler2D s_Albedos[3]; // now takes more than one value.
 
 void main() {
-    vec4 results[10];
+    vec4 results[MAX_LIGHTS];
 
     vec4 finalResult = vec4(0, 0, 0, 0);
 

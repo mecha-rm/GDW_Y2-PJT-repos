@@ -1661,5 +1661,5 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		{
 			// std::cout << "INVISIBLE" << std::endl;
 		}
-	}
+	} 
 }

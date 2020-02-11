@@ -262,22 +262,14 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 
 
 	shader = std::make_shared<Shader>();
-	// TODO: probably shouldn't use lighting shader since it's an image
-
+	
+	// no lighting is applied.
+	// TODO: remove this?
 	if (cameraLock)
 	{
 		shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
 
-		// lighting has no strong effect on images currnetly
 		material = std::make_shared<Material>(shader);
-		material->Set("a_LightCount", 1);
-		material->Set("a_LightPos[0]", { 0, 0, 0 });
-		material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
-		material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
-		material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-		material->Set("a_LightSpecPower[0]", 1.0f);
-		material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
-		material->Set("a_LightAttenuation[0]", 1.0f);
 
 		material->Set("s_Albedos[0]", img, sampler);
 		material->Set("s_Albedos[1]", img, sampler);
@@ -287,16 +279,7 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	{
 		shader->Load("res/image-shader.vs.glsl", "res/image-shader.fs.glsl");
 
-		// lighting has no strong effect on images currnetly
 		material = std::make_shared<Material>(shader);
-		material->Set("a_LightCount", 1);
-		material->Set("a_LightPos[0]", { 0, 0, 0 });
-		material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
-		material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
-		material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-		material->Set("a_LightSpecPower[0]", 1.0f);
-		material->Set("a_LightShininess[0]", 255.0f); // MUST be a float
-		material->Set("a_LightAttenuation[0]", 1.0f);
 
 		material->Set("s_Albedos[0]", img, sampler);
 		material->Set("s_Albedos[1]", img, sampler);

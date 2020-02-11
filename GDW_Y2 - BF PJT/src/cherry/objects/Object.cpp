@@ -79,7 +79,7 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 	if(loadMtl)
 		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
 
-	CreateEntity(scene, material);
+	CreateEntity(scene, material); 
 }
 
 // loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
