@@ -1146,10 +1146,11 @@ void cherry::Game::LoadContent()
 
 	// TODO: streamline, and replace audio file (WE DON'T OWN IT)
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
+	// TODO: put in dedicated folder with ID on it?
 	audioEngine.LoadBank("res/audio/Master", FMOD_STUDIO_LOAD_BANK_NORMAL);
 
 	// Load an event
-	audioEngine.LoadEvent("Music", "{84a26086-1e10-4505-a437-99ff0ff2a354}");
+	audioEngine.LoadEvent("Music", "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
 	// Play the event
 	audioEngine.PlayEvent("Music");
 }
@@ -1347,7 +1348,7 @@ void cherry::Game::Run()
 		frameTime += deltaTime;
 		
 		// if there is no frame rate cap, or if enough time has passed.
-		if (FPS == 0 || frameTime > 1.0 / ((float)FPS))
+		if (FPS == 0 || frameTime > 1.0F / ((float)FPS))
 		{
 			Update(deltaTime);
 			Draw(deltaTime);
@@ -1364,6 +1365,10 @@ void cherry::Game::Run()
 
 			// Present our image to windows
 			glfwSwapBuffers(myWindow);
+		}
+		else
+		{
+			std::cout << "Test" << std::endl;
 		}
 
 	}
@@ -1657,5 +1662,5 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		{
 			// std::cout << "INVISIBLE" << std::endl;
 		}
-	}
+	} 
 }
