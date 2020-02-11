@@ -1069,12 +1069,13 @@ void cnz::CNZ_Game::Update(float deltaTime)
 		//Display indicator
 		//indArrowAnim->Play();
 		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+		indicatorObj->SetAlpha(1.0f);
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -4));
  		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
 	else {
 		//Hide indicator
-		indicatorObj->SetPosition(1000, 1000, 1000);
+		indicatorObj->SetAlpha(0.0f);
 	}
 
 	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
