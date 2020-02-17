@@ -162,7 +162,7 @@ GLuint cherry::Shader::__CompileShaderPart(const char* source, GLenum type) {
 		throw std::runtime_error("Failed to compile shader part!");
 	}
 	else {
-		// LOG_TRACE("Shader part has been compiled!");
+		LOG_TRACE("Shader part has been compiled!");
 	}
 	// Return the compiled shader part
 	return result;
@@ -212,6 +212,6 @@ void cherry::Shader::Compile(const char* vs_source, const char* fs_source) {
 		throw std::runtime_error("Failed to link shader program!");
 	}
 	else {
-		// LOG_TRACE("Shader has been linked");
+		LOG_TRACE("Shader has been linked");
 	}
 }

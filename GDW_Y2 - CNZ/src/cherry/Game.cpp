@@ -820,7 +820,7 @@ void cherry::Game::LoadContent()
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
 	// TODO: make version without UVs?
-	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
+	phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
@@ -843,7 +843,7 @@ void cherry::Game::LoadContent()
 		// Shader was originally compiled here.
 	// // Create and compile shader
 	// myShader = std::make_shared<Shader>();
-	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
+	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
@@ -1140,7 +1140,7 @@ void cherry::Game::LoadContent()
 
 	// Create and compile shader
 	// myShader = std::make_shared<Shader>();
-	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
+	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 
@@ -1368,7 +1368,7 @@ void cherry::Game::Run()
 		}
 		else
 		{
-			std::cout << "Test" << std::endl;
+			// std::cout << "FPS: " << FPS << std::endl;
 		}
 
 	}

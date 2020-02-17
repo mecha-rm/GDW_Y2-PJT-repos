@@ -224,7 +224,7 @@ bool cherry::Mesh::IsOrthographicMesh() const { return !perspectiveMesh; }
 void cherry::Mesh::SetOrthographicMesh(bool orthographic) { perspectiveMesh = !orthographic; }
 
 // gets whether the screen position of the mesh is fixed regardless of the orientation or position of the camera. 
-bool cherry::Mesh::GetFixedScreenPosition() const { return fixedScreenPosition; }
+bool cherry::Mesh::GetScreenSpaceMesh() const { return fixedScreenPosition; }
 
 // sets if the mesh has a fixed screen position or not.
 void cherry::Mesh::SetFixedScreenPosition(bool fixed) { fixedScreenPosition = fixed; }

@@ -5,7 +5,7 @@
 #include "..\physics/PhysicsBody.h"
 #include "..\WorldTransform.h"
 
-#include "..\SceneManager.h"
+#include "..\scenes/SceneManager.h"
 #include "..\MeshRenderer.h"
 #include "ObjectManager.h"
 
@@ -303,7 +303,7 @@ void cherry::Object::SetOrthographicObject(bool orthographic) { mesh->SetOrthogr
 bool cherry::Object::GetFixedScreenPosition() const
 {
 	if (mesh != nullptr)
-		return mesh->GetFixedScreenPosition();
+		return mesh->GetScreenSpaceMesh();
 	else
 		return false;
 }

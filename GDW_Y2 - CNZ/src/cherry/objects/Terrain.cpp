@@ -39,7 +39,7 @@ cherry::Terrain::Terrain(std::string scene, std::string heightMap, float size, f
 	mesh = Mesh::MakeSubdividedPlane(size, numSections, worldUVs);
 
 	Shader::Sptr terrainShader = std::make_shared<Shader>();
-	terrainShader->Load("res/terrain.vs.glsl", "res/terrain.fs.glsl");
+	terrainShader->Load("res/shaders/terrain.vs.glsl", "res/shaders/terrain.fs.glsl");
 	safe = true;
 
 	material = std::make_shared<Material>(terrainShader);

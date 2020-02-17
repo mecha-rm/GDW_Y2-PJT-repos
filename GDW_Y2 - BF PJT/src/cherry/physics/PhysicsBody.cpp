@@ -19,8 +19,8 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
 	// creates a material for the physics body. This is used to display the physics body for debugging purposes.
 	Shader::Sptr shader = std::make_shared<Shader>(); // creates the shader
 
-	// shader->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
-	shader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
+	// shader->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
+	shader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 
 	// creating the material
 	material = std::make_shared<Material>(shader);

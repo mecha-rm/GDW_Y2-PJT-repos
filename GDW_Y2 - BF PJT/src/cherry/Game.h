@@ -12,7 +12,7 @@
 #include "Mesh.h"
 
 
-#include "SceneManager.h"
+#include "scenes/SceneManager.h"
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
 #include "lights/LightManager.h"
@@ -91,6 +91,12 @@ namespace cherry
 
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
+
+		// creates a scene. This is the static verison, so it cannot set the current scene.
+		static bool CreateScene(const std::string sceneName);
+
+		// creates a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
+		static bool CreateScene(const std::string sceneName, const cherry::Skybox skybox);
 
 		// creates a scene. If 'makeCurrent' is true, then this scene is made the current scene.
 		// this also returns the scene created. Since no skybox is provided, a default one is made.
@@ -180,6 +186,10 @@ namespace cherry
 
 		// removes a light from the scene.
 		bool DeleteLightFromScene(cherry::Light * light);
+
+		// gets the game object that's currently running.
+		// if 'nullptr' is returned, then no game is running.
+		static cherry::Game* GetRunningGame();
 
 		// runs the game
 		void Run();
@@ -281,6 +291,9 @@ namespace cherry
 
 		// Stores the title of the game's window
 		char myWindowTitle[32];
+
+		// saves the game that's currently running.
+		static cherry::Game* runningGame;
 
 		// A shared pointer to our shader.
 		// Shader::Sptr myShader;

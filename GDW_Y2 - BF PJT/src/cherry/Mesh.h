@@ -112,7 +112,7 @@ namespace cherry
 
 		// if 'true', the screen position of the mesh is fixed regardless of the camera position or orientation.
 		// the mesh itself can still be moved, but it will be uneffected by the movement in the camera.
-		bool GetFixedScreenPosition() const;
+		bool GetScreenSpaceMesh() const;
 
 		// if 'true', the mesh will say in the same place on screen.
 		void SetFixedScreenPosition(bool fixed);

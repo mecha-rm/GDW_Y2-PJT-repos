@@ -16,6 +16,8 @@ bool cherry::SceneManager::HasScene(const std::string& name) {
 	}
 	return false;
 }
+
+// gets the scene
 cherry::Scene* cherry::SceneManager::Get(const std::string& name) {
 	if (!HasScene(name))
 		return nullptr;
@@ -39,10 +41,36 @@ bool cherry::SceneManager::SetCurrentScene(const std::string& name) {
 	return false;
 }
 
-void cherry::SceneManager::RegisterScene(const std::string& name, Scene* scene) {
+// void cherry::SceneManager::RegisterScene(const std::string& name, Scene* scene) {
+// 	LOG_ASSERT(!HasScene(name), "A scene with that name already exists!");
+// 	if (scene == nullptr)
+// 		scene = new Scene(name); // EX: now passes the scene's name.
+// 
+// 	// we just reference it and put it in. Everything else is done internally.
+// 	_KnownScenes[name] = scene;
+// }
+
+// registers a new scene using a provided name.
+void cherry::SceneManager::RegisterScene(const std::string& name)
+{
 	LOG_ASSERT(!HasScene(name), "A scene with that name already exists!");
+
+ 	Scene * scene = new Scene(name); // making the scene.
+ 
+ 	// we just reference it and put it in. Everything else is done internally.
+ 	_KnownScenes[name] = scene;
+}
+
+
+// registers a scene and uses its name as the array placement.
+void cherry::SceneManager::RegisterScene(Scene* scene)
+{
 	if (scene == nullptr)
-		scene = new Scene(name); // EX: now passes the scene's name.
+		return;
+
+	const std::string name = scene->GetName();
+
+	LOG_ASSERT(!HasScene(name), "A scene with that name already exists!");
 
 	// we just reference it and put it in. Everything else is done internally.
 	_KnownScenes[name] = scene;

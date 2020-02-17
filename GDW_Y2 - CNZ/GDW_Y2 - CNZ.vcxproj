@@ -107,6 +107,8 @@
     <ClCompile Include="src\cherry\TextureCube.cpp" />
     <ClCompile Include="src\cherry\TextureSampler.cpp" />
     <ClCompile Include="src\cherry\utils\math\Interpolation.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Point.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Shape.cpp" />
     <ClCompile Include="src\cherry\WorldTransform.cpp" />
     <ClCompile Include="src\CSV.cpp" />
     <ClCompile Include="src\EnemyTypes\Enemies.cpp" />
@@ -403,6 +405,8 @@
     <ClInclude Include="src\cherry\TextureSampler.h" />
     <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\cherry\utils\math\Interpolation.h" />
+    <ClInclude Include="src\cherry\utils\math\Point.h" />
+    <ClInclude Include="src\cherry\utils\math\Shape.h" />
     <ClInclude Include="src\cherry\WorldTransform.h" />
     <ClInclude Include="src\CSV.h" />
     <ClInclude Include="src\EnemyTypes\Enemies.h" />

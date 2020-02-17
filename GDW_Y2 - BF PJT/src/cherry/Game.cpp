@@ -143,6 +143,7 @@ void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods
 
 // GAME FUNCTIONS
 short int cherry::Game::FPS = 0;
+cherry::Game* cherry::Game::runningGame = nullptr;
 
 // Game
 // constructor
@@ -378,6 +379,43 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_0:
 		DeleteObjectFromScene(objectList->objects.at(0));
 		break;
+	}
+}
+
+// static screne creation
+bool cherry::Game::CreateScene(const std::string sceneName)
+{
+	// creating a default skybox for the scene, since none was provided
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+	);
+
+	// calling other static function
+	return CreateScene(sceneName, skybox);
+}
+
+// static scene creation (with skybox)
+bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox skybox)
+{
+	if (SceneManager::HasScene(sceneName)) // if the scene already exists
+	{
+		return false;
+	}
+	else
+	{
+		SceneManager::RegisterScene(sceneName); // registering the scene
+		cherry::Scene* scene = SceneManager::Get(sceneName); // getting the scene
+		skybox.AddSkyboxToScene(scene); // adds the skybox to the scene.
+
+		ObjectManager::CreateSceneObjectList(sceneName); // creating an object list.
+		LightManager::CreateSceneLightList(sceneName); // creating a light list.
+
+		return true;
 	}
 }
 
@@ -676,6 +714,9 @@ bool cherry::Game::DeleteLightFromScene(cherry::Light* light)
 	}
 }
 
+// returns the running game.
+cherry::Game* cherry::Game::GetRunningGame() { return runningGame; }
+
 
 void cherry::Game::Initialize() {
 
@@ -744,7 +785,12 @@ void cherry::Game::Initialize() {
 	audioEngine.Init();
 }
 
+// called when the game is shutting down
 void cherry::Game::Shutdown() {
+	// if this was the running game.
+	if (runningGame == this)
+		runningGame = nullptr;
+
 	glfwTerminate();
 }
 
@@ -820,7 +866,7 @@ void cherry::Game::LoadContent()
 	// before the mesh in the original code
 	Shader::Sptr phong = std::make_shared<Shader>();
 	// TODO: make version without UVs?
-	phong->Load("res/lighting.vs.glsl", "res/blinn-phong.fs.glsl");
+	phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
@@ -843,7 +889,7 @@ void cherry::Game::LoadContent()
 		// Shader was originally compiled here.
 	// // Create and compile shader
 	// myShader = std::make_shared<Shader>();
-	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
+	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 	// 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	// testMat->Set("s_Albedo", albedo, Linear); // now uses mip mapping
@@ -1140,7 +1186,7 @@ void cherry::Game::LoadContent()
 
 	// Create and compile shader
 	// myShader = std::make_shared<Shader>();
-	// myShader->Load("res/shader.vs.glsl", "res/shader.fs.glsl");
+	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 
@@ -1328,8 +1374,11 @@ void cherry::Game::ImGuiEndFrame() {
 	}
 }
 
+// called to run the game.
 void cherry::Game::Run()
 {
+	runningGame = this; // this is the running game.
+
 	Initialize();
 	InitImGui();
 	LoadContent();
@@ -1368,7 +1417,7 @@ void cherry::Game::Run()
 		}
 		else
 		{
-			std::cout << "Test" << std::endl;
+			// std::cout << "FPS: " << FPS << std::endl;
 		}
 
 	}
@@ -1586,7 +1635,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			boundShader->Bind();
 
 			// if the object is to have a fixed screen position.
-			if(renderer.Mesh->GetFixedScreenPosition())
+			if(renderer.Mesh->GetScreenSpaceMesh())
 				boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
 			else 
 				boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
@@ -1611,7 +1660,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
 
 		// Update the MVP using the item's transform
-		if (renderer.Mesh->GetFixedScreenPosition())
+		if (renderer.Mesh->GetScreenSpaceMesh())
 		{
 			mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
 		}

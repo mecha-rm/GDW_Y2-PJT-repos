@@ -116,8 +116,9 @@
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
     <ClCompile Include="src\cherry\physics\PhysicsBody.cpp" />
-    <ClCompile Include="src\cherry\Scene.cpp" />
-    <ClCompile Include="src\cherry\SceneManager.cpp" />
+    <ClCompile Include="src\cherry\scenes\EngineScene.cpp" />
+    <ClCompile Include="src\cherry\scenes\Scene.cpp" />
+    <ClCompile Include="src\cherry\scenes\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
     <ClCompile Include="src\cherry\Skybox.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
@@ -401,8 +402,9 @@
     <ClInclude Include="src\cherry\animate\Path.h" />
     <ClInclude Include="src\cherry\physics\Physics.h" />
     <ClInclude Include="src\cherry\physics\PhysicsBody.h" />
-    <ClInclude Include="src\cherry\Scene.h" />
-    <ClInclude Include="src\cherry\SceneManager.h" />
+    <ClInclude Include="src\cherry\scenes\EngineScene.h" />
+    <ClInclude Include="src\cherry\scenes\Scene.h" />
+    <ClInclude Include="src\cherry\scenes\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />
     <ClInclude Include="src\cherry\Skybox.h" />
     <ClInclude Include="src\cherry\stb_image.h" />

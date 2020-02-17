@@ -76,6 +76,8 @@
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
     <ClCompile Include="src\cherry\lights\LightManager.cpp" />
     <ClCompile Include="src\cherry\lights\Light.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Point.cpp" />
+    <ClCompile Include="src\cherry\utils\math\Shape.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -375,6 +377,8 @@
     <ClInclude Include="src\cherry\physics\Physics.h" />
     <ClInclude Include="src\cherry\lights\LightManager.h" />
     <ClInclude Include="src\cherry\lights\Light.h" />
+    <ClInclude Include="src\cherry\utils\math\Point.h" />
+    <ClInclude Include="src\cherry\utils\math\Shape.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
