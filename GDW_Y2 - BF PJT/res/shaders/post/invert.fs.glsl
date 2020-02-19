@@ -17,9 +17,10 @@ uniform vec3 a_CameraPos; // camera position
 uniform sampler2D xImage;
 
 void main() {
-	// getting the image
-	vec4 img = texture(xImage, inUV);
+	vec4 img = texture(xImage, inUV); // getting the image
+	vec3 newColor = inColor.rgb * img.rgb;
+	newColor = vec3(1.0F, 1.0F, 1.0F) - newColor;
 
 	// getting the out color
-	outColor = inColor * img;
+	outColor = vec4(newColor, inColor.a * img.a);
 }

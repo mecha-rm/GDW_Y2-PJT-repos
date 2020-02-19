@@ -21,7 +21,7 @@ uniform vec2 xScreenRes;
 void main() {
 	outColor = inColor;
 	outNormal = inNormal;
-	outScreenCoords = ((inPosition.xy + vec2(1, 1)) / 2.0f) * xScreenRes;
+	outScreenCoords = ((inPosition.xy + vec2(1, 1))) * xScreenRes;
 	outUV = inUV;
 
 	gl_Position = vec4(inPosition, 1);

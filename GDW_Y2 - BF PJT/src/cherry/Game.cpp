@@ -1316,7 +1316,7 @@ void cherry::Game::LoadContent()
 	// CreateScene("AIS", false);
 	// objectList->objects.at(0)->SetScene("AIS");
 	// SetCurrentScene("AIS", false);
-
+	 
 	// Create and compile shader
 	// myShader = std::make_shared<Shader>();
 	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
@@ -1324,7 +1324,8 @@ void cherry::Game::LoadContent()
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
 	
 	// adds a post-processing 
-	layer = new PostLayer(POST_VS, POST_FS);
+	// layer = new PostLayer(POST_VS, POST_FS);
+	layer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
 
 	// frame buffer
 	FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
@@ -1642,6 +1643,9 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	myCameraX->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCameraX->InPerspectiveMode());
 	myCameraX->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCameraX->InOrthographicMode());
 
+	if (layer != nullptr)
+		layer->OnWindowResize(newWidth, newHeight);
+
 	// saving the new window size.
 	myWindowSize = { newWidth, newHeight }; // updating window size
 }
@@ -1697,8 +1701,9 @@ void cherry::Game::DrawGui(float deltaTime) {
 // Now handles rendering the scene.
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
-	// FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
-	// fb->Bind();
+	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+	fb->Bind();
+
 	// Set viewport to entire region
 	// glViewport(viewport.x, viewport.y, viewport.z, viewport.w); // not neded since viewpoint doesn't change the clear call.
 	glScissor(viewport.x, viewport.y, viewport.z, viewport.w);
@@ -1875,8 +1880,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		}
 	} 
 
-	// fb->UnBind();
-	// 
-	// if (layer != nullptr)
-	// 	layer->PostRender();
+	fb->UnBind();
+	
+	if (layer != nullptr)
+		layer->PostRender();
 }

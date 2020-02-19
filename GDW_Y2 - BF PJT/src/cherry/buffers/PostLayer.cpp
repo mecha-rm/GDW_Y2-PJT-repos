@@ -90,13 +90,13 @@ void cherry::PostLayer::PostRender()
 		glViewport(0, 0, pass.Output->GetWidth(), pass.Output->GetHeight());
 
 		// Use the post processing shader to draw the fullscreen quad
-		// pass.Shader->Use(); // TODO: add this function?
+		pass.Shader->Bind(); // binds the shader so that it can be used.
 		
 		lastPass->GetAttachment(RenderTargetAttachment::Color0)->Bind(0);
 		pass.Shader->SetUniform("xImage", 0);
 		pass.Shader->SetUniform("xScreenRes", glm::vec2(game->GetWindowSize()));
 
-		myFullscreenQuad->Draw();
+		myFullscreenQuad->Draw(); 
 
 		// Unbind the output pass so that we can read from it
 		pass.Output->UnBind();
@@ -113,4 +113,6 @@ void cherry::PostLayer::PostRender()
 
 	// Unbind the last buffer from read operations, so we can write to it again later
 	lastPass->UnBind();
+
+	glEnable(GL_DEPTH_TEST);
 }

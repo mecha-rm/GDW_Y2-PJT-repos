@@ -1482,6 +1482,7 @@
     <None Include="res\shaders\terrain.vs.glsl" />
     <None Include="res\shaders\water-shader.fs.glsl" />
     <None Include="res\shaders\water-shader.vs.glsl" />
+    <None Include="res\shaders\post\invert.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

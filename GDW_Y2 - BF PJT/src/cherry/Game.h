@@ -331,8 +331,8 @@ namespace cherry
 		glm::vec3 r_Dir = glm::vec3(0, 0, 0);
 
 		// translation and rotation speeds
-		float t_Speed = 15.0F;
-		float r_Speed = 15.0F;
+		float t_Speed = 12.0F;
+		float r_Speed = 20.0F;
 
 		// gets the cursor position
 		cherry::Vec2 mousePos;
