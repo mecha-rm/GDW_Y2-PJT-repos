@@ -93,6 +93,9 @@
     <ClCompile Include="src\cherry\animate\Path.cpp" />
     <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
     <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
+    <ClCompile Include="src\cherry\buffers\FrameBuffer.cpp" />
+    <ClCompile Include="src\cherry\buffers\PostLayer.cpp" />
+    <ClCompile Include="src\cherry\ITexture.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\lights\Light.cpp" />
     <ClCompile Include="src\cherry\lights\LightManager.cpp" />
@@ -377,6 +380,9 @@
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
     <ClInclude Include="src\cherry\audio\AudioComponent.h" />
     <ClInclude Include="src\cherry\audio\AudioEngine.h" />
+    <ClInclude Include="src\cherry\buffers\FrameBuffer.h" />
+    <ClInclude Include="src\cherry\buffers\PostLayer.h" />
+    <ClInclude Include="src\cherry\ITexture.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
     <ClInclude Include="src\cherry\lights\Light.h" />
@@ -411,6 +417,7 @@
     <ClInclude Include="src\cherry\Target.h" />
     <ClInclude Include="src\cherry\Texture2D.h" />
     <ClInclude Include="src\cherry\TextureCube.h" />
+    <ClInclude Include="src\cherry\TextureEnums.h" />
     <ClInclude Include="src\cherry\TextureSampler.h" />
     <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\cherry\utils\Array.h" />
@@ -432,6 +439,7 @@
     <ClInclude Include="src\cherry\VectorCRY.h" />
     <ClInclude Include="src\cherry\WorldTransform.h" />
     <ClInclude Include="src\cherry\animate\ImageAnimation.h" />
+    <ClInclude Include="src\cherry\IGraphicsResource.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="external\fmod\fmod64.lib" />
@@ -560,6 +568,23 @@
     <None Include="external\GLM\gtx\vector_angle.inl" />
     <None Include="external\GLM\gtx\vector_query.inl" />
     <None Include="external\GLM\gtx\wrap.inl" />
+    <None Include="res\shaders\blinn-phong-morph.fs.glsl" />
+    <None Include="res\shaders\blinn-phong.fs.glsl" />
+    <None Include="res\shaders\cubemap.fs.glsl" />
+    <None Include="res\shaders\cubemap.vs.glsl" />
+    <None Include="res\shaders\image-shader.fs.glsl" />
+    <None Include="res\shaders\image-shader.vs.glsl" />
+    <None Include="res\shaders\lighting-morph.vs.glsl" />
+    <None Include="res\shaders\lighting.vs.glsl" />
+    <None Include="res\shaders\normalView.fs.glsl" />
+    <None Include="res\shaders\post\post.fs.glsl" />
+    <None Include="res\shaders\post\post.vs.glsl" />
+    <None Include="res\shaders\shader.fs.glsl" />
+    <None Include="res\shaders\shader.vs.glsl" />
+    <None Include="res\shaders\terrain.fs.glsl" />
+    <None Include="res\shaders\terrain.vs.glsl" />
+    <None Include="res\shaders\water-shader.fs.glsl" />
+    <None Include="res\shaders\water-shader.vs.glsl" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.exe" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.ilk" />
     <None Include="x64\Debug\GDW_Y2 - BF PJT.pdb" />

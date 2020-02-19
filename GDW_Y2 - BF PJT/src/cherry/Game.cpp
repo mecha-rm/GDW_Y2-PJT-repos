@@ -173,10 +173,13 @@ cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool
 cherry::Game::~Game() { }
 
 // gets the window width
-float cherry::Game::GetWindowWidth() const { return myWindowSize.x; }
+int cherry::Game::GetWindowWidth() const { return myWindowSize.x; }
 
 // gets the window height
-float cherry::Game::GetWindowHeight() const { return myWindowSize.y; }
+int cherry::Game::GetWindowHeight() const { return myWindowSize.y; }
+
+// gets the window size
+glm::ivec2 cherry::Game::GetWindowSize() const { return myWindowSize; }
 
 // shows whether the window is in full screen or not
 bool cherry::Game::IsFullScreen() const { return fullScreen; }
@@ -292,18 +295,77 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_SPACE:
 		myCamera->SwitchViewMode();
 		break;
-	case GLFW_KEY_W:
-		w = true;
+	// case GLFW_KEY_W:
+	// 	w = true;
+	// 	break;
+	// case GLFW_KEY_S:
+	// 	s = true;
+	// 	break;
+	// case GLFW_KEY_A:
+	// 	a = true;
+	// 	break;
+	// case GLFW_KEY_D:
+	// 	d = true;
+	// 	break;
+
+		// CAMERA CONTROLS
+		// TRANSLATIONS
+	case GLFW_KEY_W: // y-direction up
+		t_Dir[1] = -1;
 		break;
-	case GLFW_KEY_S:
-		s = true;
+
+	case GLFW_KEY_S: // y-direction down
+		t_Dir[1] = 1;
 		break;
-	case GLFW_KEY_A:
-		a = true;
+		
+	case GLFW_KEY_A: // x-direction left
+		t_Dir[0] = 1;
 		break;
-	case GLFW_KEY_D:
-		d = true;
+
+	case GLFW_KEY_D: // x-direction right
+		t_Dir[0] = -1;
 		break;
+
+	case GLFW_KEY_Q: // z-direction backward
+		t_Dir[2] = 1;
+		break;
+
+	case GLFW_KEY_E: // z-direction forward
+		t_Dir[2] = -1;
+		break;
+
+		// ROTATIONS
+	case GLFW_KEY_UP: // y-direction +
+		r_Dir[0] = -1;
+		break;
+
+	case GLFW_KEY_DOWN: // y-direction -
+		r_Dir[0] = 1;
+		break;
+
+	case GLFW_KEY_LEFT: // x-direction +
+		r_Dir[1] = -1;
+		break;
+
+	case GLFW_KEY_RIGHT: // x-direction -
+		r_Dir[1] = 1;
+		break;
+
+	case GLFW_KEY_PAGE_UP: // z-direction -
+		r_Dir[2] = -1;
+		break;
+
+	case GLFW_KEY_PAGE_DOWN: // z-direction +
+		r_Dir[2] = 1;
+		break;
+
+		// resets the camera so that it looks at the origin
+	case GLFW_KEY_L:
+		if (myCamera != nullptr)
+			myCamera->LookAt(myCamera->LookingAt());
+		break;
+
+	// TODO: remove these
 	case GLFW_KEY_V:
 		if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
 			objectList->objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
@@ -338,17 +400,55 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 
 	switch (key)
 	{
-	case GLFW_KEY_W:
-		w = true;
+	// CAMERA CONTROLS
+		// TRANSLATIONS
+	case GLFW_KEY_W: // y-direction up
+		t_Dir[1] = -1;
 		break;
-	case GLFW_KEY_S:
-		s = true;
+
+	case GLFW_KEY_S: // y-direction down
+		t_Dir[1] = 1;
 		break;
-	case GLFW_KEY_A:
-		a = true;
+		
+	case GLFW_KEY_A: // x-direction left
+		t_Dir[0] = 1;
 		break;
-	case GLFW_KEY_D:
-		d = true;
+
+	case GLFW_KEY_D: // x-direction right
+		t_Dir[0] = -1;
+		break;
+
+	case GLFW_KEY_Q: // z-direction backward
+		t_Dir[2] = 1;
+		break;
+
+	case GLFW_KEY_E: // z-direction forward
+		t_Dir[2] = -1;
+		break;
+
+		// ROTATIONS
+	case GLFW_KEY_UP: // y-direction +
+		r_Dir[0] = -1;
+		break;
+
+	case GLFW_KEY_DOWN: // y-direction -
+		r_Dir[0] = 1;
+		break;
+
+	case GLFW_KEY_LEFT: // x-direction +
+		r_Dir[1] = -1;
+		break;
+
+	case GLFW_KEY_RIGHT: // x-direction -
+		r_Dir[1] = 1;
+		break;
+
+	case GLFW_KEY_PAGE_UP: // z-direction -
+		r_Dir[2] = -1;
+		break;
+
+	case GLFW_KEY_PAGE_DOWN: // z-direction +
+		r_Dir[2] = 1;
 		break;
 	}
 
@@ -364,18 +464,46 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 
 	switch (key)
 	{
+		// CAMERA CONTROLS
+		// TRANSLATIONS
+		// y-axis movement
 	case GLFW_KEY_W:
-		w = false;
-		break;
 	case GLFW_KEY_S:
-		s = false;
+		t_Dir[1] = 0;
 		break;
+
+		// x-axis movement
 	case GLFW_KEY_A:
-		a = false;
-		break;
 	case GLFW_KEY_D:
-		d = false;
+		t_Dir[0] = 0;
 		break;
+
+		// z-axis movement
+	case GLFW_KEY_Q:
+	case GLFW_KEY_E:
+		t_Dir[2] = 0;
+		break;
+
+		// ROTATIONS
+		// y-axis rotation
+	case GLFW_KEY_UP:
+	case GLFW_KEY_DOWN:
+		r_Dir[0] = 0;
+		break;
+
+		// x-axis rotation
+	case GLFW_KEY_LEFT:
+	case GLFW_KEY_RIGHT:
+		r_Dir[1] = 0;
+		break;
+
+		// z-axis rotation
+	case GLFW_KEY_PAGE_UP:
+	case GLFW_KEY_PAGE_DOWN:
+		r_Dir[2] = 0;
+		break;
+
+	// deletes an object
 	case GLFW_KEY_0:
 		DeleteObjectFromScene(objectList->objects.at(0));
 		break;
@@ -799,8 +927,10 @@ void cherry::Game::LoadContent()
 {
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
+	myCamera->clearColor = myClearColor;
 	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
+	
 
 	// sets the camera to perspective mode for the m_Scene.
 	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
@@ -816,6 +946,7 @@ void cherry::Game::LoadContent()
 
 	// secondary camera, which is used for UI for the game.
 	myCameraX = std::make_shared<Camera>();
+	myCameraX->clearColor = myClearColor;
 	myCameraX->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
 	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
 	myCameraX->LookAt(glm::vec3(0));
@@ -1179,6 +1310,8 @@ void cherry::Game::LoadContent()
 
 	} 
 	
+	
+
 	// Switching a scene.
 	// CreateScene("AIS", false);
 	// objectList->objects.at(0)->SetScene("AIS");
@@ -1189,6 +1322,24 @@ void cherry::Game::LoadContent()
 	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
+	
+	// adds a post-processing 
+	layer = new PostLayer(POST_VS, POST_FS);
+
+	// frame buffer
+	FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+	
+	// scene colour
+	RenderBufferDesc sceneColor = RenderBufferDesc();
+	sceneColor.ShaderReadable = true;
+	sceneColor.Attachment = RenderTargetAttachment::Color0;
+	sceneColor.Format = RenderTargetType::Color24;
+
+	fb->AddAttachment(sceneColor);
+	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb);
+	
+	// CurrentRegistry().ctx<FrameBuffer::Sptr>()->
+
 
 	// TODO: streamline, and replace audio file (WE DON'T OWN IT)
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
@@ -1199,6 +1350,7 @@ void cherry::Game::LoadContent()
 	audioEngine.LoadEvent("Music", "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
 	// Play the event
 	audioEngine.PlayEvent("Music");
+	audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 }
 
 void cherry::Game::UnloadContent() {
@@ -1206,21 +1358,28 @@ void cherry::Game::UnloadContent() {
 
 void cherry::Game::Update(float deltaTime) {
 
-	glm::vec3 camTranslate{}; // movement for the camera this given frame.
-	float camTransInc = 8.0F; // increment for camera movement
-
 	// TODO: remove this line.
 	// <the update loop for all sceneLists was originally here.>
 
 	// updates the camera
 	if (debugMode) // moves the camera with button presses if in debug mode.
 	{
-		//// moving the camera
-		camTranslate.x = (a) ? -camTransInc * deltaTime : (d) ? camTransInc * deltaTime : 0.0F; // x-axis
-		camTranslate.y = (w) ? camTransInc * deltaTime : (s) ? -camTransInc * deltaTime : 0.0F; // y-axis
+		// camera transformations
 
-		myCamera->SetPosition(myCamera->GetPosition() + camTranslate); // setting the new cmaera position
-		myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
+		// moving the camera
+		myCamera->SetPosition(myCamera->GetPosition()
+			+ glm::vec3(t_Dir[0] * t_Speed * deltaTime, t_Dir[1] * t_Speed * deltaTime, t_Dir[2] * t_Speed * deltaTime));
+
+		// rotating the camera
+		myCamera->Rotate(
+			glm::vec3(glm::radians(r_Dir[0] * r_Speed * deltaTime), 
+					  glm::radians(r_Dir[1] * r_Speed * deltaTime), 
+					  glm::radians(r_Dir[2] * r_Speed * deltaTime)
+			)
+		);
+
+		// myCamera->
+		// myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
 	} 
 
 	// if (w)
@@ -1538,6 +1697,8 @@ void cherry::Game::DrawGui(float deltaTime) {
 // Now handles rendering the scene.
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
+	// FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+	// fb->Bind();
 	// Set viewport to entire region
 	// glViewport(viewport.x, viewport.y, viewport.z, viewport.w); // not neded since viewpoint doesn't change the clear call.
 	glScissor(viewport.x, viewport.y, viewport.z, viewport.w);
@@ -1553,6 +1714,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 	glViewport(viewport.x + borderSize, viewport.y + borderSize, viewport.z - 2 * borderSize, viewport.w - 2 * borderSize);
 	glScissor(viewport.x + borderSize, viewport.y + borderSize, viewport.z - 2 * borderSize, viewport.w - 2 * borderSize);
 
+	// TODO: set border colour, border size, and clear colour in cameras instead. 
 	// Clear our new inset area with the scene clear color
 	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
 	if (clear)
@@ -1712,4 +1874,9 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			// std::cout << "INVISIBLE" << std::endl;
 		}
 	} 
+
+	// fb->UnBind();
+	// 
+	// if (layer != nullptr)
+	// 	layer->PostRender();
 }

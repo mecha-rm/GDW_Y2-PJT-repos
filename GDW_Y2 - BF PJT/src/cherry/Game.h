@@ -11,12 +11,15 @@
 #include "Shader.h"
 #include "Mesh.h"
 
-
+// managers
 #include "scenes/SceneManager.h"
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
 #include "lights/LightManager.h"
 #include "audio/AudioComponent.h"
+
+// post-processing
+#include "buffers/PostLayer.h"
 
 // System Library Includes
 #include <iostream>
@@ -40,10 +43,13 @@ namespace cherry
 		~Game();
 
 		// gets the window width
-		float GetWindowWidth() const;
+		int GetWindowWidth() const;
 
 		// gets the window height
-		float GetWindowHeight() const;
+		int GetWindowHeight() const;
+
+		// gets the size of the window.
+		glm::ivec2 GetWindowSize() const;
 
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
@@ -286,7 +292,8 @@ namespace cherry
 
 		// static glm::vec2 resolution;
 
-		// Stores the clear color of the game's window
+		// stores the main clear color of the game's window
+		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
 		glm::vec4 myClearColor;
 
 		// Stores the title of the game's window
@@ -317,7 +324,15 @@ namespace cherry
 		bool enableSkybox = false;
 
 		// movement
-		bool w = false, a = false, s = false, d = false;
+		// bool w = false, a = false, s = false, d = false;
+
+		// translation and rotation direction
+		glm::vec3 t_Dir = glm::vec3(0, 0, 0);
+		glm::vec3 r_Dir = glm::vec3(0, 0, 0);
+
+		// translation and rotation speeds
+		float t_Speed = 15.0F;
+		float r_Speed = 15.0F;
 
 		// gets the cursor position
 		cherry::Vec2 mousePos;
@@ -336,7 +351,11 @@ namespace cherry
 		// returns 'true' if the mouse is in the window content, false otherwise.
 		bool mouseEnter = false;
 
+		// TODO: probably remove this
 		unsigned int hitBoxIndex = -1;
+
+		// post processing layer
+		PostLayer* layer;
 
 	};
 

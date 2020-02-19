@@ -129,15 +129,6 @@
     <ClCompile Include="src\cherry\VectorCRY.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\Texture2D.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cherry\TextureSampler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\cherry\TextureCube.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\cherry\objects\Image.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -208,6 +199,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cherry\scenes\EngineScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\buffers\FrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\Texture2D.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\TextureCube.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\TextureSampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\ITexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\buffers\PostLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -956,16 +965,7 @@
     <ClInclude Include="src\cherry\VectorCRY.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cherry\UtilsCRY.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\TextureCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\TextureSampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\objects\Image.h">
@@ -1071,6 +1071,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\scenes\EngineScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\buffers\FrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\TextureCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\TextureSampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\ITexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\IGraphicsResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\TextureEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\buffers\PostLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1441,6 +1465,23 @@
     <None Include="external\GLM\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
+    <None Include="res\shaders\post\post.vs.glsl" />
+    <None Include="res\shaders\post\post.fs.glsl" />
+    <None Include="res\shaders\blinn-phong.fs.glsl" />
+    <None Include="res\shaders\blinn-phong-morph.fs.glsl" />
+    <None Include="res\shaders\cubemap.fs.glsl" />
+    <None Include="res\shaders\image-shader.fs.glsl" />
+    <None Include="res\shaders\cubemap.vs.glsl" />
+    <None Include="res\shaders\image-shader.vs.glsl" />
+    <None Include="res\shaders\lighting.vs.glsl" />
+    <None Include="res\shaders\lighting-morph.vs.glsl" />
+    <None Include="res\shaders\normalView.fs.glsl" />
+    <None Include="res\shaders\shader.fs.glsl" />
+    <None Include="res\shaders\shader.vs.glsl" />
+    <None Include="res\shaders\terrain.fs.glsl" />
+    <None Include="res\shaders\terrain.vs.glsl" />
+    <None Include="res\shaders\water-shader.fs.glsl" />
+    <None Include="res\shaders\water-shader.vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

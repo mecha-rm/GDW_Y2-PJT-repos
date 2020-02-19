@@ -23,3 +23,16 @@
 	NoMove(TypeName);\
 	NoCopy(TypeName); \
 	std::string DebugName;
+
+///// SHADERS //////
+// REGULAR
+// macros for file paths for commonly used shaders
+#define STATIC_VS ("res/shaders/lighting.vs.glsl")
+#define STATIC_FS ("res/shaders/blinn-phong.fs.glsl")
+
+#define DYNAMIC_VS ("res/shaders/lighting-morph.vs.glsl")
+#define DYNAMIC_FS ("res/shaders/blinn-phong-morph.fs.glsl")
+
+// POST
+#define POST_VS ("res/shaders/post/post.vs.glsl")
+#define POST_FS ("res/shaders/post/post.fs.glsl")

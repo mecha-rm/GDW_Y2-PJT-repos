@@ -65,6 +65,15 @@ void cherry::Shader::Load(const char* vsFile, const char* fsFile)
 	delete[] vs_source;
 }
 
+// mat3 ver.
+void cherry::Shader::SetUniform(const char* name, const glm::mat3& value) {
+	GLint loc = glGetUniformLocation(myShaderHandle, name);
+	if (loc != -1) {
+		glProgramUniformMatrix3fv(myShaderHandle, loc, 1, false, &value[0][0]);
+	}
+}
+
+// mat4 ver.
 // gets the first float in the array so that OpenGl knows to grab the values, and where to do so.
 void cherry::Shader::SetUniform(const char* name, const glm::mat4& value) {
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
@@ -73,11 +82,12 @@ void cherry::Shader::SetUniform(const char* name, const glm::mat4& value) {
 	}
 }
 
-// mat3 ver.
-void cherry::Shader::SetUniform(const char* name, const glm::mat3& value) {
+// vec2 (added for the engine specifically) 
+void cherry::Shader::SetUniform(const char* name, const glm::vec2& value)
+{
 	GLint loc = glGetUniformLocation(myShaderHandle, name);
 	if (loc != -1) {
-		glProgramUniformMatrix3fv(myShaderHandle, loc, 1, false, &value[0][0]);
+		glProgramUniform2fv(myShaderHandle, loc, 1, &value[0]);
 	}
 }
 

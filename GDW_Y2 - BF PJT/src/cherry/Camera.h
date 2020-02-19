@@ -128,6 +128,9 @@ namespace cherry
 		// Gets the right hand vector of this camera
 		inline glm::vec3 GetRight() const { return glm::vec3(-LeftX, -LeftY, -LeftZ); }
 
+		// gets where the camera is looking.
+		glm::vec3 LookingAt() const { return lookingAt; };
+
 		// looks at a given location
 		void LookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 0, 1));
 
@@ -174,6 +177,12 @@ namespace cherry
 
 		// if 'true', the camera stays a fixed distance from the target 'target offset'
 		bool fixedTargetDistance = false;
+
+		// the clear colour of the camera (black by default)
+		// TODO: add border component
+		glm::vec4 clearColor{ 0.0F, 0.0F, 0.0F, 1.0F };
+
+
 
 	private:
 		
