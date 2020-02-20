@@ -6,6 +6,7 @@ cherry::FrameBuffer::FrameBuffer(uint32_t width, uint32_t height, uint8_t numSam
 {
 	myWidth = width;
 	myHeight = height;
+	myAspectRatio = { 1.0F, 1.0F }; // aspect ratio
 	
 	LOG_ASSERT(myWidth > 0, "Width must be greater than zero!");
 	LOG_ASSERT(myHeight > 0, "Height must be greater than zero!");
@@ -38,7 +39,10 @@ uint32_t cherry::FrameBuffer::GetWidth() const { return myWidth; }
 uint32_t cherry::FrameBuffer::GetHeight() const { return myHeight; }
 
 // gets the size of the buffer
-glm::ivec2 cherry::FrameBuffer::GetSize() const { return { myWidth, myHeight }; }
+glm::u32vec2 cherry::FrameBuffer::GetSize() const { return { myWidth, myHeight }; }
+
+// gets the aspect ratio
+glm::vec2 cherry::FrameBuffer::GetAspectRatio() const { return myAspectRatio; }
 
 // gets once of the frame attachments
 cherry::Texture2D::Sptr cherry::FrameBuffer::GetAttachment(RenderTargetAttachment attachment) {
@@ -57,14 +61,17 @@ cherry::Texture2D::Sptr cherry::FrameBuffer::GetAttachment(RenderTargetAttachmen
 			return nullptr;
 	}
 }
-
+ 
 void cherry::FrameBuffer::Resize(uint32_t newWidth, uint32_t newHeight) {
 	LOG_ASSERT(newWidth > 0, "Width must be greater than zero!");
 	LOG_ASSERT(newHeight > 0, "Height must be greater than zero!");
 
 	if (newWidth != myWidth || newHeight != myHeight) {
+		myAspectRatio = { (float)newWidth / myWidth, (float)newHeight / myHeight };
+
 		myWidth = newWidth;
 		myHeight = newHeight;
+
 		for (auto& kvp : myLayers) {
 			AddAttachment(kvp.second.Description);
 		}

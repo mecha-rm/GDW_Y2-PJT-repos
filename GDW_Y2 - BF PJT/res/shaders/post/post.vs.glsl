@@ -18,11 +18,18 @@ layout (location = 3) out vec2 outUV;
 // screen resolution
 uniform vec2 xScreenRes;
 
+// the aspect ratio of the frame
+// uniform vec2 xAspectRatio;
+
 void main() {
 	outColor = inColor;
 	outNormal = inNormal;
-	outScreenCoords = ((inPosition.xy + vec2(1, 1))) * xScreenRes;
+	outScreenCoords = ((inPosition.xy + vec2(1, 1)) * 2.0f) * xScreenRes;
 	outUV = inUV;
 
+	// vec3 newPos = inPosition;
+	// newPos.xy *= xAspectRatio;
+	// 
+	// gl_Position = vec4(newPos, 1);
 	gl_Position = vec4(inPosition, 1);
 }

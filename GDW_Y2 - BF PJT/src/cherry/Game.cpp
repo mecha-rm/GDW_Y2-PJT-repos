@@ -843,7 +843,7 @@ bool cherry::Game::DeleteLightFromScene(cherry::Light* light)
 }
 
 // returns the running game.
-cherry::Game* cherry::Game::GetRunningGame() { return runningGame; }
+cherry::Game* const cherry::Game::GetRunningGame() { return runningGame; }
 
 
 void cherry::Game::Initialize() {
@@ -918,6 +918,12 @@ void cherry::Game::Shutdown() {
 	// if this was the running game.
 	if (runningGame == this)
 		runningGame = nullptr;
+
+	// deleting the layers
+	for (PostLayer* layer : layers)
+		delete layer;
+
+	layers.clear();
 
 	glfwTerminate();
 }
@@ -1322,10 +1328,6 @@ void cherry::Game::LoadContent()
 	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
 
 	// myModelTransform = glm::mat4(1.0f); // initializing the model matrix
-	
-	// adds a post-processing 
-	// layer = new PostLayer(POST_VS, POST_FS);
-	layer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
 
 	// frame buffer
 	FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
@@ -1334,15 +1336,27 @@ void cherry::Game::LoadContent()
 	RenderBufferDesc sceneColor = RenderBufferDesc();
 	sceneColor.ShaderReadable = true;
 	sceneColor.Attachment = RenderTargetAttachment::Color0;
-	sceneColor.Format = RenderTargetType::Color24;
+	sceneColor.Format = RenderTargetType::Color24; // loads with RGB
+
+	// scene depth
+	RenderBufferDesc sceneDepth = RenderBufferDesc(); 
+	sceneDepth.ShaderReadable = true;
+	sceneDepth.Attachment = RenderTargetAttachment::Depth;
+	sceneDepth.Format = RenderTargetType::Depth24;
+
 
 	fb->AddAttachment(sceneColor);
-	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb);
+	fb->AddAttachment(sceneDepth);
 	
-	// CurrentRegistry().ctx<FrameBuffer::Sptr>()->
 
+	// fb->AddAttachment()
+	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb); 
+	
+	// adds a post-processing 
+	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
+	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
-	// TODO: streamline, and replace audio file (WE DON'T OWN IT)
+	// TODO: streamline audio inclusion
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
 	// TODO: put in dedicated folder with ID on it?
 	audioEngine.LoadBank("res/audio/Master", FMOD_STUDIO_LOAD_BANK_NORMAL);
@@ -1369,13 +1383,13 @@ void cherry::Game::Update(float deltaTime) {
 
 		// moving the camera
 		myCamera->SetPosition(myCamera->GetPosition()
-			+ glm::vec3(t_Dir[0] * t_Speed * deltaTime, t_Dir[1] * t_Speed * deltaTime, t_Dir[2] * t_Speed * deltaTime));
+			+ glm::vec3(t_Dir[0] * t_Inc * deltaTime, t_Dir[1] * t_Inc * deltaTime, t_Dir[2] * t_Inc * deltaTime));
 
 		// rotating the camera
 		myCamera->Rotate(
-			glm::vec3(glm::radians(r_Dir[0] * r_Speed * deltaTime), 
-					  glm::radians(r_Dir[1] * r_Speed * deltaTime), 
-					  glm::radians(r_Dir[2] * r_Speed * deltaTime)
+			glm::vec3(glm::radians(r_Dir[0] * r_Inc * deltaTime), 
+					  glm::radians(r_Dir[1] * r_Inc * deltaTime), 
+					  glm::radians(r_Dir[2] * r_Inc * deltaTime)
 			)
 		);
 
@@ -1643,8 +1657,12 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	myCameraX->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCameraX->InPerspectiveMode());
 	myCameraX->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCameraX->InOrthographicMode());
 
-	if (layer != nullptr)
-		layer->OnWindowResize(newWidth, newHeight);
+	// resizes the layers
+	for (PostLayer* layer : layers)
+	{
+		if(layer != nullptr)
+			layer->OnWindowResize(newWidth, newHeight);
+	}
 
 	// saving the new window size.
 	myWindowSize = { newWidth, newHeight }; // updating window size
@@ -1702,7 +1720,9 @@ void cherry::Game::DrawGui(float deltaTime) {
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
 	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
-	fb->Bind();
+	
+	if(!layers.empty()) // if there are layers
+		fb->Bind();
 
 	// Set viewport to entire region
 	// glViewport(viewport.x, viewport.y, viewport.z, viewport.w); // not neded since viewpoint doesn't change the clear call.
@@ -1766,7 +1786,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
-
+	
 	// copy past mesh renderer component and make ui rendere component?
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
@@ -1880,8 +1900,15 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		}
 	} 
 
-	fb->UnBind();
-	
-	if (layer != nullptr)
-		layer->PostRender();
+	if (!layers.empty())
+	{
+		fb->UnBind();
+
+		// applies each layer
+		for (PostLayer* layer : layers)
+		{
+			if (layer != nullptr)
+				layer->PostRender();
+		}
+	}
 }

@@ -1483,6 +1483,9 @@
     <None Include="res\shaders\water-shader.fs.glsl" />
     <None Include="res\shaders\water-shader.vs.glsl" />
     <None Include="res\shaders\post\invert.fs.glsl" />
+    <None Include="res\shaders\post\greyscale.fs.glsl" />
+    <None Include="res\shaders\post\sepiatone.fs.glsl" />
+    <None Include="res\shaders\post\vibrance.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

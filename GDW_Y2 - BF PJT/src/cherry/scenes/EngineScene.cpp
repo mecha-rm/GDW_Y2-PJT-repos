@@ -16,7 +16,7 @@ cherry::EngineScene::EngineScene() : Scene("Engine")
 
 void cherry::EngineScene::OnOpen()
 {
-	Game* game = Game::GetRunningGame();
+	Game* const game = Game::GetRunningGame();
 	
 	if (game == nullptr)
 		return;

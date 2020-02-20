@@ -10,6 +10,7 @@
 	* https://learnopengl.com/In-Practice/2D-Game/Postprocessing
 	* https://www.khronos.org/opengl/wiki/Buffer_Object
 	* https://www.khronos.org/opengl/wiki/Buffer_Texture
+	* https://www.khronos.org/opengl/wiki/Renderbuffer_Object
  */
 
 #pragma once
@@ -89,6 +90,9 @@ namespace cherry
 	struct RenderBufferDesc {
 		// If this is set to true, we will generate an OpenGL texture instead of a render buffer
 		
+		// if 'true', then the post-processing effect is made using a render buffer. If false, then it's made as a texture.
+		// when not sampling from the produced image, a render buffer is preferred.
+		// see https://www.khronos.org/opengl/wiki/Renderbuffer_Object for more details.
 		bool ShaderReadable;
 
 		// size of the renderable
@@ -114,7 +118,7 @@ namespace cherry
 		// constructor
 		FrameBuffer(uint32_t width, uint32_t height, uint8_t numSamples = 1);
 
-		// destructor
+		// destructor 
 		~FrameBuffer();
 
 		// gets the width
@@ -124,7 +128,10 @@ namespace cherry
 		uint32_t GetHeight() const;
 
 		// gets the size of the buffer, which is (width, height)
-		glm::ivec2 GetSize() const;
+		glm::u32vec2 GetSize() const;
+
+		// returns the aspect ratio of teh frame buffer
+		glm::vec2 GetAspectRatio() const;
 
 		// gets the image attachment.
 		cherry::Texture2D::Sptr GetAttachment(RenderTargetAttachment attachment);
@@ -193,6 +200,9 @@ namespace cherry
 		// frame buffer dimensions
 		uint32_t myWidth, myHeight;
 	
+		// aspect ratio of the frame buffer
+		glm::vec2 myAspectRatio;
+
 		// The number of samples to use if multi-sampling is enabled.
 		uint8_t  myNumSamples;
 

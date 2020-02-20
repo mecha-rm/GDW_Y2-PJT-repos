@@ -15,24 +15,25 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 	// 
 	// }
 
-	Game* currGame = Game::GetRunningGame();
-
+	const Game* const currGame = Game::GetRunningGame();
+	  
 	// making the render buffer
 	RenderBufferDesc mainColor = RenderBufferDesc();
 	mainColor.ShaderReadable = true;
 	mainColor.Attachment = RenderTargetAttachment::Color0;
 	mainColor.Format = RenderTargetType::Color24;
 
+	// TODO: removing the /2 causes the texture to not cover the screen properly.
 	// making the vertices for the quad
 	Vertex* verts = new Vertex[4]
 	{
 		//  {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
-		{{ -1.0F / 2.0F, -1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-		{{  1.0F / 2.0F, -1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-		{{ -1.0F / 2.0F,  1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-		{{  1.0F / 2.0F,  1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+		{{ -1.0F, -1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
+		{{  1.0F, -1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
+		{{ -1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
+		{{  1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
 	};
-
+	 
 	// making the indices for the quad
 	uint32_t* indices = new uint32_t[6]{
 		0, 1, 2,
@@ -67,25 +68,30 @@ void cherry::PostLayer::OnWindowResize(uint32_t width, uint32_t height)
 void cherry::PostLayer::PostRender()
 {
 	// gets the game being run for its screen size.
-	Game* game = Game::GetRunningGame();
+	const Game* const game = Game::GetRunningGame(); 
 	// auto& ecs = CurrentRegistry();
+	int depthCheck = GL_DEPTH_FUNC;
+	// std::cout << "Depth Check 1: " << std::boolalpha << depthCheck << std::endl;
 
-	
 	// We grab the application singleton to get the size of the screen
 	// ecs.ctx_or_set<AppFrameState>();
 	// CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>();
 	FrameBuffer::Sptr mainBuffer = CurrentRegistry().ctx<FrameBuffer::Sptr>();
 
-	glDisable(GL_DEPTH_TEST);
 	// The last output will start as the output from the rendering
 	FrameBuffer::Sptr lastPass = mainBuffer;
 
+	glDisable(GL_DEPTH_TEST);
+	//glDepthMask(GL_FALSE);
+	// depthCheck = GL_DEPTH_FUNC;
+	// std::cout << "Depth Check 2: " << std::boolalpha << depthCheck << std::endl;
+	 
 	// We'll iterate over all of our render passes
 	for (const PostPass& pass : myPasses) {
 
 		// We'll bind our post-processing output as the current render target and clear it
 		pass.Output->Bind(RenderTargetBinding::Draw);
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		// Set the viewport to be the entire size of the passes output
 		glViewport(0, 0, pass.Output->GetWidth(), pass.Output->GetHeight());
 
@@ -94,7 +100,8 @@ void cherry::PostLayer::PostRender()
 		
 		lastPass->GetAttachment(RenderTargetAttachment::Color0)->Bind(0);
 		pass.Shader->SetUniform("xImage", 0);
-		pass.Shader->SetUniform("xScreenRes", glm::vec2(game->GetWindowSize()));
+		pass.Shader->SetUniform("xScreenRes", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
+		// pass.Shader->SetUniform("xAspectRatio", pass.Output->GetAspectRatio());
 
 		myFullscreenQuad->Draw(); 
 
@@ -103,7 +110,7 @@ void cherry::PostLayer::PostRender()
 		// Update the last pass output to be this passes output
 		lastPass = pass.Output;
 	}
-
+	
 	// Bind the last buffer we wrote to as our source for read operations
 	lastPass->Bind(RenderTargetBinding::Read);
 
@@ -115,4 +122,9 @@ void cherry::PostLayer::PostRender()
 	lastPass->UnBind();
 
 	glEnable(GL_DEPTH_TEST);
+	// glDepthMask(GL_TRUE);
+
+	// depthCheck = GL_DEPTH_FUNC;
+	// std::cout << "Depth Check 3: " << std::boolalpha << depthCheck << "\n" << std::endl;
+
 }

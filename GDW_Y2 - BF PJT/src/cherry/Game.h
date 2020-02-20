@@ -195,7 +195,7 @@ namespace cherry
 
 		// gets the game object that's currently running.
 		// if 'nullptr' is returned, then no game is running.
-		static cherry::Game* GetRunningGame();
+		static cherry::Game* const GetRunningGame();
 
 		// runs the game
 		void Run();
@@ -331,8 +331,8 @@ namespace cherry
 		glm::vec3 r_Dir = glm::vec3(0, 0, 0);
 
 		// translation and rotation speeds
-		float t_Speed = 12.0F;
-		float r_Speed = 20.0F;
+		float t_Inc = 22.50F;
+		float r_Inc = 55.0F;
 
 		// gets the cursor position
 		cherry::Vec2 mousePos;
@@ -354,8 +354,8 @@ namespace cherry
 		// TODO: probably remove this
 		unsigned int hitBoxIndex = -1;
 
-		// post processing layer
-		PostLayer* layer;
+		// post processing layers
+		std::vector<PostLayer*> layers;
 
 	};
 
