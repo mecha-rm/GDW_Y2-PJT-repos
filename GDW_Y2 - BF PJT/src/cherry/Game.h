@@ -273,6 +273,9 @@ namespace cherry
 		// if 'true', collisions are checked by the Game class.
 		bool collisionMode = true;
 
+		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
+		bool overlayPostProcessing = true;
+
 		// list of scenes
 		// std::vector<std::string> scenes;
 

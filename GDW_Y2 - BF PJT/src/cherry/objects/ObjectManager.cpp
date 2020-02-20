@@ -2,6 +2,7 @@
 
 #include "..\utils\Utils.h"
 #include "..\physics/PhysicsBody.h"
+#include "..\Game.h"
 
 // object manager
 std::vector<cherry::ObjectList*> cherry::ObjectManager::objectLists = std::vector<cherry::ObjectList*>();
@@ -170,6 +171,29 @@ bool cherry::ObjectManager::DestroySceneObjectListByName(std::string sceneName)
 	return DestroySceneObjectListByPointer(obj);
 }
 
+// updates the object manager to inform it of a window chil being added or removed.
+void cherry::ObjectManager::UpdateWindowChild(cherry::Object* object)
+{
+	if (object == nullptr) // safety check
+		return;
+	
+	// gets the list
+	ObjectList * list = ObjectManager::GetSceneObjectListByName(object->GetSceneName()); // gets its object list.
+	
+	if (list == nullptr)
+		return;
+
+	// object is a window child
+	if (object->IsWindowChild())
+	{
+		list->RememberWindowChild(object);
+	}
+	else // object is not a window child
+	{
+		list->ForgetWindowChild(object);
+	}
+}
+
 // reading of an index
 // const cherry::ObjectList & cherry::ObjectManager::operator[](const int index) const { return *objectLists[index]; }
 
@@ -191,6 +215,7 @@ cherry::ObjectList::~ObjectList()
 		delete obj;
 
 	objects.clear();
+	windowChildren.clear(); // has objects that are also in objects vector.
 }
 
 // returns the scene for the object list.
@@ -229,7 +254,15 @@ bool cherry::ObjectList::AddObject(cherry::Object* obj)
 	if (obj == nullptr)
 		return false;
 
-	return util::addToVector(objects, obj); // adds the object to the vector.
+	// adds the object to the vector.
+	bool added = util::addToVector(objects, obj);
+	bool x;
+	// if the object was added, and is a window child.
+	if (added == true && obj->IsWindowChild()) // remembering the child
+		x = util::addToVector(windowChildren, obj);
+	
+
+	return added;
 }
 
 // removes an object from the list based on if it is the correct index.
@@ -240,7 +273,14 @@ cherry::Object* cherry::ObjectList::RemoveObjectByIndex(unsigned int index)
 
 	// gets a pointer to the object, removes it, and then returns said object.
 	cherry::Object* obj = objects[index];
-	util::removeFromVector(objects, obj);
+
+	if (obj != nullptr)
+	{
+		util::removeFromVector(objects, obj);
+
+		if (obj->IsWindowChild()) // if the object is a window child, it is removed.
+			util::removeFromVector(windowChildren, obj);
+	}
 
 	return obj;
 }
@@ -253,6 +293,9 @@ cherry::Object* cherry::ObjectList::RemoveObjectByPointer(cherry::Object* obj)
 
 	if (util::removeFromVector(objects, obj)) // if the object was found and removed
 	{
+		if (obj->IsWindowChild()) // if the object is a window child, it is removed.
+			util::removeFromVector(windowChildren, obj);
+
 		return obj;
 	}
 	else // object wasn't in the list.
@@ -332,6 +375,34 @@ bool cherry::ObjectList::DeleteObjectByName(std::string name)
 
 // editing ~ gets an object from the object list
 // cherry::Object& cherry::ObjectList::operator[](const int index) { return *(objects.at(index)); }
+
+// called so that the list remembers this is a window child.
+void cherry::ObjectList::RememberWindowChild(cherry::Object* object)
+{
+	util::addToVector(windowChildren, object);
+}
+
+// forgets the child is a child to the window
+void cherry::ObjectList::ForgetWindowChild(cherry::Object* object)
+{
+	util::removeFromVector(windowChildren, object);
+}
+
+// called when the window is resized for window children.
+void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
+{
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize();
+	glm::vec2 scale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y};
+	cherry::Vec3 tempPos; // temporary position
+
+	for (Object* windowChild : windowChildren)
+	{
+		// TODO: this doesn't cale properly, so that needs to be fixed.
+		tempPos = windowChild->GetPosition();
+		windowChild->SetPosition(tempPos.v.x * scale.x, tempPos.v.y * scale.y, tempPos.v.z);
+		windowChild->SetScale(windowChild->GetScale() * ((scale.x + scale.y) / 2.0F));
+	}
+}
 
 // updates all sceneLists in the list
 void cherry::ObjectList::Update(float deltaTime)

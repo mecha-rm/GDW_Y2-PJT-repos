@@ -62,6 +62,9 @@ namespace cherry
 		// editing
 		// cherry::ObjectList & operator[](const int index);
 
+		// updates the object when a window child is added or removed.
+		static void UpdateWindowChild(cherry::Object* object);
+
 	private:
 
 		// a vector that contains a series of pointer vectors that all contain teir list of sceneLists
@@ -130,6 +133,16 @@ namespace cherry
 		// editing
 		// cherry::Object& operator[](const int index);
 
+		// called so that the object is remembered as a child of the window.
+		void RememberWindowChild(cherry::Object* object);
+
+		// called so that the child is removed from the window child list.
+		// this does not remove the window child from the overall object list.
+		void ForgetWindowChild(cherry::Object* object);
+
+		// called when the window is being resized for window children.
+		void OnWindowResize(int newWidth, int newHeight);
+
 		// updates all sceneLists in the list.
 		void Update(float deltaTime);
 
@@ -140,6 +153,8 @@ namespace cherry
 
 	private:
 		std::string scene = ""; // the scene te object is in. TODO: make consts?
+
+		std::vector<cherry::Object*> windowChildren;
 
 	protected:
 	};

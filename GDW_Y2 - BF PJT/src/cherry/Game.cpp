@@ -959,7 +959,7 @@ void cherry::Game::LoadContent()
 	
 	// this camera is used for UI elements
 	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
-	myCameraX->SetOrthographicMode(-50.0f, 50.0f, -50.0f, 50.0f, 0.0f, 1000.0f, true);
+	myCameraX->SetOrthographicMode(-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
 
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
@@ -1228,14 +1228,15 @@ void cherry::Game::LoadContent()
 		// image (UI element)
 		{
 			cherry::Image* image = new Image("res/images/codename_zero_logo.png", GetCurrentSceneName(), false, false);
-			image->SetPosition(-88.0F, -47.0F, 0.0F);
-			image->SetFixedScreenPosition(true);
+			image->SetPosition(-30.0F, -2.0F, 0.0F);
+			image->SetWindowChild(true);
 			// image->SetPositionByScreenPortion(Vec2(0.5, 0.5), Vec2(myWindowSize), Vec2(0.5, 0.5));
 			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
-			image->SetScale(0.02F);
+			image->SetScale(0.12F);
 			image->SetAlpha(0.8F);
 			image->SetVisible(true);
-			objectList->objects.push_back(image); 
+			objectList->AddObject(image); 
+			image->SetPositionByWindowSize(Vec2(1.0F, 1.0F) - Vec2(0.80F, 0.88F));
 		}
 
 		// version 1 (finds .mtl file automatically)
@@ -1344,7 +1345,7 @@ void cherry::Game::LoadContent()
 	sceneDepth.Attachment = RenderTargetAttachment::Depth;
 	sceneDepth.Format = RenderTargetType::Depth24;
 
-
+	// colour and depth attachments
 	fb->AddAttachment(sceneColor);
 	fb->AddAttachment(sceneDepth);
 	
@@ -1355,6 +1356,8 @@ void cherry::Game::LoadContent()
 	// adds a post-processing 
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+
+	overlayPostProcessing = true;
 
 	// TODO: streamline audio inclusion
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
@@ -1667,6 +1670,9 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 			layer->OnWindowResize(newWidth, newHeight);
 	}
 
+	if (objectList != nullptr)
+		objectList->OnWindowResize(newWidth, newHeight);
+
 	// saving the new window size.
 	myWindowSize = { newWidth, newHeight }; // updating window size
 }
@@ -1722,8 +1728,13 @@ void cherry::Game::DrawGui(float deltaTime) {
 // Now handles rendering the scene.
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
+	// frame buffer for the renderer
 	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>(); // frame buffer for the game.
-	
+
+	// vector for post-post-process renders
+	std::vector<MeshRenderer> postRenders;
+	// vector for post-post-process transform
+	std::vector<TempTransform> postTransforms;
 	
 	if(!layers.empty()) // if there are layers
 		fb->Bind();
@@ -1820,13 +1831,23 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		// Early bail if mesh is invalid
 		if (renderer.Mesh == nullptr || renderer.Material == nullptr)
 			continue;
+
+		// if it should be rendered after the post-processing effect
+		// and is a screen space object.
+		if (overlayPostProcessing && renderer.Mesh->GetWindowChild())
+		{
+			postRenders.push_back(renderer); // gets the renderer
+			postTransforms.push_back(ecs.get_or_assign<TempTransform>(entity)); // getting the transformation
+			continue;
+		}
+
 		// If our shader has changed, we need to bind it and Update our frame-level uniforms
 		if (renderer.Material->GetShader() != boundShader) {
 			boundShader = renderer.Material->GetShader();
 			boundShader->Bind();
 
 			// if the object is to have a fixed screen position.
-			if(renderer.Mesh->GetScreenSpaceMesh())
+			if(renderer.Mesh->GetWindowChild())
 				boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
 			else 
 				boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
@@ -1851,7 +1872,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
 
 		// Update the MVP using the item's transform
-		if (renderer.Mesh->GetScreenSpaceMesh())
+		if (renderer.Mesh->GetWindowChild())
 		{
 			mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
 		}
@@ -1904,6 +1925,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		}
 	} 
 
+	// post-processing layers
 	if (!layers.empty())
 	{
 		fb->UnBind();
@@ -1913,6 +1935,88 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		{
 			if (layer != nullptr)
 				layer->PostRender();
+		}
+	}
+
+	// if the screen overlay is to ignore the post-processing
+	if (overlayPostProcessing)
+	{
+		for (int i = 0; i < postRenders.size(); i++) {
+			// Early bail if mesh is invalid
+			const MeshRenderer& renderer = postRenders[i]; // getting the post render
+			if (renderer.Mesh == nullptr || renderer.Material == nullptr)
+				continue;
+
+			// If our shader has changed, we need to bind it and Update our frame-level uniforms
+			if (renderer.Material->GetShader() != boundShader) {
+				boundShader = renderer.Material->GetShader();
+				boundShader->Bind();
+
+				// if the object is to have a fixed screen position.
+				if (renderer.Mesh->GetWindowChild())
+					boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
+				else
+					boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
+
+				boundShader->SetUniform("a_Time", static_cast<float>(glfwGetTime())); // passing in the time.
+			}
+			// If our material has changed, we need to apply it to the shader
+			if (renderer.Material != mat) {
+				mat = renderer.Material;
+				mat->Apply();
+			}
+
+			// We'll need some info about the entities position in the world
+			const TempTransform& transform = postTransforms[i];
+
+			// Get the object's transformation
+			// TODO: set up parent system
+			glm::mat4 worldTransform = transform.GetWorldTransform();
+
+			// Our normal matrix is the inverse-transpose of our object's world rotation
+			// Recall that everything's backwards in GLM
+			glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
+
+			// Update the MVP using the item's transform
+			if (renderer.Mesh->GetWindowChild())
+			{
+				mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
+			}
+			else
+			{
+				mat->GetShader()->SetUniform("a_ModelViewProjection", camera->GetViewProjection() * worldTransform);
+			}
+
+			// Update the model matrix to the item's world transform
+			mat->GetShader()->SetUniform("a_Model", worldTransform);
+			// Update the model matrix to the item's world transform
+			mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
+
+			// TODO: add ability to turn face culling on and off for a given object
+			// Draw the item
+			if (renderer.Mesh->IsVisible())
+			{
+				// if the mesh is in wireframe mode, and the draw call isn't set to that already.
+				if (renderer.Mesh->IsWireframe() != wireframe)
+				{
+					wireframe = !wireframe;
+
+					// switches between wireframe mode and fill mode.
+					(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+				}
+
+				// the faces should or should not be culled. Since faces should be culled by default, it's turned back on.
+				if (!renderer.Mesh->cullFaces)
+				{
+					glDisable(GL_CULL_FACE);
+					renderer.Mesh->Draw();
+					glEnable(GL_CULL_FACE);
+				}
+				else // faces are set to be culled automatically
+				{
+					renderer.Mesh->Draw();
+				}
+			}
 		}
 	}
 }
