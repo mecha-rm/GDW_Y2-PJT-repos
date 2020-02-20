@@ -130,9 +130,6 @@ namespace cherry
 		// gets the size of the buffer, which is (width, height)
 		glm::u32vec2 GetSize() const;
 
-		// returns the aspect ratio of teh frame buffer
-		glm::vec2 GetAspectRatio() const;
-
 		// gets the image attachment.
 		cherry::Texture2D::Sptr GetAttachment(RenderTargetAttachment attachment);
 
@@ -199,9 +196,6 @@ namespace cherry
 	private:
 		// frame buffer dimensions
 		uint32_t myWidth, myHeight;
-	
-		// aspect ratio of the frame buffer
-		glm::vec2 myAspectRatio;
 
 		// The number of samples to use if multi-sampling is enabled.
 		uint8_t  myNumSamples;

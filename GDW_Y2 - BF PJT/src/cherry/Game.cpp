@@ -1350,7 +1350,7 @@ void cherry::Game::LoadContent()
 	
 
 	// fb->AddAttachment()
-	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb); 
+	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb);
 	
 	// adds a post-processing 
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
@@ -1657,6 +1657,9 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	myCameraX->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCameraX->InPerspectiveMode());
 	myCameraX->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCameraX->InOrthographicMode());
 
+	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+	fb->Resize(newWidth, newHeight);
+
 	// resizes the layers
 	for (PostLayer* layer : layers)
 	{
@@ -1719,7 +1722,8 @@ void cherry::Game::DrawGui(float deltaTime) {
 // Now handles rendering the scene.
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
-	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>(); // frame buffer for the game.
+	
 	
 	if(!layers.empty()) // if there are layers
 		fb->Bind();
