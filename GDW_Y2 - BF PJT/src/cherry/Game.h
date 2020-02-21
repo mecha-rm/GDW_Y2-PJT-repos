@@ -203,25 +203,50 @@ namespace cherry
 		// handles resizing the window without skewing the sceneLists in the m_Scene.
 		void Resize(int newWidth, int newHeight);
 
+		// the frame rate of the game.
+		// set the frame rate to 0 (or anything less), to have no framerate cap.
+		static short int FPS;
+
 		// if 'true', then the sceneLists keep their scale when the window is resized.
 		// If false, the sceneLists skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
 		 
-		// the object used for the camera
+		// the object used for the camera, which ALWAYs has a viewport of the screen size.
+		// if you do not want this camera to be used, set myCameraEnabled to false.
 		Camera::Sptr myCamera;
+
+		// if 'true', the full-screen camera (myCamera) gets used. If false, then that camera is not used.
+		bool myCameraEnabled = true;
 
 		// the secondary camera, which is used for overlaying a hud.
 		Camera::Sptr myCameraX;
 
-		// Target;
-		
+		// extra cameras.
+		std::vector<Camera::Sptr> exCameras;
+
+		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
+		bool overlayPostProcessing = true;
+
 		// TODO: make private?
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
 
-		// the frame rate of the game.
-		// set the frame rate to 0 (or anything less), to have no framerate cap.
-		static short int FPS;
+
+
+		// stores the main clear color of the game's window
+		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
+		glm::vec4 myClearColor;
+
+		// the default game materials
+		Material::Sptr matStatic; // the static material
+		Material::Sptr matDynamic; // the dynamic material
+
+		// defaults
+		SamplerDesc description; // texture description 
+		TextureSampler::Sptr sampler; // texture sampler
+
+		// post processing layers
+		std::vector<PostLayer*> layers;
 
 	protected:
 		void Initialize();
@@ -249,6 +274,9 @@ namespace cherry
 		// draw ImGUI
 		void DrawGui(float deltaTime);
 
+		// renders the scene. It calls the other __RenderScene and takes in the values saved to the camera.
+		void __RenderScene(Camera::Sptr camera);
+
 		/*
 		 * used for rendering the scene to multiple viewpoints.
 		 * Variables:
@@ -273,18 +301,8 @@ namespace cherry
 		// if 'true', collisions are checked by the Game class.
 		bool collisionMode = true;
 
-		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
-		bool overlayPostProcessing = true;
-
 		// list of scenes
 		// std::vector<std::string> scenes;
-
-		// the m_Scene material
-		Material::Sptr matStatic; // the static material
-		Material::Sptr matDynamic; // the dynamic material
-		 
-		SamplerDesc description; // texture description 
-		TextureSampler::Sptr sampler; // texture sampler
 
 	private:
 
@@ -294,10 +312,6 @@ namespace cherry
 		glm::ivec2 myWindowSize; // saves the window size
 
 		// static glm::vec2 resolution;
-
-		// stores the main clear color of the game's window
-		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
-		glm::vec4 myClearColor;
 
 		// Stores the title of the game's window
 		char myWindowTitle[32];
@@ -344,10 +358,6 @@ namespace cherry
 		// TODO: change to array
 		bool mbLeft = false, mbMiddle = false, mbRight = false;
 
-		// window size
-		// unsigned int windowWidth = 850;
-		// unsigned int windowHeight = 850;
-		
 		// boolean for full screen
 		bool fullScreen;
 		
@@ -356,9 +366,6 @@ namespace cherry
 
 		// TODO: probably remove this
 		unsigned int hitBoxIndex = -1;
-
-		// post processing layers
-		std::vector<PostLayer*> layers;
 
 	};
 

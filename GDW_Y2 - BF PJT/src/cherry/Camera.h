@@ -178,10 +178,27 @@ namespace cherry
 		// if 'true', the camera stays a fixed distance from the target 'target offset'
 		bool fixedTargetDistance = false;
 
-		// the clear colour of the camera (black by default)
-		// TODO: add border component
-		glm::vec4 clearColor{ 0.0F, 0.0F, 0.0F, 1.0F };
+		// variables for rendering the camera
 
+		// the size of the viewport; make sure to update this if the window size changes.
+		glm::ivec4 viewport;
+
+		// if 'true', the camera draws the skybox when rendered.
+		// the skybox must be visisble for this to happen
+		bool drawSkybox = true;
+
+		// the size of the camera's border
+		int borderSize = 0;
+
+		// the colour of the border
+		glm::vec4 borderColor{ 1.0F, 1.0F, 1.0F, 1.0F };
+
+		// // the clear colour of the camera (black by default)
+		glm::vec4 clearColor{ 0.0F, 0.0F, 0.0F, 1.0F };
+		
+		// if 'true', the camera clears the previously rendered colour_buffer_bits and depth_buffer_bits
+		// a standard camera should keep this enabled.
+		bool clearBuffers = true;
 
 
 	private:

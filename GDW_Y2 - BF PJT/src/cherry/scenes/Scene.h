@@ -57,6 +57,7 @@ namespace cherry
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
 		// the update loop.
+		// the game update is called before this update.
 		virtual void Update(float deltaTime);
 
 	private:

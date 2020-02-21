@@ -46,6 +46,17 @@ namespace cherry
 
 		// light list
 		cherry::LightList* lightList = nullptr;
+
+		// translation and rotation direction
+		glm::vec3 t_Dir = glm::vec3(0, 0, 0);
+		glm::vec3 r_Dir = glm::vec3(0, 0, 0);
+
+		// translation and rotation speeds
+		float t_Inc = 22.50F;
+		float r_Inc = 55.0F;
+
+		// hitbox
+		int hitBoxIndex = -1;
 	protected:
 	};
 }

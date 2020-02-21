@@ -933,7 +933,7 @@ void cherry::Game::LoadContent()
 {
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
-	myCamera->clearColor = myClearColor;
+	myCamera->clearColor = myClearColor; // setting the clear colour
 	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
 	
@@ -1660,6 +1660,26 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	myCameraX->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCameraX->InPerspectiveMode());
 	myCameraX->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCameraX->InOrthographicMode());
 
+	// updating the extra cameras
+	for (Camera::Sptr cam : exCameras)
+	{
+		p_fovy = cam->GetFieldOfView();
+		p_zNear = cam->GetNearPerspective(); // near plane (distance)
+		p_zFar = cam->GetFarPerspective(); // far plane (distance)
+
+		// orthographic variables
+		o_left = cam->GetLeftOrthographic() * orthoSizePro.x;
+		o_right = cam->GetRightOrthographic() * orthoSizePro.x;
+		o_bottom = cam->GetBottomOrthographic() * orthoSizePro.y;
+		o_top = cam->GetTopOrthographic() * orthoSizePro.y;
+		o_zNear = cam->GetNearOrthographic();
+		o_zFar = cam->GetFarOrthographic();
+
+		// updating the extra cameras
+		cam->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, cam->InPerspectiveMode());
+		cam->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, cam->InOrthographicMode());
+	}
+
 	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
 	fb->Resize(newWidth, newHeight);
 
@@ -1679,14 +1699,24 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 
 // draws to a given viewpoint. The code that was originally here was moved to _RenderScene
 void cherry::Game::Draw(float deltaTime) {
-	// viewport size (full screen)
-	glm::ivec4 viewport = {
-	0, 0,
-	myWindowSize.x, myWindowSize.y
-	};
-	
-	// renders the scene
-	__RenderScene(viewport, myCamera, true, 0, glm::vec4(1.0F), true);
+	// if the camera exists
+	if (myCameraEnabled)
+	{
+		// viewport size (full screen)
+		myCamera->viewport = glm::ivec4{
+		0, 0,
+		myWindowSize.x, myWindowSize.y
+		};
+
+		myCamera->clearColor = myClearColor;
+
+		// renders the scene
+		__RenderScene(myCamera);
+	}
+
+	// renders all the other cameras
+	for (Camera::Sptr cam : exCameras)
+		__RenderScene(cam);
 }
 
 void cherry::Game::DrawGui(float deltaTime) {
@@ -1723,6 +1753,12 @@ void cherry::Game::DrawGui(float deltaTime) {
 
 		ImGui::End();
 	}
+}
+
+// renders the scene
+void cherry::Game::__RenderScene(Camera::Sptr camera)
+{
+	__RenderScene(camera->viewport, camera, camera->drawSkybox, camera->borderSize, camera->borderColor, camera->clearBuffers);
 }
 
 // Now handles rendering the scene.
