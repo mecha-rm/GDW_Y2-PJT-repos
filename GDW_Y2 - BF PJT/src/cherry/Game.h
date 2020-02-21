@@ -105,12 +105,29 @@ namespace cherry
 		static bool CreateScene(const std::string sceneName, const cherry::Skybox skybox);
 
 		// creates a scene. If 'makeCurrent' is true, then this scene is made the current scene.
-		// this also returns the scene created. Since no skybox is provided, a default one is made.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
 		bool CreateScene(const std::string sceneName, const bool makeCurrent);
 
-		// nothing happens if the scene already exists
-		// this also returns the scene created.
+		// nothing false if the scene already exists, but will still set it to the current scene if possible.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
 		bool CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent);
+
+		// creates the scene using a pre-existing scene object.
+		static bool CreateScene(cherry::Scene* scene);
+
+		// creates a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
+		static bool CreateScene(cherry::Scene * scene, const cherry::Skybox skybox);
+
+		// creates the scene using a pre-existing scene object and makes it current if requested.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
+		bool CreateScene(cherry::Scene* scene, const bool makeCurrent);
+
+		// creates the scene using a pre-existing scene object.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
+		bool CreateScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent);
+
+		
+
 
 		// gets the current scene.
 		cherry::Scene* GetScene(std::string sceneName) const;
@@ -207,6 +224,9 @@ namespace cherry
 		// set the frame rate to 0 (or anything less), to have no framerate cap.
 		static short int FPS;
 
+		// the scene created on start up.
+		std::string startupScene = "";
+
 		// if 'true', then the sceneLists keep their scale when the window is resized.
 		// If false, the sceneLists skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
@@ -230,8 +250,6 @@ namespace cherry
 		// TODO: make private?
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
-
-
 
 		// stores the main clear color of the game's window
 		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
@@ -368,6 +386,5 @@ namespace cherry
 		unsigned int hitBoxIndex = -1;
 
 	};
-
 
 }

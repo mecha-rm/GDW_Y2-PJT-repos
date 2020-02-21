@@ -12,7 +12,8 @@ namespace cherry
 	class EngineScene : public Scene
 	{
 	public:
-		EngineScene();
+		// constructor
+		EngineScene(std::string sceneName);
 
 		void OnOpen();
 

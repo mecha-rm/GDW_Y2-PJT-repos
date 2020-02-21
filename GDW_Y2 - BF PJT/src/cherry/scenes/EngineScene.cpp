@@ -7,7 +7,7 @@
 #include "..\physics\PhysicsBody.h"
 
 // creating the engine scene.
-cherry::EngineScene::EngineScene() : Scene("Engine")
+cherry::EngineScene::EngineScene(std::string sceneName) : Scene(sceneName)
 {
 	ObjectManager::CreateSceneObjectList(GetName());
 	objectList = ObjectManager::GetSceneObjectListByName(GetName());

@@ -16,6 +16,7 @@
 #include "physics/PhysicsBody.h"
 #include "utils/Utils.h"
 #include "WorldTransform.h"
+#include "scenes/EngineScene.h"
 
 #include<functional>
 #include<time.h>
@@ -595,6 +596,115 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 		}
 
 		
+		return true;
+	}
+}
+
+// creates a scene
+bool cherry::Game::CreateScene(cherry::Scene* scene)
+{
+	if (scene == nullptr)
+		return false;
+
+	// if the scene already exists
+	if (SceneManager::HasScene(scene->GetName()))
+	{
+		return false;
+	}
+	else
+	{
+		SceneManager::RegisterScene(scene); // registers the scene
+
+		// adds a default skybox if one doesn't already exist.
+		if (scene->SkyboxMesh == nullptr)
+		{
+			Skybox skybox(
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+				"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+			);
+
+			skybox.AddSkyboxToScene(scene);
+		}
+
+		ObjectManager::CreateSceneObjectList(scene->GetName()); // creating an object list.
+		LightManager::CreateSceneLightList(scene->GetName()); // creating a light list.
+
+		return true;
+	}
+}
+
+// creates the scene
+bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox)
+{
+	// checking if the scene exists.
+	if (scene == nullptr)
+		return false;
+
+	// if the scene already exists
+	if (SceneManager::HasScene(scene->GetName()))
+	{
+		return false;
+	}
+	else
+	{
+		SceneManager::RegisterScene(scene); // registers the scene
+		skybox.AddSkyboxToScene(scene);
+
+		ObjectManager::CreateSceneObjectList(scene->GetName()); // creating an object list.
+		LightManager::CreateSceneLightList(scene->GetName()); // creating a light list.
+
+		return true;
+	}
+}
+
+// creates the scene, and sees if it should be the current scene.
+bool cherry::Game::CreateScene(cherry::Scene* scene, const bool makeCurrent)
+{
+	// makes the skybox
+	Skybox skybox(
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+	);
+
+	// creates the scene
+	return CreateScene(scene->GetName(), skybox, makeCurrent);
+}
+
+// creates the scene
+bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent)
+{
+	if (scene == nullptr)
+		return false;
+
+	// the scene already exists
+	if (SceneManager::HasScene(scene->GetName()))
+	{
+		return false;
+	}
+	else // making the new scene
+	{
+		skybox.AddSkyboxToScene(scene);
+
+		SceneManager::RegisterScene(scene); // makes the scene
+
+		ObjectManager::CreateSceneObjectList(scene->GetName());
+		LightManager::CreateSceneLightList(scene->GetName());
+
+		if (makeCurrent) // if this should be the current scene.
+		{
+			SceneManager::SetCurrentScene(scene->GetName());
+			objectList = ObjectManager::GetSceneObjectListByName(scene->GetName());
+			lightList = LightManager::GetSceneLightListByName(scene->GetName());
+		}
+
 		return true;
 	}
 }
@@ -1369,6 +1479,7 @@ void cherry::Game::LoadContent()
 	// Play the event
 	audioEngine.PlayEvent("Music");
 	audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
+
 }
 
 void cherry::Game::UnloadContent() {

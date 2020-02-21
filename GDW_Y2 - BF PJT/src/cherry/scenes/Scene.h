@@ -13,9 +13,9 @@ namespace cherry
 {
 	class Scene {
 	public:
-		TextureCube::Sptr Skybox;
-		Shader::Sptr SkyboxShader;
-		Mesh::Sptr SkyboxMesh;
+		TextureCube::Sptr Skybox = nullptr;
+		Shader::Sptr SkyboxShader = nullptr;
+		Mesh::Sptr SkyboxMesh = nullptr;
 
 		// Scene() = default;
 
