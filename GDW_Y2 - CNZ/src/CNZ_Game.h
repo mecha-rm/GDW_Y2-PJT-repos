@@ -104,7 +104,8 @@ namespace cnz
 		Projectile* arrowBase = nullptr;
 
 		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.
-		std::vector<std::vector<Enemy*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers
