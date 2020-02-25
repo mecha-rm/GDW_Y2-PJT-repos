@@ -154,8 +154,12 @@ void cherry::EngineScene::OnOpen()
 		"res/images/cubemaps/checkerboard_blue-white.jpg"
 	);
 
-	game->CreateScene("Cherry", skybox, true); // creates the scene
-	game->GetCurrentScene()->SkyboxMesh->SetVisible(true); // makes the skybox invisible
+	// game->CreateScene("Cherry", skybox, true); // creates the scene
+	// game->SetCurrentScene(GetName(), true);
+	// game->GetCurrentScene()->SkyboxMesh->SetVisible(true); // makes the skybox invisible
+	
+	skybox.AddSkyboxToScene(this);
+	this->SkyboxMesh->SetVisible(true); // makes the skybox invisible
 
 	ObjectManager::CreateSceneObjectList(game->GetCurrentSceneName()); // creating an object list for the scene
 	objectList = ObjectManager::GetSceneObjectListByName(game->GetCurrentSceneName()); // getting the object list.
@@ -182,6 +186,7 @@ void cherry::EngineScene::OnOpen()
 	Material::Sptr& matDynamic = game->matDynamic;
 
 	// loads in default sceneLists
+	if(true)
 	{
 		Material::Sptr objMat; // used for custom materials
 		float offset = 3.0F; // position offset
@@ -197,17 +202,17 @@ void cherry::EngineScene::OnOpen()
 
 
 
-		objectList->objects.push_back(new PrimitiveCircle());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
-
-		objectList->objects.push_back(new PrimitiveCone());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-
-		objectList->objects.push_back(new PrimitiveCube());
-		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		// objectList->objects.push_back(new PrimitiveCircle());
+		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		// 
+		// objectList->objects.push_back(new PrimitiveCone());
+		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		// 
+		// objectList->objects.push_back(new PrimitiveCube());
+		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
 		objectList->objects.push_back(new PrimitiveCylinder());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
@@ -457,7 +462,7 @@ void cherry::EngineScene::OnOpen()
 
 
 	// fb->AddAttachment()
-	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb);
+	Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
 	// adds a post-processing 
 	game->layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
