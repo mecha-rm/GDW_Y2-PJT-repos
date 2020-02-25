@@ -381,6 +381,7 @@
     <ClInclude Include="src\cherry\audio\AudioComponent.h" />
     <ClInclude Include="src\cherry\audio\AudioEngine.h" />
     <ClInclude Include="src\cherry\buffers\FrameBuffer.h" />
+    <ClInclude Include="src\cherry\buffers\KernelLayer.h" />
     <ClInclude Include="src\cherry\buffers\PostLayer.h" />
     <ClInclude Include="src\cherry\ITexture.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
@@ -579,6 +580,7 @@
     <None Include="res\shaders\normalView.fs.glsl" />
     <None Include="res\shaders\post\greyscale.fs.glsl" />
     <None Include="res\shaders\post\invert.fs.glsl" />
+    <None Include="res\shaders\post\kernel3.fs.glsl" />
     <None Include="res\shaders\post\post.fs.glsl" />
     <None Include="res\shaders\post\post.vs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />

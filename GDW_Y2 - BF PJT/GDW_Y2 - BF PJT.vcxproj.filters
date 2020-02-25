@@ -1097,6 +1097,9 @@
     <ClInclude Include="src\cherry\buffers\PostLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cherry\buffers\KernelLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />
@@ -1486,6 +1489,7 @@
     <None Include="res\shaders\post\greyscale.fs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />
     <None Include="res\shaders\post\vibrance.fs.glsl" />
+    <None Include="res\shaders\post\kernel3.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

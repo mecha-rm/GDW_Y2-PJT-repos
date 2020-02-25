@@ -171,6 +171,18 @@ bool cherry::ObjectManager::DestroySceneObjectListByName(std::string sceneName)
 	return DestroySceneObjectListByPointer(obj);
 }
 
+// reading
+// const cherry::ObjectList& cherry::ObjectManager::operator[](const int index) const
+// {
+// 	return *objectLists.at(index);
+// }
+// 
+// // editing
+// cherry::ObjectList& cherry::ObjectManager::operator[](const int index)
+// {
+// 	return *objectLists.at(index);
+// }
+
 // updates the object manager to inform it of a window chil being added or removed.
 void cherry::ObjectManager::UpdateWindowChild(cherry::Object* object)
 {
@@ -371,16 +383,23 @@ bool cherry::ObjectList::DeleteObjectByName(std::string name)
 }
 
 // reading ~ gets an object from the object list
-// const cherry::Object& cherry::ObjectList::operator[](const int index) const { return *(objects.at(index)); }
+const cherry::Object& cherry::ObjectList::operator[](const int index) const { return *objects[index]; }
 
 // editing ~ gets an object from the object list
-// cherry::Object& cherry::ObjectList::operator[](const int index) { return *(objects.at(index)); }
+cherry::Object& cherry::ObjectList::operator[](const int index) { return *objects[index]; }
+
+// gets the size of the object list.
+size_t cherry::ObjectList::Size() const { return objects.size(); }
+
+// grabs an object from the lsit.
+cherry::Object& cherry::ObjectList::At(const int index) const { return *objects.at(index); }
 
 // called so that the list remembers this is a window child.
 void cherry::ObjectList::RememberWindowChild(cherry::Object* object)
 {
 	util::addToVector(windowChildren, object);
 }
+
 
 // forgets the child is a child to the window
 void cherry::ObjectList::ForgetWindowChild(cherry::Object* object)
