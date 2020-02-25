@@ -55,12 +55,15 @@ namespace cherry
 		// deletes a scene list via the name of the scene.
 		static bool DestroySceneObjectListByName(std::string sceneName);
 
-		// standard operators
+		// standard operators (taken out because free access isn't needed)
 		// reading
 		// const cherry::ObjectList & operator[](const int index) const;
-
-		// editing
+		// 
+		// // editing
 		// cherry::ObjectList & operator[](const int index);
+
+		// updates the object when a window child is added or removed.
+		static void UpdateWindowChild(cherry::Object* object);
 
 	private:
 
@@ -124,19 +127,41 @@ namespace cherry
 		bool DeleteObjectByName(std::string name);
 
 		// standard operators
-		// reading
-		// const cherry::Object& operator[](const int index) const;
+		// reading; please user proper functions if adding or removing an object.
+		const cherry::Object& operator[](const int index) const;
 
-		// editing
-		// cherry::Object& operator[](const int index);
+		// editing; please user proper functions if adding or removing an object.
+		cherry::Object& operator[](const int index);
+
+		// gets the size of the list, which is the same as calling GetObjectCount().
+		size_t Size() const;
+
+		// grabs an object fom the list.
+		cherry::Object& At(const int index) const;
+
+		// called so that the object is remembered as a child of the window.
+		void RememberWindowChild(cherry::Object* object);
+
+		// called so that the child is removed from the window child list.
+		// this does not remove the window child from the overall object list.
+		void ForgetWindowChild(cherry::Object* object);
+
+		// called when the window is being resized for window children.
+		void OnWindowResize(int newWidth, int newHeight);
 
 		// updates all sceneLists in the list.
 		void Update(float deltaTime);
 
+		// if 'true', collision is checked between objects.
+		// bool checkCollision = true;
+
+		// this should REALLY be private, but there's no time to change that.
 		std::vector<cherry::Object*> objects; // the vector of sceneLists
 
 	private:
 		std::string scene = ""; // the scene te object is in. TODO: make consts?
+
+		std::vector<cherry::Object*> windowChildren;
 
 	protected:
 	};

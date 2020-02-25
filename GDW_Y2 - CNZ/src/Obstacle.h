@@ -25,18 +25,19 @@ public:
 	void SetAngle(glm::vec3 angle);
 
 	// set draw pbody
-	bool setDrawPBody(bool draw);
+	bool SetDrawPBody(bool draw);
 
 	// get draw pbody
-	bool getDrawPBody();
+	bool GetDrawPBody() const;
 
 	// get pbody size
-	cherry::Vec3 getPBodySize();
+	cherry::Vec3 GetPBodySize() const;
 
 	// get pbody width, height and depth.
-	float getPBodyWidth();
-	float getPBodyHeight();
-	float getPBodyDepth();
+	float GetPBodyWidth() const;
+	float GetPBodyHeight() const;
+	float GetPBodyDepth() const;
+
 
 private:
 	// pbody stuff. self explanatory
@@ -45,8 +46,11 @@ private:
 
 	// TODO: possibly delete these variables? Object has its own rotation now.
 	// object angle in screen space (degrees or radians)
-	float degreeAngle, radianAngle;
+	float degreeAngle = 0, radianAngle = 0;
 
 	// object angle in world space (vec3, so 3d angle)
 	glm::vec3 worldAngle;
+
+	// a vector of physics bodies
+	std::vector<cherry::PhysicsBody*> bodies;
 };

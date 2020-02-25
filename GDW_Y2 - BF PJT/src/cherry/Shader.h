@@ -20,13 +20,27 @@ namespace cherry
 		// Loads a shader program from 2 files. vsFile is the path to the vertex shader, and fsFile is the path to the fragment shader
 		void Load(const char* vsFile, const char* fsFile);
 
+		// mat3
+		void SetUniform(const char* name, const glm::mat3& value);
+		
+		// mat4
 		void SetUniform(const char* name, const glm::mat4& value);
 
-		void SetUniform(const char* name, const glm::mat3& value);
+		// vec2 (added for the engine specifically)
+		void SetUniform(const char* name, const glm::vec2& value);
+
+		// vec3
 		void SetUniform(const char* name, const glm::vec3& value);
+		
+		// vec4
 		void SetUniform(const char* name, const glm::vec4& value);
+		
+
+
+		// float
 		void SetUniform(const char* name, const float& value);
 
+		// int
 		// sending integers to our shader; you're setting a slot, rather than a texture ID.
 		void SetUniform(const char* name, const int& value);
 

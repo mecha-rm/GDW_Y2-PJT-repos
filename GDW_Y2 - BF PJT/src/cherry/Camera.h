@@ -128,6 +128,9 @@ namespace cherry
 		// Gets the right hand vector of this camera
 		inline glm::vec3 GetRight() const { return glm::vec3(-LeftX, -LeftY, -LeftZ); }
 
+		// gets where the camera is looking.
+		glm::vec3 LookingAt() const { return lookingAt; };
+
 		// looks at a given location
 		void LookAt(const glm::vec3& target, const glm::vec3& up = glm::vec3(0, 0, 1));
 
@@ -174,6 +177,29 @@ namespace cherry
 
 		// if 'true', the camera stays a fixed distance from the target 'target offset'
 		bool fixedTargetDistance = false;
+
+		// variables for rendering the camera
+
+		// the size of the viewport; make sure to update this if the window size changes.
+		glm::ivec4 viewport;
+
+		// if 'true', the camera draws the skybox when rendered.
+		// the skybox must be visisble for this to happen
+		bool drawSkybox = true;
+
+		// the size of the camera's border
+		int borderSize = 0;
+
+		// the colour of the border
+		glm::vec4 borderColor{ 1.0F, 1.0F, 1.0F, 1.0F };
+
+		// // the clear colour of the camera (black by default)
+		glm::vec4 clearColor{ 0.0F, 0.0F, 0.0F, 1.0F };
+		
+		// if 'true', the camera clears the previously rendered colour_buffer_bits and depth_buffer_bits
+		// a standard camera should keep this enabled.
+		bool clearBuffers = true;
+
 
 	private:
 		

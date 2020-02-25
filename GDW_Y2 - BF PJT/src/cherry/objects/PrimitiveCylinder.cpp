@@ -55,21 +55,21 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 
 			if (i <= 0) // top
 			{
-				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, height / 2.0F), rFactor);
+				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, height / 2.0F), rFactor, false);
 
 				// rotating the normal vector so that it's in the right place and angled properly.
-				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor, false);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F), false);
 
 
 			}
 			else if (i >= 1) // bottom
 			{
-				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
+				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor, false);
 				
 				// rotating the normal vector so that it's in the right place and angled properly.
-				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor, false);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F), false);
 			}
 			
 			vertices[index] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };

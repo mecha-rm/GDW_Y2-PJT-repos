@@ -1,12 +1,25 @@
-#include "../Enemies.h"
 #pragma once
+#include "Enemy.h"
 
 //Oracle class
 namespace cnz {
-	class Oracle : public cnz::Enemies
+	class Oracle : public cnz::Enemy
 	{
 	public:
-		Oracle(cnz::Enemies* obj, std::string scene) : cnz::Enemies(obj, scene) {};
+		// constructor
+		Oracle(std::string scene);
+
+		// constructor
+		Oracle(std::string scene, cherry::Material::Sptr mat);
+
+		// copy constuctor
+		Oracle(const cnz::Oracle&);
+
+		Oracle(cnz::Enemy* obj, std::string scene);
+
+		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
+
+		void Update(float dt);
 	};
 }
 

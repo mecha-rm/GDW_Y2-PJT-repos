@@ -1,12 +1,12 @@
 #pragma once
 #include "cherry/Game.h"
 #include "Player.h"
-#include "Enemies.h"
+#include "EnemyTypes/Enemies.h"
 #include "Obstacle.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
+#include "Projectile.h"
 #include "cherry/animate/Path.h"
 #include <ctime>
-#include "Projectile.h"
 #include "LevelLoader.h"
 
 //Enemy Sub-classes
@@ -45,21 +45,24 @@ namespace cnz
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
 		// get closest obstacle within a certain degrees of where the player is facing
-		cherry::PhysicsBody* getClosestObstacle();
+		cherry::PhysicsBody* GetClosestObstacle();
 
 		// gets a list of enemies within a certain degrees of where the player is facing
 		// we require the dash vector so that we can use a smaller one if the player is dashing towards an obstacle that
 		// would case the dash to end when they collide with that obstacle.
-		vector<cherry::Object*> getEnemiesInDash(cherry::Vec3 dashVec);
+		vector<cnz::Enemy*> GetEnemiesInDash(cherry::Vec3 dashVec);
 
 		// get the angle at which a Vec3 is facing in X and Y axis. 
 		// can also be used to find the angle between two positions by getting passing in their difference
-		float getXYAngle(cherry::Vec3 vec);
+		float GetXYAngle(cherry::Vec3 vec);
 
-		void spawnEnemyGroup(int i);
+		void SpawnEnemyGroup(int i);
+
+		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
+		void MapSceneObjectsToGame(std::string sceneName);
+
 
 	protected:
-
 		// overwritten function for loading in game content.
 		virtual void LoadContent();
 
@@ -69,6 +72,10 @@ namespace cnz
 	private:
 		
 		int curWave = 0; //Current enemy wave
+
+		cherry::ObjectList* objList = nullptr;
+
+		cherry::LightList* tempList;
 
 		cnz::Player * playerObj = nullptr; // object for the player.
 
@@ -89,26 +96,35 @@ namespace cnz
 		
 
 		//Load enemies // Create multiple enemies using these with only loading one .obj
-		cnz::Enemies* sentry = nullptr; //Sentry enemy : Bowman
-		cnz::Enemies* oracle = nullptr; //Oracle enemy : Polearmsman
-		cnz::Enemies* marauder = nullptr; //Marauder enemy : Swordsman
-		cnz::Enemies* bastion = nullptr; //Bastion enemy : Shield guy
-		cnz::Enemies* mechaspider = nullptr; //Mechaspider enemy : Land mine
+		cnz::Sentry* sentry = nullptr; //Sentry enemy : Bowman
+		cnz::Oracle* oracle = nullptr; //Oracle enemy : Polearmsman
+		cnz::Marauder* marauder = nullptr; //Marauder enemy : Swordsman
+		cnz::Bastion* bastion = nullptr; //Bastion enemy : Shield guy
+		cnz::Mechaspider* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
 
-		std::vector<Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
-		std::vector<std::vector<Enemies*>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.
+		std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers
 
+		cherry::Skybox* skyboxObj;
+
+		cherry::Object* indArrow;
+		cherry::MorphAnimation* indArrowAnim;
 
 		cnz::Player* testObj = nullptr; // object for the player.
+		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
 		bool mbLP = false, mbLR = false;
 
 		vector<cherry::PhysicsBody*> obstaclePBs;
 		vector<cherry::PhysicsBody*> enemyPBs;
 		vector<cherry::PhysicsBody*> projectilePBs;
+		
+		vector<int> enemyLocationi;
+		vector<int> enemyLocationj;
 
 		float camLerpPercent = 0.0f;
 
@@ -120,6 +136,10 @@ namespace cnz
 		bool a = false;
 		bool s = false;
 		bool d = false;
+		bool f = false;
+		bool ls = false;
+		bool spaceP = false;
+		bool spaceR = false;
 		bool cw = true;
 		bool ca = true;
 		bool cs = true;
@@ -130,6 +150,8 @@ namespace cnz
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
+
+		bool showPBs = false;
 
 	};
 }

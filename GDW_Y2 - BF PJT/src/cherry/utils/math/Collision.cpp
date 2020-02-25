@@ -12,6 +12,12 @@ bool util::math::circleCollision(Vec2 circ1, float radius1, Vec2 circ2, float ra
 	return sphereCollision(Vec3(circ1), radius1, Vec3(circ2), radius2);
 }
 
+// circle collision
+bool util::math::circleCollision(Circle circ1, Circle circ2)
+{
+	return circleCollision(circ1.position, circ1.radius, circ2.position, circ2.radius);
+}
+
 // calculates sphere-sphere collision
 bool util::math::sphereCollision(Vec3 sphr1, float radius1, Vec3 sphr2, float radius2)
 {
@@ -25,12 +31,17 @@ bool util::math::sphereCollision(Vec3 sphr1, float radius1, Vec3 sphr2, float ra
 // calculates sphere-sphere collision using individual floats and not vectors. Re-uses the other sphereCollision function.
 bool util::math::sphereCollision(float x1, float y1, float z1, float r1, float x2, float y2, float z2, float r2) { return sphereCollision(Vec3(x1, y1, z1), r1, Vec3(x2, y2, z2), r2); }
 
+// calculates sphere collision
+bool util::math::sphereCollision(Sphere sphr1, Sphere sphr2)
+{
+	return sphereCollision(sphr1.position, sphr1.radius, sphr2.position, sphr2.radius);
+}
 
 // AABB Colliion
 // calculates AABB collision by reusing the 3D calculation
-bool util::math::aabbCollision(const Vec2 posA, float widthA, float heightA, float depthA, const Vec2 posB, float widthB, float heightB, float depthB)
+bool util::math::aabbCollision(const Vec2 posA, float widthA, float heightA, const Vec2 posB, float widthB, float heightB)
 {
-	return aabbCollision(Vec3(posA), widthA, heightA, depthA, Vec3(posB), widthB, heightB, depthB);
+	return aabbCollision(Vec3(posA, 0), widthA, heightA, 0, Vec3(posB, 0), widthB, heightB, 0);
 }
 
 // calculates aabb collision between two bounding boxes
@@ -60,21 +71,49 @@ bool util::math::aabbCollision(Vec3 minA, Vec3 maxA, Vec3 minB, Vec3 maxB)
 	// booleans for collision checks
 	bool xCol = false, yCol = false, zCol = false;
 
+	// // If the projection on the x-axis shows collision.
+	// if ((minB.x > minA.x&& minB.x < maxA.x) ^ (minA.x > minB.x&& minA.x < maxB.x))
+	// 	xCol = true;
+	// 
+	// // If the projection on the y-axis shows collision.
+	// if ((minB.y > minA.y&& minB.y < maxA.y) ^ (minA.y > minB.y&& minA.y < maxB.y))
+	// 	yCol = true;
+	// 
+	// // If the projection on the z-axis shows collision, or if there is no z-value (i.e. a square is being used and not a cube)
+	// if ((minB.z > minA.z&& minB.z < maxA.z) ^ (minA.z > minB.z&& minA.z < maxB.z) ^ (minA.z == 0.0F && maxA.z == 0.0F && minB.z == 0.0F && maxB.z == 0.0F))
+	// 	zCol = true;
+
 	// If the projection on the x-axis shows collision.
-	if ((minB.x > minA.x&& minB.x < maxA.x) ^ (minA.x > minB.x&& minA.x < maxB.x))
+	if ((minB.x >= minA.x && minB.x <= maxA.x) || (minA.x >= minB.x && minA.x <= maxB.x))
 		xCol = true;
 
 	// If the projection on the y-axis shows collision.
-	if ((minB.y > minA.y&& minB.y < maxA.y) ^ (minA.y > minB.y&& minA.y < maxB.y))
+	if ((minB.y >= minA.y && minB.y <= maxA.y) || (minA.y >= minB.y && minA.y <= maxB.y))
 		yCol = true;
 
 	// If the projection on the z-axis shows collision, or if there is no z-value (i.e. a square is being used and not a cube)
-	if ((minB.z > minA.z&& minB.z < maxA.z) ^ (minA.z > minB.z&& minA.z < maxB.z) ^ (minA.z == 0.0F && maxA.z == 0.0F && minB.z == 0.0F && maxB.z == 0.0F))
+	if ((minB.z >= minA.z && minB.z <= maxA.z) || (minA.z >= minB.z && minA.z <= maxB.z) || (minA.z == 0.0F && maxA.z == 0.0F && minB.z == 0.0F && maxB.z == 0.0F))
 		zCol = true;
 
 	// returns if all booleans have been set to 'true'. If so, then there is collision.
 	return (xCol && yCol && zCol);
 }
+
+// aabb collision
+bool util::math::aabbCollision(const Box2D box1, const Box2D box2)
+{
+	return aabbCollision(box1.position, box1.width, box1.height, box2.position, box2.width, box2.height);
+}
+
+// aabb collision with two boxes
+// bool util::math::aabbCollision(const Box2D box1, const bool inDegrees1, const Box2D box2, const bool inDegrees2)
+// {
+// 	// the two rotation factors
+// 	float theta1 = (inDegrees1) ? degreesToRadians(box1.rotation) : box1.rotation;
+// 	float theta2 = (inDegrees1) ? degreesToRadians(box1.rotation) ? box1.rotation;
+// 
+// 	return obbCollision(;
+// }
 
 // calculates axis-aligned bounding box collision. The 'w' parameter isn't used, and set the 'z' parameter to 0.
 // row 0 = top left corner, row 1 = top right corner, row 2 = bottom left corner, row 3 = bottom right corner
@@ -116,6 +155,13 @@ bool util::math::aabbCollision(Vec3 topLeftFrontA, Vec3 topRightFrontA, Vec3 bot
 	Vec3 topLeftFrontB, Vec3 topRightFrontB, Vec3 bottomLeftFrontB, Vec3 bottomRightFrontB, Vec3 topLeftBackB, Vec3 topRightBackB, Vec3 bottomLeftBackB, Vec3 bottomRightBackB)
 {
 	return util::math::aabbCollision(bottomLeftBackA, topRightFrontA, bottomLeftBackB, topRightFrontB);
+}
+
+// AABB collision between two boxes.
+bool util::math::aabbCollision(const Box3D& boxA, const Box3D& boxB)
+{
+	return aabbCollision(boxA.position, boxA.width, boxA.height, boxA.depth,
+		boxB.position, boxB.width, boxB.height, boxB.depth);
 }
 
 // OBB Collision; rotation factor is in radians.
@@ -160,6 +206,269 @@ bool util::math::obbCollision(const Vec2 topLeftA, const Vec2 topRightA, const V
 		util::math::rotate(tempTLA - rPos, -thetaB) + rPos, util::math::rotate(tempTRA - rPos, -thetaB) + rPos, util::math::rotate(tempBLA - rPos, -thetaB) + rPos, util::math::rotate(tempBRA - rPos, -thetaB) + rPos,
 		util::math::rotate(tempTLB - rPos, -thetaB) + rPos, util::math::rotate(tempTRB - rPos, -thetaB) + rPos, util::math::rotate(tempBLB - rPos, -thetaB) + rPos, util::math::rotate(tempBRB - rPos, -thetaB) + rPos
 	);
+
+	// if intersects is true, then there is collision. If not, then there is no intersection.
+	return intersects;
+}
+
+// // obb collision between two boxes.
+bool util::math::obbCollision(const Box3D& boxA, bool inDegreesA, const Box3D& boxB, bool inDegreesB)
+{
+	const int ARR_SIZE = 8;
+
+	// the centre position that the two rectangles are rotated around.
+	Vec3 rPos = (boxA.position + boxB.position) / 2.0F;
+	// rotation position as a Matrix
+	Mat3 rPosMat(
+		rPos.x, 0, 0,
+		rPos.y, 0, 0,
+		rPos.z, 0, 0
+	);
+
+	// the vertices of box A
+	Vec3 vertsA[ARR_SIZE] {
+		Vec3(boxA.position + Vec3(-boxA.width, -boxA.height, -boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(boxA.width, -boxA.height, -boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(-boxA.width, boxA.height, -boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(boxA.width, boxA.height, -boxA.depth) / 2.0F),
+
+		Vec3(boxA.position + Vec3(-boxA.width, -boxA.height, boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(boxA.width, -boxA.height, boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(-boxA.width, boxA.height, boxA.depth) / 2.0F),
+		Vec3(boxA.position + Vec3(boxA.width, boxA.height, boxA.depth) / 2.0F)
+	};
+
+	// transformed verts A
+	Vec3 t_vertsA[ARR_SIZE];
+
+	// the vertices of box B
+	Vec3 vertsB[ARR_SIZE]{
+		Vec3(boxB.position + Vec3(-boxB.width, -boxB.height, -boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(boxB.width, -boxB.height, -boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(-boxB.width, boxB.height, -boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(boxB.width, boxB.height, -boxB.depth) / 2.0F),
+
+		Vec3(boxB.position + Vec3(-boxB.width, -boxB.height, boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(boxB.width, -boxB.height, boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(-boxB.width, boxB.height, boxB.depth) / 2.0F),
+		Vec3(boxB.position + Vec3(boxB.width, boxB.height, boxB.depth) / 2.0F)
+	};
+
+	// transformed verts B
+	Vec3 t_vertsB[ARR_SIZE];
+
+	bool intersects = false; // saves the results of intersection checks.
+	char axisA = ' '; // the axis of rotation for box A.
+	char axisB = ' '; // the axis of rotation for box B.
+
+	// maximum and minimum values for A
+	Vec3 minA{}, maxA{};
+
+	// maximum and minimum values for B
+	Vec3 minB{}, maxB{};
+
+	// rotation matrices
+	Mat3 rotTemp;
+	// rotation matrix for A, and the reverse of it.
+	Mat3 rotMatA, rotMatA_R;
+
+	// rotation matrix for B, and the reverse of it.
+	Mat3 rotMatB, rotMatB_R;
+
+	// matrices for minimum and maximums
+	Mat3 minMatA, minMatB, maxMatA, maxMatB;
+	Mat3 minMatA_T, minMatB_T, maxMatA_T, maxMatB_T;
+
+	Vec3 newPosA;
+	Vec3 newPosB;
+
+	// copying the arrays
+	memcpy(t_vertsA, vertsA, sizeof(Vec3) * ARR_SIZE);
+	memcpy(t_vertsB, vertsB, sizeof(Vec3) * ARR_SIZE);
+
+	// bool thetaA = box1
+
+	// transforms the boxes around their centre.
+	for (int i = 0; i < 3; i++)
+	{
+
+		// box A - getting the axis of rotation
+		switch (boxA.rotationOrder[i])
+		{
+		case 'X':
+		case 'x':
+			axisA = 'X';
+			break;
+
+		case 'Y':
+		case 'y':
+			axisA = 'Y';
+			break;
+
+		case 'Z':
+		case 'z':
+			axisA = 'Z';
+			break;
+
+		default:
+			axisA = ' ';
+			break;
+		}
+
+		// box B - getting the axis of rotation
+		switch (boxB.rotationOrder[i])
+		{
+		case 'X':
+		case 'x':
+			axisB = 'X';
+			break;
+
+		case 'Y':
+		case 'y':
+			axisB = 'Y';
+			break;
+
+		case 'Z':
+		case 'z':
+			axisB = 'Z';
+			break;
+
+		default:
+			axisB = ' ';
+			break;
+		}
+
+
+		// goes through the arrays and transforms the points for the axes
+		for (int j = 0; j < ARR_SIZE; j++)
+		{
+			if(axisA != ' ')
+				t_vertsA[j] = util::math::rotate(t_vertsA[j] - boxA.position, boxA.rotation[i], axisA, inDegreesA) + boxA.position;
+
+			if (axisB != ' ')
+				t_vertsB[j] = util::math::rotate(t_vertsB[j] - boxB.position, boxB.rotation[i], axisB, inDegreesB) + boxB.position;
+		}
+		
+		
+	}
+
+	// finding hte maximum and minimum positions
+	for (int i = 0; i < ARR_SIZE; i++)
+	{
+		// minimum values for A
+		minA.x = (t_vertsA[i].x < minA.x) ? t_vertsA[i].x : minA.x;
+		minA.y = (t_vertsA[i].y < minA.y) ? t_vertsA[i].y : minA.y;
+		minA.z = (t_vertsA[i].z < minA.z) ? t_vertsA[i].z : minA.z;
+
+		// maximum values for A
+		maxA.x = (t_vertsA[i].x > maxA.x) ? t_vertsA[i].x : maxA.x;
+		maxA.y = (t_vertsA[i].y > maxA.y) ? t_vertsA[i].y : maxA.y;
+		maxA.z = (t_vertsA[i].z > maxA.z) ? t_vertsA[i].z : maxA.z;
+
+
+		// minimum values for B
+		minB.x = (t_vertsB[i].x < minB.x) ? t_vertsB[i].x : minB.x;
+		minB.y = (t_vertsB[i].y < minB.y) ? t_vertsB[i].y : minB.y;
+		minB.z = (t_vertsB[i].z < minB.z) ? t_vertsB[i].z : minB.z;
+
+		// maximum values for A
+		maxB.x = (t_vertsB[i].x > maxB.x) ? t_vertsB[i].x : maxB.x;
+		maxB.y = (t_vertsB[i].y > maxB.y) ? t_vertsB[i].y : maxB.y;
+		maxB.z = (t_vertsB[i].z > maxB.z) ? t_vertsB[i].z : maxB.z;
+	}
+
+	// min matrix for A
+	minMatA = Mat3(
+		minA.x, 0, 0,
+		minA.y, 0, 0,
+		minA.z, 0, 0
+	);
+
+	// max matrix for A
+	maxMatA = Mat3(
+		maxA.x, 0, 0,
+		maxA.y, 0, 0,
+		maxA.z, 0, 0
+	);
+
+	// min matrix for B
+	minMatB = Mat3(
+		minB.x, 0, 0,
+		minB.y, 0, 0,
+		minB.z, 0, 0
+	);
+
+	// max matrix for B
+	maxMatB = Mat3(
+		maxB.x, 0, 0,
+		maxB.y, 0, 0,
+		maxB.z, 0, 0
+	);
+
+	// Rotation Matrices - getting the rotation matrices for going forward and backwards
+	// regular
+	rotMatA = 
+		getRotationMatrix(boxA.rotation.x, inDegreesA, boxA.rotationOrder[0]) *
+		getRotationMatrix(boxA.rotation.y, inDegreesA, boxA.rotationOrder[1]) * 
+		getRotationMatrix(boxA.rotation.z, inDegreesA, boxA.rotationOrder[2]);
+
+	// reverse
+	rotMatA_R = 
+		getRotationMatrix(-boxA.rotation.z, inDegreesA, boxA.rotationOrder[2]) *
+		getRotationMatrix(-boxA.rotation.y, inDegreesA, boxA.rotationOrder[1]) *
+		getRotationMatrix(-boxA.rotation.x, inDegreesA, boxA.rotationOrder[0]);
+
+
+	// regular
+	rotMatB =
+		getRotationMatrix(boxB.rotation.x, inDegreesB, boxB.rotationOrder[0]) *
+		getRotationMatrix(boxB.rotation.y, inDegreesB, boxB.rotationOrder[1]) *
+		getRotationMatrix(boxB.rotation.z, inDegreesB, boxB.rotationOrder[2]);
+
+	// reverse
+	rotMatB_R =
+		getRotationMatrix(-boxB.rotation.z, inDegreesB, boxB.rotationOrder[2]) *
+		getRotationMatrix(-boxB.rotation.y, inDegreesB, boxB.rotationOrder[1]) *
+		getRotationMatrix(-boxB.rotation.x, inDegreesB, boxB.rotationOrder[0]);
+	
+	// rotating the values for A's rotation
+	// Check 1 (A's Rotation)
+	// minimum a and maximum a
+	minMatA_T = rotMatA_R * (minMatA - rPosMat) + rPosMat;
+	maxMatA_T = rotMatA_R * (maxMatA - rPosMat) + rPosMat;
+
+	// minimum b and maximum b
+	minMatB_T = rotMatA_R * (minMatB - rPosMat) + rPosMat;
+	maxMatB_T = rotMatA_R * (maxMatB - rPosMat) + rPosMat;
+
+	intersects = aabbCollision(
+		Vec3(minMatA_T[0][0], minMatA_T[1][0], minMatA_T[2][0]),
+		Vec3(maxMatA_T[0][0], maxMatA_T[1][0], maxMatA_T[2][0]),
+		Vec3(minMatB_T[0][0], minMatB_T[1][0], minMatB_T[2][0]),
+		Vec3(maxMatB_T[0][0], maxMatB_T[1][0], maxMatB_T[2][0])
+	);
+
+	// if no intersection
+	if (intersects == false)
+		return false;
+	
+	// Check 2 (Rotation B)
+	// minimum a and maximum a
+	minMatA_T = rotMatB_R * (minMatA - rPosMat) + rPosMat;
+	maxMatA_T = rotMatB_R * (maxMatA - rPosMat) + rPosMat;
+
+	// minimum b and maximum b
+	minMatB_T = rotMatB_R * (minMatB - rPosMat) + rPosMat;
+	maxMatB_T = rotMatB_R * (maxMatB - rPosMat) + rPosMat;
+
+	intersects = aabbCollision(
+		Vec3(minMatA_T[0][0], minMatA_T[1][0], minMatA_T[2][0]),
+		Vec3(maxMatA_T[0][0], maxMatA_T[1][0], maxMatA_T[2][0]),
+		Vec3(minMatB_T[0][0], minMatB_T[1][0], minMatB_T[2][0]),
+		Vec3(maxMatB_T[0][0], maxMatB_T[1][0], maxMatB_T[2][0])
+	);
+
+
 
 	// if intersects is true, then there is collision. If not, then there is no intersection.
 	return intersects;
@@ -253,6 +562,11 @@ bool util::math::circleAABBCollision(const Vec2 circPos, const float circRadius,
 	if (circPos.x >= topLeftCorner.x && circPos.x <= topRightCorner.x && circPos.y >= bottomLeftCorner.y && circPos.y <= topLeftCorner.y)
 		return true;
 
+	// if the distance between the centre of the circle and the centre of the AABB is less than the circle's radius...
+	// the centre of the aabb is inside the circle, and there is collision.
+	if ((circPos - aabbPos).length() <= circRadius)
+		return true;
+
 	// circle collision with each line that makes up the AABB.
 	if (circleLineCollision(circPos, circRadius, topLeftCorner, topRightCorner))
 		return true;
@@ -267,6 +581,17 @@ bool util::math::circleAABBCollision(const Vec2 circPos, const float circRadius,
 		return true;
 
 	return false;
+}
+
+// sphere-AABB collision.
+bool util::math::circleAABBCollision(const Circle& circle, const Box2D box)
+{
+	return circleAABBCollision(circle.position, circle.radius, 
+		box.position + Vec2(-box.width / 2.0F, box.height / 2.0F), // top left
+		box.position + Vec2(box.width / 2.0F, box.height / 2.0F), // top right
+		box.position + Vec2(-box.width / 2.0F, -box.height / 2.0F), // bottom left
+		box.position + Vec2(box.width / 2.0F, -box.height / 2.0F) // bottom right
+	);
 }
 
 // sphere-AABB Collision
@@ -288,6 +613,12 @@ bool util::math::sphereAABBCollision(const Vec3 spherePos, const float sphereRad
 	dist = (closest - spherePos).length();
 	
 	return dist < sphereRadius; // checks against the sphere's radius.
+}
+
+// sphere-aabb collision.
+bool util::math::sphereAABBCollision(const Sphere& sphere, const Box3D& box)
+{
+	return sphereAABBCollision(sphere.position, sphere.radius, box.position, box.width, box.height, box.depth);
 }
 
 // sphere - OBB collision
@@ -367,7 +698,7 @@ bool util::math::sphereOBBCollision(const Vec3 spherePos, const float sphereRadi
 
 // sphere-OBB collision using a provided angle and rotation axis.
 bool util::math::sphereOBBCollision(const Vec3 spherePos, const float sphereRadius, const Vec3 obbPos, const float obbWidth, const float obbHeight, const float obbDepth, 
-	Vec3 angles, bool inDegrees, std::string order)
+	Vec3 angles, bool inDegrees, const char order[3])
 {
 	Mat3 finalMatrix = Mat3::getIdentityMatrix(); // the matrix for rotations
 	Mat3 rMatrix = Mat3::getIdentityMatrix(); // matrix for the current rotation.
@@ -376,38 +707,42 @@ bool util::math::sphereOBBCollision(const Vec3 spherePos, const float sphereRadi
 	if (inDegrees)
 		angles = Vec3(degreesToRadians(angles.x), degreesToRadians(angles.y), degreesToRadians(angles.z));
 	
-	if (order != "") // if there are characters
+	// gets each rotation.
+	for (int i = 0; i < 3; i++)
 	{
-		// gets each rotation.
-		for (int i = 0; i < order.length(); i++)
+		// gets the matrices
+		switch (order[i])
 		{
-			// gets the matrices
-			switch (order.at(i))
-			{
-				// x-axis
-			case 'x':
-			case 'X':
-				rMatrix = getRotationMatrixX(angles.x, false);
-				break;
+			// x-axis
+		case 'x':
+		case 'X':
+			rMatrix = getRotationMatrixX(angles.x, false);
+			break;
 
-				// y-axis
-			case 'y':
-			case 'Y':
-				rMatrix = getRotationMatrixY(angles.y, false);
-				break;
+			// y-axis
+		case 'y':
+		case 'Y':
+			rMatrix = getRotationMatrixY(angles.y, false);
+			break;
 
-				// z-axis
-			case 'z':
-			case 'Z':
-				rMatrix = getRotationMatrixZ(angles.z, false);
-				break;
-			}
-
-			finalMatrix = finalMatrix * rMatrix; // multiplies the matrices
-			rMatrix = Mat3::getIdentityMatrix(); // sets back to default
+			// z-axis
+		case 'z':
+		case 'Z':
+			rMatrix = getRotationMatrixZ(angles.z, false);
+			break;
 		}
+
+		finalMatrix = finalMatrix * rMatrix; // multiplies the matrices
+		rMatrix = Mat3::getIdentityMatrix(); // sets back to default
 	}
 
 	// calls the other function to do the calculation with the rotation matrix
 	return sphereOBBCollision(spherePos, sphereRadius, obbPos, obbWidth, obbHeight, obbDepth, finalMatrix);
+}
+
+// sphere OBB collision with the structs
+bool util::math::sphereOBBCollision(const Sphere& sphere, const Box3D& box, const bool inDegrees)
+{
+	return sphereOBBCollision(sphere.position, sphere.radius,
+		box.position, box.width, box.height, box.depth, box.rotation, inDegrees, box.rotationOrder);
 }

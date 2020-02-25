@@ -46,6 +46,7 @@ int main()
 
 	// game object
 	cherry::Game* game = new cherry::Game("GDW_Y2 - BnsFt - Cherry Engine", 850, 850, false, true, true, true);
+	cherry::Game::FPS = 0;
 	game->Run();
 	delete game;
 

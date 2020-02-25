@@ -146,20 +146,18 @@ namespace cherry
 		// sets if the object should be drawn in orthographic mode.
 		void SetOrthographicObject(bool orthographic);
 
-		// TODO: rename it so that it makes more sense.
 		// if 'true', the screen position of the mesh is fixed regardless of the camera position or orientation.
 		// the mesh itself can still be moved, but it will be uneffected by the movement in the camera.
-		bool GetFixedScreenPosition() const;
+		bool IsWindowChild() const;
 
-		// if 'true', the mesh will say in the same place on screen.
-		void SetFixedScreenPosition(bool fixed);
+		// if 'true', the object will be a child of the screen, keeping the same porportional size and position to the screen.
+		void SetWindowChild(bool windowChild);
 
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 
 		// gets the transformation from local space to world space.
 		glm::mat4 GetWorldTransformation() const;
-
 		
 		// gets the position as an engine vector
 		cherry::Vec3 GetPosition() const;
@@ -195,17 +193,20 @@ namespace cherry
 		// sets the z-position.
 		void SetPositionZ(float z);
 
+		// TODO: fix the position so that ti goes in the right direction
 		/*
-		 * sets the position of the object proportional to the size of the screen. This should only be used if using an orthographic camera.
-		 * this is designed after screen space, meaning that the values range from (0, 0) to (1, 1).
+		 * sets the object's position via the window size. This is meant for the overlay objects.
 		 * Variables:
-		 *** newPos: the new position. 
-		 *** windowSize: the window size.
-		 *** origin: the origin for the screen. The length and height of the screen are conisdered to always be (1.0, 1.0).
-		 ***** if the origin is (0.5, 0.5), the screen's size is in the range of [-0.5, -0.5] to [0.5, 0.5]
+		 *	screenPos: the new position. It is treated as a percentage of the screen size, juding it as a [0, 1] range.
+		 *	camOrigin: the origin of the camera in reference to the screen.
+			* the overlay camera's origin is the centre of the screen. However, screen space treats the bottom-left corner as the origin.
+			* the camOrigin is used to offset the providied posiition so that it is in the expected screen space location.
+			* the camOrigin can be left as it's default since the overlay camera won't be moved.
 		*/
-		void SetPositionByScreenPortion(const cherry::Vec2 newPos, const cherry::Vec2 windowSize, const cherry::Vec2 origin);
+		void SetPositionByWindowSize(const cherry::Vec2 windowPos, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
 
+		// sets the position using the size of the window
+		void SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
 
 		// gets the rotation as a GLM vector
 		glm::vec3 GetRotationGLM(bool inDegrees) const;

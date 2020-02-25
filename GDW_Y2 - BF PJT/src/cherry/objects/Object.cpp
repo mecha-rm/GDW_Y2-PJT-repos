@@ -2,10 +2,10 @@
 #include "Object.h"
 #include "..\utils\Utils.h"
 #include "..\utils\math\Rotation.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 #include "..\WorldTransform.h"
 
-#include "..\SceneManager.h"
+#include "..\scenes/SceneManager.h"
 #include "..\MeshRenderer.h"
 #include "ObjectManager.h"
 
@@ -15,6 +15,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 
+#include "..\Game.h"
 
 // the maximum amount of vertices; this value isn't used
 const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
@@ -79,7 +80,7 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 	if(loadMtl)
 		material->LoadMtl(filePath.substr(0, filePath.find_last_of(".")) + ".mtl");
 
-	CreateEntity(scene, material);
+	CreateEntity(scene, material); 
 }
 
 // loads an obj file into the provided scene, gives it the material, and then applies the mtl file.
@@ -146,13 +147,13 @@ cherry::Object::Object(const cherry::Object& obj)
 		{
 		case 1: // box		
 			box = (PhysicsBodyBox*)body;
-			AddPhysicsBody(new PhysicsBodyBox(box->GetModelPosition(), box->GetWidth(), box->GetHeight(), box->GetDepth()));
+			AddPhysicsBody(new PhysicsBodyBox(box->GetLocalPosition(), box->GetLocalWidth(), box->GetLocalHeight(), box->GetLocalDepth()));
 			box = nullptr;
 			break;
 
 		case 2:// sphere
 			sphere = (PhysicsBodySphere*)sphere;
-			AddPhysicsBody(new PhysicsBodySphere(sphere->GetModelPosition(), sphere->GetRadius()));
+			AddPhysicsBody(new PhysicsBodySphere(sphere->GetLocalPosition(), sphere->GetLocalRadius()));
 			sphere = nullptr;
 			break;
 		}
@@ -161,7 +162,12 @@ cherry::Object::Object(const cherry::Object& obj)
 	// TODO: add animation manager
 	// TODO: copy physics bodies
 
-	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	// if the file is an obj file, then the indices shouldn't be used for the mesh.
+	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	else // runtime primitive
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 }
 
@@ -265,9 +271,11 @@ void cherry::Object::SetAlpha(float a)
 	alpha = (a < 0.0F) ? 0.0F : (a > 1.0F) ? 1.0F : a;
 
 	// if the object doesn't have a 100% alpha value, then it won't need to be sorted for proper transparency.
-	material->HasTransparency = (alpha < 1.0F) ? true: false;
-
-	material->Set("a_Alpha", alpha);
+	if (material != nullptr)
+	{
+		material->HasTransparency = (alpha < 1.0F) ? true : false;
+		material->Set("a_Alpha", alpha);
+	}
 }
 
 // returns if the object is visible
@@ -293,18 +301,14 @@ bool cherry::Object::IsOrthographicObject() const { return mesh->IsOrthographicM
 void cherry::Object::SetOrthographicObject(bool orthographic) { mesh->SetOrthographicMesh(orthographic); }
 
 // if 'true', the screen position of the object is fixed regardless of the camera.
-bool cherry::Object::GetFixedScreenPosition() const
-{
-	if (mesh != nullptr)
-		return mesh->GetFixedScreenPosition();
-	else
-		return false;
-}
+bool cherry::Object::IsWindowChild() const { return (mesh != nullptr) ? mesh->GetWindowChild() : false; }
 
 // sets if the screen position is fixed.
-void cherry::Object::SetFixedScreenPosition(bool fixed) { mesh->SetFixedScreenPosition(fixed); }
-
-
+void cherry::Object::SetWindowChild(bool windowChild) 
+{ 
+	mesh->SetWindowChild(windowChild); 
+	ObjectManager::UpdateWindowChild(this);
+}
 
 
 // creates the object.
@@ -490,10 +494,10 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		std::string fpStr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
 		mtllib = fpStr + mtllib;
 
-		// generates the material
-		material = (dynamicObject) ? 
-			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS) :
-			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS);
+		// generates the material. The version generated depends on whether the object uses morph targets or not.
+		material = (dynamicObject) ?
+			Material::GenerateMtl(mtllib, nullptr, DYNAMIC_VS, DYNAMIC_FS) :
+			Material::GenerateMtl(mtllib, nullptr, STATIC_VS, STATIC_FS);
 	}
 
 	return (safe = true); // returns whether the object was safely loaded.
@@ -593,15 +597,21 @@ float cherry::Object::GetPositionZ() const { return position.v.z; }
 void cherry::Object::SetPositionZ(float z) { position.v.z = z; }
 
 // sets the position by the screen portion.
-void cherry::Object::SetPositionByScreenPortion(const cherry::Vec2 newPos, const cherry::Vec2 windowSize, const cherry::Vec2 origin)
+void cherry::Object::SetPositionByWindowSize(const cherry::Vec2 windowPos, const cherry::Vec2 camOrigin)
 {
-	// making sure the window is of an absolute value.
-	glm::vec2 windowAbs(abs(windowSize.v.x), abs(windowSize.v.y));
+	// gets the size of the window.
+	glm::vec2 windowSize = Game::GetRunningGame()->GetWindowSize();
 
-	// takes the actual position and shifts it so that it aligns with the world origin of (0.5, 0.5) across teh screen size.
-	position.v.x = (newPos.v.x * windowAbs.x) + ((0.5F - origin.v.x) * windowAbs.x);
-	position.v.y = (newPos.v.y * windowAbs.y) + ((0.5F - origin.v.y) * windowAbs.y);
+	position.v.x = (windowSize.x * windowPos.v.x) - windowSize.x * camOrigin.v.x;
+	position.v.y = (windowSize.y * windowPos.v.y) - windowSize.y * camOrigin.v.y;
 }
+
+// sets the window size
+void cherry::Object::SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin)
+{
+	SetPositionByWindowSize(Vec2(x, y), camOrigin);
+}
+
 
 
 // ROTATION FUNCTIONS

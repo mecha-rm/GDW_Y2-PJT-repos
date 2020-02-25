@@ -48,11 +48,11 @@ cherry::PrimitiveCone::PrimitiveCone(float radius, float height, unsigned int se
 	{
 		// rotates the position vector
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
-		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
+		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor, false);
 
 		// calculates the normal by rotating it to account for the vertex position, and the angle of the normal itself.
-		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-		normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F));
+		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor, false);
+		normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F), false);
 
 		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 

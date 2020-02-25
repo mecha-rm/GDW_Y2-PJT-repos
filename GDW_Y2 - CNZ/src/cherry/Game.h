@@ -15,7 +15,8 @@
 #include "SceneManager.h"
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
-#include "LightManager.h"
+#include "lights/LightManager.h"
+#include "audio/AudioComponent.h"
 
 // System Library Includes
 #include <iostream>
@@ -31,7 +32,9 @@ namespace cherry
 		// creates the game with a width, height, and in fullscreen if requested.
 		// _debug is used to start the game in debug mode.
 		// variable '_default' opens the project with default settings for the camera, sceneLists, and more.
-		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults = false, bool _debug = false);
+		// if _imgui is 'true', then the _imgui functions are used.
+		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, 
+			bool _defaults = false, bool _debug = false, bool _imgui = false);
 
 		// destructor
 		~Game();
@@ -191,9 +194,18 @@ namespace cherry
 		// the object used for the camera
 		Camera::Sptr myCamera;
 
-		// the camera for the ui.
-		Camera::Sptr UICamera;
+		// the secondary camera, which is used for overlaying a hud.
+		Camera::Sptr myCameraX;
+
+		// Target;
 		
+		// TODO: make private?
+		// audio component for the scene
+		cherry::AudioComponent audioEngine = cherry::AudioComponent();
+
+		// the frame rate of the game.
+		// set the frame rate to 0 (or anything less), to have no framerate cap.
+		static short int FPS;
 
 	protected:
 		void Initialize();
@@ -212,18 +224,38 @@ namespace cherry
 
 		void ImGuiEndFrame();
 
+		// update loop
 		virtual void Update(float deltaTime);
 
+		// draw loop
 		void Draw(float deltaTime);
 
+		// draw ImGUI
 		void DrawGui(float deltaTime);
 
-		// used for rendering the scene to multiple viewpoints.
-		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool clear = true);
+		/*
+		 * used for rendering the scene to multiple viewpoints.
+		 * Variables:
+			* viewport: the size of the viewport.
+			* camera: the camera to be used for rendering.
+			* drawSkybox: if 'true', the skybox is drawn. Since each registry has its own camera, it's recommended that this is only used once.
+				* Do note that if there is no skybox or if scene->SkyboxMesh->IsVisible() returns 'false', the skybox won't be rendered anyway.
+			* clear: if 'true', then anything previously rendered is cleared, which is needed for the border.
+		*/
+		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox = true,
+			int borderSize = 0, glm::vec4 borderColor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), bool clear = true);
 
+		// TODO: add in variables for borders.
 
 		// set to 'true' for debug functionality.
 		bool debugMode = false;
+
+		// if 'true', the  imgui window functions are used.
+		// if false, then they are not used.
+		bool imguiMode = false;
+
+		// if 'true', collisions are checked by the Game class.
+		bool collisionMode = true;
 
 		// list of scenes
 		// std::vector<std::string> scenes;
@@ -235,12 +267,12 @@ namespace cherry
 		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
-		glm::ivec2 myWindowSize; // saves the window size
-
 	private:
 
 		// Stores the main window that the game is running in
 		GLFWwindow* myWindow;
+
+		glm::ivec2 myWindowSize; // saves the window size
 
 		// static glm::vec2 resolution;
 
@@ -250,26 +282,14 @@ namespace cherry
 		// Stores the title of the game's window
 		char myWindowTitle[32];
 
-		// the camera position
-		cherry::Vec3 cameraPos;
-
 		// A shared pointer to our shader.
-		Shader::Sptr myShader;
-
-		// a vector of the sceneLists created for the game.
-		// std::vector<Object*> objects;
-
-		// object manager
-		// std::shared_ptr<cherry::ObjectManager> objManager; // now static like it should've been.
+		// Shader::Sptr myShader;
 
 		// object list
 		cherry::ObjectList* objectList = nullptr; // objManager deletion handles this
 
-		// the lights in the current scene
-		// std::vector<Light*>* lights; // TODO: replace with light manager
-
-		// light manager
-		// std::shared_ptr<cherry::LightManager> lightManager; (now static)
+		// checks for wireframe being active.
+		bool wireframe = false;
 
 		// holds the list of lights
 		cherry::LightList* lightList; // lightManager deletion handles this
@@ -290,6 +310,7 @@ namespace cherry
 		cherry::Vec2 mousePos;
 
 		// double XcursorPos, YcursorPos;
+		// TODO: change to array
 		bool mbLeft = false, mbMiddle = false, mbRight = false;
 
 		// window size
@@ -303,6 +324,7 @@ namespace cherry
 		bool mouseEnter = false;
 
 		unsigned int hitBoxIndex = -1;
+
 	};
 
 

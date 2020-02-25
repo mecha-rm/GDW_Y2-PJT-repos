@@ -87,7 +87,7 @@ cherry::TextureCube::Sptr cherry::Skybox::GenerateTextureCube() const { return T
 cherry::Shader::Sptr cherry::Skybox::GenerateShader() const
 {
 	Shader::Sptr shader = std::make_shared<Shader>();
-	shader->Load("res/cubemap.vs.glsl", "res/cubemap.fs.glsl");
+	shader->Load("res/shaders/cubemap.vs.glsl", "res/shaders/cubemap.fs.glsl");
 	return shader;
 }
 

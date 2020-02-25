@@ -1,13 +1,13 @@
 // PrimitiveCube (Source)
 #include "PrimitiveCube.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 
-cherry::PrimitiveCube::PrimitiveCube() : PrimitiveCube(1.0F, 1.0F, 1.0F, Vec4(1.0F, 1.0F, 1.0F, 1.0F)) {}
+cherry::PrimitiveCube::PrimitiveCube() : PrimitiveCube(1.0F, 1.0F, 1.0F, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F)) {}
 
 // sets a single side length
-cherry::PrimitiveCube::PrimitiveCube(float sideLength, Vec4 colour) : PrimitiveCube(sideLength, sideLength, sideLength, colour) {}
+cherry::PrimitiveCube::PrimitiveCube(float sideLength, cherry::Vec4 color) : PrimitiveCube(sideLength, sideLength, sideLength, color) {}
 
-cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec4 color) : 
+cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, cherry::Vec4 color) : 
 	cherry::Primitive(), width(abs(width)), height(abs(height)), depth(abs(depth))
 {
 	// making sure both are positive.
@@ -23,7 +23,8 @@ cherry::PrimitiveCube::PrimitiveCube(float width, float height, float depth, Vec
 		(color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w
 	);
 
-	baseColor = clr;
+	color = clr;
+	this->color = color;
 
 	// Position and Color (Default Values) // NORMALS ARE WRONG
 	verticesTotal = 8;

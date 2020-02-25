@@ -3,21 +3,17 @@
 #include <GLM/glm.hpp>
 #include <unordered_map>
 #include <memory>
-
+ 
 #include "Shader.h"
 #include "Texture2D.h"
 #include "TextureCube.h" // used for waves
+#include "UtilsCRY.h"
 
 /*
 Represents settings for a shader
 */
 
-// macros for file paths for commonly used shaders
-#define STATIC_VS "res/lighting.vs.glsl"
-#define STATIC_FS "res/blinn-phong.fs.glsl"
-
-#define DYNAMIC_VS "res/lighting-morph.vs.glsl"
-#define DYNAMIC_FS "res/blinn-phong-morph.fs.glsl"
+// shader macros moved to UtilsCRY
 
 namespace cherry
 {

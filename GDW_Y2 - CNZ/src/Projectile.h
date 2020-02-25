@@ -1,6 +1,6 @@
 #pragma once
 #include "cherry/objects/Object.h"
-#include "cherry/PhysicsBody.h"
+#include "cherry/physics/PhysicsBody.h"
 
 class Projectile : public cherry::Object
 {
@@ -10,8 +10,8 @@ public:
 
 	Projectile(std::string modelFile, std::string sceneName) : Projectile(modelFile, sceneName, cherry::Vec3()) {}
 
-	// sets the Enemies file, and position
-	Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos) : Object(modelFile, sceneName)
+	// sets the Enemy file, and position
+	Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos) : Object(modelFile, sceneName, true)
 	{
 		position = pos;
 		// TODO: replace with a more accurate hitbox
@@ -19,6 +19,7 @@ public:
 	}
 
 	void SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos);
+	void SetDirVec(cherry::Vec3 dirVec);
 
 	cherry::Vec3 GetDirectionVec() { return arrowDirVec; }
 
@@ -43,7 +44,7 @@ public:
 	float GetPBodyDepth() const;
 
 private:
-	cherry::Vec3 pBodySize = cherry::Vec3(2, 2, 4);
+	cherry::Vec3 pBodySize = cherry::Vec3(0.1f, 0.1f, 0.1f);
 	bool drawPBody = false;
 
 	cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);

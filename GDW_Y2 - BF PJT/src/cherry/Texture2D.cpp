@@ -4,6 +4,9 @@
 #include <GLM/gtc/integer.hpp> // integer mapping
 #include <GLM/gtc/type_ptr.hpp>
 
+// the maixmum number of samples
+uint32_t cherry::Texture2D::MaxNumSamples = 1;
+
 cherry::Texture2D::Texture2D(const Texture2DDescription& desc) {
 	myDescription = desc;
 	myTextureHandle = 0; // checked later in case the project breaks and goes crazy.
@@ -29,7 +32,15 @@ void cherry::Texture2D::__SetupTexture() {
 	//glTextureStorage2D(myTextureHandle, 1,
 	//	(GLenum)myDescription.Format, myDescription.Width, myDescription.Height);
 
-	glCreateTextures(GL_TEXTURE_2D, 1, &myTextureHandle);
+	myDescription.NumSamples = glm::clamp(myDescription.NumSamples, 1u, MaxNumSamples);
+	myDescription.MipLevels = myDescription.NumSamples > 1 ? 1 : myDescription.MipLevels;
+
+	// original
+	// glCreateTextures(GL_TEXTURE_2D, 1, &myTextureHandle);
+	
+	// from florp::graphics
+	glCreateTextures(myDescription.NumSamples > 1 ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D, 1, &myTextureHandle);
+	myRendererID = myTextureHandle;
 
 	// this is where we tell OpenGl the amount of mipmaps we are creating.
 	glTextureStorage2D(myTextureHandle,
@@ -44,6 +55,10 @@ void cherry::Texture2D::__SetupTexture() {
 	if (myDescription.Sampler.AnisotropicEnabled)
 		glTextureParameterf(myTextureHandle, GL_TEXTURE_MAX_ANISOTROPY, myDescription.Sampler.MaxAnisotropy);
 }
+
+// overriding the version in iTexture
+// void cherry::Texture2D::Bind(uint32_t slot) { Bind((int)slot); }
+
 
 // binds a texture into a given slot.
 void cherry::Texture2D::Bind(int slot) const {

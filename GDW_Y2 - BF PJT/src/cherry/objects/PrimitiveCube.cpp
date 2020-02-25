@@ -1,6 +1,6 @@
 // PrimitiveCube (Source)
 #include "PrimitiveCube.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 
 cherry::PrimitiveCube::PrimitiveCube() : PrimitiveCube(1.0F, 1.0F, 1.0F, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F)) {}
 

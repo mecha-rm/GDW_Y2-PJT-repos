@@ -4,7 +4,7 @@
 #include "..\utils\math\Rotation.h"
 
 // creates a diamond; same calculation as capsules.
-cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned int segments, float origin)
+cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned int segments, float origin, cherry::Vec4 color)
 	: radius(abs(radius)), height(abs(height))
 {
 	// absolute values
@@ -20,6 +20,14 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 		origin = 0.0F;
 	else if (origin > 1.0F)
 		origin = 1.0F;
+
+	// colour bounds checking
+	color.v.x = (color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x;
+	color.v.y = (color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y;
+	color.v.z = (color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z;
+	color.v.w = (color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w;
+
+	this->color = color; // saving the colour.
 
 	float rFactor = 0; // the rotation factor
 	float rInc = glm::radians(360.0F / (float)segments);
@@ -41,7 +49,7 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 	indices = new uint32_t[indicesTotal];
 
 	// top vertex
-	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[0] = { { 0.0F, 0.0F, height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	// adds in all the vertices
 	for (int i = 1; i < verticesTotal - 1; i++)
@@ -49,18 +57,18 @@ cherry::PrimitiveDiamond::PrimitiveDiamond(float radius, float height, unsigned 
 
 		// rotates the position vector
 		// NOTE: as long as radius is set for (x) or (y), it doesn't matter.
-		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, originLoc), rFactor);
+		cherry::Vec3 posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, originLoc), rFactor, false);
 		
 		// rotates the normal vector
-		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(1.0F, 0.0F, 0.0F), rFactor);
+		cherry::Vec3 normVec = util::math::rotateZ(util::math::Vec3(1.0F, 0.0F, 0.0F), rFactor, false);
 
-		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+		vertices[i] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 		rFactor += rInc; // increases the rotation factor
 	}
 
 	// bottom, centre vertex.
-	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[verticesTotal - 1] = { { 0.0F, 0.0F, -height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	ind0 = 0;
 	ind1 = 1;
