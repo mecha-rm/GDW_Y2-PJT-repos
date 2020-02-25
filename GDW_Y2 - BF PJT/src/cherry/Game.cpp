@@ -47,7 +47,7 @@ void GlDebugMessage(GLenum source, GLenum type, GLuint id, GLenum severity, GLsi
 
 // call this function to resize the window.
 void GlfwWindowResizedCallback(GLFWwindow* window, int width, int height) {
-	
+
 	// the width and height must be greater than 0
 	if (width > 0 && height > 0)
 	{
@@ -71,7 +71,7 @@ void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
 	if (game == nullptr) {
 		return;
 	}
-	
+
 	switch (action) {
 	case GLFW_PRESS:
 		game->MouseButtonPressed(window, button);
@@ -103,10 +103,10 @@ void CursorEnterCallback(GLFWwindow* window, int enter)
 }
 
 // called when the mouse moves over the screen, getting the position.
-void CursorPosCallback(GLFWwindow* window, double xpos, double ypos) 
+void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 {
 	cherry::Game* game = (cherry::Game*)glfwGetWindowUserPointer(window);
-	
+
 	if (game == nullptr) {
 		return;
 	}
@@ -158,7 +158,7 @@ cherry::Game::Game() :
 }
 
 // creates window with a width, height, and whether or not it's in full screen.
-cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug, bool _imgui) 
+cherry::Game::Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, bool _defaults, bool _debug, bool _imgui)
 	: Game()
 {
 	// setting the values
@@ -214,7 +214,7 @@ cherry::Vec2 cherry::Game::GetCursorPos() const { return mousePos; }
 // gets the cursor position as a glm vector
 glm::vec2 cherry::Game::GetCursorPosGLM() const { return glm::vec2(mousePos.v.x, mousePos.v.y); }
 
-float cherry::Game::GetCursorPosX() const {	return mousePos.v.x; }
+float cherry::Game::GetCursorPosX() const { return mousePos.v.x; }
 
 // returns the cursor position on the y-axis
 float cherry::Game::GetCursorPosY() const { return mousePos.v.y; }
@@ -296,21 +296,21 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_SPACE:
 		myCamera->SwitchViewMode();
 		break;
-	// case GLFW_KEY_W:
-	// 	w = true;
-	// 	break;
-	// case GLFW_KEY_S:
-	// 	s = true;
-	// 	break;
-	// case GLFW_KEY_A:
-	// 	a = true;
-	// 	break;
-	// case GLFW_KEY_D:
-	// 	d = true;
-	// 	break;
+		// case GLFW_KEY_W:
+		// 	w = true;
+		// 	break;
+		// case GLFW_KEY_S:
+		// 	s = true;
+		// 	break;
+		// case GLFW_KEY_A:
+		// 	a = true;
+		// 	break;
+		// case GLFW_KEY_D:
+		// 	d = true;
+		// 	break;
 
-		// CAMERA CONTROLS
-		// TRANSLATIONS
+			// CAMERA CONTROLS
+			// TRANSLATIONS
 	case GLFW_KEY_W: // y-direction up
 		t_Dir[1] = -1;
 		break;
@@ -318,7 +318,7 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_S: // y-direction down
 		t_Dir[1] = 1;
 		break;
-		
+
 	case GLFW_KEY_A: // x-direction left
 		t_Dir[0] = 1;
 		break;
@@ -366,7 +366,7 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 			myCamera->LookAt(myCamera->LookingAt());
 		break;
 
-	// TODO: remove these
+		// TODO: remove these
 	case GLFW_KEY_V:
 		if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
 			objectList->objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
@@ -385,7 +385,7 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 			{
 				objectList->objects[hitBoxIndex]->GetPath().SetInterpolationMode(0);
 			}
-			
+
 		}
 		break;
 	}
@@ -396,13 +396,15 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
+	// TODO: call scene for keyboard controls instead.
+	// if (game == nullptr || CurrentScene() == nullptr)
 	if (game == nullptr) // if game is 'null', then it is returned
 		return;
 
 	switch (key)
 	{
-	// CAMERA CONTROLS
-		// TRANSLATIONS
+		// CAMERA CONTROLS
+			// TRANSLATIONS
 	case GLFW_KEY_W: // y-direction up
 		t_Dir[1] = -1;
 		break;
@@ -410,7 +412,7 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 	case GLFW_KEY_S: // y-direction down
 		t_Dir[1] = 1;
 		break;
-		
+
 	case GLFW_KEY_A: // x-direction left
 		t_Dir[0] = 1;
 		break;
@@ -504,7 +506,7 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 		r_Dir[2] = 0;
 		break;
 
-	// deletes an object
+		// deletes an object
 	case GLFW_KEY_0:
 		DeleteObjectFromScene(objectList->objects.at(0));
 		break;
@@ -574,14 +576,14 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 	else
 	{
 		SceneManager::RegisterScene(sceneName); // registering the scene
-		cherry::Scene * scene = SceneManager::Get(sceneName); // getting the scene
+		cherry::Scene* scene = SceneManager::Get(sceneName); // getting the scene
 
 		skybox.AddSkyboxToScene(scene); // adds the skybox to the scene.
 
 		// creating an object list.
 		ObjectManager::CreateSceneObjectList(sceneName);
-		
-		if(makeCurrent) // if it should be the current object list.
+
+		if (makeCurrent) // if it should be the current object list.
 			objectList = ObjectManager::GetSceneObjectListByName(sceneName);
 
 		// creating a light list.
@@ -595,7 +597,7 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 			SceneManager::SetCurrentScene(sceneName);
 		}
 
-		
+
 		return true;
 	}
 }
@@ -664,18 +666,38 @@ bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox
 // creates the scene, and sees if it should be the current scene.
 bool cherry::Game::CreateScene(cherry::Scene* scene, const bool makeCurrent)
 {
-	// makes the skybox
-	Skybox skybox(
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		"res/images/cubemaps/checkerboard_black-grey_d.jpg"
-	);
+	if (scene == nullptr)
+		return false;
 
-	// creates the scene
-	return CreateScene(scene->GetName(), skybox, makeCurrent);
+	// if there is no skybox.
+	if (scene->SkyboxMesh == nullptr)
+	{
+		Skybox skybox(
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		);
+
+		skybox.AddSkyboxToScene(scene);
+	}
+
+	// registers the scene
+	SceneManager::RegisterScene(scene); // makes the scene
+
+	ObjectManager::CreateSceneObjectList(scene->GetName());
+	LightManager::CreateSceneLightList(scene->GetName());
+
+	if (makeCurrent) // if this should be the current scene.
+	{
+		SceneManager::SetCurrentScene(scene->GetName());
+		objectList = ObjectManager::GetSceneObjectListByName(scene->GetName());
+		lightList = LightManager::GetSceneLightListByName(scene->GetName());
+	}
+
+	return true;
 }
 
 // creates the scene
@@ -716,7 +738,7 @@ cherry::Scene* cherry::Game::GetScene(std::string sceneName) const { return Scen
 cherry::Scene* cherry::Game::GetCurrentScene() const { return CurrentScene(); }
 
 // sets the current scene
-bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene) 
+bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene)
 {
 	if (SceneManager::HasScene(sceneName)) // sets the current scene.
 	{
@@ -767,8 +789,8 @@ bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene)
 }
 
 // returns the name of the current scene.
-const std::string & cherry::Game::GetCurrentSceneName() const
-{ 
+const std::string& cherry::Game::GetCurrentSceneName() const
+{
 	Scene* scene = CurrentScene();
 
 	if (scene != nullptr) // scene exists
@@ -781,8 +803,8 @@ const std::string & cherry::Game::GetCurrentSceneName() const
 void cherry::Game::DestroyScenes() { SceneManager::DestroyScenes(); }
 
 // sets the skybox for the current scene.
-void cherry::Game::SetSkybox(cherry::Skybox& skybox, const bool visible) 
-{ 
+void cherry::Game::SetSkybox(cherry::Skybox& skybox, const bool visible)
+{
 	auto scene = CurrentScene();
 
 	if (scene != nullptr) // if the scene exists.
@@ -805,7 +827,7 @@ void cherry::Game::SetSkybox(cherry::Skybox& skybox, const std::string sceneName
 }
 
 // gets whether the skybox is visible for the current scene or not.
-bool cherry::Game::GetSkyboxVisible() const 
+bool cherry::Game::GetSkyboxVisible() const
 {
 	auto scene = CurrentScene();
 
@@ -836,7 +858,7 @@ void cherry::Game::SetSkyboxVisible(bool skybox, std::string sceneName)
 {
 	auto scene = SceneManager::Get(sceneName);
 
-	if(scene != nullptr) // if the scene exists.
+	if (scene != nullptr) // if the scene exists.
 		scene->SkyboxMesh->SetVisible(skybox);
 }
 
@@ -850,7 +872,7 @@ cherry::ObjectList* cherry::Game::GetSceneObjectList() const { return objectList
 cherry::ObjectList* cherry::Game::GetSceneObjectList(std::string scene) { return ObjectManager::GetSceneObjectListByName(scene); }
 
 // gets an object from the current scene
-cherry::Object* cherry::Game::GetCurrentSceneObjectByIndex(unsigned int index) const 
+cherry::Object* cherry::Game::GetCurrentSceneObjectByIndex(unsigned int index) const
 {
 	if (objectList != nullptr) // if there is an object list for this scene
 	{
@@ -890,9 +912,9 @@ cherry::Object* cherry::Game::GetSceneObjectByName(std::string scene, std::strin
 }
 
 // adds an object to the m_Scene
-bool cherry::Game::AddObjectToScene(cherry::Object* obj) 
-{ 
-	return ObjectManager::AddObjectToSceneObjectList(obj); 
+bool cherry::Game::AddObjectToScene(cherry::Object* obj)
+{
+	return ObjectManager::AddObjectToSceneObjectList(obj);
 }
 
 
@@ -967,7 +989,7 @@ void cherry::Game::Initialize() {
 	glfwWindowHint(GLFW_TRANSPARENT_FRAMEBUFFER, true);
 
 	// Create a new GLFW window
-	if(fullScreen) // if the window is to be put in full screen
+	if (fullScreen) // if the window is to be put in full screen
 		myWindow = glfwCreateWindow(myWindowSize.x, myWindowSize.y, myWindowTitle, glfwGetPrimaryMonitor(), nullptr);
 
 	else // no full screen
@@ -1046,7 +1068,7 @@ void cherry::Game::LoadContent()
 	myCamera->clearColor = myClearColor; // setting the clear colour
 	myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
-	
+
 
 	// sets the camera to perspective mode for the m_Scene.
 	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
@@ -1066,7 +1088,7 @@ void cherry::Game::LoadContent()
 	myCameraX->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
 	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
 	myCameraX->LookAt(glm::vec3(0));
-	
+
 	// this camera is used for UI elements
 	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
 	myCameraX->SetOrthographicMode(-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
@@ -1078,7 +1100,7 @@ void cherry::Game::LoadContent()
 
 	// SAMPLER FOR MIP MAPPING
 	// added for mip mapping. As long as its above the material, it's fine.
-	
+
 	// OLD VERSION
 	// TODO: remove upon final submission
 	// description = SamplerDesc();
@@ -1107,7 +1129,7 @@ void cherry::Game::LoadContent()
 	//desc2.MagFilter = MagFilter::Linear;
 
 	//samplerEX = std::make_shared<TextureSampler>(desc1);
-	
+
 
 
 	// before the mesh in the original code
@@ -1118,7 +1140,7 @@ void cherry::Game::LoadContent()
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
 	// dedicated variable no longer needed?
-	
+
 	// no longer needed since GenerateMaterial() exists.
 	// matStatic = std::make_shared<Material>(phong);
 	// matStatic->Set("a_LightCount", 1);
@@ -1130,7 +1152,7 @@ void cherry::Game::LoadContent()
 	// matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
 	// matStatic->Set("a_LightAttenuation[0]", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
-	
+
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
 
 		// Shader was originally compiled here.
@@ -1146,9 +1168,9 @@ void cherry::Game::LoadContent()
 	// matStatic->Set("s_Albedos[0]", albedo, sampler);
 	// matStatic->Set("s_Albedos[1]", albedo, sampler);
 	// matStatic->Set("s_Albedos[2]", albedo,sampler);
-	
-	
-	
+
+
+
 
 	// creating a skybox for the scene.
 	Skybox skybox(
@@ -1174,7 +1196,7 @@ void cherry::Game::LoadContent()
 		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
 
 	lightList->AddLight(new Light(GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F)); 
+		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F));
 
 	AddLightToScene(new Light(GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
 		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
@@ -1183,7 +1205,7 @@ void cherry::Game::LoadContent()
 	// replace the shader for the material if using morph tagets.
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
-	 
+
 	// loads in default sceneLists
 	if (loadDefaults)
 	{
@@ -1195,46 +1217,46 @@ void cherry::Game::LoadContent()
 		  //sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
 
 		// Creating the sceneLists, storing them, and making them part of the default m_Scene.
-		 objectList->objects.push_back(new PrimitiveCapsule());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		 
-		 
-		 
-		 objectList->objects.push_back(new PrimitiveCircle());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
-		  
-		 objectList->objects.push_back(new PrimitiveCone());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-		 
-		 objectList->objects.push_back(new PrimitiveCube());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
-		 
-		 objectList->objects.push_back(new PrimitiveCylinder());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
-		 
-		 objectList->objects.push_back(new PrimitiveDiamond());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
-		 
-		 objectList->objects.push_back(new PrimitiveUVSphere());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
-		 
-		 objectList->objects.push_back(new PrimitivePlane());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		objectList->objects.push_back(new PrimitiveCapsule());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
 
-		 // testing the copy constructor.
-		  // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
-		  // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
-		  // objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
 
-		// liquid
+
+		objectList->objects.push_back(new PrimitiveCircle());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+
+		objectList->objects.push_back(new PrimitiveCone());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+
+		objectList->objects.push_back(new PrimitiveCube());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+
+		objectList->objects.push_back(new PrimitiveCylinder());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
+
+		objectList->objects.push_back(new PrimitiveDiamond());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
+
+		objectList->objects.push_back(new PrimitiveUVSphere());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
+
+		objectList->objects.push_back(new PrimitivePlane());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+
+		// testing the copy constructor.
+		 // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		 // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
+		 // objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
+
+	   // liquid
 		{
 			Liquid* water = new Liquid(GetCurrentSceneName(), 20.0f, 100);
 			water->SetEnabledWaves(3);
@@ -1255,18 +1277,18 @@ void cherry::Game::LoadContent()
 			water->SetVisible(true);
 			AddObjectToScene(water);
 		}
-		  
+
 		// Height Map
 		{
 			Terrain* terrain = new Terrain(GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 30.0f, 50, false);
 			terrain->SetTexture(0, "res/images/red.png");
 			terrain->SetTexture(1, "res/images/green.png");
-			terrain->SetTexture(2, "res/images/blue.png");  
+			terrain->SetTexture(2, "res/images/blue.png");
 			terrain->SetMinimumHeight(-5.0F);
-			terrain->SetMaximumHeight(10.0F); 
-			terrain->SetPosition(0.0F, 0.0F, -15.0F); 
-			terrain->SetVisible(true); 
-			AddObjectToScene(terrain); 
+			terrain->SetMaximumHeight(10.0F);
+			terrain->SetPosition(0.0F, 0.0F, -15.0F);
+			terrain->SetVisible(true);
+			AddObjectToScene(terrain);
 		}
 		//// sceneLists.push_back(new Object("res/sceneLists/monkey.obj", currentScene, material));
 		{
@@ -1301,27 +1323,27 @@ void cherry::Game::LoadContent()
 				Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 395, 198), 5530, 198, false), true, false);
 
 			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
-			cherry::ImageAnimation* imgAnime = new ImageAnimation(); 
-			
+			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+
 			// 14 frames
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 1, 0, 395 * 2, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 2, 0, 395 * 3, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 3, 0, 395 * 4, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 4, 0, 395 * 5, 198), 5530, 198, false), 0.0F));
-																							  
+
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 5, 0, 395 * 6, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 6, 0, 395 * 7, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 7, 0, 395 * 8, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 8, 0, 395 * 9, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 9, 0, 395 * 10, 198), 5530, 198, false), 0.0F));
-																							  
+
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 10, 0, 395 * 11, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 11, 0, 395 * 12, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 12, 0, 395 * 13, 198), 5530, 198, false), 0.0F));
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 13, 0, 395 * 14, 198), 5530, 198, false), 0.0F));
-			
-			
+
+
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
 			image->AddAnimation(imgAnime, false);
@@ -1330,10 +1352,10 @@ void cherry::Game::LoadContent()
 			objectList->objects.push_back(image);
 			objectList->objects.at(objectList->GetObjectCount() - 1)->SetPosition(0.0F, 0.0F, 1.0F);
 			objectList->objects.at(objectList->GetObjectCount() - 1)->SetScale(0.01F);
-		
+
 			// image->GetAnimation(0)->Play();
-			
-		} 
+
+		}
 
 		// image (UI element)
 		{
@@ -1345,7 +1367,7 @@ void cherry::Game::LoadContent()
 			image->SetScale(0.12F);
 			image->SetAlpha(0.8F);
 			image->SetVisible(true);
-			objectList->AddObject(image); 
+			objectList->AddObject(image);
 			image->SetPositionByWindowSize(Vec2(1.0F, 1.0F) - Vec2(0.80F, 0.88F));
 		}
 
@@ -1366,7 +1388,7 @@ void cherry::Game::LoadContent()
 		//sceneLists.push_back(new Object("res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.obj", currentScene, 
 		// 	LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(STATIC_VS, STATIC_FS, sampler),
 		// 	"res/sceneLists/MAS_1 - QIZ04 - Textured Hammer.mtl", false));
-		
+
 		// PhysicsBodyBox* temp = new PhysicsBodyBox(Vec3(0.0F, 0.0F, 0.0F), 1.0F, 3.0F, 1.0F);
 		PhysicsBodyBox* temp = new PhysicsBodyBox(Vec3(0.0F, 1.0F, 0.0F), 1.0F, 3.0F, 1.0F);
 		// temp->SetRotationDegrees(Vec3(0, 0, 30.0F));
@@ -1376,7 +1398,7 @@ void cherry::Game::LoadContent()
 
 		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(Vec3(2.0F, 2.0F, 2.0F));
 		// objectList->objects.at(objectList->objects.size() - 1)->SetRotationZDegrees(45.0F);
-		
+
 		// path
 		Path path = Path();
 		path.AddNode(8.0F, 0.0F, 0.0F);
@@ -1413,7 +1435,7 @@ void cherry::Game::LoadContent()
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, offset, 0.0F);
 		//
 
-		MorphAnimation * mph = new MorphAnimation();
+		MorphAnimation* mph = new MorphAnimation();
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
@@ -1425,15 +1447,15 @@ void cherry::Game::LoadContent()
 		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
-	} 
-	
-	
+	}
+
+
 
 	// Switching a scene.
 	// CreateScene("AIS", false);
 	// objectList->objects.at(0)->SetScene("AIS");
 	// SetCurrentScene("AIS", false);
-	 
+
 	// Create and compile shader
 	// myShader = std::make_shared<Shader>();
 	// myShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
@@ -1442,7 +1464,7 @@ void cherry::Game::LoadContent()
 
 	// frame buffer
 	FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
-	
+
 	// scene colour
 	RenderBufferDesc sceneColor = RenderBufferDesc();
 	sceneColor.ShaderReadable = true;
@@ -1450,7 +1472,7 @@ void cherry::Game::LoadContent()
 	sceneColor.Format = RenderTargetType::Color24; // loads with RGB
 
 	// scene depth
-	RenderBufferDesc sceneDepth = RenderBufferDesc(); 
+	RenderBufferDesc sceneDepth = RenderBufferDesc();
 	sceneDepth.ShaderReadable = true;
 	sceneDepth.Attachment = RenderTargetAttachment::Depth;
 	sceneDepth.Format = RenderTargetType::Depth24;
@@ -1458,11 +1480,11 @@ void cherry::Game::LoadContent()
 	// colour and depth attachments
 	fb->AddAttachment(sceneColor);
 	fb->AddAttachment(sceneDepth);
-	
+
 
 	// fb->AddAttachment()
 	CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(fb);
-	
+
 	// adds a post-processing 
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
@@ -1480,6 +1502,9 @@ void cherry::Game::LoadContent()
 	audioEngine.PlayEvent("Music");
 	audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 
+	// creating and changing the scene.
+	// TODO: fix keyboard controls.
+	CreateScene(new EngineScene("DebugScene"), true);
 }
 
 void cherry::Game::UnloadContent() {
@@ -1491,88 +1516,103 @@ void cherry::Game::Update(float deltaTime) {
 	// <the update loop for all sceneLists was originally here.>
 
 	// updates the camera
-	if (debugMode) // moves the camera with button presses if in debug mode.
-	{
-		// camera transformations
+	// if (debugMode) // moves the camera with button presses if in debug mode.
+	// {
+	// 	// camera transformations
+	// 
+	// 	// moving the camera
+	// 	myCamera->SetPosition(myCamera->GetPosition()
+	// 		+ glm::vec3(t_Dir[0] * t_Inc * deltaTime, t_Dir[1] * t_Inc * deltaTime, t_Dir[2] * t_Inc * deltaTime));
+	// 
+	// 	// rotating the camera
+	// 	myCamera->Rotate(
+	// 		glm::vec3(glm::radians(r_Dir[0] * r_Inc * deltaTime), 
+	// 				  glm::radians(r_Dir[1] * r_Inc * deltaTime), 
+	// 				  glm::radians(r_Dir[2] * r_Inc * deltaTime)
+	// 		)
+	// 	);
+	// 
+	// 	// myCamera->
+	// 	// myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
+	// } 
+	// 
+	// // if (w)
+	// // 	objectList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
+	// // else if (s)
+	// // 	objectList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
+	// // if (a)
+	// // 	objectList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
+	// // else if (d)
+	// // 	objectList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
+	// 
+	// myCamera->Update(deltaTime);
+	// myCameraX->Update(deltaTime);
+	// 
+	// // updates the object list
+	// objectList->Update(deltaTime);
+	// 
+	// // if collisions should be checked.
+	// if (collisionMode)
+	// {
+	// 	// collision calculations
+	// mainLoop:
+	// 	for (cherry::Object* obj1 : objectList->objects) // object 1
+	// 	{
+	// 		if (obj1 == nullptr)
+	// 			continue;
+	// 
+	// 		if (obj1->GetIntersection() == true) // already colliding with something.
+	// 			continue;
+	// 
+	// 		for (cherry::Object* obj2 : objectList->objects) // object 2
+	// 		{
+	// 			if (obj1 == obj2 || obj2 == nullptr) // if the two sceneLists are the same.
+	// 				continue;
+	// 
+	// 			if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
+	// 				continue;
+	// 
+	// 			// gets the vectors from both sceneLists
+	// 			std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
+	// 			std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
+	// 
+	// 			// goes through each collision body
+	// 			for (cherry::PhysicsBody* pb1 : pbods1)
+	// 			{
+	// 				for (cherry::PhysicsBody* pb2 : pbods2)
+	// 				{
+	// 					bool col = PhysicsBody::Collision(pb1, pb2);
+	// 
+	// 					if (col == true) // if collision has occurred.
+	// 					{
+	// 						obj1->SetIntersection(true);
+	// 						// obj1->setColor(255, 0, 0);
+	// 						obj2->SetIntersection(true);
+	// 						// obj2->setColor(255, 0, 0);
+	// 						// std::cout << "Hit!" << std::endl;
+	// 
+	// 						goto mainLoop; // goes back to the main loop
+	// 					}
+	// 				}
+	// 			}
+	// 		}
+	// 	}
+	// }
 
-		// moving the camera
-		myCamera->SetPosition(myCamera->GetPosition()
-			+ glm::vec3(t_Dir[0] * t_Inc * deltaTime, t_Dir[1] * t_Inc * deltaTime, t_Dir[2] * t_Inc * deltaTime));
+		// calling the scene update
+	Scene* scene = CurrentScene();
+	if (scene != nullptr)
+		scene->Update(deltaTime);
 
-		// rotating the camera
-		myCamera->Rotate(
-			glm::vec3(glm::radians(r_Dir[0] * r_Inc * deltaTime), 
-					  glm::radians(r_Dir[1] * r_Inc * deltaTime), 
-					  glm::radians(r_Dir[2] * r_Inc * deltaTime)
-			)
-		);
-
-		// myCamera->
-		// myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
-	} 
-
-	// if (w)
-	// 	objectList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
-	// else if (s)
-	// 	objectList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
-	// if (a)
-	// 	objectList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
-	// else if (d)
-	// 	objectList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
-
+	// updating the cameras
 	myCamera->Update(deltaTime);
 	myCameraX->Update(deltaTime);
 
+	for (int i = 0; i < exCameras.size(); i++)
+		exCameras[i]->Update(deltaTime);
+
 	// updates the object list
 	objectList->Update(deltaTime);
-
-	// if collisions should be checked.
-	if (collisionMode)
-	{
-		// collision calculations
-	mainLoop:
-		for (cherry::Object* obj1 : objectList->objects) // object 1
-		{
-			if (obj1 == nullptr)
-				continue;
-
-			if (obj1->GetIntersection() == true) // already colliding with something.
-				continue;
-
-			for (cherry::Object* obj2 : objectList->objects) // object 2
-			{
-				if (obj1 == obj2 || obj2 == nullptr) // if the two sceneLists are the same.
-					continue;
-
-				if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
-					continue;
-
-				// gets the vectors from both sceneLists
-				std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
-				std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
-
-				// goes through each collision body
-				for (cherry::PhysicsBody* pb1 : pbods1)
-				{
-					for (cherry::PhysicsBody* pb2 : pbods2)
-					{
-						bool col = PhysicsBody::Collision(pb1, pb2);
-
-						if (col == true) // if collision has occurred.
-						{
-							obj1->SetIntersection(true);
-							// obj1->setColor(255, 0, 0);
-							obj2->SetIntersection(true);
-							// obj2->setColor(255, 0, 0);
-							// std::cout << "Hit!" << std::endl;
-
-							goto mainLoop; // goes back to the main loop
-						}
-					}
-				}
-			}
-		}
-	}
 
 	// moved to the bottom of the update.
 	// called to Update the position and rotation of hte sceneLists.
@@ -1681,9 +1721,9 @@ void cherry::Game::Run()
 		glfwPollEvents();
 		float thisFrame = glfwGetTime(); // returns 'time' in seconds.
 		float deltaTime = thisFrame - prevFrame;
-		
+
 		frameTime += deltaTime;
-		
+
 		// if there is no frame rate cap, or if enough time has passed.
 		if (FPS == 0 || frameTime > 1.0F / ((float)FPS))
 		{
@@ -1748,11 +1788,11 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 
 	// changing the camera modes to adjust for the new window size. 
 	// The camera mode isn't changed, just it's values (i.e. if it's in perspective mode, it stays in perspective mode).
-	
+
 	// resizing the camera's perspective mode and orthographic mode.
 	myCamera->SetPerspectiveMode(p_fovy, p_aspect, p_zNear, p_zFar, myCamera->InPerspectiveMode());
 	myCamera->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, myCamera->InOrthographicMode());
-	
+
 	// secondary camera settings
 	// resizing the ui/hud camera (camera x)
 	p_fovy = myCameraX->GetFieldOfView();
@@ -1797,7 +1837,7 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	// resizes the layers
 	for (PostLayer* layer : layers)
 	{
-		if(layer != nullptr)
+		if (layer != nullptr)
 			layer->OnWindowResize(newWidth, newHeight);
 	}
 
@@ -1882,8 +1922,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 	std::vector<MeshRenderer> postRenders;
 	// vector for post-post-process transform
 	std::vector<TempTransform> postTransforms;
-	
-	if(!layers.empty()) // if there are layers
+
+	if (!layers.empty()) // if there are layers
 		fb->Bind();
 
 	// Set viewport to entire region
@@ -1948,7 +1988,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
-	
+
 	// copy past mesh renderer component and make ui rendere component?
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
@@ -1994,9 +2034,9 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			boundShader->Bind();
 
 			// if the object is to have a fixed screen position.
-			if(renderer.Mesh->GetWindowChild())
+			if (renderer.Mesh->GetWindowChild())
 				boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
-			else 
+			else
 				boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
 
 			boundShader->SetUniform("a_Time", static_cast<float>(glfwGetTime())); // passing in the time.
@@ -2028,7 +2068,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			mat->GetShader()->SetUniform("a_ModelViewProjection", camera->GetViewProjection() * worldTransform);
 		}
 
-		
+
 		// Update the model matrix to the item's world transform
 		mat->GetShader()->SetUniform("a_Model", worldTransform);
 		// Update the model matrix to the item's world transform
@@ -2070,7 +2110,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		{
 			// std::cout << "INVISIBLE" << std::endl;
 		}
-	} 
+	}
 
 	// post-processing layers
 	if (!layers.empty())

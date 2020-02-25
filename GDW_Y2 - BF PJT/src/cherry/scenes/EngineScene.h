@@ -15,9 +15,9 @@ namespace cherry
 		// constructor
 		EngineScene(std::string sceneName);
 
-		void OnOpen();
+		void OnOpen() override;
 
-		void OnClose();
+		void OnClose() override;
 
 		// these functions get called by the game class by default, but they can be overwritten.
 		void MouseButtonPressed(GLFWwindow* window, int button) override;
