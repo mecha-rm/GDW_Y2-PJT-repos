@@ -4,7 +4,7 @@
 #include <string>
 #include <toolkit/EnumToString.h>
 #include "Texture2D.h"
-#include "UtilsCRY.h"
+#include "..\UtilsCRY.h"
 
 namespace cherry
 {

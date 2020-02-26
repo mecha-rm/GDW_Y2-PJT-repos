@@ -14,6 +14,10 @@ void cherry::Scene::OnOpen()
 // on close
 void cherry::Scene::OnClose()
 {
+	for (PostLayer* layer : layers)
+		delete layer;
+
+	layers.clear();
 }
 
 // returns the main/primary registry

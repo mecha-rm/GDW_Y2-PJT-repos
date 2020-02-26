@@ -410,15 +410,28 @@ void cherry::ObjectList::ForgetWindowChild(cherry::Object* object)
 // called when the window is resized for window children.
 void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
 {
-	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize();
-	glm::vec2 scale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y};
-	cherry::Vec3 tempPos; // temporary position
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize(); // the window size hasn't been changed yet
+	glm::vec2 scale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y}; // new scale
 
 	for (Object* windowChild : windowChildren)
 	{
-		// TODO: this doesn't cale properly, so that needs to be fixed.
-		tempPos = windowChild->GetPosition();
-		windowChild->SetPosition(tempPos.v.x * scale.x, tempPos.v.y * scale.y, tempPos.v.z);
+		// object's current position
+		glm::vec3 currPos = windowChild->GetPositionGLM();
+
+		// gets the (t) value from the original window size
+		// inverseLerp: (pos_want - pos_start) / (pos_end - pos_start)
+		glm::vec2 t(
+			(currPos.x) / (windowSize.x),
+			(currPos.y) / (windowSize.y)
+		);
+
+		// windowChild->SetPosition(tempPos.v.x * scale.x, tempPos.v.y * scale.y, tempPos.v.z);
+		// uses lerp to repostion the object.
+		windowChild->SetPosition(
+			glm::mix(0.0F, (float)newWidth, t.x), 
+			glm::mix(0.0F, (float)newHeight, t.y),
+			currPos.z
+		);
 		windowChild->SetScale(windowChild->GetScale() * ((scale.x + scale.y) / 2.0F));
 	}
 }

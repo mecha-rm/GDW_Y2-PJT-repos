@@ -1,5 +1,6 @@
 #pragma once
 // GAME CLASS (HEADER)
+#define WINDOW_TITLE_CHAR_MAX 50
 
 // External Library Includes
 #include <glad/glad.h>
@@ -19,7 +20,7 @@
 #include "audio/AudioComponent.h"
 
 // post-processing
-#include "buffers/PostLayer.h"
+#include "post/PostLayer.h"
 
 // System Library Includes
 #include <iostream>
@@ -36,8 +37,8 @@ namespace cherry
 		// _debug is used to start the game in debug mode.
 		// variable '_default' opens the project with default settings for the camera, sceneLists, and more.
 		// if _imgui is 'true', then the _imgui functions are used.
-		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, 
-			bool _defaults = false, bool _debug = false, bool _imgui = false);
+		Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, 
+			cherry::Scene * _openingScene = nullptr, bool _imgui = false);
 
 		// destructor
 		~Game();
@@ -67,7 +68,7 @@ namespace cherry
 		cherry::Vec2 GetCursorPos() const;
 
 		// gets the current cursor position as a glm vector
-		glm::vec2 GetCursorPosGLM() const;
+		glm::dvec2 GetCursorPosGLM() const;
 
 		// gets the cursor position on the x-axis
 		float GetCursorPosX() const;
@@ -245,6 +246,7 @@ namespace cherry
 		std::vector<Camera::Sptr> exCameras;
 
 		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
+		// TODO: move to scenes specifically.
 		bool overlayPostProcessing = true;
 
 		// TODO: make private?
@@ -255,16 +257,9 @@ namespace cherry
 		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
 		glm::vec4 myClearColor;
 
-		// the default game materials
-		Material::Sptr matStatic; // the static material
-		Material::Sptr matDynamic; // the dynamic material
-
-		// defaults
-		SamplerDesc description; // texture description 
-		TextureSampler::Sptr sampler; // texture sampler
-
-		// post processing layers
-		std::vector<PostLayer*> layers;
+		// if 'true', the  imgui window functions are used.
+		// if false, then they are not used.
+		bool imguiMode = false;
 
 	protected:
 		void Initialize();
@@ -307,17 +302,6 @@ namespace cherry
 		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox = true,
 			int borderSize = 0, glm::vec4 borderColor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), bool clear = true);
 
-		// TODO: add in variables for borders.
-
-		// set to 'true' for debug functionality.
-		bool debugMode = false;
-
-		// if 'true', the  imgui window functions are used.
-		// if false, then they are not used.
-		bool imguiMode = false;
-
-		// if 'true', collisions are checked by the Game class.
-		bool collisionMode = true;
 
 		// list of scenes
 		// std::vector<std::string> scenes;
@@ -332,7 +316,7 @@ namespace cherry
 		// static glm::vec2 resolution;
 
 		// Stores the title of the game's window
-		char myWindowTitle[32];
+		char myWindowTitle[WINDOW_TITLE_CHAR_MAX];
 
 		// saves the game that's currently running.
 		static cherry::Game* runningGame;
@@ -340,50 +324,32 @@ namespace cherry
 		// A shared pointer to our shader.
 		// Shader::Sptr myShader;
 
+		// the opening scene of the game.
+		Scene* openingScene = nullptr;
+
 		// object list
-		cherry::ObjectList* objectList = nullptr; // objManager deletion handles this
+		cherry::ObjectList* objectList = nullptr;
+
+		// light list
+		cherry::LightList* lightList = nullptr;
 
 		// checks for wireframe being active.
 		bool wireframe = false;
 
-		// holds the list of lights
-		cherry::LightList* lightList; // lightManager deletion handles this
-
 		// Model transformation matrix
 		glm::mat4 myModelTransform;
-
-		// if 'loadDefaults' is true, then default sceneLists will be loaded up
-		bool loadDefaults = false;
 
 		// enables the skybox. TODO: change for final build.
 		bool enableSkybox = false;
 
-		// movement
-		// bool w = false, a = false, s = false, d = false;
-
-		// translation and rotation direction
-		glm::vec3 t_Dir = glm::vec3(0, 0, 0);
-		glm::vec3 r_Dir = glm::vec3(0, 0, 0);
-
-		// translation and rotation speeds
-		float t_Inc = 22.50F;
-		float r_Inc = 55.0F;
-
 		// gets the cursor position
-		cherry::Vec2 mousePos;
-
-		// double XcursorPos, YcursorPos;
-		// TODO: change to array
-		bool mbLeft = false, mbMiddle = false, mbRight = false;
+		glm::dvec2 mousePos;
 
 		// boolean for full screen
 		bool fullScreen;
 		
 		// returns 'true' if the mouse is in the window content, false otherwise.
 		bool mouseEnter = false;
-
-		// TODO: probably remove this
-		unsigned int hitBoxIndex = -1;
 
 	};
 

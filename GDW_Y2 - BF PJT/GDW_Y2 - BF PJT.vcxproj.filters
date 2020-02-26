@@ -201,22 +201,22 @@
     <ClCompile Include="src\cherry\scenes\EngineScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\buffers\FrameBuffer.cpp">
+    <ClCompile Include="src\cherry\post\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\Texture2D.cpp">
+    <ClCompile Include="src\cherry\post\PostLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\TextureCube.cpp">
+    <ClCompile Include="src\cherry\textures\TextureSampler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\TextureSampler.cpp">
+    <ClCompile Include="src\cherry\textures\TextureCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\ITexture.cpp">
+    <ClCompile Include="src\cherry\textures\Texture2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\buffers\PostLayer.cpp">
+    <ClCompile Include="src\cherry\textures\ITexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1073,31 +1073,34 @@
     <ClInclude Include="src\cherry\scenes\EngineScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\buffers\FrameBuffer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\Texture2D.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\TextureCube.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\TextureSampler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\ITexture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cherry\IGraphicsResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\TextureEnums.h">
+    <ClInclude Include="src\cherry\post\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\buffers\PostLayer.h">
+    <ClInclude Include="src\cherry\post\KernelLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\buffers\KernelLayer.h">
+    <ClInclude Include="src\cherry\post\PostLayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\textures\TextureSampler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\textures\TextureEnums.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\textures\TextureCube.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\textures\Texture2D.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\textures\ITexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\objects\Text.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

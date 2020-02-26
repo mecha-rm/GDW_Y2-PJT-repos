@@ -3,9 +3,10 @@
 
 #include <entt/entt.hpp>
 
-#include "..\TextureCube.h"
+#include "..\textures/TextureCube.h"
 #include "..\Shader.h"
 #include "..\Mesh.h"
+#include "..\post/PostLayer.h"
 
 #include <GLFW/glfw3.h>
 
@@ -59,6 +60,9 @@ namespace cherry
 		// the update loop.
 		// the game update is called before this update.
 		virtual void Update(float deltaTime);
+
+		// post processing layers
+		std::vector<PostLayer*> layers;
 
 	private:
 		entt::registry myRegistry; // registry

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "..\Material.h"
 
 namespace cherry
 {
@@ -58,6 +59,18 @@ namespace cherry
 
 		// hitbox
 		int hitBoxIndex = -1;
+
+		// the left, middle, and right mouse buttons
+		bool mbLeft = false, mbMiddle = false, mbRight = false;
+
+		// the default game materials
+		Material::Sptr matStatic; // the static material
+		Material::Sptr matDynamic; // the dynamic material
+
+		// defaults
+		SamplerDesc description; // texture description 
+		TextureSampler::Sptr sampler; // texture sampler
+
 	protected:
 	};
 }
