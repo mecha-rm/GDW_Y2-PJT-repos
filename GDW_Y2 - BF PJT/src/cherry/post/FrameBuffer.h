@@ -22,7 +22,7 @@
 
 // #include "..\TextureSampler.h" // included in texture 2d
 #include "..\IGraphicsResource.h"
-#include "..\Texture2D.h"
+#include "..\textures/Texture2D.h"
 
 
 namespace cherry

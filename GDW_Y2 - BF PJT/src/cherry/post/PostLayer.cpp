@@ -23,7 +23,6 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 	mainColor.Attachment = RenderTargetAttachment::Color0;
 	mainColor.Format = RenderTargetType::Color24;
 
-	// TODO: removing the /2 causes the texture to not cover the screen properly.
 	// making the vertices for the quad
 	Vertex* verts = new Vertex[4]
 	{

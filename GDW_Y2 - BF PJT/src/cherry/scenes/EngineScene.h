@@ -2,6 +2,7 @@
 #pragma once
 
 #include "Scene.h"
+#include "..\Material.h"
 
 namespace cherry
 {
@@ -15,9 +16,9 @@ namespace cherry
 		// constructor
 		EngineScene(std::string sceneName);
 
-		void OnOpen();
+		void OnOpen() override;
 
-		void OnClose();
+		void OnClose() override;
 
 		// these functions get called by the game class by default, but they can be overwritten.
 		void MouseButtonPressed(GLFWwindow* window, int button) override;
@@ -58,6 +59,18 @@ namespace cherry
 
 		// hitbox
 		int hitBoxIndex = -1;
+
+		// the left, middle, and right mouse buttons
+		bool mbLeft = false, mbMiddle = false, mbRight = false;
+
+		// the default game materials
+		Material::Sptr matStatic; // the static material
+		Material::Sptr matDynamic; // the dynamic material
+
+		// defaults
+		SamplerDesc description; // texture description 
+		TextureSampler::Sptr sampler; // texture sampler
+
 	protected:
 	};
 }

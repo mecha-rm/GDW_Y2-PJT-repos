@@ -5,6 +5,7 @@
 #include "..\Game.h"
 #include "..\Skybox.h"
 #include "..\physics\PhysicsBody.h"
+#include "..\textures/TextureSampler.h"
 
 // creating the engine scene.
 cherry::EngineScene::EngineScene(std::string sceneName) : Scene(sceneName)
@@ -79,8 +80,7 @@ void cherry::EngineScene::OnOpen()
 	// sampler = std::make_shared<TextureSampler>(description);
 
 	// added for mip mapping. As long as its above the material, it's fine.
-	game->description = SamplerDesc();
-	cherry::SamplerDesc& description = game->description;
+	description = SamplerDesc();
 
 	description.MinFilter = MinFilter::LinearMipNearest;
 	description.MagFilter = MagFilter::Linear;
@@ -88,8 +88,7 @@ void cherry::EngineScene::OnOpen()
 
 	// TODO: make linear and NearestMipNearest different variables?
 	// called 'Linear' in the original code
-	game->sampler = std::make_shared<TextureSampler>(description);
-	cherry::TextureSampler::Sptr& sampler = game->sampler;
+	sampler = std::make_shared<TextureSampler>(description);
 
 	// TODO: remove upon submission
 	//desc1 = SamplerDesc();
@@ -179,11 +178,9 @@ void cherry::EngineScene::OnOpen()
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
-	game->matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
-	game->matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
-	
-	Material::Sptr& matStatic = game->matStatic;
-	Material::Sptr& matDynamic = game->matDynamic;
+	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
+
 
 	// loads in default sceneLists
 	if(true)
@@ -200,19 +197,17 @@ void cherry::EngineScene::OnOpen()
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
 
-
-
-		// objectList->objects.push_back(new PrimitiveCircle());
-		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
-		// 
-		// objectList->objects.push_back(new PrimitiveCone());
-		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-		// 
-		// objectList->objects.push_back(new PrimitiveCube());
-		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		 objectList->objects.push_back(new PrimitiveCircle());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveCone());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		 
+		 objectList->objects.push_back(new PrimitiveCube());
+		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
 
 		objectList->objects.push_back(new PrimitiveCylinder());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
@@ -465,7 +460,7 @@ void cherry::EngineScene::OnOpen()
 	Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
 	// adds a post-processing 
-	game->layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
+	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
 	game->overlayPostProcessing = true;
@@ -486,20 +481,62 @@ void cherry::EngineScene::OnOpen()
 
 }
 
+// called when the scene is being closed.
 void cherry::EngineScene::OnClose()
 {
+	ObjectManager::DestroySceneObjectListByPointer(objectList);
+	LightManager::DestroySceneLightListByPointer(lightList);
 }
 
+// mouse button has been pressed.
 void cherry::EngineScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
 }
 
+// mouse button is being held.
 void cherry::EngineScene::MouseButtonHeld(GLFWwindow* window, int button)
 {
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = true;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = true;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = true;
+		break;
+	}
 }
 
+// mouse button has been released.
 void cherry::EngineScene::MouseButtonReleased(GLFWwindow* window, int button)
 {
+	// checks each button
+	switch (button) {
+	case GLFW_MOUSE_BUTTON_LEFT:
+		mbLeft = false;
+		break;
+	case GLFW_MOUSE_BUTTON_MIDDLE:
+		mbMiddle = false;
+		break;
+	case GLFW_MOUSE_BUTTON_RIGHT:
+		mbRight = false;
+		break;
+	}
 }
 
 void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)

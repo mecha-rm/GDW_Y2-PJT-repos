@@ -5,7 +5,7 @@
 #include <string>
 #include <toolkit/EnumToString.h>
 
-#include "UtilsCRY.h" // including macros
+#include "..\UtilsCRY.h" // including macros
 #include "TextureSampler.h"
 #include "ITexture.h"
 

@@ -5,8 +5,8 @@
 #include <memory>
  
 #include "Shader.h"
-#include "Texture2D.h"
-#include "TextureCube.h" // used for waves
+#include "textures/Texture2D.h"
+#include "textures/TextureCube.h" // used for waves
 #include "UtilsCRY.h"
 
 /*
