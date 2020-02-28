@@ -1,5 +1,5 @@
 #pragma once
-#include "IGraphicsResource.h"
+#include "..\IGraphicsResource.h"
 #include "TextureEnums.h"
 
 // this was also present in the engine

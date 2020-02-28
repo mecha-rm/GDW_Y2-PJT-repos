@@ -171,6 +171,18 @@ bool cherry::ObjectManager::DestroySceneObjectListByName(std::string sceneName)
 	return DestroySceneObjectListByPointer(obj);
 }
 
+// reading
+// const cherry::ObjectList& cherry::ObjectManager::operator[](const int index) const
+// {
+// 	return *objectLists.at(index);
+// }
+// 
+// // editing
+// cherry::ObjectList& cherry::ObjectManager::operator[](const int index)
+// {
+// 	return *objectLists.at(index);
+// }
+
 // updates the object manager to inform it of a window chil being added or removed.
 void cherry::ObjectManager::UpdateWindowChild(cherry::Object* object)
 {
@@ -371,16 +383,23 @@ bool cherry::ObjectList::DeleteObjectByName(std::string name)
 }
 
 // reading ~ gets an object from the object list
-// const cherry::Object& cherry::ObjectList::operator[](const int index) const { return *(objects.at(index)); }
+const cherry::Object& cherry::ObjectList::operator[](const int index) const { return *objects[index]; }
 
 // editing ~ gets an object from the object list
-// cherry::Object& cherry::ObjectList::operator[](const int index) { return *(objects.at(index)); }
+cherry::Object& cherry::ObjectList::operator[](const int index) { return *objects[index]; }
+
+// gets the size of the object list.
+size_t cherry::ObjectList::Size() const { return objects.size(); }
+
+// grabs an object from the lsit.
+cherry::Object& cherry::ObjectList::At(const int index) const { return *objects.at(index); }
 
 // called so that the list remembers this is a window child.
 void cherry::ObjectList::RememberWindowChild(cherry::Object* object)
 {
 	util::addToVector(windowChildren, object);
 }
+
 
 // forgets the child is a child to the window
 void cherry::ObjectList::ForgetWindowChild(cherry::Object* object)
@@ -391,15 +410,28 @@ void cherry::ObjectList::ForgetWindowChild(cherry::Object* object)
 // called when the window is resized for window children.
 void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
 {
-	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize();
-	glm::vec2 scale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y};
-	cherry::Vec3 tempPos; // temporary position
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize(); // the window size hasn't been changed yet
+	glm::vec2 scale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y}; // new scale
 
 	for (Object* windowChild : windowChildren)
 	{
-		// TODO: this doesn't cale properly, so that needs to be fixed.
-		tempPos = windowChild->GetPosition();
-		windowChild->SetPosition(tempPos.v.x * scale.x, tempPos.v.y * scale.y, tempPos.v.z);
+		// object's current position
+		glm::vec3 currPos = windowChild->GetPositionGLM();
+
+		// gets the (t) value from the original window size
+		// inverseLerp: (pos_want - pos_start) / (pos_end - pos_start)
+		glm::vec2 t(
+			(currPos.x) / (windowSize.x),
+			(currPos.y) / (windowSize.y)
+		);
+
+		// windowChild->SetPosition(tempPos.v.x * scale.x, tempPos.v.y * scale.y, tempPos.v.z);
+		// uses lerp to repostion the object.
+		windowChild->SetPosition(
+			glm::mix(0.0F, (float)newWidth, t.x), 
+			glm::mix(0.0F, (float)newHeight, t.y),
+			currPos.z
+		);
 		windowChild->SetScale(windowChild->GetScale() * ((scale.x + scale.y) / 2.0F));
 	}
 }

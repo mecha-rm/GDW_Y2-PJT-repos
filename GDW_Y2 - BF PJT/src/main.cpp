@@ -8,10 +8,11 @@
 	- Stephane Gagnon (100694227)
 	- Roderick "R.J." Montague (100701758)
 	- Ryan Burton (100707511)
+		- NOTE: this developer is no longer part of the program.
  
  * Game: CODENAME: ZERO
  * Engine: CHERRY ENGINE
- * Date: 11/28/2019
+ * Date: 02/26/2020
  * Description: the project for the Game Development Workshop game engine. The game code is stored in a seperate project.
  * References: 
 	* Learn OpenGL (https://learnopengl.com/)
@@ -45,7 +46,7 @@ int main()
 	Logger::Init();
 
 	// game object
-	cherry::Game* game = new cherry::Game("GDW_Y2 - BnsFt - Cherry Engine", 850, 850, false, true, true, true);
+	cherry::Game* game = new cherry::Game("GDW_Y2 - Bonus Fruit - Cherry Engine", 850, 850, false, nullptr, true);
 	cherry::Game::FPS = 0;
 	game->Run();
 	delete game;

@@ -3,7 +3,8 @@
 #include <glad/glad.h>
 #include <toolkit/EnumToString.h>
 #include <GLM/glm.hpp>
-#include "UtilsCRY.h"
+
+#include "..\UtilsCRY.h"
 #include "TextureEnums.h"
 
 namespace cherry
