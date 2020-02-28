@@ -267,7 +267,7 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	// TODO: remove this?
 	if (cameraLock)
 	{
-		shader->Load("res/shaders/image-shader.vs.glsl", "res/shaders/image-shader.fs.glsl");
+		shader->Load("res/shaders/image.vs.glsl", "res/shaders/image.fs.glsl");
 
 		material = std::make_shared<Material>(shader);
 
@@ -277,7 +277,7 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	}
 	else
 	{
-		shader->Load("res/shaders/image-shader.vs.glsl", "res/shaders/image-shader.fs.glsl");
+		shader->Load("res/shaders/image.vs.glsl", "res/shaders/image.fs.glsl");
 
 		material = std::make_shared<Material>(shader);
 

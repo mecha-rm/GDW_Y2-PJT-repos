@@ -222,6 +222,9 @@
     <ClCompile Include="src\cherry\objects\Text.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cherry\scenes\GameplayScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\KHR\khrplatform.h">
@@ -1403,6 +1406,9 @@
     <ClInclude Include="external\freetype\tttags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cherry\scenes\GameplayScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />
@@ -1776,9 +1782,7 @@
     <None Include="res\shaders\blinn-phong.fs.glsl" />
     <None Include="res\shaders\blinn-phong-morph.fs.glsl" />
     <None Include="res\shaders\cubemap.fs.glsl" />
-    <None Include="res\shaders\image-shader.fs.glsl" />
     <None Include="res\shaders\cubemap.vs.glsl" />
-    <None Include="res\shaders\image-shader.vs.glsl" />
     <None Include="res\shaders\lighting.vs.glsl" />
     <None Include="res\shaders\lighting-morph.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
@@ -1795,6 +1799,8 @@
     <None Include="res\shaders\post\kernel3.fs.glsl" />
     <None Include="res\shaders\text.vs.glsl" />
     <None Include="res\shaders\text.fs.glsl" />
+    <None Include="res\shaders\image.vs.glsl" />
+    <None Include="res\shaders\image.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

@@ -1,40 +1,44 @@
 #include "LevelLoader.h"
+#include <toolkit/Logging.h>
 
-Level::Level() {
+// cell offset
+const float cnz::Level::cellOffset = 6.25f;
+
+cnz::Level::Level() {
 	// uh, don't use this.
 }
 
-Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) {
+cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) {
 	this->sceneName = sceneName;
 
 	if (!LoadLegend(legendPath)) { // wasn't valid
-		std::cout << "Legend CSV is NOT VALID. Exiting." << std::endl;
+		LOG_ERROR("Legend CSV is NOT VALID. Exiting.");
 		// TODO: not have a call to exit() in the final build.
 		exit(1);
 	}
 
 	else {
-		std::cout << "Legend valid." << std::endl;
+		LOG_TRACE("Legend valid.");
 
 		if (!LoadLevel(levelPath)) {
-			std::cout << "Level CSV is NOT VALID. Exiting." << std::endl;
+			LOG_ERROR("Level CSV is NOT VALID. Exiting.");
 			// TODO: not have a call to exit() in the final build.
 			exit(1);
 		}
 
 		else {
-			std::cout << "Level valid." << std::endl;
+			LOG_TRACE("Level valid.");
 			// GetObjects(); // this is commented out for now since it needs to be done AFTER creating and registering a scene and an object list.
 			// Else, read access violation due to us creating objects using a scene name that does not match with the scene created by the Game default constructor.
 		}
 	}
 }
 
-std::string Level::GetSceneName() const {
+std::string cnz::Level::GetSceneName() const {
 	return this->sceneName;
 }
 
-bool Level::LoadLegend(std::string legendPath) {
+bool cnz::Level::LoadLegend(std::string legendPath) {
 	std::vector<std::string> names;
 	std::vector<std::string> symbols;
 	CSV legendCSV = CSV(legendPath);
@@ -68,7 +72,7 @@ bool Level::LoadLegend(std::string legendPath) {
 	return true;
 }
 
-bool Level::LoadLevel(std::string levelPath) {
+bool cnz::Level::LoadLevel(std::string levelPath) {
 	CSV levelCSV = CSV(levelPath);
 	std::vector<int> mapSize;
 
@@ -85,7 +89,7 @@ bool Level::LoadLevel(std::string levelPath) {
 	}
 }
 
-std::vector<int> Level::GetMapSize(CSV level) {
+std::vector<int> cnz::Level::GetMapSize(CSV level) {
 	std::vector<int> wh;
 	std::string temp = level.GetRow(0, 1); // this should contain a string with two ints, formatted as: int,int
 
@@ -117,7 +121,7 @@ std::vector<int> Level::GetMapSize(CSV level) {
 */
 
 
-std::vector<std::vector<std::string>> Level::GetMap(CSV level) {
+std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 	std::vector<std::vector<std::string>> tempMap;
 	std::vector<int> size = GetMapSize(level);
 
@@ -133,7 +137,7 @@ std::vector<std::vector<std::string>> Level::GetMap(CSV level) {
 	return tempMap;
 }
 
-std::vector<cherry::Object*> Level::GetObjects() {
+std::vector<cherry::Object*> cnz::Level::GetObjects() {
 
 	int offsetX, offsetY;
 
@@ -548,7 +552,7 @@ std::vector<cherry::Object*> Level::GetObjects() {
 	return this->objList;
 }
 
-std::vector<float> Level::GetObjProps(int y, int x) {
+std::vector<float> cnz::Level::GetObjProps(int y, int x) {
 	std::vector<float> properties;
 	std::string cell = this->map[y][x];
 	int strLen = cell.size();

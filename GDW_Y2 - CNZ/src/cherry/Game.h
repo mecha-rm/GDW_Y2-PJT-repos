@@ -1,5 +1,6 @@
 #pragma once
 // GAME CLASS (HEADER)
+#define WINDOW_TITLE_CHAR_MAX 50
 
 // External Library Includes
 #include <glad/glad.h>
@@ -11,12 +12,15 @@
 #include "Shader.h"
 #include "Mesh.h"
 
-
-#include "SceneManager.h"
+// managers
+#include "scenes/SceneManager.h"
 #include "Skybox.h"
 #include "objects/ObjectManager.h"
 #include "lights/LightManager.h"
 #include "audio/AudioComponent.h"
+
+// post-processing
+#include "post/PostLayer.h"
 
 // System Library Includes
 #include <iostream>
@@ -33,17 +37,20 @@ namespace cherry
 		// _debug is used to start the game in debug mode.
 		// variable '_default' opens the project with default settings for the camera, sceneLists, and more.
 		// if _imgui is 'true', then the _imgui functions are used.
-		Game(const char windowTitle[32], float _width, float _height, bool _fullScreen, 
-			bool _defaults = false, bool _debug = false, bool _imgui = false);
+		Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, 
+			cherry::Scene * _openingScene = nullptr, bool _imgui = false);
 
 		// destructor
 		~Game();
 
 		// gets the window width
-		float GetWindowWidth() const;
+		int GetWindowWidth() const;
 
 		// gets the window height
-		float GetWindowHeight() const;
+		int GetWindowHeight() const;
+
+		// gets the size of the window.
+		glm::ivec2 GetWindowSize() const;
 
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
@@ -61,7 +68,7 @@ namespace cherry
 		cherry::Vec2 GetCursorPos() const;
 
 		// gets the current cursor position as a glm vector
-		glm::vec2 GetCursorPosGLM() const;
+		glm::dvec2 GetCursorPosGLM() const;
 
 		// gets the cursor position on the x-axis
 		float GetCursorPosX() const;
@@ -92,13 +99,35 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
+		// creates a scene. This is the static verison, so it cannot set the current scene.
+		static bool CreateScene(const std::string sceneName);
+
+		// creates a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
+		static bool CreateScene(const std::string sceneName, const cherry::Skybox skybox);
+
 		// creates a scene. If 'makeCurrent' is true, then this scene is made the current scene.
-		// this also returns the scene created. Since no skybox is provided, a default one is made.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
 		bool CreateScene(const std::string sceneName, const bool makeCurrent);
 
-		// nothing happens if the scene already exists
-		// this also returns the scene created.
+		// nothing false if the scene already exists, but will still set it to the current scene if possible.
+		// if the scene already exists, a false is returned. It will not be set to the current scene.
 		bool CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent);
+
+		// adds a scene, and registers it as being part of the game.
+		static bool RegisterScene(cherry::Scene* scene);
+
+		// registered a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
+		static bool RegisterScene(cherry::Scene * scene, const cherry::Skybox skybox);
+
+		// adds the scene using a pre-existing scene object and makes it current if requested.
+		// if the scene is already registered, a false is returned. It will not be set to the current scene.
+		bool RegisterScene(cherry::Scene* scene, const bool makeCurrent);
+
+		// adds  the scene using a pre-existing scene object.
+		// if the scene is already registered, a false is returned. It will not be set to the current scene.
+		bool RegisterScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent);
+
+		
 
 		// gets the current scene.
 		cherry::Scene* GetScene(std::string sceneName) const;
@@ -181,31 +210,55 @@ namespace cherry
 		// removes a light from the scene.
 		bool DeleteLightFromScene(cherry::Light * light);
 
+		// gets the game object that's currently running.
+		// if 'nullptr' is returned, then no game is running.
+		static cherry::Game* const GetRunningGame();
+
 		// runs the game
 		void Run();
 
 		// handles resizing the window without skewing the sceneLists in the m_Scene.
 		void Resize(int newWidth, int newHeight);
 
+		// the frame rate of the game.
+		// set the frame rate to 0 (or anything less), to have no framerate cap.
+		static short int FPS;
+
+		// the scene created on start up.
+		std::string startupScene = "";
+
 		// if 'true', then the sceneLists keep their scale when the window is resized.
 		// If false, the sceneLists skew with the size of the window.
 		bool changeImageAspectOnWindowResize = true;
 		 
-		// the object used for the camera
+		// the object used for the camera, which ALWAYs has a viewport of the screen size.
+		// if you do not want this camera to be used, set myCameraEnabled to false.
 		Camera::Sptr myCamera;
+
+		// if 'true', the full-screen camera (myCamera) gets used. If false, then that camera is not used.
+		bool myCameraEnabled = true;
 
 		// the secondary camera, which is used for overlaying a hud.
 		Camera::Sptr myCameraX;
 
-		// Target;
-		
+		// extra cameras.
+		std::vector<Camera::Sptr> exCameras;
+
+		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
+		// TODO: move to scenes specifically.
+		bool overlayPostProcessing = true;
+
 		// TODO: make private?
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
 
-		// the frame rate of the game.
-		// set the frame rate to 0 (or anything less), to have no framerate cap.
-		static short int FPS;
+		// stores the main clear color of the game's window
+		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
+		glm::vec4 myClearColor;
+
+		// if 'true', the  imgui window functions are used.
+		// if false, then they are not used.
+		bool imguiMode = false;
 
 	protected:
 		void Initialize();
@@ -233,6 +286,9 @@ namespace cherry
 		// draw ImGUI
 		void DrawGui(float deltaTime);
 
+		// renders the scene. It calls the other __RenderScene and takes in the values saved to the camera.
+		void __RenderScene(Camera::Sptr camera);
+
 		/*
 		 * used for rendering the scene to multiple viewpoints.
 		 * Variables:
@@ -245,27 +301,9 @@ namespace cherry
 		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox = true,
 			int borderSize = 0, glm::vec4 borderColor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), bool clear = true);
 
-		// TODO: add in variables for borders.
-
-		// set to 'true' for debug functionality.
-		bool debugMode = false;
-
-		// if 'true', the  imgui window functions are used.
-		// if false, then they are not used.
-		bool imguiMode = false;
-
-		// if 'true', collisions are checked by the Game class.
-		bool collisionMode = true;
 
 		// list of scenes
 		// std::vector<std::string> scenes;
-
-		// the m_Scene material
-		Material::Sptr matStatic; // the static material
-		Material::Sptr matDynamic; // the dynamic material
-		 
-		SamplerDesc description; // texture description 
-		TextureSampler::Sptr sampler; // texture sampler
 
 	private:
 
@@ -276,56 +314,42 @@ namespace cherry
 
 		// static glm::vec2 resolution;
 
-		// Stores the clear color of the game's window
-		glm::vec4 myClearColor;
-
 		// Stores the title of the game's window
-		char myWindowTitle[32];
+		char myWindowTitle[WINDOW_TITLE_CHAR_MAX];
+
+		// saves the game that's currently running.
+		static cherry::Game* runningGame;
 
 		// A shared pointer to our shader.
 		// Shader::Sptr myShader;
 
+		// the opening scene of the game.
+		Scene* openingScene = nullptr;
+
 		// object list
-		cherry::ObjectList* objectList = nullptr; // objManager deletion handles this
+		cherry::ObjectList* objectList = nullptr;
+
+		// light list
+		cherry::LightList* lightList = nullptr;
 
 		// checks for wireframe being active.
 		bool wireframe = false;
 
-		// holds the list of lights
-		cherry::LightList* lightList; // lightManager deletion handles this
-
 		// Model transformation matrix
 		glm::mat4 myModelTransform;
-
-		// if 'loadDefaults' is true, then default sceneLists will be loaded up
-		bool loadDefaults = false;
 
 		// enables the skybox. TODO: change for final build.
 		bool enableSkybox = false;
 
-		// movement
-		bool w = false, a = false, s = false, d = false;
-
 		// gets the cursor position
-		cherry::Vec2 mousePos;
+		glm::dvec2 mousePos;
 
-		// double XcursorPos, YcursorPos;
-		// TODO: change to array
-		bool mbLeft = false, mbMiddle = false, mbRight = false;
-
-		// window size
-		// unsigned int windowWidth = 850;
-		// unsigned int windowHeight = 850;
-		
 		// boolean for full screen
 		bool fullScreen;
 		
 		// returns 'true' if the mouse is in the window content, false otherwise.
 		bool mouseEnter = false;
 
-		unsigned int hitBoxIndex = -1;
-
 	};
-
 
 }

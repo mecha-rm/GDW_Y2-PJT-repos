@@ -27,7 +27,11 @@ namespace cherry
 		// gets the m_Scene
 		static Scene* Get(const std::string& name);
 
-		static void RegisterScene(const std::string& name, Scene* scene = nullptr);
+		// registered a scene of the provided name.
+		static void RegisterScene(const std::string& name);
+
+		// registers the provided scene.
+		static void RegisterScene(Scene* scene);
 
 		static SceneIterator Each();
 

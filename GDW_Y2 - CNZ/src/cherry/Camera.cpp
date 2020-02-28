@@ -158,6 +158,7 @@ void cherry::Camera::Rotate(const glm::quat& rot) {
 }
 
 // rotates the camera using a vector, which is actually converted to a quaternion.
+/// this is in radians
 void cherry::Camera::Rotate(const glm::vec3& rot) { Rotate(glm::quat(rot)); }
 
 // we need to Update our cache value of our position for world space.

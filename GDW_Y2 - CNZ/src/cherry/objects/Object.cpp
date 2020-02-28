@@ -5,7 +5,7 @@
 #include "..\physics/PhysicsBody.h"
 #include "..\WorldTransform.h"
 
-#include "..\SceneManager.h"
+#include "..\scenes/SceneManager.h"
 #include "..\MeshRenderer.h"
 #include "ObjectManager.h"
 
@@ -15,6 +15,7 @@
 #include <glm/gtx/quaternion.hpp>
 #include <GLM/gtc/matrix_transform.hpp>
 
+#include "..\Game.h"
 
 // the maximum amount of vertices; this value isn't used
 const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
@@ -300,18 +301,14 @@ bool cherry::Object::IsOrthographicObject() const { return mesh->IsOrthographicM
 void cherry::Object::SetOrthographicObject(bool orthographic) { mesh->SetOrthographicMesh(orthographic); }
 
 // if 'true', the screen position of the object is fixed regardless of the camera.
-bool cherry::Object::GetFixedScreenPosition() const
-{
-	if (mesh != nullptr)
-		return mesh->GetFixedScreenPosition();
-	else
-		return false;
-}
+bool cherry::Object::IsWindowChild() const { return (mesh != nullptr) ? mesh->GetWindowChild() : false; }
 
 // sets if the screen position is fixed.
-void cherry::Object::SetFixedScreenPosition(bool fixed) { mesh->SetFixedScreenPosition(fixed); }
-
-
+void cherry::Object::SetWindowChild(bool windowChild) 
+{ 
+	mesh->SetWindowChild(windowChild); 
+	ObjectManager::UpdateWindowChild(this);
+}
 
 
 // creates the object.
@@ -600,15 +597,21 @@ float cherry::Object::GetPositionZ() const { return position.v.z; }
 void cherry::Object::SetPositionZ(float z) { position.v.z = z; }
 
 // sets the position by the screen portion.
-void cherry::Object::SetPositionByScreenPortion(const cherry::Vec2 newPos, const cherry::Vec2 windowSize, const cherry::Vec2 origin)
+void cherry::Object::SetPositionByWindowSize(const cherry::Vec2 windowPos, const cherry::Vec2 camOrigin)
 {
-	// making sure the window is of an absolute value.
-	glm::vec2 windowAbs(abs(windowSize.v.x), abs(windowSize.v.y));
+	// gets the size of the window.
+	glm::vec2 windowSize = Game::GetRunningGame()->GetWindowSize();
 
-	// takes the actual position and shifts it so that it aligns with the world origin of (0.5, 0.5) across teh screen size.
-	position.v.x = (newPos.v.x * windowAbs.x) + ((0.5F - origin.v.x) * windowAbs.x);
-	position.v.y = (newPos.v.y * windowAbs.y) + ((0.5F - origin.v.y) * windowAbs.y);
+	position.v.x = (windowSize.x * windowPos.v.x) - windowSize.x * camOrigin.v.x;
+	position.v.y = (windowSize.y * windowPos.v.y) - windowSize.y * camOrigin.v.y;
 }
+
+// sets the window size
+void cherry::Object::SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin)
+{
+	SetPositionByWindowSize(Vec2(x, y), camOrigin);
+}
+
 
 
 // ROTATION FUNCTIONS

@@ -1,5 +1,5 @@
 #include "Skybox.h"
-#include "Scene.h"
+#include "scenes/Scene.h"
 #include <fstream>
 
 // default constructor

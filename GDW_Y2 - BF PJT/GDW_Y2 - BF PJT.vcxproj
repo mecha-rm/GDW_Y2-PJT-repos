@@ -43,7 +43,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IncludePath>$(ProjectDir)external;$(ProjectDir)src;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external;$(ProjectDir)src;$(ProjectDir)external\freetype;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)external;$(ProjectDir)src;$(SourcePath)</SourcePath>
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>imagehlp.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imagehlp.lib;glfw3.lib;opengl32.lib;freetype.lib;fmod64.lib;fmodstudio_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -96,6 +96,7 @@
     <ClCompile Include="src\cherry\objects\Text.cpp" />
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\PostLayer.cpp" />
+    <ClCompile Include="src\cherry\scenes\GameplayScene.cpp" />
     <ClCompile Include="src\cherry\textures\ITexture.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\lights\Light.cpp" />
@@ -484,6 +485,7 @@
     <ClInclude Include="src\cherry\post\FrameBuffer.h" />
     <ClInclude Include="src\cherry\post\KernelLayer.h" />
     <ClInclude Include="src\cherry\post\PostLayer.h" />
+    <ClInclude Include="src\cherry\scenes\GameplayScene.h" />
     <ClInclude Include="src\cherry\textures\ITexture.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
@@ -674,8 +676,8 @@
     <None Include="res\shaders\blinn-phong.fs.glsl" />
     <None Include="res\shaders\cubemap.fs.glsl" />
     <None Include="res\shaders\cubemap.vs.glsl" />
-    <None Include="res\shaders\image-shader.fs.glsl" />
-    <None Include="res\shaders\image-shader.vs.glsl" />
+    <None Include="res\shaders\image.fs.glsl" />
+    <None Include="res\shaders\image.vs.glsl" />
     <None Include="res\shaders\lighting-morph.vs.glsl" />
     <None Include="res\shaders\lighting.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />

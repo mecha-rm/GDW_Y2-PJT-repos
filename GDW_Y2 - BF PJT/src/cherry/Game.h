@@ -113,22 +113,21 @@ namespace cherry
 		// if the scene already exists, a false is returned. It will not be set to the current scene.
 		bool CreateScene(const std::string sceneName, const cherry::Skybox skybox, const bool makeCurrent);
 
-		// creates the scene using a pre-existing scene object.
-		static bool CreateScene(cherry::Scene* scene);
+		// adds a scene, and registers it as being part of the game.
+		static bool RegisterScene(cherry::Scene* scene);
 
-		// creates a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
-		static bool CreateScene(cherry::Scene * scene, const cherry::Skybox skybox);
+		// registered a scene with a provided skybox. This is the static verison, so it cannot set the current scene.
+		static bool RegisterScene(cherry::Scene * scene, const cherry::Skybox skybox);
 
-		// creates the scene using a pre-existing scene object and makes it current if requested.
-		// if the scene already exists, a false is returned. It will not be set to the current scene.
-		bool CreateScene(cherry::Scene* scene, const bool makeCurrent);
+		// adds the scene using a pre-existing scene object and makes it current if requested.
+		// if the scene is already registered, a false is returned. It will not be set to the current scene.
+		bool RegisterScene(cherry::Scene* scene, const bool makeCurrent);
 
-		// creates the scene using a pre-existing scene object.
-		// if the scene already exists, a false is returned. It will not be set to the current scene.
-		bool CreateScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent);
+		// adds  the scene using a pre-existing scene object.
+		// if the scene is already registered, a false is returned. It will not be set to the current scene.
+		bool RegisterScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent);
 
 		
-
 
 		// gets the current scene.
 		cherry::Scene* GetScene(std::string sceneName) const;

@@ -222,11 +222,12 @@ float cherry::Game::GetCursorPosY() const { return mousePos.y; }
 // called when a mouse button has been pressed
 void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then nothing happens
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->MouseButtonPressed(window, button);
+	scene->MouseButtonPressed(window, button);
 	// // checks each button
 	// switch (button) {
 	// case GLFW_MOUSE_BUTTON_LEFT:
@@ -244,11 +245,12 @@ void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 // called when a mouse button is being held
 void cherry::Game::MouseButtonHeld(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then nothing happens
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->MouseButtonHeld(window, button);
+	scene->MouseButtonHeld(window, button);
 
 	// // checks each button
 	// switch (button) {
@@ -267,11 +269,12 @@ void cherry::Game::MouseButtonHeld(GLFWwindow* window, int button) {
 // called when a mouse button has been released
 void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then nothing happens
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->MouseButtonReleased(window, button);
+	scene->MouseButtonReleased(window, button);
 
 	// checks each button
 	// switch (button) {
@@ -291,11 +294,12 @@ void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then it is returned
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->KeyPressed(window, key);
+	scene->KeyPressed(window, key);
 
 	//Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -407,11 +411,12 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then it is returned
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->KeyHeld(window, key);
+	scene->KeyHeld(window, key);
 
 	//Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -480,11 +485,12 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
+	Scene* scene = CurrentScene();
 
-	if (game == nullptr || CurrentScene() == nullptr) // if game is 'null', then it is returned
+	if (game == nullptr || scene == nullptr) // if game is 'null', then it is returned
 		return;
 
-	CurrentScene()->KeyReleased(window, key);
+	scene->KeyReleased(window, key);
 
 	// switch (key)
 	// {
@@ -624,7 +630,7 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 }
 
 // creates a scene
-bool cherry::Game::CreateScene(cherry::Scene* scene)
+bool cherry::Game::RegisterScene(cherry::Scene* scene)
 {
 	if (scene == nullptr)
 		return false;
@@ -661,7 +667,7 @@ bool cherry::Game::CreateScene(cherry::Scene* scene)
 }
 
 // creates the scene
-bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox)
+bool cherry::Game::RegisterScene(cherry::Scene* scene, const cherry::Skybox skybox)
 {
 	// checking if the scene exists.
 	if (scene == nullptr)
@@ -685,7 +691,7 @@ bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox
 }
 
 // creates the scene, and sees if it should be the current scene.
-bool cherry::Game::CreateScene(cherry::Scene* scene, const bool makeCurrent)
+bool cherry::Game::RegisterScene(cherry::Scene* scene, const bool makeCurrent)
 {
 	if (scene == nullptr)
 		return false;
@@ -713,16 +719,14 @@ bool cherry::Game::CreateScene(cherry::Scene* scene, const bool makeCurrent)
 
 	if (makeCurrent) // if this should be the current scene.
 	{
-		SceneManager::SetCurrentScene(scene->GetName());
-		objectList = ObjectManager::GetSceneObjectListByName(scene->GetName());
-		lightList = LightManager::GetSceneLightListByName(scene->GetName());
+		SetCurrentScene(scene->GetName(), false);
 	}
 
 	return true;
 }
 
 // creates the scene
-bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent)
+bool cherry::Game::RegisterScene(cherry::Scene* scene, const cherry::Skybox skybox, const bool makeCurrent)
 {
 	if (scene == nullptr)
 		return false;
@@ -743,9 +747,7 @@ bool cherry::Game::CreateScene(cherry::Scene* scene, const cherry::Skybox skybox
 
 		if (makeCurrent) // if this should be the current scene.
 		{
-			SceneManager::SetCurrentScene(scene->GetName());
-			objectList = ObjectManager::GetSceneObjectListByName(scene->GetName());
-			lightList = LightManager::GetSceneLightListByName(scene->GetName());
+			SetCurrentScene(scene->GetName(), false);
 		}
 
 		return true;
@@ -761,36 +763,44 @@ cherry::Scene* cherry::Game::GetCurrentScene() const { return CurrentScene(); }
 // sets the current scene
 bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene)
 {
+	// saves the lists in case the scene switch fails.
+	ObjectList* tempObjList = objectList;
+	LightList* tempLgtList = lightList;
+
 	if (SceneManager::HasScene(sceneName)) // sets the current scene.
 	{
+		// object manager
+		if (ObjectManager::SceneObjectListExists(sceneName)) // if the scene object list exists
+		{
+			objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+		}
+		else // it doesn't exist, so it should be made.
+		{
+			ObjectManager::CreateSceneObjectList(sceneName);
+			objectList = ObjectManager::GetSceneObjectListByName(sceneName);
+		}
+
+		// light manager
+		if (LightManager::SceneLightListExists(sceneName)) // if the light list exists
+		{
+			lightList = LightManager::GetSceneLightListByName(sceneName);
+		}
+		else // it doesn't exist, so it should be made.
+		{
+			LightManager::CreateSceneLightList(sceneName);
+			lightList = LightManager::GetSceneLightListByName(sceneName);
+		}
+
 		if (SceneManager::SetCurrentScene(sceneName)) // if the scene switch was successful.
 		{
-			// object manager
-			if (ObjectManager::SceneObjectListExists(sceneName)) // if the scene object list exists
-			{
-				objectList = ObjectManager::GetSceneObjectListByName(sceneName);
-			}
-			else // it doesn't exist, so it should be made.
-			{
-				ObjectManager::CreateSceneObjectList(sceneName);
-				objectList = ObjectManager::GetSceneObjectListByName(sceneName);
-			}
-
-			// light manager
-			if (LightManager::SceneLightListExists(sceneName)) // if the light list exists
-			{
-				lightList = LightManager::GetSceneLightListByName(sceneName);
-			}
-			else // it doesn't exist, so it should be made.
-			{
-				LightManager::CreateSceneLightList(sceneName);
-				lightList = LightManager::GetSceneLightListByName(sceneName);
-			}
-
 			return true;
 		}
-		else // scene switch failed
+		else // scene switch failed.
 		{
+			// swtiching the lists back
+			objectList = tempObjList;
+			lightList = tempLgtList;
+
 			return false;
 		}
 
@@ -1112,12 +1122,12 @@ void cherry::Game::LoadContent()
 	// creating the scene
 	if (openingScene != nullptr) // if there is a startup scene.
 	{
-		CreateScene(new EngineScene("Cherry - Debug Scene"), false);
-		CreateScene(openingScene, true); // initialize with startup scene.
+		RegisterScene(new EngineScene("Cherry - Debug Scene"), false);
+		RegisterScene(openingScene, true); // initialize with startup scene.
 	}
 	else // if there is no startup scene.
 	{
-		CreateScene(new EngineScene("Cherry - Debug Scene"), true);
+		RegisterScene(new EngineScene("Cherry - Debug Scene"), true);
 	}
 }
 
@@ -1376,6 +1386,7 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	// for some reason, calling the functions and having them be used directly didn't work.
 	// so all the values are being saved first.
 	glm::vec2 orthoSizePro{ (float)newWidth / myWindowSize.x ,(float)newHeight / myWindowSize.y };
+	Scene* currScene = CurrentScene(); // gets the current scene.
 
 	// TODO: keep objects in proper place. Do note that this goes through all objects and should probably be optimized somehow.
 	// moving all the object
@@ -1445,15 +1456,19 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 		cam->SetOrthographicMode(o_left, o_right, o_bottom, o_top, o_zNear, o_zFar, cam->InOrthographicMode());
 	}
 
-	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
-	fb->Resize(newWidth, newHeight);
-
 	// resizes the layers
-	if (CurrentScene() != nullptr)
+	if (currScene != nullptr)
 	{
-		for (PostLayer* layer : CurrentScene()->layers)
+		// if the frame buffer is being used, then it is resized.
+		if (currScene->IsUsingFrameBuffers())
 		{
-			if (layer != nullptr)
+			FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+			fb->Resize(newWidth, newHeight);
+
+			// gets the layers
+			std::vector<cherry::PostLayer*> layers = currScene->GetPostLayers();
+
+			for (PostLayer* layer : layers)
 				layer->OnWindowResize(newWidth, newHeight);
 		}
 	}
@@ -1533,23 +1548,31 @@ void cherry::Game::__RenderScene(Camera::Sptr camera)
 void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
 	// frame buffer for the renderer
-	FrameBuffer::Sptr& fb = CurrentRegistry().ctx<FrameBuffer::Sptr>(); // frame buffer for the game.
+	FrameBuffer::Sptr fb; // frame buffer for the game.
 	Scene* scene = CurrentScene(); // gets the current scene
-	bool usingFrameBuffer = false; // if 'true', the frame buffer is being used.
+	
+	bool usingFrameBuffers = false; // if 'true', the frame buffer is being used.
+	std::vector<PostLayer*> layers;
 
 	// vector for post-post-process renders
 	std::vector<MeshRenderer> postRenders;
 	// vector for post-post-process transform
 	std::vector<TempTransform> postTransforms;
 
-	// if there is a current scene.
-	if (scene != nullptr)
+	// no scene has been set to run.
+	if (scene == nullptr)
+		std::runtime_error("No scene is currently running.");
+
+	// gets whether to use frame buffers or not, as well as the post layers.
+	usingFrameBuffers = scene->IsUsingFrameBuffers();
+	layers = scene->GetPostLayers();
+	
+	// if the frame buffers are being used, and they have values.
+	if (usingFrameBuffers && !layers.empty())
 	{
-		if (!scene->layers.empty()) // if there are layers
-		{
-			fb->Bind();
-			usingFrameBuffer = true;
-		}
+		fb = CurrentRegistry().ctx<FrameBuffer::Sptr>();
+		fb->Bind();
+		usingFrameBuffers = true;
 	}
 
 	// Set viewport to entire region
@@ -1699,7 +1722,6 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		// Update the model matrix to the item's world transform
 		mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
 
-		// TODO: add ability to turn face culling on and off for a given object
 		// Draw the item
 		if (renderer.Mesh->IsVisible())
 		{
@@ -1738,16 +1760,14 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 	}
 
 	// post-processing layers
-	if (usingFrameBuffer) // if the frame buffer is being used.
+	if (usingFrameBuffers && !layers.empty())
 	{
 		fb->UnBind();
 
 		// applies each layer
-		for (PostLayer* layer : scene->layers)
-		{
-			if (layer != nullptr)
-				layer->PostRender();
-		}
+		for (PostLayer* layer : layers)
+			layer->PostRender();
+		
 	}
 
 	// if the screen overlay is to ignore the post-processing
@@ -1804,7 +1824,6 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 			// Update the model matrix to the item's world transform
 			mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
 
-			// TODO: add ability to turn face culling on and off for a given object
 			// Draw the item
 			if (renderer.Mesh->IsVisible())
 			{
