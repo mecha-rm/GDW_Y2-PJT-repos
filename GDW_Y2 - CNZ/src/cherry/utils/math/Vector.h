@@ -57,6 +57,7 @@ namespace util
 
 			// equality operator
 			bool operator==(const Vec2&) const; // checking if two vectors are equal
+			bool operator!=(const Vec2&) const; // ineqaulity operator.
 
 			Vec2 operator*(float) const; // scalar multiplication
 			friend Vec2 operator*(float, const Vec2&); // scalar times vec
@@ -120,6 +121,7 @@ namespace util
 			float& operator[](const int index); // editing
 
 			bool operator==(const Vec3&) const; // checking if two vectors are equal
+			bool operator!=(const Vec3&) const; // ineqaulity operator.
 
 			Vec3 operator*(float) const; // scalar multiplication
 			friend Vec3 operator*(float, const Vec3&); // scalar times vec
@@ -189,6 +191,7 @@ namespace util
 			float& operator[](const int index);
 
 			bool operator==(const Vec4&) const; // checking if two vectors are equal
+			bool operator!=(const Vec4&) const; // ineqaulity operator.
 
 			Vec4 operator*(float) const;
 			friend Vec4 operator*(float, const Vec4&); // scalar times vec

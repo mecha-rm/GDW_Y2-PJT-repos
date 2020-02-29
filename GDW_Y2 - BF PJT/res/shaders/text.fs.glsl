@@ -13,7 +13,7 @@ uniform float a_Alpha; // the overall alpha value of the entity.
 
 uniform vec3 a_CameraPos;
 
-uniform sampler2D a_Text; // now takes more than one value.
+uniform sampler2D a_Text; // text sampler
 
 void main() {
 	// texture

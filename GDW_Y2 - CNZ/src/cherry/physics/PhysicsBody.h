@@ -135,6 +135,10 @@ namespace cherry
 		// rotation (in degrees)
 		cherry::Vec3 rotation;
 
+		// the current scale, position, and rotation (in degrees) of the parent.
+		// if these have changed, then the object must be updated.
+		cherry::Vec3 currParentScale, currParentPos, currParentRot;
+
 	protected:
 		// the colour of the physics bodies (RGBA)
 		const Vec4 COLOUR{ 0.9F, 0.1F, 0.1F, 1.0F };

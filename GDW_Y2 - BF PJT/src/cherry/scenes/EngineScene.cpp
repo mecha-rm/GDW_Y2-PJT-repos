@@ -4,8 +4,9 @@
 #include "..\lights/LightManager.h"
 #include "..\Game.h"
 #include "..\Skybox.h"
-#include "..\physics\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 #include "..\textures/TextureSampler.h"
+#include "..\objects/Text.h"
 
 // creating the engine scene.
 cherry::EngineScene::EngineScene(std::string sceneName) : GameplayScene(sceneName)
@@ -342,6 +343,15 @@ void cherry::EngineScene::OnOpen()
 			image->SetPositionByWindowSize(Vec2(1.0F, 1.0F) - Vec2(0.80F, 0.88F));
 		}
 
+		// text
+		{
+			// text
+			// TODO: find out why items are layeirng on top of one another.
+			Text* text = new Text("H", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 5.0F);
+			text->SetPosition(1.0F, 0.0F, 5.0F);
+			objectList->AddObject(text);
+		}
+
 		// version 1 (finds .mtl file automatically)
 		objectList->objects.push_back(new Object("res/objects/charactoereee.obj", game->GetCurrentSceneName(),
 			lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler), true, true));
@@ -460,7 +470,7 @@ void cherry::EngineScene::OnOpen()
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
-	useFrameBuffers = true;
+	useFrameBuffers = false;
 	game->overlayPostProcessing = true;
 
 	// the audio engine

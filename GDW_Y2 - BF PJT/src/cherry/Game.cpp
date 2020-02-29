@@ -228,18 +228,6 @@ void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
 		return;
 
 	scene->MouseButtonPressed(window, button);
-	// // checks each button
-	// switch (button) {
-	// case GLFW_MOUSE_BUTTON_LEFT:
-	// 	mbLeft = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_MIDDLE:
-	// 	mbMiddle = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_RIGHT:
-	// 	mbRight = true;
-	// 	break;
-	// }
 }
 
 // called when a mouse button is being held
@@ -251,19 +239,6 @@ void cherry::Game::MouseButtonHeld(GLFWwindow* window, int button) {
 		return;
 
 	scene->MouseButtonHeld(window, button);
-
-	// // checks each button
-	// switch (button) {
-	// case GLFW_MOUSE_BUTTON_LEFT:
-	// 	mbLeft = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_MIDDLE:
-	// 	mbMiddle = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_RIGHT:
-	// 	mbRight = true;
-	// 	break;
-	// }
 }
 
 // called when a mouse button has been released
@@ -275,19 +250,6 @@ void cherry::Game::MouseButtonReleased(GLFWwindow* window, int button) {
 		return;
 
 	scene->MouseButtonReleased(window, button);
-
-	// checks each button
-	// switch (button) {
-	// case GLFW_MOUSE_BUTTON_LEFT:
-	// 	mbLeft = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_MIDDLE:
-	// 	mbMiddle = true;
-	// 	break;
-	// case GLFW_MOUSE_BUTTON_RIGHT:
-	// 	mbRight = true;
-	// 	break;
-	// }
 }
 
 // key has been pressed
@@ -300,111 +262,6 @@ void cherry::Game::KeyPressed(GLFWwindow* window, int key)
 		return;
 
 	scene->KeyPressed(window, key);
-
-	//Game* game = (Game*)glfwGetWindowUserPointer(window);
-
-	//if (game == nullptr) // if game is 'null', then nothing happens
-	//	return;
-
-	//// checks key value.
-	//switch (key)
-	//{
-	//case GLFW_KEY_SPACE:
-	//	myCamera->SwitchViewMode();
-	//	break;
-	//	// case GLFW_KEY_W:
-	//	// 	w = true;
-	//	// 	break;
-	//	// case GLFW_KEY_S:
-	//	// 	s = true;
-	//	// 	break;
-	//	// case GLFW_KEY_A:
-	//	// 	a = true;
-	//	// 	break;
-	//	// case GLFW_KEY_D:
-	//	// 	d = true;
-	//	// 	break;
-
-	//		// CAMERA CONTROLS
-	//		// TRANSLATIONS
-	//case GLFW_KEY_W: // y-direction up
-	//	t_Dir[1] = -1;
-	//	break;
-
-	//case GLFW_KEY_S: // y-direction down
-	//	t_Dir[1] = 1;
-	//	break;
-
-	//case GLFW_KEY_A: // x-direction left
-	//	t_Dir[0] = 1;
-	//	break;
-
-	//case GLFW_KEY_D: // x-direction right
-	//	t_Dir[0] = -1;
-	//	break;
-
-	//case GLFW_KEY_Q: // z-direction backward
-	//	t_Dir[2] = 1;
-	//	break;
-
-	//case GLFW_KEY_E: // z-direction forward
-	//	t_Dir[2] = -1;
-	//	break;
-
-	//	// ROTATIONS
-	//case GLFW_KEY_UP: // y-direction +
-	//	r_Dir[0] = -1;
-	//	break;
-
-	//case GLFW_KEY_DOWN: // y-direction -
-	//	r_Dir[0] = 1;
-	//	break;
-
-	//case GLFW_KEY_LEFT: // x-direction +
-	//	r_Dir[1] = -1;
-	//	break;
-
-	//case GLFW_KEY_RIGHT: // x-direction -
-	//	r_Dir[1] = 1;
-	//	break;
-
-	//case GLFW_KEY_PAGE_UP: // z-direction -
-	//	r_Dir[2] = -1;
-	//	break;
-
-	//case GLFW_KEY_PAGE_DOWN: // z-direction +
-	//	r_Dir[2] = 1;
-	//	break;
-
-	//	// resets the camera so that it looks at the origin
-	//case GLFW_KEY_L:
-	//	if (myCamera != nullptr)
-	//		myCamera->LookAt(myCamera->LookingAt());
-	//	break;
-
-	//	// TODO: remove these
-	//case GLFW_KEY_V:
-	//	if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
-	//		objectList->objects[hitBoxIndex]->GetPhysicsBodies()[0]->SetVisible();
-	//	break;
-	//case GLFW_KEY_P:
-	//	if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
-	//		objectList->objects[hitBoxIndex]->followPath = !objectList->objects[hitBoxIndex]->followPath;
-	//case GLFW_KEY_I:
-	//	if (hitBoxIndex >= 0 && hitBoxIndex < objectList->objects.size())
-	//	{
-	//		if (objectList->objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 0)
-	//		{
-	//			objectList->objects[hitBoxIndex]->GetPath().SetInterpolationMode(1);
-	//		}
-	//		else if (objectList->objects[hitBoxIndex]->GetPath().GetInterpolationMode() == 1)
-	//		{
-	//			objectList->objects[hitBoxIndex]->GetPath().SetInterpolationMode(0);
-	//		}
-
-	//	}
-	//	break;
-	//}
 }
 
 // key is being held
@@ -417,68 +274,6 @@ void cherry::Game::KeyHeld(GLFWwindow* window, int key)
 		return;
 
 	scene->KeyHeld(window, key);
-
-	//Game* game = (Game*)glfwGetWindowUserPointer(window);
-
-	//// TODO: call scene for keyboard controls instead.
-	//// if (game == nullptr || CurrentScene() == nullptr)
-	//if (game == nullptr) // if game is 'null', then it is returned
-	//	return;
-
-	//switch (key)
-	//{
-	//	// CAMERA CONTROLS
-	//		// TRANSLATIONS
-	//case GLFW_KEY_W: // y-direction up
-	//	t_Dir[1] = -1;
-	//	break;
-
-	//case GLFW_KEY_S: // y-direction down
-	//	t_Dir[1] = 1;
-	//	break;
-
-	//case GLFW_KEY_A: // x-direction left
-	//	t_Dir[0] = 1;
-	//	break;
-
-	//case GLFW_KEY_D: // x-direction right
-	//	t_Dir[0] = -1;
-	//	break;
-
-	//case GLFW_KEY_Q: // z-direction backward
-	//	t_Dir[2] = 1;
-	//	break;
-
-	//case GLFW_KEY_E: // z-direction forward
-	//	t_Dir[2] = -1;
-	//	break;
-
-	//	// ROTATIONS
-	//case GLFW_KEY_UP: // y-direction +
-	//	r_Dir[0] = -1;
-	//	break;
-
-	//case GLFW_KEY_DOWN: // y-direction -
-	//	r_Dir[0] = 1;
-	//	break;
-
-	//case GLFW_KEY_LEFT: // x-direction +
-	//	r_Dir[1] = -1;
-	//	break;
-
-	//case GLFW_KEY_RIGHT: // x-direction -
-	//	r_Dir[1] = 1;
-	//	break;
-
-	//case GLFW_KEY_PAGE_UP: // z-direction -
-	//	r_Dir[2] = -1;
-	//	break;
-
-	//case GLFW_KEY_PAGE_DOWN: // z-direction +
-	//	r_Dir[2] = 1;
-	//	break;
-	//}
-
 }
 
 // key hs been released
@@ -491,53 +286,6 @@ void cherry::Game::KeyReleased(GLFWwindow* window, int key)
 		return;
 
 	scene->KeyReleased(window, key);
-
-	// switch (key)
-	// {
-	// 	// CAMERA CONTROLS
-	// 	// TRANSLATIONS
-	// 	// y-axis movement
-	// case GLFW_KEY_W:
-	// case GLFW_KEY_S:
-	// 	t_Dir[1] = 0;
-	// 	break;
-	// 
-	// 	// x-axis movement
-	// case GLFW_KEY_A:
-	// case GLFW_KEY_D:
-	// 	t_Dir[0] = 0;
-	// 	break;
-	// 
-	// 	// z-axis movement
-	// case GLFW_KEY_Q:
-	// case GLFW_KEY_E:
-	// 	t_Dir[2] = 0;
-	// 	break;
-	// 
-	// 	// ROTATIONS
-	// 	// y-axis rotation
-	// case GLFW_KEY_UP:
-	// case GLFW_KEY_DOWN:
-	// 	r_Dir[0] = 0;
-	// 	break;
-	// 
-	// 	// x-axis rotation
-	// case GLFW_KEY_LEFT:
-	// case GLFW_KEY_RIGHT:
-	// 	r_Dir[1] = 0;
-	// 	break;
-	// 
-	// 	// z-axis rotation
-	// case GLFW_KEY_PAGE_UP:
-	// case GLFW_KEY_PAGE_DOWN:
-	// 	r_Dir[2] = 0;
-	// 	break;
-	// 
-	// 	// deletes an object
-	// case GLFW_KEY_0:
-	// 	DeleteObjectFromScene(objectList->objects.at(0));
-	// 	break;
-	// }
 }
 
 // static screne creation
@@ -948,19 +696,6 @@ bool cherry::Game::AddObjectToScene(cherry::Object* obj)
 	return ObjectManager::AddObjectToSceneObjectList(obj);
 }
 
-
-// adds an object to the m_Scene.
-//bool cherry::Game::AddObjectToCurrentScene(cherry::Object* obj, std::string scene)
-//{
-//	// adds the object to the list of sceneLists.
-//	bool added = util::addToVector(objectList->objects, obj);
-//
-//	if (added) // if the object was added, then an entity is created.
-//		obj->CreateEntity(scene, matStatic);
-//
-//	return added; // returns 
-//}
-
 // removes an object from the sceneLists vector.
 bool cherry::Game::DeleteObjectFromScene(cherry::Object* obj)
 {
@@ -1088,6 +823,8 @@ void cherry::Game::Shutdown() {
 // loads the content for the meshes and shaders
 void cherry::Game::LoadContent()
 {
+	std::string engineSceneName = "Cherry - Debug Scene";
+
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
 	myCamera->clearColor = myClearColor; // setting the clear colour
@@ -1095,16 +832,10 @@ void cherry::Game::LoadContent()
 	myCamera->LookAt(glm::vec3(0));
 
 
-	// sets the camera to perspective mode for the m_Scene.
-	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
-	//myCamera->SetPerspectiveMode(glm::perspective(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f));
 	myCamera->SetPerspectiveMode(glm::radians(45.0f), 1.0f, 0.01f, 1000.0f);
-	// myCamera->SetPerspectiveMode(glm::perspective(glm::radians(10.0f), 1.0f, 0.01f, 1000.0f));
 
 	// sets the orthographic mode values. False is passed so that the camera starts in perspective mode.
 	myCamera->SetOrthographicMode(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f, false);
-	// myCamera->followTarget = true;
-	// myCamera->fixedTargetDistance = true;
 	myCamera->targetOffset = cherry::Vec3(0, 5, 12);
 
 	// secondary camera, which is used for UI for the game.
@@ -1122,108 +853,24 @@ void cherry::Game::LoadContent()
 	// creating the scene
 	if (openingScene != nullptr) // if there is a startup scene.
 	{
-		RegisterScene(new EngineScene("Cherry - Debug Scene"), false);
-		RegisterScene(openingScene, true); // initialize with startup scene.
+		RegisterScene(new EngineScene(engineSceneName), false);
+
+		if (!RegisterScene(openingScene, true)) // initialize with startup scene.
+			SetCurrentScene(engineSceneName, false);
 	}
 	else // if there is no startup scene.
 	{
-		RegisterScene(new EngineScene("Cherry - Debug Scene"), true);
+		RegisterScene(new EngineScene(engineSceneName), true);
 	}
 }
 
 void cherry::Game::UnloadContent() {
+	audioEngine.Shutdown(); // shutdown the audio component.
+	SceneManager::DestroyScenes(); // destroys all the scenes.
 }
 
 void cherry::Game::Update(float deltaTime) {
-
-	// TODO: remove this line.
-	// <the update loop for all sceneLists was originally here.>
-
-	// updates the camera
-	// if (debugMode) // moves the camera with button presses if in debug mode.
-	// {
-	// 	// camera transformations
-	// 
-	// 	// moving the camera
-	// 	myCamera->SetPosition(myCamera->GetPosition()
-	// 		+ glm::vec3(t_Dir[0] * t_Inc * deltaTime, t_Dir[1] * t_Inc * deltaTime, t_Dir[2] * t_Inc * deltaTime));
-	// 
-	// 	// rotating the camera
-	// 	myCamera->Rotate(
-	// 		glm::vec3(glm::radians(r_Dir[0] * r_Inc * deltaTime), 
-	// 				  glm::radians(r_Dir[1] * r_Inc * deltaTime), 
-	// 				  glm::radians(r_Dir[2] * r_Inc * deltaTime)
-	// 		)
-	// 	);
-	// 
-	// 	// myCamera->
-	// 	// myCamera->LookAt(glm::vec3(0, 0, 0)); //Looks at player
-	// } 
-	// 
-	// // if (w)
-	// // 	objectList->objects.at(0)->Translate(0.0F, 10.0F * deltaTime, 0.0F);
-	// // else if (s)
-	// // 	objectList->objects.at(0)->Translate(0.0F, -10.0F * deltaTime, 0.0F);
-	// // if (a)
-	// // 	objectList->objects.at(0)->Translate(-10.0F * deltaTime, 0.0F, 0.0F);
-	// // else if (d)
-	// // 	objectList->objects.at(0)->Translate(10.0F * deltaTime, 0.0F, 0.0F);
-	// 
-	// myCamera->Update(deltaTime);
-	// myCameraX->Update(deltaTime);
-	// 
-	// // updates the object list
-	// objectList->Update(deltaTime);
-	// 
-	// // if collisions should be checked.
-	// if (collisionMode)
-	// {
-	// 	// collision calculations
-	// mainLoop:
-	// 	for (cherry::Object* obj1 : objectList->objects) // object 1
-	// 	{
-	// 		if (obj1 == nullptr)
-	// 			continue;
-	// 
-	// 		if (obj1->GetIntersection() == true) // already colliding with something.
-	// 			continue;
-	// 
-	// 		for (cherry::Object* obj2 : objectList->objects) // object 2
-	// 		{
-	// 			if (obj1 == obj2 || obj2 == nullptr) // if the two sceneLists are the same.
-	// 				continue;
-	// 
-	// 			if (obj2->GetIntersection() == true) // if the object is already intersecting with something.
-	// 				continue;
-	// 
-	// 			// gets the vectors from both sceneLists
-	// 			std::vector<cherry::PhysicsBody*> pbods1 = obj1->GetPhysicsBodies();
-	// 			std::vector<cherry::PhysicsBody*> pbods2 = obj2->GetPhysicsBodies();
-	// 
-	// 			// goes through each collision body
-	// 			for (cherry::PhysicsBody* pb1 : pbods1)
-	// 			{
-	// 				for (cherry::PhysicsBody* pb2 : pbods2)
-	// 				{
-	// 					bool col = PhysicsBody::Collision(pb1, pb2);
-	// 
-	// 					if (col == true) // if collision has occurred.
-	// 					{
-	// 						obj1->SetIntersection(true);
-	// 						// obj1->setColor(255, 0, 0);
-	// 						obj2->SetIntersection(true);
-	// 						// obj2->setColor(255, 0, 0);
-	// 						// std::cout << "Hit!" << std::endl;
-	// 
-	// 						goto mainLoop; // goes back to the main loop
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 	}
-	// }
-
-		// calling the scene update
+	// calling the scene update
 	Scene* scene = CurrentScene();
 	if (scene != nullptr)
 		scene->Update(deltaTime);
@@ -1232,6 +879,7 @@ void cherry::Game::Update(float deltaTime) {
 	myCamera->Update(deltaTime);
 	myCameraX->Update(deltaTime);
 
+	// updating all the cameras.
 	for (int i = 0; i < exCameras.size(); i++)
 		exCameras[i]->Update(deltaTime);
 
@@ -1239,7 +887,7 @@ void cherry::Game::Update(float deltaTime) {
 	objectList->Update(deltaTime);
 
 	// moved to the bottom of the update.
-	// called to Update the position and rotation of hte sceneLists.
+	// called to Update the position and rotation of the sceneLists.
 	// calling all of our functions for our Update behaviours.
 	auto view = CurrentRegistry().view<UpdateBehaviour>();
 	for (const auto& e : view) {
@@ -1248,15 +896,6 @@ void cherry::Game::Update(float deltaTime) {
 			func.Function(e, deltaTime);
 		}
 	}
-
-	// // secondary registry
-	// view = CurrentSecondaryRegistry().view<UpdateBehaviour>();
-	// for (const auto& e : view) {
-	// 	auto& func = CurrentSecondaryRegistry().get<UpdateBehaviour>(e);
-	// 	if (func.Function) {
-	// 		func.Function(e, deltaTime);
-	// 	}
-	// }
 
 	// TODO: determine why this crashes.
 	// updates the audio engine 
@@ -1376,7 +1015,6 @@ void cherry::Game::Run()
 
 	UnloadContent(); // unload all content
 	ShutdownImGui(); // shutdown imGui
-	audioEngine.Shutdown(); // shutdown the audio component.
 	Shutdown();
 }
 
@@ -1387,15 +1025,6 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 	// so all the values are being saved first.
 	glm::vec2 orthoSizePro{ (float)newWidth / myWindowSize.x ,(float)newHeight / myWindowSize.y };
 	Scene* currScene = CurrentScene(); // gets the current scene.
-
-	// TODO: keep objects in proper place. Do note that this goes through all objects and should probably be optimized somehow.
-	// moving all the object
-	// for (Object* obj : objectList->GetObjects())
-	// {
-	// 	obj->SetPositionX(obj->GetPositionX() / myWindowSize.x * newWidth);
-	// 	obj->SetPositionY(obj->GetPositionY() / myWindowSize.y * newHeight);
-	// }
-
 
 	// perspective variables
 	float p_fovy = myCamera->GetFieldOfView();

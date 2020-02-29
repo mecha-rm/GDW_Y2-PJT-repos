@@ -44,6 +44,8 @@ cherry::Vec2 cherry::Vec2::operator=(const Vec2& v2) { return (v = v2.v); }
 // checking if two vectors are equal
 bool cherry::Vec2::operator==(const Vec2& v2) const { return v == v2.v; }
 
+// checking if two vectors are not equal
+bool cherry::Vec2::operator!=(const Vec2& v2) const { return v != v2.v; }
 
 // multiplication
 cherry::Vec2 cherry::Vec2::operator*(float scalar) const { return cherry::Vec2(v * scalar); }
@@ -141,6 +143,9 @@ cherry::Vec3 cherry::Vec3::operator=(const Vec3& vec) { return v = vec.v; }
 
 // checking if two vectors are equal
 bool cherry::Vec3::operator==(const Vec3& v2) const { return v == v2.v; }
+
+// checking if two vectors are not equal
+bool cherry::Vec3::operator!=(const Vec3& v2) const { return v != v2.v; }
 
 
 // multiplication
@@ -247,6 +252,8 @@ cherry::Vec4 cherry::Vec4::operator=(const Vec4& vec) { return (v = vec.v); }
 // checking if two vectors are equal
 bool cherry::Vec4::operator==(const Vec4& v2) const { return v == v2.v; }
 
+// checking if two vectors are not equal
+bool cherry::Vec4::operator!=(const Vec4& v2) const { return v != v2.v; }
 
 // multiplication
 cherry::Vec4 cherry::Vec4::operator*(float scalar) const { return v * scalar; }

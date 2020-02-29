@@ -55,6 +55,7 @@ namespace cherry
 		// equality operator
 		Vec2 operator=(const Vec2&);
 		bool operator==(const Vec2&) const; // checking if two vectors are equal
+		bool operator!=(const Vec2&) const; // checking if two vectors are not equal.
 
 		Vec2 operator*(float) const; // scalar multiplication
 		friend Vec2 operator*(float, const Vec2&); // scalar * vector
@@ -143,6 +144,8 @@ namespace cherry
 
 		Vec3 operator=(const Vec3&); // equality operator
 		bool operator==(const Vec3&) const; // checking if two vectors are equal
+		bool operator!=(const Vec3&) const; // checking if two vectors are not equal.
+
 
 		Vec3 operator*(float) const; // scalar multiplication
 		friend Vec3 operator*(float, const Vec3&); // scalar times vec
@@ -238,6 +241,7 @@ namespace cherry
 
 		Vec4 operator=(const Vec4&); // equality operator
 		bool operator==(const Vec4&) const; // checking if two vectors are equal
+		bool operator!=(const Vec4&) const; // checking if two vectors are not equal
 
 		Vec4 operator*(float) const; // scalar multiplication
 		friend Vec4 operator*(float, const Vec4&); // scalar times vec

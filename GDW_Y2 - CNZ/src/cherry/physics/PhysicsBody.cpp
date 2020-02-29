@@ -25,20 +25,6 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
 	// creating the material
 	material = std::make_shared<Material>(shader);
 
-	// now using a shader without lighting.
-	// material->Set("a_LightCount", 1);
-	// material->Set("a_LightPos[0]", { 0, 0, 0 });
-	// material->Set("a_LightColor[0]", { 1.0f, 1.0f, 1.0f });
-	// material->Set("a_AmbientColor[0]", { 1.0f, 1.0f, 1.0f });
-	// material->Set("a_AmbientPower[0]", 1.0f); // change this to change the main lighting power (originally value of 0.1F)
-	// material->Set("a_LightSpecPower[0]", 0.0f);
-	// material->Set("a_LightShininess[0]", 0.0f); // MUST be a float
-	// material->Set("a_LightAttenuation[0]", 1.0f);
-	// 
-	// material->Set("s_Albedos[0]", Texture2D::LoadFromFile("res/images/default.png"));
-	// material->Set("s_Albedos[1]", Texture2D::LoadFromFile("res/images/default.png"));
-	// material->Set("s_Albedos[2]", Texture2D::LoadFromFile("res/images/default.png"));
-
 	// setting transparency since the bodies need to be see through
 	material->HasTransparency = true;
 }
@@ -72,9 +58,14 @@ void cherry::PhysicsBody::SetObject(cherry::Object* obj)
 		body->CreateEntity(object->GetSceneName(), material);
 		body->SetVisible(false);
 
-		body->SetRotationDegrees(rotation);
 		body->SetScale(scale);
+		body->SetRotationDegrees(rotation);
 		body->SetPosition(position);
+
+		// current values.
+		currParentScale = object->GetScale();
+		currParentRot = object->GetRotationDegrees();
+		currParentPos = object->GetPosition();
 	}
 }
 
@@ -505,71 +496,34 @@ void cherry::PhysicsBody::SetVisible(bool visible)
 // updates a physics body
 void cherry::PhysicsBody::Update(float deltaTime)
 {
-	// ORIGINAL ATTEMPT USING MAT4 (DID NOT WORK)
-	//cherry::TempTransform temp; // used for generating matrices
+	if (object != nullptr)
+	{
+		// if the scale, rotation, or position has been changed.
+		// the values are updated accordingly.
 
-	//// Equation: T_nodeToWorld = T_parentToWorld * T_nodeToParent
-	//glm::mat4 nodeParentTransform; // node to parent transformation
-	//glm::mat4 parentWorldTransform; // parent to world transformation
-	//glm::mat4 nodeWorldTransform; // node to world transform
-	//glm::mat4 valMat; // holds values for a given type
-	//
-	//// body doesn't exist, or parent doesn't exist.
-	//if (object == nullptr || body == nullptr)
-	//	return;
+		// updates the physics body.
+		// scale has changed.
+		if (currParentScale != object->GetScale())
+		{
+			SetLocalScale(scale);
+			currParentScale = object->GetScale();
+		}
 
+		// rotation has changed.
+		if (currParentRot != object->GetRotationDegrees())
+		{
+			SetLocalRotationDegrees(rotation);
+			currParentRot = object->GetRotationDegrees();
+		}
 
-	//// the values for the node.
-	//temp.Position = glm::vec3(position.v.x, position.v.y, position.v.z);
-	//temp.EulerRotation = glm::vec3(rotation.v.x, rotation.v.y, rotation.v.z);
-	//temp.Scale = glm::vec3(scale.v.x, scale.v.y, scale.v.z);
-	//
-	//// getting the mat4s
-	//nodeParentTransform = temp.GetWorldTransform();
-	//parentWorldTransform = object->GetWorldTransformation();
-	//nodeWorldTransform = parentWorldTransform * nodeParentTransform;
+		// position has cahnged.
+		if (currParentPos != object->GetPosition())
+		{
+			SetLocalPosition(position);
+			currParentPos = object->GetPosition();
+		}
+	}
 
-	//// tempMat4 
-	//valMat[0][0] = position.v.x;
-	//valMat[1][0] = position.v.y;
-	//valMat[2][0] = position.v.z;
-	//valMat[3][0] = 0;
-
-	//valMat = valMat * nodeWorldTransform;
-	//body->SetPosition(Vec3(valMat[0][0], valMat[1][0], valMat[2][0]));
-	// std::cout << "Parent: " + object->GetPosition().ToString() << std::endl;
-
-	// temp.EulerRotation = object->GetRotationDegreesGLM(); // gets the parent's rotation
-	// temp.Scale = object->GetScaleGLM();
-	// // position
-	// parentTransform[0][3] = object->GetPosition().v.x;
-	// parentTransform[1][3] = object->GetPosition().v.x;
-	// parentTransform[2][3] = object->GetPosition().v.x;
-	// parentTransform[3][3] = 1.0F;
-	
-	// Current Method (offset from object values)
-	// setting the world space values
-	// body->SetPosition(object->GetPosition().v.x + position.v.x,
-	// 	object->GetPosition().v.y + position.v.y,
-	// 	object->GetPosition().v.z + position.v.z);
-	// 
-	// // sets the rotation in degrees
-	// body->SetRotationDegrees(Vec3(
-	// 	object->GetRotationXDegrees() + rotation.v.x,
-	// 	object->GetRotationYDegrees() + rotation.v.y,
-	// 	object->GetRotationZDegrees() + rotation.v.z));
-	// 
-	// // sets the scale
-	// body->SetScale(Vec3(
-	// 	object->GetScaleX() + scale.v.x,
-	// 	object->GetScaleY() + scale.v.y,
-	// 	object->GetScaleZ() + scale.v.z));
-	
-
-	// updating the physics body.
-	SetLocalScale(scale);
-	SetLocalRotationDegrees(rotation);
-	SetLocalPosition(position);
 }
 
 

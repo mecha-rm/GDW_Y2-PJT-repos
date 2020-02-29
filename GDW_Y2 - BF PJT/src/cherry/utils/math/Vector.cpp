@@ -56,6 +56,12 @@ float& util::math::Vec2::operator[](const int index) // editing
 // checking if two vectors are equal
 bool util::math::Vec2::operator==(const Vec2& v2) const { return (x == v2.x && y == v2.y); }
 
+// checking if two vectors are not equal
+bool util::math::Vec2::operator!=(const Vec2& v2) const
+{
+	return !(x == v2.x && y == v2.y);
+}
+
 
 // multiplication
 util::math::Vec2 util::math::Vec2::operator*(float scalar) const { return util::math::Vec2(x * scalar, y * scalar); }
@@ -169,6 +175,12 @@ float& util::math::Vec3::operator[](const int index) // editing
 
 // vector equality
 bool util::math::Vec3::operator==(const Vec3& v2) const { return (x == v2.x && y == v2.y && z == v2.z); }
+
+// inequality operator.
+bool util::math::Vec3::operator!=(const Vec3& v2) const
+{
+	return !(x == v2.x && y == v2.y && z == v2.z);
+}
 
 
 // vector times scalar
@@ -290,6 +302,12 @@ float& util::math::Vec4::operator[](const int index) // editing
 
 // compatibility operator
 bool util::math::Vec4::operator==(const Vec4& v2) const { return ((x == v2.x) && (y == v2.y) && (z == v2.z) && (w == v2.w)); }
+
+// inequality operator.
+bool util::math::Vec4::operator!=(const Vec4& v2) const
+{
+	return !((x == v2.x) && (y == v2.y) && (z == v2.z) && (w == v2.w));
+}
 
 
 // operations
