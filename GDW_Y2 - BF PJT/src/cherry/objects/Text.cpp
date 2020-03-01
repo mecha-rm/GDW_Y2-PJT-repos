@@ -91,6 +91,7 @@
 
          // Generate texture
          GLuint texture;
+         // a reference to this texture isn't being saved, so it's being lost to the void.
          glGenTextures(1, &texture);
          // glCreateTextures(GL_TEXTURE_2D, 1, &texture);
 
@@ -99,6 +100,7 @@
          // std::cout << "Bitmap.Width: " << ftFace->glyph->bitmap.width << "\n";
 
          glBindTexture(GL_TEXTURE_2D, texture);
+         // glBindTextureUnit(texture, chr);
          glTexImage2D(
              GL_TEXTURE_2D,
              0,
@@ -137,6 +139,7 @@
              ftFace->glyph->advance.x
          };
          glyphs.push_back(glyph);
+
      }
      // glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -153,6 +156,7 @@
          // gets the character and its glyph.
          const char& c = text[i];
          const Glyph& g = glyphs[(int)c];
+
 
          // calculates the size.
          glm::vec2 size{ g.bearing.x + g.size.x, g.size.y - g.bearing.y + g.size.y};
@@ -370,8 +374,23 @@
 
      material = std::make_shared<Material>(shader);
      // material->GetShader()->Bind(); // don't bind?
-     material->Set("a_Text", 0);
+
+     // glBindTextureUnit(textureID, textureID);
      // material->Set("a_Text", (int)textureID);
+     // material->GetShader()->Bind();
+
+    
+     
+    //  glBindTextureUnit(GL_TEXTURE_2D, textureID);
+    // glBindTextureUnit(textureID, 0);
+     material->Set("a_Text", (int)textureID);
+    
+     // glActiveTexture(GL_TEXTURE0); // GL_TEXTUREi where i can be replaced to be any unused texture slot
+     // glBindTexture(GL_TEXTURE_2D, textureID);
+
+     // glBindTexture(GL_TEXTURE_2D, textureID);
+     // material->Set("a_Text", (int)textureID);
+     // material->GetShader()->Bind();
 
      // material->HasTransparency = true;
 
