@@ -4,12 +4,14 @@
 cnz::Mechaspider::Mechaspider(std::string scene)
 	:Enemy("res/objects/enemies/Spider.obj", scene, true)
 {
+	description = "Mechaspider";
 }
 
 // constructor
 cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Spider.obj", scene, mat)
 {
+	description = "Mechaspider";
 }
 
 // copy constructor

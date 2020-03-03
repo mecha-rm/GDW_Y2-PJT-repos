@@ -4,12 +4,14 @@
 cnz::Sentry::Sentry(std::string scene)
 	: Enemy("res/objects/enemies/Bow_Enemy.obj", scene, true)
 {
+	description = "Sentry";
 }
 
 // constructor
 cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Bow_Enemy.obj", scene, mat)
 {
+	description = "Sentry";
 }
 
 // copy constructor

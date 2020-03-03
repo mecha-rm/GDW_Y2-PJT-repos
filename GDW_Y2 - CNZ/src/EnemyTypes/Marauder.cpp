@@ -4,11 +4,13 @@
 cnz::Marauder::Marauder(std::string scene) 
 	: Enemy("res/objects/enemies/Enemy_Sword.obj", scene, true)
 {
+	description = "Marauder";
 }
 
 cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Enemy_Sword.obj", scene, mat)
 {
+	description = "Marauder";
 }
 
 

@@ -636,29 +636,25 @@ cherry::PhysicsBody* cnz::CNZ_GameplayScene::GetClosestObstacle()
 	return closestBody;
 }
 
-vector<int> cnz::CNZ_GameplayScene::GetEnemiesInDash(cherry::Vec3 dashVec)
+bool cnz::CNZ_GameplayScene::GetEnemiesInDash(cherry::Vec3 dashVec, cnz::Enemy* enemy, cnz::Player* player)
 {
-	vector<int> enemies;
-
 	cherry::Vec3 delta;
 	float angleFromPlayer;
 	float dAngle;
 	float dLen = dashVec.GetLength();
 
-	for (int i = 0; i < enemyList.size(); i++) {
-		delta.SetX(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX());
-		delta.SetY(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY());
+	delta.SetX(enemy->GetPhysicsBodies()[0]->GetWorldPosition().GetX() - player->GetPosition().GetX());
+	delta.SetY(enemy->GetPhysicsBodies()[0]->GetWorldPosition().GetY() - player->GetPosition().GetY());
 
-		angleFromPlayer = GetXYAngle(delta);
-		dAngle = angleFromPlayer - GetXYAngle(dashVec);
+	angleFromPlayer = GetXYAngle(delta);
+	dAngle = angleFromPlayer - GetXYAngle(dashVec);
 
-		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-			if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
-				enemies.push_back(i);
-			}
+	if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
+		if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
+			return true;
 		}
 	}
-	return enemies;
+	return false;
 }
 
 // test func to get angle in xy axes of a vec. use only when you stored delta x, delta y and delta z in a vec3.
@@ -670,6 +666,7 @@ float cnz::CNZ_GameplayScene::GetXYAngle(cherry::Vec3 vec)
 
 void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 {
+
 	int percent = rand() % 100;
 
 	int count = 0;
@@ -869,7 +866,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
 		if (collision) {
-			playerEnemyCollisions.push_back(enemyList[i]->GetPhysicsBodies()[0]);
+			//Player takes damage
 		}
 	}
 
@@ -989,18 +986,18 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			if (enemyList[i]->WhoAmI() == "Sentry") {
 				if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
-					//Spawn projectiles
-					enemyList[i]->attacking = true;
-					projList.push_back(new Projectile(*arrowBase));
-					projTimeList.push_back(0);
-					projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
-					projList[projList.size() - 1]->SetWhichGroup(i);
-					//projList[projList.size() - 1]->SetWhichEnemy(j);
-					projList[projList.size() - 1]->active = true;
-					projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
-					projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-					projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-					game->AddObjectToScene(projList[projList.size() - 1]);
+					////Spawn projectiles
+					//enemyList[i]->attacking = true;
+					//projList.push_back(new Projectile(*arrowBase));
+					//projTimeList.push_back(0);
+					//projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
+					//projList[projList.size() - 1]->SetWhichGroup(i);
+					////projList[projList.size() - 1]->SetWhichEnemy(j);
+					//projList[projList.size() - 1]->active = true;
+					//projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
+					//projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+					//projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+					//game->AddObjectToScene(projList[projList.size() - 1]);
 				}
 				else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
 					//Move towards player				
@@ -1091,15 +1088,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
 		if (closestObstacle == nullptr) {
-			vector<int> enemiesInRange = GetEnemiesInDash(dashVec);
-			for (int i = 0; i < enemiesInRange.size(); i++) {
-				//enemyList[enemiesInRange[i]]->GetPhysicsBodies()[0]->SetVisible(false);
-				enemyList[enemiesInRange[i]]->alive = false;
-				//enemyList[enemiesInRange[i]]->RemovePhysicsBody(enemyList[enemiesInRange[i]]->GetPhysicsBodies()[0]);
-				game->DeleteObjectFromScene(enemyList[enemiesInRange[i]]);
-				enemyList.erase(enemyList.begin() + i);
-				kills++;
-				cout << kills << endl;
+			for (int i = 0; i < enemyList.size(); i++) {
+				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+					enemyList[i]->alive = false;
+				}
 			}
 			playerObj->SetPosition(playerObj->GetPosition() + dashVec);
 		}
@@ -1141,28 +1133,32 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					dPN.SetY(tempY);
 				}
 
-				vector<int> enemiesInRange = GetEnemiesInDash(dPN);
 				for (int i = 0; i < enemyList.size(); i++) {
-					enemyList[enemiesInRange[i]]->alive = false;
-					//enemyList[enemiesInRange[i]]->RemovePhysicsBody(enemyList[enemiesInRange[i]]->GetPhysicsBodies()[0]);
-					game->DeleteObjectFromScene(enemyList[enemiesInRange[i]]);
-					enemyList.erase(enemyList.begin() + i);
-					kills++;
-					cout << kills << endl;
+					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+						enemyList[i]->alive = false;
+					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
 			else {
-				vector<int> enemiesInRange = GetEnemiesInDash(dashVec);
-				for (int i = 0; i < enemiesInRange.size(); i++) {
-					enemyList[enemiesInRange[i]]->alive = false;
-					//enemyList[enemiesInRange[i]]->RemovePhysicsBody(enemyList[enemiesInRange[i]]->GetPhysicsBodies()[0]);
-					game->DeleteObjectFromScene(enemyList[enemiesInRange[i]]);
-					enemyList.erase(enemyList.begin() + i);
-					kills++;
-					cout << kills << endl;
+				for (int i = 0; i < enemyList.size(); i++) {
+					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+						enemyList[i]->alive = false;
+					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec);
+			}
+		}
+		for (int i = 0; i < enemyList.size(); i++) {
+			if (enemyList[i]->alive == false) {
+				enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+				cherry::Object* obj = enemyList[i];
+				util::removeFromVector(enemyList, enemyList[i]);
+				objectList->RemoveObjectByPointer(obj);
+				delete obj;
+				kills++;
+				cout << kills << endl;
+				i--;
 			}
 		}
 
