@@ -897,7 +897,7 @@ bool cherry::Object::RemovePhysicsBody(unsigned int index)
 // gets the amount of physics bodies
 unsigned int cherry::Object::GetPhysicsBodyCount() const { return bodies.size(); }
 
-// returns hte physics bodies
+// returns the physics bodies
 std::vector<cherry::PhysicsBody*> cherry::Object::GetPhysicsBodies() const { return bodies; }
 
 // gets if intersection is happening.

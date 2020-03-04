@@ -41,7 +41,6 @@ public:
 	float GetPBodyHeight() const;
 	float GetPBodyDepth() const;
 
-
 private:
 	// pbody stuff. self explanatory
 	cherry::Vec3 pBodySize = cherry::Vec3(4, 4, 4);
