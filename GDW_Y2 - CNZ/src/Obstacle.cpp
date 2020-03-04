@@ -45,6 +45,10 @@ cherry::Vec3 Obstacle::GetPBodySize() const {
 	return this->pBodySize;
 }
 
+void Obstacle::SetPBodySize(cherry::Vec3 newSize) {
+	this->pBodySize = newSize;
+}
+
 float Obstacle::GetPBodyWidth() const {
 	return this->GetPBodySize().GetX() / 2;
 }

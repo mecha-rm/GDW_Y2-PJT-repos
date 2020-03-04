@@ -465,10 +465,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		road->SetRotationZDegrees(180);
 		road->SetPosition(0, -30, -1);
 		manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
-
-		if (!playerObj->SetDrawPBody(true)) {
-			std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
-		}
 	}
 
 	/*for (int i = 0; i < objList->GetObjectCount(); i++)
@@ -837,9 +833,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	cherry::Camera::Sptr myCamera = game->myCamera;
 
 	//GLenum test = glGetError();
-	this->playerPrevPos = playerObj->GetPosition();
+	this->playerPrevPos = playerObj->GetPosition(); // store previous position
 
-	if (showPBs) {
+	if (showPBs) { // show player and projectile physics bodies if showPBs
 		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
 		for (int i = 0; i < projList.size(); i++) {
 			projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
@@ -849,22 +845,24 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	float moveInc = -10.0F; // the movement incrementer.
 
 	vector<cherry::PhysicsBody*> playerObstacleCollisions; // obstacle PBs with which the player's PB is colliding with
-	vector<cherry::PhysicsBody*> playerEnemyCollisions;
+	vector<cherry::PhysicsBody*> playerEnemyCollisions; // enemy PBs with which the player's PB is colliding with
 
 	// find all obstacles the player is colliding with
 	for (int i = 0; i < obstacles.size(); i++) {
-		if (showPBs) {
+		bool collision = false;
+		if (showPBs) { // shows obstacle physics bodies if showPBs
 			obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
-		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
+		collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
 		if (collision) {
 			playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
+			std::cout << "collision with obstacle " << i << std::endl;
 		}
 	}
 
 	// find all enemies the player is colliding with
 	for (int i = 0; i < enemyList.size(); i++) {
-		if (showPBs) {
+		if (showPBs) { // shows enemy pbs if showPBs
 			enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
@@ -885,36 +883,37 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
 		for (int i = 0; i < playerObstacleCollisions.size(); i++) {
 			cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
-			//cherry::Vec3 dP = playerObstacleCollisions[i]->GetLocalPosition() - playerObj->GetPosition();
 
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
 				cs = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
 				cw = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
 				ca = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
 				cd = false;
 			}
-			//if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
-			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
-			//		cs = false;
-			//	}
-			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
-			//		cw = false;
-			//	}
-			//}
-			//else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
-			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
-			//		ca = false;
-			//	}
-			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
-			//		cd = false;
-			//	}
-			//}
+			/* This is the old method of detecting which way the player can move. It's broken I'm pretty sure.
+			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
+				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+					cs = false;
+				}
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+					cw = false;
+				}
+			}
+			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
+				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+					ca = false;
+				}
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+					cd = false;
+				}
+			}
+			*/
 		}
 	}
 

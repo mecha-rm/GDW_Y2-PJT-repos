@@ -33,6 +33,9 @@ public:
 	// get pbody size
 	cherry::Vec3 GetPBodySize() const;
 
+	// set pbody size - We use this when getting the size after loading the object based on its mesh mins and maxes.
+	void SetPBodySize(cherry::Vec3 newSize);
+
 	// get pbody width, height and depth.
 	float GetPBodyWidth() const;
 	float GetPBodyHeight() const;
