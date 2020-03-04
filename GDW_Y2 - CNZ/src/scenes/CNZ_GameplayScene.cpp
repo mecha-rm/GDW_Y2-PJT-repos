@@ -729,13 +729,6 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 	std::string curObjStr;
 
 	this->obstacles.clear();
-	this->playerObj = new Player("res/objects/hero/charactoereee.obj", GetName());
-	this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-	this->playerObj->SetRotationXDegrees(90);
-	this->playerObj->SetRotationZDegrees(180);
-	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-
-
 
 
 	for (int i = 0; i < allSceneObjects.size(); i++) {
@@ -749,12 +742,12 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 		}
 		else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
 			//std::cout << "its a player" << std::endl;
+			this->playerObj = (cnz::Player*)allSceneObjects[i];
 			this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
-			
-			// player is black without these two lines.
-			// TODO: remove them when we fix duplicate player object
-			cherry::Material::Sptr mat = playerObj->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+			this->playerObj->SetRotationXDegrees(90);
+			this->playerObj->SetRotationZDegrees(180);
+			this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 		}
 		else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
 			//std::cout << "its a dumpster" << std::endl;
