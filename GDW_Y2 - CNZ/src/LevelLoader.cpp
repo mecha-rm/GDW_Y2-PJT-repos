@@ -162,7 +162,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				
 				this->objList.push_back(playerObj);
 			}
-			else if (legend[curObj] == "Wall") { // wall
+			else if (legend[curObj] == "Wall") { // wall // TODO: orient walls properly.
 				Obstacle* obj;
 				if (this->wall == nullptr) {
 					obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), true);

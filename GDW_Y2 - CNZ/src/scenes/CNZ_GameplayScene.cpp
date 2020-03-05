@@ -844,7 +844,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// find all obstacles the player is colliding with
 	for (int i = 0; i < obstacles.size(); i++) {
 		bool collision = false;
-		if (showPBs) { // shows obstacle physics bodies if showPBs
+		if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
 			obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
 		collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);

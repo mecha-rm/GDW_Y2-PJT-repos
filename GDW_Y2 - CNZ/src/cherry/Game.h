@@ -284,7 +284,7 @@ namespace cherry
 		void Draw(float deltaTime);
 
 		// draw ImGUI
-		void DrawGui(float deltaTime);
+		virtual void DrawGui(float deltaTime);
 
 		// renders the scene. It calls the other __RenderScene and takes in the values saved to the camera.
 		void __RenderScene(Camera::Sptr camera);

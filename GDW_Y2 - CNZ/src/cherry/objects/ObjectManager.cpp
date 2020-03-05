@@ -268,10 +268,10 @@ bool cherry::ObjectList::AddObject(cherry::Object* obj)
 
 	// adds the object to the vector.
 	bool added = util::addToVector(objects, obj);
-	bool x;
+
 	// if the object was added, and is a window child.
 	if (added == true && obj->IsWindowChild()) // remembering the child
-		x = util::addToVector(windowChildren, obj);
+		util::addToVector(windowChildren, obj);
 	
 
 	return added;

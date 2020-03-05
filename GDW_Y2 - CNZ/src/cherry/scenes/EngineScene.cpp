@@ -4,8 +4,9 @@
 #include "..\lights/LightManager.h"
 #include "..\Game.h"
 #include "..\Skybox.h"
-#include "..\physics\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 #include "..\textures/TextureSampler.h"
+#include "..\objects/Text.h"
 
 // creating the engine scene.
 cherry::EngineScene::EngineScene(std::string sceneName) : GameplayScene(sceneName)
@@ -193,39 +194,39 @@ void cherry::EngineScene::OnOpen()
 		objectList->objects.push_back(new PrimitiveCapsule());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-
-		 objectList->objects.push_back(new PrimitiveCircle());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
+		
+		objectList->objects.push_back(new PrimitiveCircle());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, 0.0f, 0.0F);
 		 
-		 objectList->objects.push_back(new PrimitiveCone());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
+		objectList->objects.push_back(new PrimitiveCone());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
 		 
-		 objectList->objects.push_back(new PrimitiveCube());
-		 objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
-		 objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
-
+		objectList->objects.push_back(new PrimitiveCube());
+		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
+		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
+		
 		objectList->objects.push_back(new PrimitiveCylinder());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
-
+		
 		objectList->objects.push_back(new PrimitiveDiamond());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
-
+		
 		objectList->objects.push_back(new PrimitiveUVSphere());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
-
+		
 		objectList->objects.push_back(new PrimitivePlane());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
 
 		// testing the copy constructor.
-		 // objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
-		 // objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
+		// objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
+		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
+		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
 
 	   // liquid
 		{
@@ -340,6 +341,15 @@ void cherry::EngineScene::OnOpen()
 			image->SetVisible(true);
 			objectList->AddObject(image);
 			image->SetPositionByWindowSize(Vec2(1.0F, 1.0F) - Vec2(0.80F, 0.88F));
+		}
+
+		// text
+		{
+			// text
+			// TODO: find out why items are layeirng on top of one another.
+			Text* text = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
+			text->SetPosition(1.0F, 1.0F, 3.0F);
+			objectList->AddObject(text); 
 		}
 
 		// version 1 (finds .mtl file automatically)
@@ -460,7 +470,7 @@ void cherry::EngineScene::OnOpen()
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
-	useFrameBuffers = true;
+	useFrameBuffers = false;
 	game->overlayPostProcessing = true;
 
 	// the audio engine

@@ -399,9 +399,15 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 			b2.rotationOrder[1] = 'y';
 			b2.rotationOrder[2] = 'z';
 
+			// TODO: just use aabb...
+			// std::cout << "B1.Rotation: " << b1.rotation.toString() << "" << std::endl;
+			// std::cout << "B2.Rotation: " << b2.rotation.toString() << "\n" << std::endl;
+
 			// if the objects haven't been rotated, a regular aabb check is done.
 			if (b1.rotation == Vec3(0, 0, 0).v && b2.rotation == Vec3(0, 0, 0).v)
+			{
 				return util::math::aabbCollision(b1, b2); // aabb
+			}
 			else
 				return util::math::obbCollision(b1, true, b2, true); // obb
 		}

@@ -178,13 +178,10 @@ cherry::Object::~Object()
 {
 	// TODO: add back deletions
 	delete[] vertices;
-	vertices = nullptr;
+	// vertices = nullptr;
 
-	// if not initialized, it causes an error if deleted.
-	// since only the primitives use indicies, those call delete on their own.
-	// if(indices != nullptr) // TODO: fix this
 	delete[] indices; 
-	indices = nullptr;
+	// indices = nullptr;
 
 	// deleting all of the physics bodies
 	for (PhysicsBody* body : bodies)
@@ -897,7 +894,7 @@ bool cherry::Object::RemovePhysicsBody(unsigned int index)
 // gets the amount of physics bodies
 unsigned int cherry::Object::GetPhysicsBodyCount() const { return bodies.size(); }
 
-// returns the physics bodies
+// returns hte physics bodies
 std::vector<cherry::PhysicsBody*> cherry::Object::GetPhysicsBodies() const { return bodies; }
 
 // gets if intersection is happening.

@@ -44,7 +44,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IncludePath>$(ProjectDir)external;$(ProjectDir)src;$(ProjectDir)external\freetype;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external;$(ProjectDir)src;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib;$(LibraryPath)</LibraryPath>
     <SourcePath>$(ProjectDir)external;$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -59,7 +59,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>imagehlp.lib;glfw3.lib;opengl32.lib;freetype.lib;fmod64.lib;fmodstudio_vc.lib;cherry.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>imagehlp.lib;glfw3.lib;opengl32.lib;fmod64.lib;fmodstudio_vc.lib;cherry.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -176,56 +176,6 @@
     <ClInclude Include="external\fmod\fmod_studio.h" />
     <ClInclude Include="external\fmod\fmod_studio.hpp" />
     <ClInclude Include="external\fmod\fmod_studio_common.h" />
-    <ClInclude Include="external\freetype\config\ftconfig.h" />
-    <ClInclude Include="external\freetype\config\ftheader.h" />
-    <ClInclude Include="external\freetype\config\ftmodule.h" />
-    <ClInclude Include="external\freetype\config\ftoption.h" />
-    <ClInclude Include="external\freetype\config\ftstdlib.h" />
-    <ClInclude Include="external\freetype\freetype.h" />
-    <ClInclude Include="external\freetype\ft2build.h" />
-    <ClInclude Include="external\freetype\ftadvanc.h" />
-    <ClInclude Include="external\freetype\ftbbox.h" />
-    <ClInclude Include="external\freetype\ftbdf.h" />
-    <ClInclude Include="external\freetype\ftbitmap.h" />
-    <ClInclude Include="external\freetype\ftbzip2.h" />
-    <ClInclude Include="external\freetype\ftcache.h" />
-    <ClInclude Include="external\freetype\ftchapters.h" />
-    <ClInclude Include="external\freetype\ftcid.h" />
-    <ClInclude Include="external\freetype\ftcolor.h" />
-    <ClInclude Include="external\freetype\ftdriver.h" />
-    <ClInclude Include="external\freetype\fterrdef.h" />
-    <ClInclude Include="external\freetype\fterrors.h" />
-    <ClInclude Include="external\freetype\ftfntfmt.h" />
-    <ClInclude Include="external\freetype\ftgasp.h" />
-    <ClInclude Include="external\freetype\ftglyph.h" />
-    <ClInclude Include="external\freetype\ftgxval.h" />
-    <ClInclude Include="external\freetype\ftgzip.h" />
-    <ClInclude Include="external\freetype\ftimage.h" />
-    <ClInclude Include="external\freetype\ftincrem.h" />
-    <ClInclude Include="external\freetype\ftlcdfil.h" />
-    <ClInclude Include="external\freetype\ftlist.h" />
-    <ClInclude Include="external\freetype\ftlzw.h" />
-    <ClInclude Include="external\freetype\ftmac.h" />
-    <ClInclude Include="external\freetype\ftmm.h" />
-    <ClInclude Include="external\freetype\ftmodapi.h" />
-    <ClInclude Include="external\freetype\ftmoderr.h" />
-    <ClInclude Include="external\freetype\ftotval.h" />
-    <ClInclude Include="external\freetype\ftoutln.h" />
-    <ClInclude Include="external\freetype\ftparams.h" />
-    <ClInclude Include="external\freetype\ftpfr.h" />
-    <ClInclude Include="external\freetype\ftrender.h" />
-    <ClInclude Include="external\freetype\ftsizes.h" />
-    <ClInclude Include="external\freetype\ftsnames.h" />
-    <ClInclude Include="external\freetype\ftstroke.h" />
-    <ClInclude Include="external\freetype\ftsynth.h" />
-    <ClInclude Include="external\freetype\ftsystem.h" />
-    <ClInclude Include="external\freetype\fttrigon.h" />
-    <ClInclude Include="external\freetype\fttypes.h" />
-    <ClInclude Include="external\freetype\ftwinfnt.h" />
-    <ClInclude Include="external\freetype\t1tables.h" />
-    <ClInclude Include="external\freetype\ttnameid.h" />
-    <ClInclude Include="external\freetype\tttables.h" />
-    <ClInclude Include="external\freetype\tttags.h" />
     <ClInclude Include="external\glad\glad.h" />
     <ClInclude Include="external\GLFW\glfw3.h" />
     <ClInclude Include="external\GLFW\glfw3native.h" />

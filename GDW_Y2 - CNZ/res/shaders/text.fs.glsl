@@ -13,13 +13,17 @@ uniform float a_Alpha; // the overall alpha value of the entity.
 
 uniform vec3 a_CameraPos;
 
-uniform sampler2D a_Text; // now takes more than one value.
+// text sampler
+uniform sampler2D a_FontMap;
+
+ // the color of the text.
+uniform vec4 a_Color;
 
 void main() {
-	// texture
-    vec4 textImg = texture(a_Text, inUV);
-    vec3 result = textImg.rgb * inColor.rgb;
+	// source texture color.
+    vec4 txtClr = texture(a_FontMap, inUV);
+    vec3 result = inColor.rgb * (vec3(1, 1, 1) - txtClr.rgb) * a_Color.rgb;
 
 	// Write the output
-	outColor = vec4(result, inColor.a * textImg.a * a_Alpha);
+	outColor = vec4(result, inColor.a * txtClr.a);
 }
