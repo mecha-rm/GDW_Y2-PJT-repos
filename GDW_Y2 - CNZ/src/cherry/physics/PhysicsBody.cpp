@@ -182,7 +182,7 @@ glm::vec3 cherry::PhysicsBody::GetWorldPositionGLM() const
 cherry::Vec3 cherry::PhysicsBody::GetWorldPosition() const 
 {
 	// TODO: reference body object instead?
-	return (object == nullptr ? position : object->GetPosition() + position);
+	return (body == nullptr ? position : body->GetPosition());
 }
 
 // sets the world position
@@ -383,7 +383,7 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 			// creates a sphere to encompass each box.
 			// since the sphere is the smallest possible will containing the box...
 			// if the distance between the boxes is larger than it, there can't possibly be collision.
-			if ((b1.position - b2.position).length() >= val1 / 2.0F + val2 / 2.0F)
+			if ((b1.position - b2.position).length() >= (val1 + val2) / 2.0F)
 				return false;
 
 
@@ -399,11 +399,16 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 			b2.rotationOrder[1] = 'y';
 			b2.rotationOrder[2] = 'z';
 
+
 			// if the objects haven't been rotated, a regular aabb check is done.
 			if (b1.rotation == Vec3(0, 0, 0).v && b2.rotation == Vec3(0, 0, 0).v)
+			{
 				return util::math::aabbCollision(b1, b2); // aabb
+			}
 			else
+			{
 				return util::math::obbCollision(b1, true, b2, true); // obb
+			}
 		}
 	}
 	// Sphere Collision

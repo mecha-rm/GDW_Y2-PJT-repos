@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <math.h>
-// #include <algorithm> // max/min function
+#include <algorithm>
 
 // SPHERE/CIRCLE COLLISION
 bool util::math::circleCollision(Vec2 circ1, float radius1, Vec2 circ2, float radius2)
@@ -267,8 +267,6 @@ bool util::math::obbCollision(const Box3D& boxA, bool inDegreesA, const Box3D& b
 	// maximum and minimum values for B
 	Vec3 minB{}, maxB{};
 
-	// rotation matrices
-	Mat3 rotTemp;
 	// rotation matrix for A, and the reverse of it.
 	Mat3 rotMatA, rotMatA_R;
 
@@ -278,9 +276,6 @@ bool util::math::obbCollision(const Box3D& boxA, bool inDegreesA, const Box3D& b
 	// matrices for minimum and maximums
 	Mat3 minMatA, minMatB, maxMatA, maxMatB;
 	Mat3 minMatA_T, minMatB_T, maxMatA_T, maxMatB_T;
-
-	Vec3 newPosA;
-	Vec3 newPosB;
 
 	// copying the arrays
 	memcpy(t_vertsA, vertsA, sizeof(Vec3) * ARR_SIZE);
@@ -347,34 +342,40 @@ bool util::math::obbCollision(const Box3D& boxA, bool inDegreesA, const Box3D& b
 
 			if (axisB != ' ')
 				t_vertsB[j] = util::math::rotate(t_vertsB[j] - boxB.position, boxB.rotation[i], axisB, inDegreesB) + boxB.position;
-		}
-		
-		
+		}	
 	}
 
-	// finding hte maximum and minimum positions
+	// now to find the maximum and minimum positions.
+	// initial maximum and minimum.
+	minA = t_vertsA[0];
+	maxA = minA;
+
+	minB = t_vertsB[0];
+	maxB = minB;
+
+	// finding the maximum and minimum positions
 	for (int i = 0; i < ARR_SIZE; i++)
 	{
 		// minimum values for A
-		minA.x = (t_vertsA[i].x < minA.x) ? t_vertsA[i].x : minA.x;
-		minA.y = (t_vertsA[i].y < minA.y) ? t_vertsA[i].y : minA.y;
-		minA.z = (t_vertsA[i].z < minA.z) ? t_vertsA[i].z : minA.z;
+		minA.x = std::fmin(t_vertsA[i].x, minA.x);
+		minA.y = std::fmin(t_vertsA[i].y, minA.y);
+		minA.z = std::fmin(t_vertsA[i].z, minA.z);
 
 		// maximum values for A
-		maxA.x = (t_vertsA[i].x > maxA.x) ? t_vertsA[i].x : maxA.x;
-		maxA.y = (t_vertsA[i].y > maxA.y) ? t_vertsA[i].y : maxA.y;
-		maxA.z = (t_vertsA[i].z > maxA.z) ? t_vertsA[i].z : maxA.z;
+		maxA.x = std::fmax(t_vertsA[i].x, maxA.x);
+		maxA.y = std::fmax(t_vertsA[i].y, maxA.y);
+		maxA.z = std::fmax(t_vertsA[i].z, maxA.z);
 
 
 		// minimum values for B
-		minB.x = (t_vertsB[i].x < minB.x) ? t_vertsB[i].x : minB.x;
-		minB.y = (t_vertsB[i].y < minB.y) ? t_vertsB[i].y : minB.y;
-		minB.z = (t_vertsB[i].z < minB.z) ? t_vertsB[i].z : minB.z;
+		minB.x = std::fmin(t_vertsB[i].x, minB.x);
+		minB.y = std::fmin(t_vertsB[i].y, minB.y);
+		minB.z = std::fmin(t_vertsB[i].z, minB.z);
 
-		// maximum values for A
-		maxB.x = (t_vertsB[i].x > maxB.x) ? t_vertsB[i].x : maxB.x;
-		maxB.y = (t_vertsB[i].y > maxB.y) ? t_vertsB[i].y : maxB.y;
-		maxB.z = (t_vertsB[i].z > maxB.z) ? t_vertsB[i].z : maxB.z;
+		// maximum values for B
+		maxB.x = std::fmax(t_vertsB[i].x, maxB.x);
+		maxB.y = std::fmax(t_vertsB[i].y, maxB.y);
+		maxB.z = std::fmax(t_vertsB[i].z, maxB.z);
 	}
 
 	// min matrix for A
@@ -431,46 +432,64 @@ bool util::math::obbCollision(const Box3D& boxA, bool inDegreesA, const Box3D& b
 		getRotationMatrix(-boxB.rotation.y, inDegreesB, boxB.rotationOrder[1]) *
 		getRotationMatrix(-boxB.rotation.x, inDegreesB, boxB.rotationOrder[0]);
 	
-	// rotating the values for A's rotation
-	// Check 1 (A's Rotation)
-	// minimum a and maximum a
-	minMatA_T = rotMatA_R * (minMatA - rPosMat) + rPosMat;
-	maxMatA_T = rotMatA_R * (maxMatA - rPosMat) + rPosMat;
+	// getting the minimum and maximums now that the items have been rotated.
+	for (int i = 1; i <= 2; i++)
+	{
+		if (i == 1) // Check 1 (A Check)
+		{
+			// rotating the values for A's rotation
+			// minimum a and maximum a
+			minMatA_T = rotMatA_R * (minMatA - rPosMat) + rPosMat;
+			maxMatA_T = rotMatA_R * (maxMatA - rPosMat) + rPosMat;
 
-	// minimum b and maximum b
-	minMatB_T = rotMatA_R * (minMatB - rPosMat) + rPosMat;
-	maxMatB_T = rotMatA_R * (maxMatB - rPosMat) + rPosMat;
+			// minimum b and maximum b
+			minMatB_T = rotMatA_R * (minMatB - rPosMat) + rPosMat;
+			maxMatB_T = rotMatA_R * (maxMatB - rPosMat) + rPosMat;
+		}
+		else if (i == 2) // Check 2 (B Check)
+		{
+			// rotating the values for B's rotation
+			// minimum a and maximum a
+			minMatA_T = rotMatB_R * (minMatA - rPosMat) + rPosMat;
+			maxMatA_T = rotMatB_R * (maxMatA - rPosMat) + rPosMat;
 
-	intersects = aabbCollision(
-		Vec3(minMatA_T[0][0], minMatA_T[1][0], minMatA_T[2][0]),
-		Vec3(maxMatA_T[0][0], maxMatA_T[1][0], maxMatA_T[2][0]),
-		Vec3(minMatB_T[0][0], minMatB_T[1][0], minMatB_T[2][0]),
-		Vec3(maxMatB_T[0][0], maxMatB_T[1][0], maxMatB_T[2][0])
-	);
+			// minimum b and maximum b
+			minMatB_T = rotMatB_R * (minMatB - rPosMat) + rPosMat;
+			maxMatB_T = rotMatB_R * (maxMatB - rPosMat) + rPosMat;
+		}
 
-	// if no intersection
-	if (intersects == false)
-		return false;
-	
-	// Check 2 (Rotation B)
-	// minimum a and maximum a
-	minMatA_T = rotMatB_R * (minMatA - rPosMat) + rPosMat;
-	maxMatA_T = rotMatB_R * (maxMatA - rPosMat) + rPosMat;
+		// rotated minimums and maximums
+		Vec3 rMinA{}, rMaxA{}, rMinB{}, rMaxB{};
 
-	// minimum b and maximum b
-	minMatB_T = rotMatB_R * (minMatB - rPosMat) + rPosMat;
-	maxMatB_T = rotMatB_R * (maxMatB - rPosMat) + rPosMat;
+		// getting the minimums for A
+		rMinA.x = std::fmin(minMatA_T[0][0], maxMatA_T[0][0]);
+		rMinA.y = std::fmin(minMatA_T[1][0], maxMatA_T[1][0]);
+		rMinA.z = std::fmin(minMatA_T[2][0], maxMatA_T[2][0]);
 
-	intersects = aabbCollision(
-		Vec3(minMatA_T[0][0], minMatA_T[1][0], minMatA_T[2][0]),
-		Vec3(maxMatA_T[0][0], maxMatA_T[1][0], maxMatA_T[2][0]),
-		Vec3(minMatB_T[0][0], minMatB_T[1][0], minMatB_T[2][0]),
-		Vec3(maxMatB_T[0][0], maxMatB_T[1][0], maxMatB_T[2][0])
-	);
+		// getting the maximums for A
+		rMaxA.x = std::fmax(minMatA_T[0][0], maxMatA_T[0][0]);
+		rMaxA.y = std::fmax(minMatA_T[1][0], maxMatA_T[1][0]);
+		rMaxA.z = std::fmax(minMatA_T[2][0], maxMatA_T[2][0]);
 
+		// getting the minimums for B
+		rMinB.x = std::fmin(minMatB_T[0][0], maxMatB_T[0][0]);
+		rMinB.y = std::fmin(minMatB_T[1][0], maxMatB_T[1][0]);
+		rMinB.z = std::fmin(minMatB_T[2][0], maxMatB_T[2][0]);
 
+		// getting the maximums for B
+		rMaxB.x = std::fmax(minMatB_T[0][0], maxMatB_T[0][0]);
+		rMaxB.y = std::fmax(minMatB_T[1][0], maxMatB_T[1][0]);
+		rMaxB.z = std::fmax(minMatB_T[2][0], maxMatB_T[2][0]);
 
-	// if intersects is true, then there is collision. If not, then there is no intersection.
+		// intersection check
+		intersects = aabbCollision(rMinA, rMaxA, rMinB, rMaxB);
+
+		// if no intersection
+		if (intersects == false)
+			return false;
+	}
+
+	// if 'intersects' is true, then there is collision. If not, then there is no intersection.
 	return intersects;
 }
 
