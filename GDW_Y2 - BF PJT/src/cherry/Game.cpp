@@ -1399,7 +1399,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		
 	}
 
-	// if the screen overlay is to ignore the post-processing
+	// if the screen overlay is to ignore the post-processing 
 	if (overlayPostProcessing)
 	{
 		for (int i = 0; i < postRenders.size(); i++) {
@@ -1472,9 +1472,9 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 					renderer.Mesh->Draw();
 					glEnable(GL_CULL_FACE);
 				}
-				else // faces are set to be culled automatically
+				else // faces are set to be culled automatically 
 				{
-					renderer.Mesh->Draw();
+					renderer.Mesh->Draw(); 
 				}
 			}
 		}

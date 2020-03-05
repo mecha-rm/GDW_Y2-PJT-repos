@@ -1,16 +1,12 @@
 #include "Text.h"
-#include <freetype/ft2build.h>
-#include <freetype/freetype.h>
-#include <toolkit/Logging.h>
-
 #include "..\utils/Utils.h"
-#include "..\textures/Texture2D.h"
 #include "..\utils/math/Rotation.h"
 
+const int cherry::Text::CHAR_COUNT = 256;
 
 // constructor
  cherry::Text::Text(std::string text, std::string scene, std::string font, cherry::Vec4 color, float size)
- 	: Object(), text(text), fontPath(font), color(color), fontSize(size)
+ 	: Object(), text(text), filePath(font), color(color), fontSize(size)
  {
  	this->color = Vec4(
  		glm::clamp(color.v.x, 0.0F, 1.0F),
@@ -39,144 +35,190 @@
  	: Text(text, scene, font, Vec4(color), size)
  {
  }
+
+ // copy constructor
+ cherry::Text::Text(const cherry::Text& txt)
+     : Object(txt)
+ {
+     text = txt.text;
+     filePath = txt.filePath; // text path
+     fontMap = txt.fontMap; // font
+     color = txt.color; // colour
+ }
+
+ // destructor.
+ cherry::Text::~Text()
+ {
+     // array of characters. This doesn't get deleted since they're shared pointers.
+     // for (Character* ch : chars) // shared pointers.
+     //     delete ch;
+
+     // deleting the text characters.
+     for (Character* ch : textChars)
+         delete ch;
+ }
+
+ // returns the text.
+ std::string cherry::Text::GetText() const { return text; }
  
  // load text
  void cherry::Text::LoadText(const std::string scene)
  {
-
-     FT_Library ftLib; // free type library
-     FT_Face ftFace;
-     cherry::Shader::Sptr shader;
-     cherry::Material::Sptr material; // material
-
-     // TODO: allow for multiple rows.
-     float tShift = 0; // shifts letters so that they're equally far apart.
-
-    // if the font file is inaccessible, or it is not a ttf file
-     if (!(util::fileAccessible(fontPath) && fontPath.substr(fontPath.find_last_of(".") + 1) == "ttf"))
-     {
-         LOG_ERROR("Font file could not be opened, or was not provided in ttf format. Using default font.");
-         fontPath = FONT_ARIAL; // changes the font to the default.
-     }
-
-     // free type library initialization.
-     if (FT_Init_FreeType(&ftLib))
-         LOG_ERROR("Could not initialize FreeType library.");
-
-     if (FT_New_Face(ftLib, fontPath.c_str(), 0, &ftFace))
-         LOG_ERROR("Failed to load font.");
-
-     // setting the font size. Width is set to (0) so that it's based on the font height.
-     // FT_Set_Pixel_Sizes(ftFace, 0, fontSize);
-     FT_Set_Pixel_Sizes(ftFace, 0, fontSize); // font size uses the scale instead.
-
-     // generates a bitmap for the character, and checks if the font is readable.
-     if (FT_Load_Char(ftFace, 'X', FT_LOAD_RENDER))
-         LOG_ERROR("Failed to load glyph from TrueType font file");
-
-     // disables byte-alignment restriction
-     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-
-     // goes through the ASCII table
-     // source: http://www.asciitable.com/
-     // 0 - 127 is the standard ASCII table. 128 - 255 is the extended ASCII table.s
-     for (GLubyte chr = 0; chr < 255; chr++)
-     {
-         // loads the character glyph
-         if (FT_Load_Char(ftFace, chr, FT_LOAD_RENDER))
-         {
-             LOG_ERROR("Failed to load ASCII glyph.");
-             continue;
-         }
-
-         // Generate texture
-         GLuint texture;
-         // a reference to this texture isn't being saved, so it's being lost to the void.
-         glGenTextures(1, &texture);
-         // glCreateTextures(GL_TEXTURE_2D, 1, &texture);
-
-         // std::cout << "\nBitmap.Width: " << ftFace->glyph->bitmap.width << "\n";
-         // std::cout << "Bitmap.Rows: " << ftFace->glyph->bitmap.rows << "\n";
-         // std::cout << "Bitmap.Width: " << ftFace->glyph->bitmap.width << "\n";
-
-         glBindTexture(GL_TEXTURE_2D, texture);
-         // glBindTextureUnit(texture, chr);
-         glTexImage2D(
-             GL_TEXTURE_2D,
-             0,
-             GL_RED,
-             ftFace->glyph->bitmap.width,
-             ftFace->glyph->bitmap.rows,
-             0,
-             GL_RED,
-             GL_UNSIGNED_BYTE,
-             ftFace->glyph->bitmap.buffer
-         );
-        //  glTextureStorage2D(texture, 1, GL_RED, ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows);
-
-
-
-         // setting the texture options
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-         // glTexParameteri(texture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-         // glTexParameteri(texture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-         // glTexParameteri(texture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-         // glTexParameteri(texture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-
-
-         // storing the character for later use.
-         Glyph glyph{
-             chr,
-             texture,
-             glm::ivec2(ftFace->glyph->bitmap.width, ftFace->glyph->bitmap.rows),
-             glm::ivec2(ftFace->glyph->bitmap_left, ftFace->glyph->bitmap_top),
-             ftFace->glyph->advance.x
-         };
-         glyphs.push_back(glyph);
-
-     }
-     // glBindTexture(GL_TEXTURE_2D, 0);
-
-     // destroying the free type the texture is now loaded.
-     FT_Done_Face(ftFace);
-     FT_Done_FreeType(ftLib);
-
-     // TODO: make this the pane for the text.
-     // making the vertices for each character
-
-     // goes through each character and creates them.
-     for (int i = 0; i < text.size(); i++)
-     {
-         // gets the character and its glyph.
-         const char& c = text[i];
-         const Glyph& g = glyphs[(int)c];
-
-
-         // calculates the size.
-         glm::vec2 size{ g.bearing.x + g.size.x, g.size.y - g.bearing.y + g.size.y};
-
-         // creates the character.
-         Character* chr = new Character(c, g.textureID, size);
-         chr->CreateEntity(scene, chr->GetMaterial());
-
-         chr->textPos = glm::vec2(tShift, 0);
-         // chr->SetScale(fontSize); // font size uses the scale function.
-         chars.push_back(chr);
-
-         // bit shifts to get the value in pixels.
-         tShift += (g.advance >> 6);
-     }
+     // shader and material for the text box.
+     cherry::Shader::Sptr textShader;
+     cherry::Material::Sptr textMaterial; // material
     
-     // glBindTexture(GL_TEXTURE_2D, 0);
+     // shader for characters
+     cherry::Shader::Sptr charShader;
+     cherry::Material::Sptr charMaterial;
 
+     // used when thre is no 
+     cherry::Material::Sptr noCharMaterial;
+
+     // the font map texture.
+     Texture2D::Sptr mapTexture;
+     glm::vec2 mapSize(1.0F, 1.0F); // the image dimensions
+
+     std::fstream file; // file
+     std::string line;
+
+     // character shader.
+     charShader = std::make_shared<Shader>();
+     charShader->Load("res/shaders/text.vs.glsl", "res/shaders/text.fs.glsl");
+     
+     // character material
+     charMaterial = std::make_shared<Material>(charShader);
+     charMaterial->Set("a_Color", { color.v.x, color.v.y, color.v.z, color.v.w });
+     charMaterial->HasTransparency = true;
+
+     // unaddressed character.
+     noCharMaterial = std::make_shared<Material>(charShader);
+     noCharMaterial->Set("a_Color", { color.v.x, color.v.y, color.v.z, color.v.w });
+     noCharMaterial->Set("a_FontMap", Texture2D::LoadFromFile("res/fonts/default_char.png"));
+     noCharMaterial->HasTransparency = true;
+
+     // TODO: file safety check.
+     file.open(filePath, std::ios::in);
+
+     // getting all the lines
+     while (std::getline(file, line))
+     {
+         std::string temp = "";
+         std::vector<std::string> splitLine;
+
+         // no information
+         if (line.empty())
+             continue;
+
+         // temp = line.substr(0, line.find_first_of(" "));
+         splitLine = util::splitString<std::string>(line);
+         
+         if (splitLine.size() <= 1)
+             continue;
+
+         temp = splitLine[0];
+
+         // reading the text.
+         if (temp == "fnt") // font name
+         {
+             name = splitLine[1];
+             name = util::replaceSubstring(name, "_", " ", false);
+         }
+         else if (temp == "src") // source
+         {
+             description = splitLine[1];
+             description = util::replaceSubstring(name, "_", " ", false);
+
+         }
+         else if (temp == "sze") // size of each cell.
+         {
+             cellSize = glm::vec2(
+                 util::convertString<float>(splitLine[1]),
+                 util::convertString<float>(splitLine[2])
+             );
+         }
+         else if (temp == "spc") // spacing
+         {
+             spacing = util::convertString<float>(splitLine[1]);
+
+         }
+         else if (temp == "map") // file path for the image.
+         {
+             fontMap = splitLine[1];
+             std::string fpStr = (filePath.find("/") != std::string::npos) ? filePath.substr(0, filePath.find_last_of("/") + 1) : "";
+             fontMap = fpStr + fontMap;
+
+             // loads in the map
+             mapTexture = Texture2D::LoadFromFile(fontMap);
+             mapSize = glm::vec2{ mapTexture->GetWidth(), mapTexture->GetHeight() }; // saves the image dimensions.
+
+             charMaterial->Set("a_FontMap", mapTexture);
+
+             // TODO: add this.
+         }
+         else if (util::isInt(temp)) // if the string is an integer.
+         {
+             int index = util::convertString<int>(splitLine[0]); // gets the character.
+
+             // Number, Symbol, PosX, PosY, Width, Height 
+             glm::vec4 uvs;
+             uvs.x = util::convertString<int>(splitLine[2]); 
+             uvs.y = util::convertString<int>(splitLine[3]);
+             uvs.z = uvs.x + util::convertString<int>(splitLine[4]);
+             uvs.w = uvs.y + util::convertString<int>(splitLine[5]);
+             
+             // 0 through 1 range.
+             uvs.x /= mapSize.x;
+             uvs.y /= mapSize.y;
+             uvs.z /= mapSize.x;
+             uvs.w /= mapSize.y;
+
+             // if there are no uvs, then the default character is used.
+             if(uvs != glm::vec4(0, 0, 0, 0))
+             {
+                 chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize, uvs);
+             }
+             else
+             {
+                 chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize, glm::vec4(0, 0, 1, 1));
+             }
+             
+             chars[index]->SetVisible(false);
+         }
+     }
+
+     file.close();
+
+     // creating the characters
+     // TODO: multiple lines.
+     
+
+     for (int i = 0; i < text.size(); i++) 
+     {
+         const char c = text[i];
+
+         // gets the character.
+         const Character * charObject = chars[(int)c].get();
+         // const Character& cpy = charObject->get();
+
+         // making a copy of the character.
+         Character* charCopy = new Character(*charObject);
+
+         charCopy->localPosition = Vec3(spacing * i, 0, 0);
+         charCopy->SetScale(0.1F);
+         
+         // for some reason, the material's transparency is turned off at some point.
+         // this turns it back on.
+         charCopy->GetMaterial()->HasTransparency = true;
+
+         // TODO: add in alpha change for letters.
+        
+         textChars.push_back(charCopy);
+     }
+
+     // plane representing the text box.
      verticesTotal = 4;
-     vertices = new Vertex[verticesTotal]
+     vertices = new Vertex[verticesTotal] 
      {
          //  {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
          {{ -1.0F, -1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
@@ -194,13 +236,20 @@
 
      mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
 
-     shader = std::make_shared<Shader>();
-     shader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
-     material = std::make_shared<Material>(shader);
+     textShader = std::make_shared<Shader>();
+     textShader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
+
+     textMaterial = std::make_shared<Material>(textShader);
+     textMaterial->HasTransparency = true;
 
      // creating a plane to represent the size.
-     CreateEntity(scene, material);
+     // CreateEntity(scene, textMaterial);
+     CreateEntity(scene, textMaterial); // empty material
      SetVisible(false);
+
+     worldPos = position + Vec3(1, 1, 1);
+     worldScale = scale;
+     worldRotDeg = GetRotationDegrees();
  }
 
  // update time
@@ -208,15 +257,18 @@
  {
      Object::Update(deltaTime);
 
+     Vec3 currRotDeg = GetRotationDegrees();
+
      // TODO: optimize.
 
      // updating scale
+     if (worldScale != scale)
      {
          // the scale of the text.
          Vec3 textScale = GetScale();
 
          // setting the scale proportional to the body.
-         for (Character * chr : chars)
+         for (Character* chr : textChars)
          {
              Vec3 charScale = chr->GetScale(); // character's scale
              Vec3 newScale; // new scale
@@ -225,21 +277,23 @@
              newScale.v.x = charScale.v.x * textScale.v.x;
              newScale.v.y = charScale.v.y * textScale.v.y;
              newScale.v.z = charScale.v.z * textScale.v.z;
-         
+
              // setting the new scale.
              chr->SetScale(newScale);
          }
      }
 
      // updating rotation
+     if (worldRotDeg != currRotDeg)
      {
          // rotation
-         for (Character * chr : chars)
+         for (Character* chr : textChars)
              chr->SetRotationDegrees(GetRotationDegrees() + chr->GetRotationDegrees());
-         
+
      }
 
-     // updating position.
+     // updating position if any of the values have been changed.
+     if (worldPos != position || worldScale != scale || worldRotDeg != currRotDeg)
      {
          // the text box is the parent.
          glm::mat4 parent = glm::mat4(1.0F);
@@ -295,9 +349,9 @@
          parent[2][2] = rotScale[2][2];
 
          // updates all characters.
-         for (Character * chr : chars)
+         for (Character * chr : textChars)
          {
-             Vec3 chrPos = chr->GetPosition();
+             Vec3 chrPos = chr->GetLocalPosition();
 
              // gets the position of the character.
              glm::mat4 child
@@ -314,7 +368,13 @@
          }
      }
 
-     for (Character* chr : chars)
+     // saving the values.
+     worldPos = position;
+     worldScale = scale;
+     worldRotDeg = currRotDeg;
+
+     // update loop.
+     for (Character* chr : textChars)
          chr->Update(deltaTime);
  }
 
@@ -323,38 +383,18 @@
 
  
  // CHARACTERS
- // character constructor.
- // cherry::Character::Character(char a_char)
- //     : m_char(a_char)
- // {
- // }
-
- // constructor
- cherry::Character::Character(const char a_CHAR, GLuint textureID, glm::vec2 size)
-     : m_CHAR(a_CHAR)
+ cherry::Character::Character(const char a_CHAR, std::string scene, cherry::Material::Sptr fontMap, glm::vec2 size, glm::vec4 uvs)
+     : m_CHAR(a_CHAR), uvs(uvs)
  {
-     // shader and material
-     Shader::Sptr shader;
-
-
-
-     //  Material::Sptr material;
-     // glActiveTexture(GL_TEXTURE0);
-
-      // making the mesh
+     // making the mesh
      verticesTotal = 4;
      vertices = new Vertex[verticesTotal]
      {
-         //  {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
-         // {{ -size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-         // {{  size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-         // {{ -size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-         // {{  size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
-          //  {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
-         {{ -size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 0.5F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-         {{  size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-         {{ -size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 0.7F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-         {{  size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 0.3F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+          //  {x, y, z}, {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
+         {{ -size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {uvs.x, uvs.y}}, // bottom left (uv = 0,0)
+         {{  size.x / 2.0F, -size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {uvs.z, uvs.y}}, // bottom right (uv = 1,0)
+         {{ -size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {uvs.x, uvs.w}}, // top left (uv = 0,1)
+         {{  size.x / 2.0F,  size.y / 2.0F, 0.0f }, { 1.0F, 1.0F, 0.3F, 1.0F }, {0.0F, 0.0F, 1.0F}, {uvs.z, uvs.w}}, // top right (uv = 1,1)
      };
 
      indicesTotal = 6;
@@ -365,42 +405,34 @@
      };
 
      mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
- 
-     shader = std::make_shared<Shader>();
-     shader->Load("res/shaders/text.vs.glsl", "res/shaders/text.fs.glsl");
-     // shader->Bind();
 
-    // glBindTexture(GL_TEXTURE_2D, textureID);
-
-     material = std::make_shared<Material>(shader);
-     // material->GetShader()->Bind(); // don't bind?
-
-     // glBindTextureUnit(textureID, textureID);
-     // material->Set("a_Text", (int)textureID);
-     // material->GetShader()->Bind();
-
-    
-     
-    //  glBindTextureUnit(GL_TEXTURE_2D, textureID);
-    // glBindTextureUnit(textureID, 0);
-     material->Set("a_Text", (int)textureID);
-    
-     // glActiveTexture(GL_TEXTURE0); // GL_TEXTUREi where i can be replaced to be any unused texture slot
-     // glBindTexture(GL_TEXTURE_2D, textureID);
-
-     // glBindTexture(GL_TEXTURE_2D, textureID);
-     // material->Set("a_Text", (int)textureID);
-     // material->GetShader()->Bind();
-
-     // material->HasTransparency = true;
-
-     // shader->SetUniform("a_Text", 0);
-
-    //  material->Set("a_Text", (int)textureID);
-
-     // glBindTexture(GL_TEXTURE_2D, 0);
-    //  material->Set("a_Text", 0);
-
+     // fontMap->Set("a_Text", );
+     CreateEntity(scene, fontMap);
  }
- 
- 
+
+ // copy constructor
+ cherry::Character::Character(const Character& cpy)
+     : Object(cpy), m_CHAR(cpy.m_CHAR)
+ {
+     // copies the character.
+     localPosition = cpy.GetLocalPositionGLM();
+     uvs = cpy.uvs;
+ }
+
+ // gets the local position
+ cherry::Vec3 cherry::Character::GetLocalPosition() const
+ {
+     return localPosition;
+ }
+
+ // gets the local position.
+ glm::vec3 cherry::Character::GetLocalPositionGLM() const
+ {
+     return glm::vec3(localPosition.v.x, localPosition.v.y, localPosition.v.z);
+ }
+
+ // update
+ void cherry::Character::Update(float deltaTime)
+ {
+    Object::Update(deltaTime);
+ }

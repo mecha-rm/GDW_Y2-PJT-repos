@@ -151,8 +151,15 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			if (legend[curObj] == "Origin") { // origin point
 				offsetX = x;
 				offsetY = y;
+				
+				// original
 				cnz::Player* playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->GetSceneName()); // creates the player.
 				playerObj->SetPosition(glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0));
+
+				// new
+				// cnz::Player* playerObj = cnz::Player::GenerateDefault(GetSceneName(), 
+				// 	glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0)); // creates the player.
+				
 				this->objList.push_back(playerObj);
 			}
 			else if (legend[curObj] == "Wall") { // wall

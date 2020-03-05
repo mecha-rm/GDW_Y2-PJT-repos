@@ -59,7 +59,7 @@ cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj)
 
 // loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
 cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl, bool dynamicObj) :
-	Object(filePath, loadMtl)
+	Object(filePath, loadMtl, dynamicObj)
 {
 	CreateEntity(scene, material);
 }
@@ -178,13 +178,10 @@ cherry::Object::~Object()
 {
 	// TODO: add back deletions
 	delete[] vertices;
-	vertices = nullptr;
+	// vertices = nullptr;
 
-	// if not initialized, it causes an error if deleted.
-	// since only the primitives use indicies, those call delete on their own.
-	// if(indices != nullptr) // TODO: fix this
 	delete[] indices; 
-	indices = nullptr;
+	// indices = nullptr;
 
 	// deleting all of the physics bodies
 	for (PhysicsBody* body : bodies)

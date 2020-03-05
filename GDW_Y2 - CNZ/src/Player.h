@@ -32,6 +32,9 @@ namespace cnz
 		// loads in the player using a default model. The player takes this model's information.
 		// Player(const cherry::Primitive * model);
 
+		// generates and returns the default player character.
+		static Player* GenerateDefault(std::string scene, cherry::Vec3 position = cherry::Vec3());
+
 		// returns whether the player is currently dashing. The function getDash() does the same thing.
 		bool IsDashing() const;
 
@@ -59,7 +62,7 @@ namespace cnz
 		void UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height);
 
 		// Update
-		void Update(float deltaTime);
+		void Update(float deltaTime) override;
 
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
 		void SetAngle(float angle, bool isDegrees);

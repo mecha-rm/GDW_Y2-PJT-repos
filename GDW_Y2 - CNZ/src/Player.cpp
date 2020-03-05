@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "cherry/objects/Primitive.h"
 #include "cherry/physics/PhysicsBody.h"
+#include "cherry/animate/AnimationManager.h"
 
 // creates a player with 
 cnz::Player::Player(std::string modelFile) : Player(modelFile, cherry::Vec3()) {}
@@ -24,7 +25,7 @@ cnz::Player::Player(std::string modelPath, std::string scene)
 
 // creates the player in hte provided scene
 cnz::Player::Player(std::string modelPath, std::string scene, cherry::Vec3 pos)
-	:Object(modelPath, scene, true)
+	:Object(modelPath, scene, true, true)
 {
 	position = pos;
 }
@@ -58,6 +59,57 @@ cnz::Player::Player(cherry::Object obj) : Object(obj) {
 
 // sets dash for the player
 void cnz::Player::SetDash(bool dash) { this->dash = dash; }
+
+// generates the default character.
+cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 position)
+{
+	// TODO: the player object gets remade in CNZ_GameplayScene, so this doesn't work.
+	// that will need to be fixed.
+	using namespace cherry;
+
+	Player* plyr = new Player("res/objects/hero_ver.2/OneAnimationTest_000000.obj", scene, position);
+
+	// animation 1
+	{
+		MorphAnimation* mph = new MorphAnimation(plyr);
+
+		// first 10 frames
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000000.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000001.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000002.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000003.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000004.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000005.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000006.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000007.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000008.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000009.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000010.obj"));
+
+		// second 10 frames
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000011.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000012.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000013.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000014.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000015.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000016.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000017.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000018.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000019.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000020.obj"));
+
+		// final frames
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000021.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000022.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000023.obj"));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000024.obj"));
+
+		plyr->AddAnimation(mph, true);
+		mph->Play();
+	}
+
+	return plyr;
+}
 
 // gets whether the player is currently dashing.
 bool cnz::Player::IsDashing() const { return dash; }
@@ -128,20 +180,23 @@ void cnz::Player::Update(float deltaTime) {
 	// TODO: remove this for the final version.
 	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
 	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
-
+	
+	// already in Object update.
 	// runs the path and sets the new position
-	if (followPath)
-		position = path.Run(deltaTime);
+	//if (followPath)
+	//	position = path.Run(deltaTime);
 
-	// if the animation is playing
-	if (animations.GetCurrentAnimation() != nullptr) {
-		animations.GetCurrentAnimation()->isPlaying();
-		animations.GetCurrentAnimation()->Update(deltaTime);
-	}
+	//// if the animation is playing
+	//if (animations.GetCurrentAnimation() != nullptr) {
+	//	animations.GetCurrentAnimation()->isPlaying();
+	//	animations.GetCurrentAnimation()->Update(deltaTime);
+	//}
 
-	// updating the physics bodies
-	for (cherry::PhysicsBody* body : bodies)
-		body->Update(deltaTime);
+	//// updating the physics bodies
+	//for (cherry::PhysicsBody* body : bodies)
+	//	body->Update(deltaTime);
+
+	Object::Update(deltaTime);
 }
 
 // sets the angle
