@@ -158,34 +158,33 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Wall") { // wall
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), cherry::Vec3(4, 4, 1), true);
+					obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->wall);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				objBodySize = cherry::Vec3(objBodySize.GetX(), objBodySize.GetZ(), objBodySize.GetY()); // something is wrong...
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
-					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+					//obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
-					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
-					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+					//obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					//obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
-					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+					//obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
-					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
-					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				//	obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					//obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 
 				}
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 2));
@@ -196,13 +195,13 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Dumpster") { // Dumpster
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Dumpster.obj", this->GetSceneName(), cherry::Vec3(10, 2, 2), true);
+					obj = new Obstacle("res/objects/props/Dumpster.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->dumpster);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
@@ -232,13 +231,15 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Lamp post") { // Lamp post
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+					obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->lampPost);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				//obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				//obj->SetPBodySize((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum()));
+				cherry::Vec3 objpbsize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objpbsize));
 
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
@@ -261,6 +262,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 3));
+				obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				this->objList.push_back(obj);
@@ -268,13 +270,13 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Lamp post corner") { // Lamp post corner
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+					obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->lampPostCorner);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
@@ -304,13 +306,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Lamp post middle") { // lamp post middle
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->GetSceneName(), cherry::Vec3(1, 1, 6), true);
+					obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->lampPostMiddle);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -339,13 +342,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Barrel") { // barrel
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/drum.obj", this->GetSceneName(), cherry::Vec3(2, 2, 2), true);
+					obj = new Obstacle("res/objects/props/drum.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->barrel);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -374,13 +378,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Katana") { // katana
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/weapons/katana.obj", this->GetSceneName(), cherry::Vec3(1, 1, 2), true);
+					obj = new Obstacle("res/objects/weapons/katana.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->katana);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -409,13 +414,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Pillar") { // pillar
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->GetSceneName(), cherry::Vec3(2, 2, 4), true);
+					obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->pillar);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -444,13 +450,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Manhole cover") { // manhole cover
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/manhole.obj", this->GetSceneName(), cherry::Vec3(1, 1, 0.5), true);
+					obj = new Obstacle("res/objects/props/manhole.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->manHoleCover);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -479,13 +486,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Road") { // road
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Road.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+					obj = new Obstacle("res/objects/props/Road.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->road);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -514,13 +522,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 			else if (legend[curObj] == "Sidewalk") { // sidewalk
 				Obstacle* obj;
 				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/sidewalk.obj", this->GetSceneName(), cherry::Vec3(4, 4, 0.25), true);
+					obj = new Obstacle("res/objects/props/sidewalk.obj", this->GetSceneName(), true);
 				}
 				else {
 					obj = new Obstacle(*this->sidewalk);
 				}
-				objBodySize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
-				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objBodySize));
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
+
 				std::vector<float> properties = GetObjProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
@@ -628,4 +637,12 @@ std::vector<float> cnz::Level::GetObjProps(int y, int x) {
 
 		return properties;
 	}
+}
+
+cherry::Vec3 cnz::Level::UnFlipVec3(cherry::Vec3 vecToFlip) {
+	cherry::Vec3 flippedVec;
+	flippedVec.SetX(vecToFlip.GetX());
+	flippedVec.SetY(vecToFlip.GetZ());
+	flippedVec.SetZ(vecToFlip.GetY());
+	return flippedVec;
 }

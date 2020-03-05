@@ -4,12 +4,14 @@
 cnz::Oracle::Oracle(std::string scene)
 	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, true)
 {
+	description = "Oracle";
 }
 
 // constructor
 cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, mat)
 {
+	description = "Oracle";
 }
 
 // copy constructor

@@ -50,7 +50,9 @@ namespace cnz
 		// gets a list of enemies within a certain degrees of where the player is facing
 		// we require the dash vector so that we can use a smaller one if the player is dashing towards an obstacle that
 		// would case the dash to end when they collide with that obstacle.
-		vector<int> GetEnemiesInDash(cherry::Vec3 dashVec);
+
+		//Returns true of an specified enemy is within the dash of the player
+		bool GetEnemiesInDash(cherry::Vec3 dashVec, cnz::Enemy* enemy, cnz::Player* player);
 
 		// get the angle at which a Vec3 is facing in X and Y axis. 
 		// can also be used to find the angle between two positions by getting passing in their difference
@@ -150,7 +152,7 @@ namespace cnz
 		// camera
 		bool debugMode = true; // allows for debug mode.
 
-		bool showPBs = false;
+		bool showPBs = true;
 
 	protected:
 
