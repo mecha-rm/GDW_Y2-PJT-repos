@@ -383,7 +383,7 @@ bool cherry::PhysicsBody::Collision(PhysicsBody* p1, PhysicsBody* p2)
 			// creates a sphere to encompass each box.
 			// since the sphere is the smallest possible will containing the box...
 			// if the distance between the boxes is larger than it, there can't possibly be collision.
-			if ((b1.position - b2.position).length() >= val1 / 2.0F + val2 / 2.0F)
+			if ((b1.position - b2.position).length() >= (val1 + val2) / 2.0F)
 				return false;
 
 
