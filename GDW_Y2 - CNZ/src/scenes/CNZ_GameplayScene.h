@@ -16,6 +16,13 @@
 
 namespace cnz
 {
+	struct AnimStruct { // easier to batch add frames with a morphanim this way.
+		int numFrames;
+		std::string basePath;
+		float animTime;
+		cherry::MorphAnimation* anim;
+	};
+
 	class CNZ_GameplayScene : public cherry::GameplayScene
 	{
 	public:
@@ -115,9 +122,15 @@ namespace cnz
 		std::vector<float> projTimeList; //list of projectile timers
 
 		cherry::Skybox* skyboxObj;
-
 		cherry::Object* indArrow;
+
+		// Animations
+		std::vector<cnz::AnimStruct*> animList;
+
 		cherry::MorphAnimation* indArrowAnim;
+		cnz::AnimStruct playerWalking = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerCharging;
+		cnz::AnimStruct playerDashing;
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.

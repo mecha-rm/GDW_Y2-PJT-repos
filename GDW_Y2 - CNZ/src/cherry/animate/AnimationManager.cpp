@@ -24,11 +24,13 @@ bool cherry::AnimationManager::AddAnimation(cherry::Animation * newAni, bool cur
 	// if 'true' is returned, then it was added to the vector.
 	if (util::addToVector(animations, newAni))
 	{
-		if (current && animations.size() > 1)
+ 		if (current && animations.size() > 1)
 		{
 			animations[currentAnimation]->Stop(); // stops the current animation
 			currentAnimation = animations.size() - 1;
+			return true;
 		}
+		return true;
 	}
 	else // failure to add
 	{

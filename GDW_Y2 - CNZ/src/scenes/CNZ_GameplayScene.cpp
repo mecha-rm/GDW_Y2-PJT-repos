@@ -26,6 +26,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
 	Camera::Sptr myCamera = game->myCamera;
+	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
 
 	bool levelLoading = true;
 
@@ -57,6 +58,36 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
 	
+	
+
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000001.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000002.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000003.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000004.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000005.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000007.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000008.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000009.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000010.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000011.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000013.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000014.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000015.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000016.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000017.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000019.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000020.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000021.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000022.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000023.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
+
+
 	if (levelLoading) { // load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
 		//// LOAD LEVELS
 		// the level has already been registered, and set as the main scene.
@@ -96,7 +127,11 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// Temp static light
 		tempList = lightList; // inherited
 
-		tempList->AddLight(new Light(GetName(), Vec3(0, 0, 4), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 4), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+
+		//Sun
+		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 30), Vec3(1.0f, 1.0f, 1.0f), Vec3(1.0f, 0.1f, 1.0f), 10.0f, 30.0f, 0.9f, 100.0f));
+
 		// make for loop apply light to every object's material
 
 		// only do this for starting scene, and do for current scene right after scene switch
@@ -108,6 +143,40 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// for all lights:
 		// lightList->AddLight(new Light(sceneName, Vec3(), Vec3(), Vec3(), float, float, float, float);
 		// material stuff that happens in Game.cpp
+
+
+
+
+		//// ANIMATIONS
+		//// Setting animation data
+		// Player
+		this->animList.push_back(&this->playerCharging);
+
+		// Marauder
+
+		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		std::stringstream curPath;
+		float curFrameTime;
+		for (int i = 0; i < this->animList.size(); i++) {
+			curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
+			for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
+				if (frame < 10) {
+					curPath << this->animList[i]->basePath << 0 << frame;
+				}
+				else {
+					curPath << this->animList[i]->basePath << frame;
+				}
+				this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+			}
+		}
+
+		//// Add finished animations to objects
+		// Player
+		this->playerObj->AddAnimation(this->playerCharging.anim);
+
+
+
+
 
 		//Skybox stuff
 		skyboxObj = new cherry::Skybox("res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
@@ -289,13 +358,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(19);
 
-		indArrowAnim = new MorphAnimation();
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+		//indArrowAnim = new MorphAnimation();
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
 		
 		indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
 		indArrow->SetRotationXDegrees(90);
-		indArrow->AddAnimation(indArrowAnim);
+		//indArrow->AddAnimation(indArrowAnim);
 		//AddObjectToScene(indArrow);
 
 		indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
@@ -473,6 +542,38 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	}*/
 
 	game->GetSceneLightList()->Update(0);
+
+	// Post Processing
+	if(false)
+	{
+		// frame buffer
+		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+
+		// scene colour
+		RenderBufferDesc sceneColor = RenderBufferDesc();
+		sceneColor.ShaderReadable = true;
+		sceneColor.Attachment = RenderTargetAttachment::Color0;
+		sceneColor.Format = RenderTargetType::Color24; // loads with RGB
+
+		// scene depth
+		RenderBufferDesc sceneDepth = RenderBufferDesc();
+		sceneDepth.ShaderReadable = true;
+		sceneDepth.Attachment = RenderTargetAttachment::Depth;
+		sceneDepth.Format = RenderTargetType::Depth24;
+
+		// colour and depth attachments
+		fb->AddAttachment(sceneColor);
+		fb->AddAttachment(sceneDepth);
+
+		// fb->AddAttachment()
+		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
+
+		// adds a post-processing 
+		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+
+		useFrameBuffers = true;
+		game->overlayPostProcessing = true;
+	}
 }
 
 // called when the scene is being closed.
@@ -619,7 +720,7 @@ cherry::PhysicsBody* cnz::CNZ_GameplayScene::GetClosestObstacle()
 		dAngle = angleFromPlayer - GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
 
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway.
+			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway)
 				closestBody = obstacles[i]->GetPhysicsBodies()[0];
 				cbDist = delta.GetLength();
 			}
@@ -931,6 +1032,13 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 	}
 
+	if (!( (w && cw) || (s && cs) || (a && ca) || (d && cd) )) { // if the player is not moving
+		playerObj->SetState(0);
+	}
+	else { // if the player is walking
+		playerObj->SetState(1);
+	}
+
 	playerObj->UpdateAngle(myCamera, game->GetCursorPosX(), game->GetCursorPosY(), game->GetWindowWidth(), game->GetWindowHeight());
 	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 
@@ -1065,15 +1173,14 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	//// DASH CODE
 
 	// Dash indicator
-	if (playerObj->GetDashTime() >= 1.0f) {
+	if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
 		//Display indicator
 		//indArrowAnim->Play();
-		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -4));
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
 		indicatorObj->SetVisible(true);
 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
-	else {
+	else { // dash timer is below 1.0f
 		//Hide indicator
 		indicatorObj->SetVisible(false);
 	}
@@ -1083,6 +1190,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
 		float tempDist = dashVec.GetLength();
 		playerObj->SetDash(true);
+		playerObj->SetState(3); // set state to dashing
 		playerObj->SetDashTime(0.0f);
 
 		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
@@ -1166,6 +1274,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
 	{
+		playerObj->SetState(2); // set state to dash charging
 		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
 		//std::cout << playerObj->GetDashTime() << std::endl;
 	}
@@ -1188,6 +1297,19 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	// test PB
 	//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
+
+
+	//// ANIMATION UPDATES
+	// Player
+	if (playerObj->GetState() == 1) { // walking
+
+	}
+	else if (playerObj->GetState() == 2) { // charging dash attack
+		if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+			playerObj->SetCurrentAnimation(0);
+			playerObj->GetCurrentAnimation()->Play();
+		}
+	}
 
 
 	// camera position update code

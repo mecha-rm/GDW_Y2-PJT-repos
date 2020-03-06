@@ -177,21 +177,21 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
-					//obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
-					//obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
-					//obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
-					//obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
-				//	obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
-					//obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 
 				}
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 2));
