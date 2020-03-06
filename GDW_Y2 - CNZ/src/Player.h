@@ -89,6 +89,11 @@ namespace cnz
 
 		float GetPBodyDepth() const;
 
+		// setter and getter for state
+		void SetState(int newState) { this->state = newState; };
+
+		int GetState() { return this->state; };
+
 	private:
 		bool dash = false;
 		float dashDist = 0.1f;
@@ -107,6 +112,16 @@ namespace cnz
 		glm::vec3 worldAngle;
 
 		std::vector<cherry::PhysicsBody*> bodies;
+
+		/*
+		state of the player.
+		0 -> idle/no anim
+		1 -> walking
+		2 -> charging dash
+		3 -> dashing
+		TODO: include other anims such as dashing, dodging and special attack
+		*/
+		int state = 0;
 
 	protected:
 

@@ -58,6 +58,36 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
 	
+	
+
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000001.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000002.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000003.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000004.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000005.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000007.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000008.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000009.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000010.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000011.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000013.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000014.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000015.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000016.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000017.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000019.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000020.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000021.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000022.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000023.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
+	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
+
+
 	if (levelLoading) { // load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
 		//// LOAD LEVELS
 		// the level has already been registered, and set as the main scene.
@@ -113,6 +143,40 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// for all lights:
 		// lightList->AddLight(new Light(sceneName, Vec3(), Vec3(), Vec3(), float, float, float, float);
 		// material stuff that happens in Game.cpp
+
+
+
+
+		//// ANIMATIONS
+		//// Setting animation data
+		// Player
+		this->animList.push_back(&this->playerCharging);
+
+		// Marauder
+
+		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		std::stringstream curPath;
+		float curFrameTime;
+		for (int i = 0; i < this->animList.size(); i++) {
+			curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
+			for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
+				if (frame < 10) {
+					curPath << this->animList[i]->basePath << 0 << frame;
+				}
+				else {
+					curPath << this->animList[i]->basePath << frame;
+				}
+				this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+			}
+		}
+
+		//// Add finished animations to objects
+		// Player
+		this->playerObj->AddAnimation(this->playerCharging.anim);
+
+
+
+
 
 		//Skybox stuff
 		skyboxObj = new cherry::Skybox("res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
@@ -297,9 +361,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//indArrowAnim = new MorphAnimation();
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
-
-		playerIdle = new MorphAnimation();
-		//playerIdle->AddFrame(new MorphAnimationFrame("res/objects/", 1.0f)); // Check timing (the float is seconds since last frame)
 		
 		indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
 		indArrow->SetRotationXDegrees(90);
@@ -971,6 +1032,13 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 	}
 
+	if (!( (w && cw) || (s && cs) || (a && ca) || (d && cd) )) { // if the player is not moving
+		playerObj->SetState(0);
+	}
+	else { // if the player is walking
+		playerObj->SetState(1);
+	}
+
 	playerObj->UpdateAngle(myCamera, game->GetCursorPosX(), game->GetCursorPosY(), game->GetWindowWidth(), game->GetWindowHeight());
 	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 
@@ -1105,14 +1173,14 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	//// DASH CODE
 
 	// Dash indicator
-	if (playerObj->GetDashTime() >= 1.0f) {
+	if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
 		//Display indicator
 		//indArrowAnim->Play();
 		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
 		indicatorObj->SetVisible(true);
 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
-	else {
+	else { // dash timer is below 1.0f
 		//Hide indicator
 		indicatorObj->SetVisible(false);
 	}
@@ -1122,6 +1190,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
 		float tempDist = dashVec.GetLength();
 		playerObj->SetDash(true);
+		playerObj->SetState(3); // set state to dashing
 		playerObj->SetDashTime(0.0f);
 
 		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
@@ -1205,6 +1274,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
 	{
+		playerObj->SetState(2); // set state to dash charging
 		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
 		//std::cout << playerObj->GetDashTime() << std::endl;
 	}
@@ -1227,6 +1297,19 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	// test PB
 	//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
+
+
+	//// ANIMATION UPDATES
+	// Player
+	if (playerObj->GetState() == 1) { // walking
+
+	}
+	else if (playerObj->GetState() == 2) { // charging dash attack
+		if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+			playerObj->SetCurrentAnimation(0);
+			playerObj->GetCurrentAnimation()->Play();
+		}
+	}
 
 
 	// camera position update code
@@ -1255,7 +1338,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		temp.x = xyCur.GetX();
 		temp.y = xyCur.GetY();
-		temp.z = 10.0f;
+		temp.z = 20.0f;
 
 		myCamera->SetPosition(temp);
 	}
@@ -1263,7 +1346,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		camLerpPercent = 0.0f;
 		playerObj->SetDash(false);
 	notDashing:
-		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 10.0f));
+		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
 	}
 
 	// calls the main game Update function to go through every object.
