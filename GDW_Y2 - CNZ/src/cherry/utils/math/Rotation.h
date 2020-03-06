@@ -57,7 +57,7 @@ namespace util
 		// quaternion rotation of a 2D vector
 		Vec2 rotateQuat(const Vec2& vec, float angle, char axisOfRotation, bool inDegrees);
 
-		// rotates a 3D vector via quaternions.
+		// rotates a 3D vector via quaternions. If the axis of rotation is invalid, then the vector is returned with no changes.
 		Vec3 rotateQuat(const Vec3& vec, float angle, char axisOfRotation, bool inDegrees);
 
 		// rotates a 3D vector via quaternions in a provided direction.

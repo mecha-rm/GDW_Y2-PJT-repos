@@ -294,13 +294,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(19);
 
-		indArrowAnim = new MorphAnimation();
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+		//indArrowAnim = new MorphAnimation();
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+
+		playerIdle = new MorphAnimation();
+		//playerIdle->AddFrame(new MorphAnimationFrame("res/objects/", 1.0f)); // Check timing (the float is seconds since last frame)
 		
 		indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
 		indArrow->SetRotationXDegrees(90);
-		indArrow->AddAnimation(indArrowAnim);
+		//indArrow->AddAnimation(indArrowAnim);
 		//AddObjectToScene(indArrow);
 
 		indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
@@ -470,10 +473,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		road->SetRotationZDegrees(180);
 		road->SetPosition(0, -30, -1);
 		manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
-
-		if (!playerObj->SetDrawPBody(true)) {
-			std::cout << "Ruhroh... Couldn't set drawPBody on playerObj!" << std::endl;
-		}
 	}
 
 	/*for (int i = 0; i < objList->GetObjectCount(); i++)
@@ -660,7 +659,7 @@ cherry::PhysicsBody* cnz::CNZ_GameplayScene::GetClosestObstacle()
 		dAngle = angleFromPlayer - GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
 
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway.
+			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway)
 				closestBody = obstacles[i]->GetPhysicsBodies()[0];
 				cbDist = delta.GetLength();
 			}
@@ -770,13 +769,6 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 	std::string curObjStr;
 
 	this->obstacles.clear();
-	this->playerObj = new Player("res/objects/hero/charactoereee.obj", GetName());
-	this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-	this->playerObj->SetRotationXDegrees(90);
-	this->playerObj->SetRotationZDegrees(180);
-	this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-
-
 
 
 	for (int i = 0; i < allSceneObjects.size(); i++) {
@@ -785,82 +777,86 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 		if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
 			//std::cout << "its a wall" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
 			//std::cout << "its a player" << std::endl;
+			this->playerObj = (cnz::Player*)allSceneObjects[i];
 			this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
-			cherry::Material::Sptr mat = playerObj->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+			this->playerObj->SetRotationXDegrees(90);
+			this->playerObj->SetRotationZDegrees(180);
+			this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 		}
 		else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
 			//std::cout << "its a dumpster" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
 			//std::cout << "its a lamp post" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
 		//	std::cout << "its a lamp post corner" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
 			//std::cout << "its a lamp post middle" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
 			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
 			//std::cout << "its a barrel" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
 			//std::cout << "its a katana" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
 			//std::cout << "its a pillar" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
 			//std::cout << "its a manhole" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("Road.blend") != std::string::npos) { // road
 			//std::cout << "its a road" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 		else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
 			//std::cout << "its a sidewalk" << std::endl;
 			this->obstacles.push_back(allSceneObjects[i]);
-			cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			tempList->ApplyLights(mat, tempList->GetLightCount());
+			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+			//tempList->ApplyLights(mat, tempList->GetLightCount());
 		}
 	}
+	tempList->Update(0.0f);
 	allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
 }
 
@@ -871,9 +867,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	cherry::Camera::Sptr myCamera = game->myCamera;
 
 	//GLenum test = glGetError();
-	this->playerPrevPos = playerObj->GetPosition();
+	this->playerPrevPos = playerObj->GetPosition(); // store previous position
 
-	if (showPBs) {
+	if (showPBs) { // show player and projectile physics bodies if showPBs
 		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
 		for (int i = 0; i < projList.size(); i++) {
 			projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
@@ -883,22 +879,24 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	float moveInc = -10.0F; // the movement incrementer.
 
 	vector<cherry::PhysicsBody*> playerObstacleCollisions; // obstacle PBs with which the player's PB is colliding with
-	vector<cherry::PhysicsBody*> playerEnemyCollisions;
+	vector<cherry::PhysicsBody*> playerEnemyCollisions; // enemy PBs with which the player's PB is colliding with
 
 	// find all obstacles the player is colliding with
 	for (int i = 0; i < obstacles.size(); i++) {
-		if (showPBs) {
+		bool collision = false;
+		if (showPBs) { // shows obstacle physics bodies if showPBs
 			obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
-		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
+		collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
 		if (collision) {
 			playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
+			std::cout << "collision with obstacle " << i << std::endl;
 		}
 	}
 
 	// find all enemies the player is colliding with
 	for (int i = 0; i < enemyList.size(); i++) {
-		if (showPBs) {
+		if (showPBs) { // shows enemy pbs if showPBs
 			enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
 		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
@@ -919,36 +917,37 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
 		for (int i = 0; i < playerObstacleCollisions.size(); i++) {
 			cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
-			//cherry::Vec3 dP = playerObstacleCollisions[i]->GetLocalPosition() - playerObj->GetPosition();
 
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
 				cs = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
 				cw = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
 				ca = false;
 			}
-			if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
 				cd = false;
 			}
-			//if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
-			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
-			//		cs = false;
-			//	}
-			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
-			//		cw = false;
-			//	}
-			//}
-			//else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
-			//	if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
-			//		ca = false;
-			//	}
-			//	else if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
-			//		cd = false;
-			//	}
-			//}
+			/* This is the old method of detecting which way the player can move. It's broken I'm pretty sure.
+			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
+				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+					cs = false;
+				}
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+					cw = false;
+				}
+			}
+			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
+				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+					ca = false;
+				}
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+					cd = false;
+				}
+			}
+			*/
 		}
 	}
 
@@ -978,16 +977,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// dodge code
 	if (ls) {
 		cherry::Vec3 temp;
-		if (w) {
+		if (w && cw) {
 			temp.SetY(temp.GetY() - 1.0f);
 		}
-		if (s) {
+		if (s && cs) {
 			temp.SetY(temp.GetY() + 1.0f);
 		}
-		if (a) {
+		if (a && ca) {
 			temp.SetX(temp.GetX() + 1.0f);
 		}
-		if (d) {
+		if (d && cd) {
 			temp.SetX(temp.GetX() - 1.0f);
 		}
 
@@ -1081,6 +1080,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 	}
 
+	// Spawn new wave when all enemies are dead
 	if (enemyCount == 0) {
 		SpawnEnemyGroup();
 	}
@@ -1102,12 +1102,13 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 	}
 
-	// dash code
+	//// DASH CODE
+
+	// Dash indicator
 	if (playerObj->GetDashTime() >= 1.0f) {
 		//Display indicator
 		//indArrowAnim->Play();
-		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -4));
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
 		indicatorObj->SetVisible(true);
 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}
@@ -1124,14 +1125,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		playerObj->SetDashTime(0.0f);
 
 		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
-		if (closestObstacle == nullptr) {
-			for (int i = 0; i < enemyList.size(); i++) {
-				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+		
+		if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
+			for (int i = 0; i < enemyList.size(); i++) { 
+				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
 					enemyList[i]->alive = false;
 				}
 			}
-			playerObj->SetPosition(playerObj->GetPosition() + dashVec);
+			playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
 		}
+
 		else {
 			cherry::Vec3 dP = closestObstacle->GetLocalPosition() - playerObj->GetPosition();
 			cherry::Vec3 dPN;
