@@ -57,7 +57,7 @@ cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj)
 	LoadObject(loadMtl);
 }
 
-// loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
+// loads an object into the requested scene. The bool loadMtl determines if an mtl file gets loaded.
 cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl, bool dynamicObj) :
 	Object(filePath, loadMtl, dynamicObj)
 {
