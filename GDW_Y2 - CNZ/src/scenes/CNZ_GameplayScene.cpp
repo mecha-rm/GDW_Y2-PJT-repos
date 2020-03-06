@@ -26,6 +26,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
 	Camera::Sptr myCamera = game->myCamera;
+	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
 
 	bool levelLoading = true;
 
@@ -96,7 +97,11 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// Temp static light
 		tempList = lightList; // inherited
 
-		tempList->AddLight(new Light(GetName(), Vec3(0, 0, 4), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 4), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+
+		//Sun
+		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 30), Vec3(1.0f, 1.0f, 1.0f), Vec3(1.0f, 0.1f, 1.0f), 10.0f, 30.0f, 0.9f, 100.0f));
+
 		// make for loop apply light to every object's material
 
 		// only do this for starting scene, and do for current scene right after scene switch
@@ -477,6 +482,38 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	}*/
 
 	game->GetSceneLightList()->Update(0);
+
+	// Post Processing
+	if(false)
+	{
+		// frame buffer
+		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+
+		// scene colour
+		RenderBufferDesc sceneColor = RenderBufferDesc();
+		sceneColor.ShaderReadable = true;
+		sceneColor.Attachment = RenderTargetAttachment::Color0;
+		sceneColor.Format = RenderTargetType::Color24; // loads with RGB
+
+		// scene depth
+		RenderBufferDesc sceneDepth = RenderBufferDesc();
+		sceneDepth.ShaderReadable = true;
+		sceneDepth.Attachment = RenderTargetAttachment::Depth;
+		sceneDepth.Format = RenderTargetType::Depth24;
+
+		// colour and depth attachments
+		fb->AddAttachment(sceneColor);
+		fb->AddAttachment(sceneDepth);
+
+		// fb->AddAttachment()
+		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
+
+		// adds a post-processing 
+		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+
+		useFrameBuffers = true;
+		game->overlayPostProcessing = true;
+	}
 }
 
 // called when the scene is being closed.
@@ -1215,7 +1252,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		temp.x = xyCur.GetX();
 		temp.y = xyCur.GetY();
-		temp.z = 20.0f;
+		temp.z = 10.0f;
 
 		myCamera->SetPosition(temp);
 	}
@@ -1223,7 +1260,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		camLerpPercent = 0.0f;
 		playerObj->SetDash(false);
 	notDashing:
-		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
+		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 10.0f));
 	}
 
 	// calls the main game Update function to go through every object.
