@@ -307,6 +307,16 @@ void cherry::Object::SetWindowChild(bool windowChild)
 	ObjectManager::UpdateWindowChild(this);
 }
 
+// returns 'true' if the object gets post processed.
+bool cherry::Object::GetPostProcess() const { return (mesh != nullptr) ? mesh->postProcess : false; }
+
+// sets whether this object is post processed or not.
+void cherry::Object::SetPostProcess(bool postProcess)
+{
+	if (mesh != nullptr)
+		mesh->postProcess = postProcess;
+}
+
 
 // creates the object.
 bool cherry::Object::LoadObject(bool loadMtl)

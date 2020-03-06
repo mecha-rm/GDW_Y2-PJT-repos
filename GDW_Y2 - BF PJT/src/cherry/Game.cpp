@@ -1168,13 +1168,13 @@ void cherry::Game::DrawGui(float deltaTime) {
 }
 
 // renders the scene
-void cherry::Game::__RenderScene(Camera::Sptr camera)
+void cherry::Game::__RenderScene(const Camera::Sptr& camera)
 {
 	__RenderScene(camera->viewport, camera, camera->drawSkybox, camera->borderSize, camera->borderColor, camera->clearBuffers);
 }
 
 // Now handles rendering the scene.
-void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
+void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera, bool drawSkybox, int borderSize, glm::vec4 borderColor, bool clear)
 {
 	// frame buffer for the renderer
 	FrameBuffer::Sptr fb; // frame buffer for the game.
@@ -1296,9 +1296,8 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 		if (renderer.Mesh == nullptr || renderer.Material == nullptr)
 			continue;
 
-		// if it should be rendered after the post-processing effect
-		// and is a screen space object.
-		if (overlayPostProcessing && renderer.Mesh->GetWindowChild())
+		// if the mesh shouldn't be post processed, it's drawn after the post processed meshes.
+		if (!renderer.Mesh->postProcess)
 		{
 			postRenders.push_back(renderer); // gets the renderer
 			postTransforms.push_back(ecs.get_or_assign<TempTransform>(entity)); // getting the transformation
@@ -1395,88 +1394,89 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool 
 
 		// applies each layer
 		for (PostLayer* layer : layers)
-			layer->PostRender();
+			layer->PostRender(camera);
 		
 	}
 
-	// if the screen overlay is to ignore the post-processing 
-	if (overlayPostProcessing)
-	{
-		for (int i = 0; i < postRenders.size(); i++) {
-			// Early bail if mesh is invalid
-			const MeshRenderer& renderer = postRenders[i]; // getting the post render
-			if (renderer.Mesh == nullptr || renderer.Material == nullptr)
-				continue;
+	// making the bound shader null for the post draw.
+	boundShader = nullptr;
 
-			// If our shader has changed, we need to bind it and Update our frame-level uniforms
-			if (renderer.Material->GetShader() != boundShader) {
-				boundShader = renderer.Material->GetShader();
-				boundShader->Bind();
+	// post-post processing renders
+	for (int i = 0; i < postRenders.size(); i++) {
+		// Early bail if mesh is invalid
+		const MeshRenderer& renderer = postRenders[i]; // getting the post render
+		if (renderer.Mesh == nullptr || renderer.Material == nullptr)
+			continue;
 
-				// if the object is to have a fixed screen position.
-				if (renderer.Mesh->GetWindowChild())
-					boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
-				else
-					boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
+		// If our shader has changed, we need to bind it and Update our frame-level uniforms
+		if (renderer.Material->GetShader() != boundShader) {
+			boundShader = renderer.Material->GetShader();
+			boundShader->Bind();
 
-				boundShader->SetUniform("a_Time", static_cast<float>(glfwGetTime())); // passing in the time.
-			}
-			// If our material has changed, we need to apply it to the shader
-			if (renderer.Material != mat) {
-				mat = renderer.Material;
-				mat->Apply();
-			}
-
-			// We'll need some info about the entities position in the world
-			const TempTransform& transform = postTransforms[i];
-
-			// Get the object's transformation
-			// TODO: set up parent system
-			glm::mat4 worldTransform = transform.GetWorldTransform();
-
-			// Our normal matrix is the inverse-transpose of our object's world rotation
-			// Recall that everything's backwards in GLM
-			glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
-
-			// Update the MVP using the item's transform
+			// if the object is to have a fixed screen position.
 			if (renderer.Mesh->GetWindowChild())
-			{
-				mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
-			}
+				boundShader->SetUniform("a_CameraPos", myCameraX->GetPosition()); // uses Hud/UI camera
 			else
+				boundShader->SetUniform("a_CameraPos", camera->GetPosition()); // uses provided camera position.
+
+			boundShader->SetUniform("a_Time", static_cast<float>(glfwGetTime())); // passing in the time.
+		}
+		// If our material has changed, we need to apply it to the shader
+		if (renderer.Material != mat) {
+			mat = renderer.Material;
+			mat->Apply();
+		}
+
+		// We'll need some info about the entities position in the world
+		const TempTransform& transform = postTransforms[i];
+
+		// Get the object's transformation
+		// TODO: set up parent system
+		glm::mat4 worldTransform = transform.GetWorldTransform();
+
+		// Our normal matrix is the inverse-transpose of our object's world rotation
+		// Recall that everything's backwards in GLM
+		glm::mat3 normalMatrix = glm::mat3(glm::transpose(glm::inverse(worldTransform)));
+
+		// Update the MVP using the item's transform
+		if (renderer.Mesh->GetWindowChild())
+		{
+			mat->GetShader()->SetUniform("a_ModelViewProjection", myCameraX->GetViewProjection() * worldTransform);
+		}
+		else
+		{
+			mat->GetShader()->SetUniform("a_ModelViewProjection", camera->GetViewProjection() * worldTransform);
+		}
+
+		// Update the model matrix to the item's world transform
+		mat->GetShader()->SetUniform("a_Model", worldTransform);
+		// Update the model matrix to the item's world transform
+		mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
+
+		// Draw the item
+		if (renderer.Mesh->IsVisible())
+		{
+			// if the mesh is in wireframe mode, and the draw call isn't set to that already.
+			if (renderer.Mesh->IsWireframe() != wireframe)
 			{
-				mat->GetShader()->SetUniform("a_ModelViewProjection", camera->GetViewProjection() * worldTransform);
+				wireframe = !wireframe;
+
+				// switches between wireframe mode and fill mode.
+				(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			}
 
-			// Update the model matrix to the item's world transform
-			mat->GetShader()->SetUniform("a_Model", worldTransform);
-			// Update the model matrix to the item's world transform
-			mat->GetShader()->SetUniform("a_NormalMatrix", normalMatrix);
-
-			// Draw the item
-			if (renderer.Mesh->IsVisible())
+			// the faces should or should not be culled. Since faces should be culled by default, it's turned back on.
+			if (!renderer.Mesh->cullFaces)
 			{
-				// if the mesh is in wireframe mode, and the draw call isn't set to that already.
-				if (renderer.Mesh->IsWireframe() != wireframe)
-				{
-					wireframe = !wireframe;
-
-					// switches between wireframe mode and fill mode.
-					(wireframe) ? glPolygonMode(GL_FRONT_AND_BACK, GL_LINE) : glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-				}
-
-				// the faces should or should not be culled. Since faces should be culled by default, it's turned back on.
-				if (!renderer.Mesh->cullFaces)
-				{
-					glDisable(GL_CULL_FACE);
-					renderer.Mesh->Draw();
-					glEnable(GL_CULL_FACE);
-				}
-				else // faces are set to be culled automatically 
-				{
-					renderer.Mesh->Draw(); 
-				}
+				glDisable(GL_CULL_FACE);
+				renderer.Mesh->Draw();
+				glEnable(GL_CULL_FACE);
+			}
+			else // faces are set to be culled automatically 
+			{
+				renderer.Mesh->Draw(); 
 			}
 		}
 	}
+	
 }

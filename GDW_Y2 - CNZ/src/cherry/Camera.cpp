@@ -102,8 +102,14 @@ void cherry::Camera::SwitchViewMode() { SetPerspectiveMode(!perspectiveMode); }
 // checks if the camera is in perspective mode.
 bool cherry::Camera::InPerspectiveMode() { return perspectiveMode; }
 
+// returns 'true if it's a perspective mode camera.
+bool cherry::Camera::IsPerspectiveCamera() const { return perspectiveMode; }
+
 // checks if the camera is in orthographic mode
 bool cherry::Camera::InOrthographicMode() { return !perspectiveMode; }
+
+// checks to see if this is a orthographic camera.
+bool cherry::Camera::IsOrthographicCamera() const { return !perspectiveMode; }
 
 // gets the left bound of the orthographic camera.
 float cherry::Camera::GetLeftOrthographic() const { return o_left; }

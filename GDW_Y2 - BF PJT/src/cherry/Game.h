@@ -244,10 +244,6 @@ namespace cherry
 		// extra cameras.
 		std::vector<Camera::Sptr> exCameras;
 
-		// if 'true', the overlay is post-processed. If false, it is uneffected by the post-processing.
-		// TODO: move to scenes specifically.
-		bool overlayPostProcessing = true;
-
 		// TODO: make private?
 		// audio component for the scene
 		cherry::AudioComponent audioEngine = cherry::AudioComponent();
@@ -287,7 +283,7 @@ namespace cherry
 		virtual void DrawGui(float deltaTime);
 
 		// renders the scene. It calls the other __RenderScene and takes in the values saved to the camera.
-		void __RenderScene(Camera::Sptr camera);
+		void __RenderScene(const Camera::Sptr& camera);
 
 		/*
 		 * used for rendering the scene to multiple viewpoints.
@@ -298,7 +294,7 @@ namespace cherry
 				* Do note that if there is no skybox or if scene->SkyboxMesh->IsVisible() returns 'false', the skybox won't be rendered anyway.
 			* clear: if 'true', then anything previously rendered is cleared, which is needed for the border.
 		*/
-		void __RenderScene(glm::ivec4 viewport, Camera::Sptr camera, bool drawSkybox = true,
+		void __RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera, bool drawSkybox = true,
 			int borderSize = 0, glm::vec4 borderColor = glm::vec4(1.0F, 1.0F, 1.0F, 1.0F), bool clear = true);
 
 

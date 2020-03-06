@@ -80,8 +80,14 @@ namespace cherry
 		// returns 'true' if in perspective mode. Returns false if not in perpsective mode.
 		bool InPerspectiveMode();
 
+		// returns 'true', if this is a perpective camera. This is the same as calling InPerspectiveMode().
+		bool IsPerspectiveCamera() const;
+
 		// returns true if in orthographic mode. False if not in orthographic mode.
 		bool InOrthographicMode();
+
+		// returns 'true' if this is a orthographic camera. This is the same as calling 'InOrthographic Mode'
+		bool IsOrthographicCamera() const;
 
 		// gets the left bound of the camera. This is exclusively for orthographic mode.
 		float GetLeftOrthographic() const;
@@ -103,6 +109,9 @@ namespace cherry
 
 		// gets the camera view
 		const glm::mat4& GetView() const { return myView; }
+
+		// returns the projection.
+		const glm::mat4& GetProjection() const { return Projection; }
 
 		// Gets the camera's view projection
 		inline glm::mat4 GetViewProjection() const { return Projection * myView; }

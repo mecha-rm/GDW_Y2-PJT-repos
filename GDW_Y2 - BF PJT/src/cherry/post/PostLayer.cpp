@@ -2,27 +2,10 @@
 #include "..\utils\Utils.h"
 #include "..\Game.h"
 
-
-// post processing layer
-cherry::PostLayer::PostLayer(const std::string vs, const std::string fs) { AddLayer(vs, fs); }
-
-// post-processing layer
-void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
+// post layer; makes the quad that will be overlayed.
+cherry::PostLayer::PostLayer()
 {
-	// if the vertex sad'
-	// if (!(util::fileAccessible(vs) && util::fileAccessible(fs)))
-	// {
-	// 
-	// }
-
-	const Game* const currGame = Game::GetRunningGame();
-	  
-	// making the render buffer
-	RenderBufferDesc mainColor = RenderBufferDesc();
-	mainColor.ShaderReadable = true;
-	mainColor.Attachment = RenderTargetAttachment::Color0;
-	mainColor.Format = RenderTargetType::Color24;
-
+	// this was moved from the AddLayer function since the quad only needs to be made once.
 	// making the vertices for the quad
 	Vertex* verts = new Vertex[4]
 	{
@@ -32,7 +15,7 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 		{{ -1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
 		{{  1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
 	};
-	 
+
 	// making the indices for the quad
 	uint32_t* indices = new uint32_t[6]{
 		0, 1, 2,
@@ -41,6 +24,36 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 
 	// full screen quadrilateral
 	myFullscreenQuad = std::make_shared<cherry::Mesh>(verts, 4, indices, 6);
+
+	// deleting the vertices and indices
+	delete[] verts;
+	delete[] indices;
+}
+
+// post processing layer
+cherry::PostLayer::PostLayer(const std::string vs, const std::string fs)
+	: PostLayer()
+{ 
+	AddLayer(vs, fs);
+}
+
+// creates a post processing layer with a shader and frame buffer
+cherry::PostLayer::PostLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
+	: PostLayer()
+{
+	AddLayer(shader, output);
+}
+
+// post-processing layer
+void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
+{
+	const Game* const currGame = Game::GetRunningGame();
+	  
+	// making the render buffer
+	RenderBufferDesc mainColor = RenderBufferDesc();
+	mainColor.ShaderReadable = true;
+	mainColor.Attachment = RenderTargetAttachment::Color0;
+	mainColor.Format = RenderTargetType::Color24;
 
 	// making the shader
 	Shader::Sptr shader = std::make_shared<Shader>();
@@ -56,6 +69,16 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 	myPasses.push_back({ shader, output });
 }
 
+// adds a layer
+void cherry::PostLayer::AddLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
+{
+	if (shader == nullptr || output == nullptr)
+		std::runtime_error("Null layer is prohibited.");
+
+	// Add the pass to the post processing stack
+	myPasses.push_back({ shader, output });
+}
+
 // resizes the layers
 void cherry::PostLayer::OnWindowResize(uint32_t width, uint32_t height)
 {
@@ -64,7 +87,7 @@ void cherry::PostLayer::OnWindowResize(uint32_t width, uint32_t height)
 }
 
 // renders the post layer
-void cherry::PostLayer::PostRender()
+void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 {
 	// gets the game being run for its screen size.
 	const Game* const game = Game::GetRunningGame(); 
@@ -79,6 +102,10 @@ void cherry::PostLayer::PostRender()
 
 	// The last output will start as the output from the rendering
 	FrameBuffer::Sptr lastPass = mainBuffer;
+
+	// getting the near nad far planes.
+	float nearPlane = camera->IsPerspectiveCamera() ? camera->GetNearPerspective() : camera->GetNearOrthographic();
+	float farPlane = camera->IsPerspectiveCamera() ? camera->GetFarPerspective() : camera->GetFarOrthographic();
 
 	glDisable(GL_DEPTH_TEST);
 	//glDepthMask(GL_FALSE);
@@ -99,9 +126,30 @@ void cherry::PostLayer::PostRender()
 		
 		lastPass->GetAttachment(RenderTargetAttachment::Color0)->Bind(0);
 		pass.Shader->SetUniform("xImage", 0);
-		pass.Shader->SetUniform("xScreenRes", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
-		// pass.Shader->SetUniform("xAspectRatio", pass.Output->GetAspectRatio());
 
+		// camera components for the shaders.
+		pass.Shader->SetUniform("a_View", camera->GetView());
+		pass.Shader->SetUniform("a_Projection", camera->GetProjection());
+		pass.Shader->SetUniform("a_ProjectionInv", glm::inverse(camera->GetProjection()));
+		pass.Shader->SetUniform("a_ViewProjection", camera->GetViewProjection());
+		pass.Shader->SetUniform("a_ViewProjectionInv", glm::inverse(camera->GetViewProjection()));
+		
+		// this is supposed to be from the last pass, but these components don't change between passes.
+		pass.Shader->SetUniform("a_PrevView", camera->GetView());
+		pass.Shader->SetUniform("a_PrevProjection", camera->GetProjection());
+		pass.Shader->SetUniform("a_PrevProjectionInv", glm::inverse(camera->GetProjection()));
+		pass.Shader->SetUniform("a_PrevViewProjection", camera->GetViewProjection());
+		pass.Shader->SetUniform("a_PrevViewProjectionInv", glm::inverse(camera->GetViewProjection()));
+
+		// near and far plane
+		pass.Shader->SetUniform("a_NearPlane", nearPlane);
+		pass.Shader->SetUniform("a_FarPlane", farPlane);
+
+		// binding the depth and normal (color) information for post lights (TODO: implement post lights);
+		lastPass->Bind(1, RenderTargetAttachment::Depth);
+		lastPass->Bind(2, RenderTargetAttachment::Color0);
+
+		pass.Shader->SetUniform("xScreenRes", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
 		myFullscreenQuad->Draw(); 
 
 		// Unbind the output pass so that we can read from it
