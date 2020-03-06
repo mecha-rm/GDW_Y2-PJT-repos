@@ -289,13 +289,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(19);
 
-		indArrowAnim = new MorphAnimation();
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
-		indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+		//indArrowAnim = new MorphAnimation();
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
+		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
+
+		playerIdle = new MorphAnimation();
+		//playerIdle->AddFrame(new MorphAnimationFrame("res/objects/", 1.0f)); // Check timing (the float is seconds since last frame)
 		
 		indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
 		indArrow->SetRotationXDegrees(90);
-		indArrow->AddAnimation(indArrowAnim);
+		//indArrow->AddAnimation(indArrowAnim);
 		//AddObjectToScene(indArrow);
 
 		indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
@@ -619,7 +622,7 @@ cherry::PhysicsBody* cnz::CNZ_GameplayScene::GetClosestObstacle()
 		dAngle = angleFromPlayer - GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
 
 		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway.
+			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway)
 				closestBody = obstacles[i]->GetPhysicsBodies()[0];
 				cbDist = delta.GetLength();
 			}
@@ -1068,8 +1071,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	if (playerObj->GetDashTime() >= 1.0f) {
 		//Display indicator
 		//indArrowAnim->Play();
-		//indArrow->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
-		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -4));
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
 		indicatorObj->SetVisible(true);
 		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 	}

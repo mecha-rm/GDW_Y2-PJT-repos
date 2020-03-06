@@ -115,9 +115,13 @@ namespace cnz
 		std::vector<float> projTimeList; //list of projectile timers
 
 		cherry::Skybox* skyboxObj;
-
 		cherry::Object* indArrow;
+
+		// Animations
 		cherry::MorphAnimation* indArrowAnim;
+		cherry::MorphAnimation* playerIdle;
+		cherry::MorphAnimation* playerAttack;
+
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
