@@ -153,6 +153,13 @@ namespace cherry
 		// if 'true', the object will be a child of the screen, keeping the same porportional size and position to the screen.
 		void SetWindowChild(bool windowChild);
 
+		// returns 'true' if this object is post processed.
+		bool GetPostProcess() const;
+
+		// sets whether this object is post processed or not.
+		// if the mesh hasn't been made yet, nothing happens.
+		void SetPostProcess(bool postProcess);
+
 		// creates the entity with the provided m_Scene and material.
 		void CreateEntity(std::string scene, cherry::Material::Sptr material);
 

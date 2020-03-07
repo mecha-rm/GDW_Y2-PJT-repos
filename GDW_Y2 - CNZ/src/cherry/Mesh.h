@@ -136,7 +136,12 @@ namespace cherry
 		// creates a subdivided plane; moved from Game.cpp
 		static cherry::Mesh::Sptr MakeSubdividedPlane(float size, int numSections, bool worldUvs = true);
 
-		bool cullFaces = true; // tells the mesh to cull the faces
+		// tells the mesh to cull the faces
+		bool cullFaces = true;
+
+		// if 'true', then this mesh gets post processed when frame buffers are enabled.
+		// if 'false', this mesh ignores post processing.
+		bool postProcess = true;
 
 	private:
 		// Our GL handle for the Vertex Array Object

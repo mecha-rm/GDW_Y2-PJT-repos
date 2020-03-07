@@ -146,29 +146,66 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 
 
-
 		//// ANIMATIONS
 		//// Setting animation data
 		// Player
+		playerCharging.anim = new MorphAnimation();
 		this->animList.push_back(&this->playerCharging);
+
+		if(true)
+		{
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000001.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000002.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000003.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000004.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000005.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000007.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000008.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000009.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000010.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000011.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000013.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000014.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000015.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000016.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000017.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000019.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000020.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000021.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000022.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000023.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
+
+		}
+
 
 		// Marauder
 
 		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		std::stringstream curPath;
-		float curFrameTime;
-		for (int i = 0; i < this->animList.size(); i++) {
-			curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
-			for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
-				if (frame < 10) {
-					curPath << this->animList[i]->basePath << 0 << frame;
-				}
-				else {
-					curPath << this->animList[i]->basePath << frame;
-				}
-				this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
-			}
-		}
+		// std::stringstream curPath;
+		// float curFrameTime;
+		// for (int i = 0; i < this->animList.size(); i++) {
+		// 	if (this->animList[i] == nullptr)
+		// 		continue;
+		// 
+		// 	this->animList[i]->numFrames = this->animList[i]->anim->GetFrameCount();
+		// 
+		// 	curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
+		// 	for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
+		// 		if (frame < 10) {
+		// 			curPath << this->animList[i]->basePath << 0 << frame;
+		// 		}
+		// 		else {
+		// 			curPath << this->animList[i]->basePath << frame;
+		// 		}
+		// 		this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+		// 	}
+		// }
 
 		//// Add finished animations to objects
 		// Player
@@ -572,7 +609,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
 
 		useFrameBuffers = true;
-		game->overlayPostProcessing = true;
 	}
 }
 

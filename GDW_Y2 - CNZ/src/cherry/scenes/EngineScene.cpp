@@ -334,6 +334,7 @@ void cherry::EngineScene::OnOpen()
 			cherry::Image* image = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName(), false, false);
 			image->SetPosition(-30.0F, -2.0F, 0.0F);
 			image->SetWindowChild(true);
+			image->SetPostProcess(false); // should not be post processed.
 			// image->SetPositionByScreenPortion(Vec2(0.5, 0.5), Vec2(myWindowSize), Vec2(0.5, 0.5));
 			// image->SetPosition(myCamera->GetPosition() + glm::vec3(0.0F, 0.0F, -10.0F));
 			image->SetScale(0.12F);
@@ -468,10 +469,9 @@ void cherry::EngineScene::OnOpen()
 
 	// adds a post-processing 
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
-	useFrameBuffers = false;
-	game->overlayPostProcessing = true;
+	useFrameBuffers = true;
 
 	// the audio engine
 	AudioEngine& audioEngine = game->audioEngine;

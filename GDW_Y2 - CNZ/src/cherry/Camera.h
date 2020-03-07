@@ -110,6 +110,9 @@ namespace cherry
 		// gets the camera view
 		const glm::mat4& GetView() const { return myView; }
 
+		// returns the projection.
+		const glm::mat4& GetProjection() const { return Projection; }
+
 		// Gets the camera's view projection
 		inline glm::mat4 GetViewProjection() const { return Projection * myView; }
 

@@ -28,7 +28,7 @@ void cherry::MorphAnimation::SetObject(cherry::Object* obj)
 cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 {
 	// the pose
-	MorphVertex* pose = new MorphVertex[object->GetVerticesTotal()];
+	MorphVertex* pose = nullptr;
 	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
 
 	// const Vertex* verts = object->GetVertices(); // the vertices of the object
@@ -185,15 +185,17 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float uni
 
 	pose = new Vertex[verticesTotal];
 
+	memcpy(pose, tempVerts, sizeof(Vertex) * verticesTotal);
+
 	// gets the values from the morph vertices 
 	// TODO: maybe memcpy is more efficient?
-	for (int i = 0; i < verticesTotal; i++)
-	{
-		pose[i].Position = tempVerts[i].Position;
-		pose[i].Color = tempVerts[i].Color;
-		pose[i].Normal = tempVerts[i].Normal;
-		pose[i].UV = tempVerts[i].UV;
-	}
+	// for (int i = 0; i < verticesTotal; i++)
+	// {
+	// 	pose[i].Position = tempVerts[i].Position;
+	// 	pose[i].Color = tempVerts[i].Color;
+	// 	pose[i].Normal = tempVerts[i].Normal;
+	// 	pose[i].UV = tempVerts[i].UV;
+	// }
 }
 
 // destructor.

@@ -57,7 +57,7 @@ cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj)
 	LoadObject(loadMtl);
 }
 
-// loads an object into the requested scene. The bool loadMtl determines if an mtl file ges loaded.
+// loads an object into the requested scene. The bool loadMtl determines if an mtl file gets loaded.
 cherry::Object::Object(std::string filePath, std::string scene, bool loadMtl, bool dynamicObj) :
 	Object(filePath, loadMtl, dynamicObj)
 {
@@ -164,9 +164,17 @@ cherry::Object::Object(const cherry::Object& obj)
 
 	// if the file is an obj file, then the indices shouldn't be used for the mesh.
 	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
-		mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	{
+		// if it's a dynmaic object, then it gets morph vertices.
+		// if it's a static object, it just gets the regular vertices.
+		(dynamicObject) ?
+			mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0) :
+			mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	}
 	else // runtime primitive
+	{
 		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	}
 
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 }
@@ -305,6 +313,16 @@ void cherry::Object::SetWindowChild(bool windowChild)
 { 
 	mesh->SetWindowChild(windowChild); 
 	ObjectManager::UpdateWindowChild(this);
+}
+
+// returns 'true' if the object gets post processed.
+bool cherry::Object::GetPostProcess() const { return (mesh != nullptr) ? mesh->postProcess : false; }
+
+// sets whether this object is post processed or not.
+void cherry::Object::SetPostProcess(bool postProcess)
+{
+	if (mesh != nullptr)
+		mesh->postProcess = postProcess;
 }
 
 
