@@ -149,8 +149,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// ANIMATIONS
 		//// Setting animation data
 		// Player
-		playerCharging.anim = new MorphAnimation();
-		this->animList.push_back(&this->playerCharging);
+		animList.push_back(&playerCharging);
 
 		if(true)
 		{
@@ -187,29 +186,25 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// Marauder
 
 		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		// std::stringstream curPath;
-		// float curFrameTime;
-		// for (int i = 0; i < this->animList.size(); i++) {
-		// 	if (this->animList[i] == nullptr)
-		// 		continue;
-		// 
-		// 	this->animList[i]->numFrames = this->animList[i]->anim->GetFrameCount();
-		// 
-		// 	curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
-		// 	for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
-		// 		if (frame < 10) {
-		// 			curPath << this->animList[i]->basePath << 0 << frame;
-		// 		}
-		// 		else {
-		// 			curPath << this->animList[i]->basePath << frame;
-		// 		}
-		// 		this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
-		// 	}
-		// }
+		std::stringstream curPath;
+		float curFrameTime;
+		for (int i = 0; i < animList.size(); i++) {
+			curFrameTime = animList[i]->animTime / animList[i]->numFrames;
+			for (int frame = 0; frame < animList[i]->numFrames; frame++) {
+				curPath = std::stringstream();
+				if (frame < 10) {
+					curPath << animList[i]->basePath << 0 << frame << ".obj";
+				}
+				else {
+					curPath << animList[i]->basePath << frame << ".obj";
+				}
+				animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+			}
+		}
 
 		//// Add finished animations to objects
 		// Player
-		this->playerObj->AddAnimation(this->playerCharging.anim);
+		playerObj->AddAnimation(playerCharging.anim);
 
 
 
