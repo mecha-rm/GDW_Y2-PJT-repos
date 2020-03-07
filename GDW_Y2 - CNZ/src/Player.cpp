@@ -67,9 +67,10 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	// that will need to be fixed.
 	using namespace cherry;
 
-	Player* plyr = new Player("res/objects/hero_ver.2/OneAnimationTest_000000.obj", scene, position);
+	Player* plyr = new Player("res/objects/hero_ver.2/One_T.obj", scene, position);
 
 	// animation 1
+	if(false) // commenting out
 	{
 		MorphAnimation* mph = new MorphAnimation(plyr);
 

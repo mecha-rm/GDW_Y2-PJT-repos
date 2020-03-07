@@ -65,16 +65,22 @@ namespace cnz
 		// return vector of all objects in level
 		std::vector<cherry::Object*> GetObjects();
 
+		// gets the player object.
+		Player* GetPlayerObject() const;
+
 		// return properties of object at specific location on map
 		std::vector<float> GetObjProps(int y, int x);
 
 		// hacky fix for rotated physics bodies. When getting PB size based on mesh mins and maxes, they are all rotated 90 deg on one axis
 		cherry::Vec3 UnFlipVec3(cherry::Vec3 vecToFlip);
 
+
 	private:
 		// the m_Scene material
 		cherry::Material::Sptr matStatic; // the static material
 		cherry::Material::Sptr matDynamic; // the dynamic material
+
+		Player* playerObj = nullptr;
 
 		// Obstacles
 		Obstacle* wall = nullptr;

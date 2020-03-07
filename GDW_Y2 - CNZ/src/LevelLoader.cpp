@@ -153,7 +153,8 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				offsetY = y;
 				
 				// original
-				cnz::Player* playerObj = new cnz::Player("res/objects/hero_ver.2/One_T.obj", this->GetSceneName()); // creates the player.
+				playerObj = cnz::Player::GenerateDefault(GetSceneName());
+				// playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->GetSceneName()); // creates the player.
 				playerObj->SetPosition(glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0));
 
 				// new
@@ -567,6 +568,9 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 
 	return this->objList;
 }
+
+// gets the player object
+cnz::Player* cnz::Level::GetPlayerObject() const { return playerObj; }
 
 std::vector<float> cnz::Level::GetObjProps(int y, int x) {
 	std::vector<float> properties;

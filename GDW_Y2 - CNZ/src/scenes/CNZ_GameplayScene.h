@@ -165,7 +165,7 @@ namespace cnz
 		// camera
 		bool debugMode = true; // allows for debug mode.
 
-		bool showPBs = true;
+		bool showPBs = false;
 
 	protected:
 

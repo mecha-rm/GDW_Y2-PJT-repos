@@ -145,6 +145,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// material stuff that happens in Game.cpp
 
 
+		playerObj = map.GetPlayerObject();
+		
+		{
+			// adding a physics body.
+			Vec3 dmns = playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum();
+			playerObj->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
+		}
 
 		//// ANIMATIONS
 		//// Setting animation data
@@ -423,9 +430,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		
 	}
-
 	else { // for testing, loads a level for testing collision, showing all objects and test paths and such
-		playerObj = new Player("res/objects/hero/charactoereee.obj", GetName()); // creates the player.
+		playerObj = cnz::Player::GenerateDefault(GetName()); // creates the player.
 		testObj = new Player("res/objects/monkey.obj", GetName()); // creates the not player.
 
 
