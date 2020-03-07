@@ -395,7 +395,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// 		AddObjectToScene(enemyGroups[i][j]);
 
 		//Number corresponds with enemygroups first index
-		SpawnEnemyGroup(19);
+		SpawnEnemyGroup(4);
 
 		//indArrowAnim = new MorphAnimation();
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
@@ -846,7 +846,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 		}
 
 		enemyList[enemyList.size() - 1]->SetRotation(cherry::Vec3(0, 0, 0), true);
-		enemyList[enemyList.size() - 1]->SetPosition(cherry::Vec3(0 + count * 5, -10 + abs(count) * -5, 0));
+		enemyList[enemyList.size() - 1]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
 		enemyList[enemyList.size() - 1]->alive = true;
 		enemyList[enemyList.size() - 1]->SetRotationXDegrees(90);
 		enemyList[enemyList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[enemyList.size() - 1]->GetPosition(), enemyList[enemyList.size() - 1]->GetPBodySize()));
