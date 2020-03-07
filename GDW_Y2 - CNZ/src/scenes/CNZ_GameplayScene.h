@@ -128,8 +128,8 @@ namespace cnz
 		std::vector<cnz::AnimStruct*> animList;
 
 		cherry::MorphAnimation* indArrowAnim;
-		cnz::AnimStruct playerWalking = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerCharging;
+		cnz::AnimStruct playerWalking;
+		cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerDashing;
 
 		cnz::Player* testObj = nullptr; // object for the player.

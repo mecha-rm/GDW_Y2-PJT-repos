@@ -150,29 +150,30 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// ANIMATIONS
 		//// Setting animation data
 		// Player
-		this->animList.push_back(&this->playerCharging);
+		animList.push_back(&playerCharging);
 
 		// Marauder
 
 		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
 		std::stringstream curPath;
 		float curFrameTime;
-		for (int i = 0; i < this->animList.size(); i++) {
-			curFrameTime = this->animList[i]->animTime / this->animList[i]->numFrames;
-			for (int frame = 0; frame < this->animList[i]->numFrames; frame++) {
+		for (int i = 0; i < animList.size(); i++) {
+			curFrameTime = animList[i]->animTime / animList[i]->numFrames;
+			for (int frame = 0; frame < animList[i]->numFrames; frame++) {
+				curPath = std::stringstream();
 				if (frame < 10) {
-					curPath << this->animList[i]->basePath << 0 << frame;
+					curPath << animList[i]->basePath << 0 << frame << ".obj";
 				}
 				else {
-					curPath << this->animList[i]->basePath << frame;
+					curPath << animList[i]->basePath << frame << ".obj";
 				}
-				this->animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+				animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
 			}
 		}
 
 		//// Add finished animations to objects
 		// Player
-		this->playerObj->AddAnimation(this->playerCharging.anim);
+		playerObj->AddAnimation(playerCharging.anim);
 
 
 
