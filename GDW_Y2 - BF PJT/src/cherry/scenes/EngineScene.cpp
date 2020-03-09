@@ -8,6 +8,8 @@
 #include "..\textures/TextureSampler.h"
 #include "..\objects/Text.h"
 
+#include <imgui\imgui.h>
+
 // creating the engine scene.
 cherry::EngineScene::EngineScene(std::string sceneName) : GameplayScene(sceneName)
 {
@@ -468,8 +470,15 @@ void cherry::EngineScene::OnOpen()
 	Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
 	// adds a post-processing 
+	// PostLayer* postLayer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
+	// postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+	// // postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+	// layers.push_back(postLayer);
+	 
+	// postLayer->AddLayer(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
 	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
 
 	useFrameBuffers = true;
 
@@ -759,6 +768,61 @@ void cherry::EngineScene::KeyReleased(GLFWwindow* window, int key)
 		game->DeleteObjectFromScene(objectList->objects.at(0));
 		break;
 	}
+}
+
+// imgui draw function
+void cherry::EngineScene::DrawGui(float deltaTime)
+{
+	Game* game = Game::GetRunningGame();
+
+	glm::vec4& myClearColor = game->myClearColor; // clear color
+	GLFWwindow* myWindow = game->GetWindow(); // window 
+
+	// window title (char array)
+	char myWindowTitle[WINDOW_TITLE_CHAR_MAX];
+
+	// the window title (as a string)
+	std::string wtStr = game->GetWindowTitle();
+
+	// fills the rest of the string with the null termination character.
+	wtStr.resize(WINDOW_TITLE_CHAR_MAX, '\0');
+
+	// the game's camera
+	Camera::Sptr& myCamera = game->myCamera;
+
+	// copying the string's data into the char array
+	memcpy(myWindowTitle, wtStr.c_str(), wtStr.length());
+
+	// Open a new ImGui window
+	ImGui::Begin("Colour Picker");
+	
+	// Draw widgets here
+	// ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
+	ImGui::ColorPicker4("Color", &myClearColor.x); // new version
+	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
+	// ImGui::SetNextWindowCollapsed(false);
+	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
+	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
+	if (ImGui::InputText("Title", myWindowTitle, 31))
+	{
+		glfwSetWindowTitle(myWindow, myWindowTitle);
+	}
+	
+	if (ImGui::Button("Apply")) // adding another button, which allows for the application of the window title.
+	{
+		glfwSetWindowTitle(myWindow, myWindowTitle);
+	}
+	if (ImGui::Button("Wireframe/Fill Toggle"))
+	{
+		for (cherry::Object* obj : objectList->objects)
+			obj->SetWireframeMode();
+	}
+	
+	// changing the camera mode
+	std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
+	ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, WINDOW_TITLE_CHAR_MAX);
+	
+	ImGui::End();
 }
 
 // update loop

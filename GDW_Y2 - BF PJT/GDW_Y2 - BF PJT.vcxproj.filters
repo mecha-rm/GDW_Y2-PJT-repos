@@ -1651,6 +1651,10 @@
     <None Include="res\shaders\text.fs.glsl" />
     <None Include="res\shaders\image.vs.glsl" />
     <None Include="res\shaders\image.fs.glsl" />
+    <None Include="res\shaders\post\redscale.fs.glsl" />
+    <None Include="res\shaders\post\bluescale.fs.glsl" />
+    <None Include="res\shaders\post\greenscale.fs.glsl" />
+    <None Include="res\shaders\post\blinn-phong-post.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

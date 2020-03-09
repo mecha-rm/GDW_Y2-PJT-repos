@@ -39,6 +39,16 @@ namespace cherry
 		// renders the post layer
 		virtual void PostRender(const cherry::Camera::Sptr& camera);
 
+		// gets the shader form the last pass.
+		const cherry::Shader::Sptr& GetLastPassShader();
+
+		// gets the last pas from the buffer.
+		const FrameBuffer::Sptr& GetLastPassBuffer();
+		 
+		// the initial frame buffer for this layer's passes
+		// if left as a nullptr, it is set to the scene registry's mainbuffer
+		FrameBuffer::Sptr initialBuffer = nullptr;
+
 	protected:
 		// FrameBuffer::Sptr myMainFrameBuffer; // no longer needed
 
