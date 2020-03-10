@@ -721,14 +721,17 @@ void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_2:
 		layers.clear();
 		layers.push_back(layer1);
+		layer1->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_3:
 		layers.clear();
 		layers.push_back(layer2);
+		layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_4:
 		layers.clear();
 		layers.push_back(layer3);
+		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	}
 }

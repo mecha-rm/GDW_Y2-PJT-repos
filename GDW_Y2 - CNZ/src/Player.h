@@ -114,9 +114,6 @@ namespace cnz
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
 
-		// current update move vector
-		cherry::Vec3 playerCurMovement;
-
 		std::vector<cherry::PhysicsBody*> bodies;
 
 		/*
@@ -124,8 +121,7 @@ namespace cnz
 		0 -> idle/no anim
 		1 -> walking
 		2 -> charging dash
-		3 -> charged
-		4 -> dashing
+		3 -> dashing
 		TODO: include other anims such as dashing, dodging and special attack
 		*/
 		int state = 0;
