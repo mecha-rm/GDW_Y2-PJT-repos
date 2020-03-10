@@ -155,7 +155,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				// original
 				playerObj = cnz::Player::GenerateDefault(GetSceneName());
 				// playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->GetSceneName()); // creates the player.
-				playerObj->SetPosition(glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0));
+				playerObj->SetPosition(glm::vec3(cellOffset * (x), cellOffset * (y), 0));
 
 				// new
 				// cnz::Player* playerObj = cnz::Player::GenerateDefault(GetSceneName(), 
