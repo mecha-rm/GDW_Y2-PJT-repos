@@ -469,16 +469,81 @@ void cherry::EngineScene::OnOpen()
 	// fb->AddAttachment()
 	Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
+	// both work now
 	// adds a post-processing 
-	// PostLayer* postLayer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
-	// postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
-	// // postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
-	// layers.push_back(postLayer);
+	// ver. 1
+	if(false)
+	{
+		PostLayer* postLayer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
+		postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		// postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		layers.push_back(postLayer);
+	}
+
 	 
 	// postLayer->AddLayer(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+	// ver 2.
+	if(false)
+	{
+		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
+		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+	}
 	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+
+	if (false)
+	{
+		Shader::Sptr shader = std::make_shared<Shader>();
+		shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
+		// identity
+		// shader->SetUniform("a_Kernel", glm::mat3(
+		// 	0.0F, 0.0F, 0.0F,
+		// 	0.0F, 1.0F, 0.0F,
+		// 	0.0F, 0.0F, 0.0F
+		// ));
+
+		// box blur
+		// shader->SetUniform("a_Kernel", glm::mat3(
+		// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F,
+		// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F,
+		// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F
+		// ));
+
+		// edge detection
+		shader->SetUniform("a_Kernel", glm::mat3(
+			-1, -1, -1,
+			-1, 8, -1,
+			-1, -1, -1
+		));
+
+		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		fBuffer->AddAttachment(sceneColor);
+		fBuffer->AddAttachment(sceneDepth);
+
+		layers.push_back(new PostLayer(shader, fBuffer));
+	}
+
+	// temp
+	if (useLayers)
+	{
+		layer1 = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
+		layer2 = new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl");
+
+		Shader::Sptr shader = std::make_shared<Shader>();
+		shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
+		// edge detection
+		shader->SetUniform("a_Kernel", glm::mat3(
+			-1, -1, -1,
+			-1, 8, -1,
+			-1, -1, -1
+		));
+
+		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		fBuffer->AddAttachment(sceneColor);
+		fBuffer->AddAttachment(sceneDepth);
+
+		layer3 = new PostLayer(shader, fBuffer);
+	}
+
 
 	useFrameBuffers = true;
 
@@ -647,6 +712,23 @@ void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
 			}
 
 		}
+		break;
+
+	// layer switching
+	case GLFW_KEY_1:
+		layers.clear();
+		break;
+	case GLFW_KEY_2:
+		layers.clear();
+		layers.push_back(layer1);
+		break;
+	case GLFW_KEY_3:
+		layers.clear();
+		layers.push_back(layer2);
+		break;
+	case GLFW_KEY_4:
+		layers.clear();
+		layers.push_back(layer3);
 		break;
 	}
 }

@@ -66,6 +66,12 @@ namespace cherry
 		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
+		// temporary (to be removed after review 3)
+		PostLayer* layer1 = nullptr;
+		PostLayer* layer2 = nullptr;
+		PostLayer* layer3 = nullptr;
+		bool useLayers = true;
+
 	protected:
 	};
 }

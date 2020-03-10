@@ -225,6 +225,9 @@
     <ClCompile Include="src\cherry\scenes\GameplayScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cherry\scenes\MenuScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\KHR\khrplatform.h">
@@ -1259,6 +1262,9 @@
     <ClInclude Include="src\cherry\scenes\GameplayScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cherry\scenes\MenuScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />
@@ -1655,6 +1661,7 @@
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\greenscale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong-post.fs.glsl" />
+    <None Include="res\shaders\post\gamma_correction.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

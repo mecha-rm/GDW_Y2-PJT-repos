@@ -1,3 +1,4 @@
+// greyscale
 #version 440
 layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec3 inNormal;

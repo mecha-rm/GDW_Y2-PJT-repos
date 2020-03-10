@@ -107,7 +107,7 @@ unsigned int cherry::Animation::GetFinishedLoops() const { return finishedLoops;
 bool cherry::Animation::isPlaying() const { return play; }
 
 // plays the game
- void cherry::Animation::Play() { play = true; }
+void cherry::Animation::Play() { play = true; }
 
 // pauses the game
 void cherry::Animation::Pause() { play = false; }

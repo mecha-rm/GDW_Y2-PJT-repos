@@ -1,11 +1,16 @@
 // boots color vibrance
 #version 440
-layout (location = 0) in vec2 inUV;
-layout (location = 1) in vec2 inScreenCoords;
+layout (location = 0) in vec4 inColor;
+layout (location = 1) in vec3 inNormal;
+layout (location = 2) in vec2 inScreenCoords;
+layout (location = 3) in vec2 inUV;
 
 layout (location = 0) out vec4 outColor;
 
 uniform sampler2D xImage;
+
+// multiplier for vibrance
+uniform float a_Factor;
 
 void main() {
 	// color
@@ -16,6 +21,10 @@ void main() {
 
 	// gets the brightest colour
 	multi = 1.0F / max(color.r, max(color.g, color.b));
+
+	// boosts (or diminishies) the multiplier
+	if(a_Factor > 0.0F)
+		multi *= a_Factor;
 
 	// increasing the vibrance
 	color.r = clamp(color.r * multi, 0.0F, 1.0F);

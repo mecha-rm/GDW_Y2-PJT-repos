@@ -1424,7 +1424,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	if (usingFrameBuffers && !layers.empty())
 	{
 		fb->UnBind();
-		FrameBuffer::Sptr& fbx = fb; // the most recent buffer
+		FrameBuffer::Sptr fbx = fb; // the most recent buffer
 
 		// applies each layer
 		for (PostLayer* layer : layers)
@@ -1432,7 +1432,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 			// in order to use multiple layers (each with their own post passes), the last buffer used is saved in fbx.
 			// fbx then gives it to the new layer so that the image can continue to be changed.
 
-			// layer->initialBuffer = fbx; // setting it to use the most recent buffer
+			layer->initialBuffer = fbx; // setting it to use the most recent buffer
 			layer->PostRender(camera);
 			fbx = layer->GetLastPassBuffer(); // saves the last frame buffer
 			

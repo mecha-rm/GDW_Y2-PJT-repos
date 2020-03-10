@@ -606,8 +606,17 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// fb->AddAttachment()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
+		Shader::Sptr vShader = std::make_shared<Shader>();
+		vShader->Load(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		vShader->SetUniform("a_Factor", 0.8F);
+
+		FrameBuffer::Sptr vBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		vBuffer->AddAttachment(sceneColor);
+		vBuffer->AddAttachment(sceneDepth);
+
 		// adds a post-processing 
-		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		layers.push_back(new PostLayer(vShader, vBuffer));
 
 		useFrameBuffers = true;
 	}

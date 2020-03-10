@@ -167,12 +167,17 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		lastPass->Bind(2, RenderTargetAttachment::Color0);
 
 		pass.Shader->SetUniform("xScreenRes", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
+		pass.Shader->SetUniform("xBufferSize", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
 	
 		// if(i == myPasses.size() - 1)
 		myFullscreenQuad->Draw(); 
 
 		// Unbind the output pass so that we can read from it
 		pass.Output->UnBind();
+
+		// unbinding attachments
+		lastPass->Bind(0, RenderTargetAttachment::Depth);
+		lastPass->Bind(0, RenderTargetAttachment::Color0);
 
 		// Update the last pass output to be this passes output
 		lastPass = pass.Output;
