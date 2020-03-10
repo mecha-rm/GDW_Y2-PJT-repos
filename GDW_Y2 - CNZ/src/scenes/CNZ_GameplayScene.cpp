@@ -162,40 +162,14 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// Setting animation data
 		// Player
 		animList.push_back(&playerCharging);
-
-		if(true)
-		{
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000001.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000002.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000003.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000004.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000005.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000007.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000008.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000009.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000010.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000011.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000013.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000014.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000015.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000016.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000017.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000019.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000020.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000021.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000022.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000023.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
-			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
-
-		}
-
-
+		animList.push_back(&playerCharged);
+		animList.push_back(&playerDashing);
+		animList.push_back(&playerRun_F);
+		animList.push_back(&playerRun_B);
+		animList.push_back(&playerRun_L);
+		animList.push_back(&playerRun_R);
 		// Marauder
+
 
 		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
 		std::stringstream curPath;
@@ -217,8 +191,12 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// Add finished animations to objects
 		// Player
 		playerObj->AddAnimation(playerCharging.anim);
-
-
+		playerObj->AddAnimation(playerCharged.anim);
+		playerObj->AddAnimation(playerDashing.anim);
+		playerObj->AddAnimation(playerRun_F.anim);
+		playerObj->AddAnimation(playerRun_B.anim);
+		playerObj->AddAnimation(playerRun_L.anim);
+		playerObj->AddAnimation(playerRun_R.anim);
 
 
 
@@ -1080,9 +1058,43 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
 		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
 
-		// moving the player.
-		if (w && cw) { // up
-			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, moveInc * deltaTime, 0.0F));
+	cherry::Vec3 curMoveDir;
+	
+
+	// moving the player.
+	if (w && cw) { // up
+		curMoveDir += cherry::Vec3(0, 1, 0);
+		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, moveInc * deltaTime, 0.0F));
+	}
+	if (s && cs) { // down
+		curMoveDir += cherry::Vec3(0, -1, 0); 
+		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, -moveInc * deltaTime, 0.0F));
+	}
+	if (a && ca) { // left
+		curMoveDir += cherry::Vec3(-1, 0, 0);
+		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(-moveInc * deltaTime, 0.0F, 0.0F));
+	}
+	if (d && cd) { // right
+		curMoveDir += cherry::Vec3(1, 0, 0);
+		playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
+	}
+	
+
+	if (!( (w && cw) || (s && cs) || (a && ca) || (d && cd) )) { // if the player is not moving
+		playerObj->SetState(0);
+	}
+	else { // if the player is walking
+		playerObj->SetState(1);
+	}
+
+	playerObj->UpdateAngle(myCamera, game->GetCursorPosX(), game->GetCursorPosY(), game->GetWindowWidth(), game->GetWindowHeight());
+	playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
+
+	// dodge code
+	if (ls) {
+		cherry::Vec3 temp;
+		if (w && cw) {
+			temp.SetY(temp.GetY() - 1.0f);
 		}
 		if (s && cs) { // down
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, -moveInc * deltaTime, 0.0F));
@@ -1258,11 +1270,20 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
 
-			if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
-				for (int i = 0; i < enemyList.size(); i++) {
-					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
-						enemyList[i]->alive = false;
-					}
+	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
+	{
+		cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
+		float tempDist = dashVec.GetLength();
+		playerObj->SetDash(true);
+		playerObj->SetState(4); // set state to dashing
+		playerObj->SetDashTime(0.0f);
+
+		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
+		
+		if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
+			for (int i = 0; i < enemyList.size(); i++) { 
+				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
+					enemyList[i]->alive = false;
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
 			}
@@ -1374,6 +1395,24 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+	}
+	else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
+	{
+		if (playerObj->GetDashTime() >= 1.0f) {
+			playerObj->SetState(3); // charged
+		}
+		else {
+			playerObj->SetState(2); // set state to dash charging
+		}
+		
+		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
+	}
+	else if (mbLP == true && mbLR == true) { // left mouse has been released, reset dash timer
+		playerObj->SetDashTime(0.0f);
+		//Logger::GetLogger()->info(this->dashTime);
+		this->mbLP = false;
+		this->mbLR = false;
+	}
 
 		// camera position update code
 		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
@@ -1391,11 +1430,105 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			glm::vec2 xyPla;
 			cherry::Vec2 xyCur;
 
-			xyCam.x = myCamera->GetPosition().x;
-			xyCam.y = myCamera->GetPosition().y;
+	//// ANIMATION UPDATES
+	// Player
+	if (playerObj->GetState() == 1) { // walking
+		float angle;
+		if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == 1) { // moving up right
+			angle = 315.0f;
+		}
+		else if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == -1) { // moving up left
+			angle = 45.0f;
+		}
+		else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == 1) { // moving down right
+			angle = 225.0f;
+		}
+		else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == -1) { // moving down left
+			angle = 135.0f;
+		}
+		else if (curMoveDir.GetY() == 1) { // moving up
+			angle = 0.0f;
+		}
+		else if (curMoveDir.GetY() == -1) { // moving down
+			angle = 180.0f;
+		}
+		else if (curMoveDir.GetX() == 1) { // moving right
+			angle = 270.0f;
+		}
+		else if (curMoveDir.GetX() == -1) { // moving left
+			angle = 90.0f;
+		}
 
-			xyPla.x = playerObj->GetPosition().GetX();
-			xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
+		// angle = playerObj->GetDegreeAngle() - angle - 90.0f; // subtract ninety for some reason
+		float playerAngle = playerObj->GetDegreeAngle();
+		float angleDiff;
+
+		// always get a positive difference
+		if (playerAngle > angle) {
+			angleDiff = playerAngle - angle;
+		}
+		else if (angle > playerAngle) {
+			angleDiff = angle - playerAngle;
+		}
+		else {
+			angleDiff = 0.0f;
+		}
+
+		angleDiff = angleDiff - 90.0f; // subrtact 90 to fix werid rotation...
+
+		// make sure we are between 0 and 360. this should never be an issue but why NOT add redundant computations? /s
+		while (angleDiff < 0.0f) {
+			angleDiff = angleDiff + 360.0f;
+		}
+		while (angleDiff > 360.0f) {
+			angleDiff = angleDiff - 360.0f;
+		}
+
+		if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation
+			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+				playerObj->SetCurrentAnimation(3);
+				playerObj->GetCurrentAnimation()->Play();
+			}
+		}
+		else if (angle > 45.0f && angle <= 135.0f) { // right walking animation
+			
+			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+				playerObj->SetCurrentAnimation(6);
+				playerObj->GetCurrentAnimation()->Play();
+			}
+		}
+		else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation
+			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+				playerObj->SetCurrentAnimation(4);
+				playerObj->GetCurrentAnimation()->Play();
+			}
+		}
+		else if (angle > 225.0f && angle < 315.0f) { // left walking animation
+			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+				playerObj->SetCurrentAnimation(5);
+				playerObj->GetCurrentAnimation()->Play();
+			}
+		}
+	}
+	else if (playerObj->GetState() == 2) { // charging dash attack
+		if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+			playerObj->SetCurrentAnimation(0);
+			playerObj->GetCurrentAnimation()->Play();
+		}
+	}
+	else if (playerObj->GetState() == 3) { // dash charged
+		if (playerObj->GetCurrentAnimation() != nullptr) {
+			playerObj->GetCurrentAnimation()->Stop();
+		}
+		playerObj->SetCurrentAnimation(1);
+		playerObj->GetCurrentAnimation()->Play();
+	}
+	else if (playerObj->GetState() == 4) { // dashing
+		if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
+			playerObj->SetCurrentAnimation(2);
+			playerObj->GetCurrentAnimation()->Play();
+		}
+	}
 
 			xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
 
