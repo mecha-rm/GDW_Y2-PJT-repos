@@ -128,9 +128,13 @@ namespace cnz
 		std::vector<cnz::AnimStruct*> animList;
 
 		cherry::MorphAnimation* indArrowAnim;
-		cnz::AnimStruct playerWalking;
 		cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDashing;
+		cnz::AnimStruct playerCharged = { 1, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_F = { 24, "res/objects/anims/player/Run_F/One_RF_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
 
 		cnz::Player* testObj = nullptr; // object for the player.
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
