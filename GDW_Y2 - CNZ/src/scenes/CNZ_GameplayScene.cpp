@@ -1113,84 +1113,86 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		//Enemy AI
 		for (int i = 0; i < enemyList.size(); i++) {
-			if (enemyList[i]->alive == true) {
-				enemyCount++;
-				if (f == true && enemyList[i]->stunned == false) {
-					enemyList[i]->stunned = true;
-					enemyList[i]->stunTimer = 0;
-				}
-				else if (enemyList[i]->stunned == true) {
-					if (enemyList[i]->stunTimer >= 5.0f) {
-						enemyList[i]->stunned = false;
+			if (enemyList[i] != nullptr) {
+				if (enemyList[i]->alive == true) {
+					enemyCount++;
+					if (f == true && enemyList[i]->stunned == false) {
+						enemyList[i]->stunned = true;
+						enemyList[i]->stunTimer = 0;
 					}
-					else {
-						enemyList[i]->stunTimer += deltaTime;
+					else if (enemyList[i]->stunned == true) {
+						if (enemyList[i]->stunTimer >= 5.0f) {
+							enemyList[i]->stunned = false;
+						}
+						else {
+							enemyList[i]->stunTimer += deltaTime;
+						}
 					}
 				}
-			}
 
-			if (enemyList[i]->stunned == false) {
-				//Look at player
-				enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
-				enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
+				if (enemyList[i]->stunned == false) {
+					//Look at player
+					enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
+					enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
-				if (enemyList[i]->WhoAmI() == "Sentry") {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
-						////Spawn projectiles
-						enemyList[i]->attacking = true;
-						projList.push_back(new Projectile(*arrowBase));
-						projTimeList.push_back(0);
-						projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
-						projList[projList.size() - 1]->SetWhichGroup(i);
-						//projList[projList.size() - 1]->SetWhichEnemy(j);
-						projList[projList.size() - 1]->active = true;
-						projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
-						projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-						projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-						game->AddObjectToScene(projList[projList.size() - 1]);
+					if (enemyList[i]->WhoAmI() == "Sentry") {
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+							////Spawn projectiles
+							enemyList[i]->attacking = true;
+							projList.push_back(new Projectile(*arrowBase));
+							projTimeList.push_back(0);
+							projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
+							projList[projList.size() - 1]->SetWhichGroup(i);
+							//projList[projList.size() - 1]->SetWhichEnemy(j);
+							projList[projList.size() - 1]->active = true;
+							projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
+							projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+							projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+							game->AddObjectToScene(projList[projList.size() - 1]);
+						}
+						else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						}
 					}
-					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+					else if (enemyList[i]->WhoAmI() == "Marauder" && enemyList[i]->attacking == false) {
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						}
 					}
+					else if (enemyList[i]->WhoAmI() == "Oracle" && enemyList[i]->attacking == false) {
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+							//Attack
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						}
+					}
+					else if (enemyList[i]->WhoAmI() == "Bastion" && enemyList[i]->attacking == false) {
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						}
+					}
+					else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+							//Attack
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						}
+					}
+					enemyList[i]->Update(deltaTime);
 				}
-				else if (enemyList[i]->WhoAmI() == "Marauder" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Oracle" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
-						//Attack
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Bastion" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
-						//Attack
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-					}
-				}
-				enemyList[i]->Update(deltaTime);
 			}
 		}
 
