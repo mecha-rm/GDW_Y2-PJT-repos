@@ -13,6 +13,9 @@ namespace cherry
 		// updates the texture animation.
 		void Update(float deltaTime);
 
+		// toString
+		std::string ToString() const override;
+
 	private:
 
 		// TODO: add option to blend frames.
@@ -66,7 +69,11 @@ namespace cherry
 		// gets the maximum v-coordinate
 		float GetVMaximum() const;
 
+		// toString function
+		std::string ToString() const override;
+
 	private:
+
 	protected:
 		std::string image = "";
 
