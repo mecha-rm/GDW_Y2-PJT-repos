@@ -71,6 +71,7 @@ namespace cherry
 		PostLayer::Sptr layer2 = nullptr;
 		PostLayer::Sptr layer3 = nullptr;
 		PostLayer::Sptr layer4 = nullptr;
+		PostLayer::Sptr layer5 = nullptr;
 		bool useLayers = true;
 
 	protected:

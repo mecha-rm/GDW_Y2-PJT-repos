@@ -15,17 +15,17 @@ uniform mat3 a_Kernel;
 float KernelFilter(mat3 pixels)
 {
 	return (
-		// row 1
+		// row 0
 		a_Kernel[0][0] * pixels[0][0] +
 		a_Kernel[0][1] * pixels[0][1] +
 		a_Kernel[0][2] * pixels[0][2] +
 
-		// row 2
+		// row 1
 		a_Kernel[1][0] * pixels[1][0] +
 		a_Kernel[1][1] * pixels[1][1] +
 		a_Kernel[1][2] * pixels[1][2] +
 
-		// row 3
+		// row 2
 		a_Kernel[2][0] * pixels[2][0] +
 		a_Kernel[2][1] * pixels[2][1] +
 		a_Kernel[2][2] * pixels[2][2]
@@ -35,7 +35,6 @@ float KernelFilter(mat3 pixels)
 void main() {
 	vec4 newColor = inColor; // the new color
 	vec4 pxlArr[3][3]; // array of surrounding pixels
-	mat3 clrArr; // matrix of surroundin colours
 
 	vec2 pixelPos; // pixel position
 	pixelPos.x = round(inScreenRes.x * inUV.x); 
@@ -43,21 +42,7 @@ void main() {
 
 	
 	// getting the pixels
-	// top row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // left 1, up 1
-//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // up 1
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // right 1, up 1
-//
-//	// middle row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y) / inScreenRes.y)); // left 1
-//	pxArr[0][1] = texture(xImage, inUV); // centre
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y) / inScreenRes.y)); // right 1
-//
-//	// bottom row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // left 1, down 1
-//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // down 1
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // right 1, down 1
-	
+
 	// pixel row
 	for(int row = -1; row <= 1; row++)
 	{

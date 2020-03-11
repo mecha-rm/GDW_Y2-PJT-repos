@@ -8,6 +8,7 @@
 #include "..\textures/TextureSampler.h"
 #include "..\objects/Text.h"
 
+#include "..\post/KernelLayer.h"
 #include <imgui\imgui.h>
 
 // creating the engine scene.
@@ -535,7 +536,7 @@ void cherry::EngineScene::OnOpen()
 			-1, 8, -1,
 			-1, -1, -1
 		));
-
+		 
 		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
 		fBuffer->AddAttachment(sceneColor);
 		fBuffer->AddAttachment(sceneDepth);
@@ -546,6 +547,24 @@ void cherry::EngineScene::OnOpen()
 		lightList->ignoreBackground = false;
 		lightList->UpdatePostLayer();
 		layer4 = lightList->GetPostLayer();
+
+		// layer 5
+		// Shader::Sptr l5shader = std::make_shared<Shader>();
+		// l5shader->Load(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
+		// guassian blur
+		float temp = 1.0F / 256.0F;
+		Kernel5Layer kl(
+			temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
+			temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F,
+			temp * 6.0F, temp * 24.0F, temp * 36.0F, temp * 24.0F, temp * 6.0F,
+			temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
+			temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F
+		);
+		
+		layer5 = kl.GetPostLayer();
+
+		// little change
+		// layer5 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
 	}
 
 
@@ -736,10 +755,16 @@ void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
 		layers.clear();
 		layers.push_back(layer3);
 		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
 	case GLFW_KEY_5:
 		layers.clear();
 		layers.push_back(layer4);
-		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layer4->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
+	case GLFW_KEY_6:
+		layers.clear();
+		layers.push_back(layer5);
+		layer5->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	}
 }

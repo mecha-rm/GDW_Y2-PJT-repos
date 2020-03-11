@@ -216,7 +216,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 
 
-
+		// TODO: make this NOT a pointer.
 		//Skybox stuff
 		skyboxObj = new cherry::Skybox("res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
 									   "res/images/cubemaps/oFloor.jpg", "res/images/cubemaps/oSky.jpg", 
