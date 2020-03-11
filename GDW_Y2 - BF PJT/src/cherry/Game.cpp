@@ -99,7 +99,7 @@ void CursorEnterCallback(GLFWwindow* window, int enter)
 		return;
 	}
 
-	// sets whether the mouse cursor is in the window
+	// sets whether the mouse cursor is in the window 
 	game->SetCursorInWindow(enter);
 }
 
@@ -1123,9 +1123,9 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 			fb->Resize(newWidth, newHeight);
 
 			// gets the layers
-			std::vector<cherry::PostLayer*> layers = currScene->GetPostLayers();
+			std::vector<cherry::PostLayer::Sptr> layers = currScene->GetPostLayers();
 
-			for (PostLayer* layer : layers)
+			for (PostLayer::Sptr layer : layers)
 				layer->OnWindowResize(newWidth, newHeight);
 		}
 	}
@@ -1214,7 +1214,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	Scene* scene = CurrentScene(); // gets the current scene
 	
 	bool usingFrameBuffers = false; // if 'true', the frame buffer is being used.
-	std::vector<PostLayer*> layers;
+	std::vector<PostLayer::Sptr> layers;
 
 	// vector for post-post-process renders
 	std::vector<MeshRenderer> postRenders;
@@ -1424,15 +1424,15 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	if (usingFrameBuffers && !layers.empty())
 	{
 		fb->UnBind();
-		FrameBuffer::Sptr& fbx = fb; // the most recent buffer
+		FrameBuffer::Sptr fbx = fb; // the most recent buffer
 
 		// applies each layer
-		for (PostLayer* layer : layers)
+		for (PostLayer::Sptr layer : layers)
 		{
 			// in order to use multiple layers (each with their own post passes), the last buffer used is saved in fbx.
 			// fbx then gives it to the new layer so that the image can continue to be changed.
 
-			// layer->initialBuffer = fbx; // setting it to use the most recent buffer
+			layer->initialBuffer = fbx; // setting it to use the most recent buffer
 			layer->PostRender(camera);
 			fbx = layer->GetLastPassBuffer(); // saves the last frame buffer
 			

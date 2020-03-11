@@ -37,6 +37,9 @@ namespace cherry
 		// called when a key has been released
 		void KeyReleased(GLFWwindow* window, int key) override;
 
+		// ImGUI draw function.
+		void DrawGui(float deltaTime) override;
+
 		// update loop.
 		void Update(float deltaTime) override;
 

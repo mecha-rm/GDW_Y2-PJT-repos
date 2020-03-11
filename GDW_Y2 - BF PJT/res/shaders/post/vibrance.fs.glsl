@@ -9,6 +9,9 @@ layout (location = 0) out vec4 outColor;
 
 uniform sampler2D xImage;
 
+// multiplier for vibrance
+uniform float a_Factor;
+
 void main() {
 	// color
 	vec4 color = texture(xImage, inUV);
@@ -18,6 +21,10 @@ void main() {
 
 	// gets the brightest colour
 	multi = 1.0F / max(color.r, max(color.g, color.b));
+
+	// boosts (or diminishies) the multiplier
+	if(a_Factor > 0.0F)
+		multi *= a_Factor;
 
 	// increasing the vibrance
 	color.r = clamp(color.r * multi, 0.0F, 1.0F);

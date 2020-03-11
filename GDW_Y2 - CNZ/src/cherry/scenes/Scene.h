@@ -63,6 +63,10 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
+		// draws the ImGUI window for the scene.
+		// include <imgui/imgui.h> for ImGUI functionality.
+		virtual void DrawGui(float deltaTime);
+
 		// the update loop.
 		// the game update is called before this update.
 		virtual void Update(float deltaTime);

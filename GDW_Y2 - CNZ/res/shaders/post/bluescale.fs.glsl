@@ -1,4 +1,4 @@
-// greyscale
+// blue scale
 #version 440
 layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec3 inNormal;
@@ -13,5 +13,5 @@ void main() {
 	vec4 imgPx = texture(xImage, inUV);
 	float res = (imgPx.r + imgPx.g + imgPx.b) / 3.0F;
 
-	outColor = vec4(res, res, res, inColor.a * imgPx.a);
+	outColor = vec4(0, 0, res, inColor.a * imgPx.a);
 }

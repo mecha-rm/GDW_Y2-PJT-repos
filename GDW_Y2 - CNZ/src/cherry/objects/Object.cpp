@@ -167,7 +167,7 @@ cherry::Object::Object(const cherry::Object& obj)
 	{
 		// if it's a dynmaic object, then it gets morph vertices.
 		// if it's a static object, it just gets the regular vertices.
-		(dynamicObject) ?
+		(dynamicObject) ? 
 			mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0) :
 			mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
 	}

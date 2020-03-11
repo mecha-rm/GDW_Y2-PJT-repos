@@ -3,39 +3,39 @@
 
 // TODO: save scene to a string so that UI can carry over
 // creates an iamge by taking in a file path. Images call CreateEntity automatically.
-cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront, bool camLock) :
-	Image(filePath, scene, Vec2(0, 0), Vec4(0, 0, 1, 1), doubleSided, duplicateFront, camLock)
+cherry::Image::Image(std::string filePath, std::string scene, bool doubleSided, bool duplicateFront) :
+	Image(filePath, scene, Vec2(0, 0), Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
 {
 
 }
 
 // image with size
-cherry::Image::Image(std::string filePath, std::string scene, float width, float height, bool doubleSided, bool duplicateFront, bool camLock)
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, bool doubleSided, bool duplicateFront)
 	: Image(filePath, scene, cherry::Vec2(width, height), cherry::Vec4(0.0F, 0.0F, 1.0F, 1.0F), doubleSided, duplicateFront)
 {
 }
 
 // image with size
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided, bool duplicateFront, bool camLock)
-	: Image(filePath, scene, size, cherry::Vec4(0, 0, 1, 1), doubleSided, duplicateFront, camLock)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, size, cherry::Vec4(0, 0, 1, 1), doubleSided, duplicateFront)
 {
 }
 
 // image with uvs.
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
-	: Image(filePath, scene, cherry::Vec2(0.0F, 0.0F), uvs, doubleSided, duplicateFront, camLock)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, cherry::Vec2(0.0F, 0.0F), uvs, doubleSided, duplicateFront)
 {
 }
 
 // image with size and uvs
-cherry::Image::Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
-	: Image(filePath, scene, cherry::Vec2(width, height), uvs, doubleSided, duplicateFront, camLock)
+cherry::Image::Image(std::string filePath, std::string scene, float width, float height, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Image(filePath, scene, cherry::Vec2(width, height), uvs, doubleSided, duplicateFront)
 {
 }
 
 // image creation with size and uvs.
-cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront, bool camLock)
-	: Object(), doubleSided(doubleSided), duplicatedFront(duplicateFront), cameraLock(camLock)
+cherry::Image::Image(std::string filePath, std::string scene, cherry::Vec2 size, cherry::Vec4 uvs, bool doubleSided, bool duplicateFront)
+	: Object(), doubleSided(doubleSided), duplicatedFront(duplicateFront)
 {
 	std::ifstream file(filePath, std::ios::in); // opens the file
 // file.open(filePath, std::ios::in); // opens file
@@ -264,27 +264,10 @@ bool cherry::Image::LoadImage(std::string scene, cherry::Vec2 size, cherry::Vec4
 	shader = std::make_shared<Shader>();
 	
 	// no lighting is applied.
-	// TODO: remove this?
-	if (cameraLock)
-	{
-		shader->Load("res/shaders/image.vs.glsl", "res/shaders/image.fs.glsl");
-
-		material = std::make_shared<Material>(shader);
-
-		material->Set("s_Albedos[0]", img, sampler);
-		material->Set("s_Albedos[1]", img, sampler);
-		material->Set("s_Albedos[2]", img, sampler);
-	}
-	else
-	{
-		shader->Load("res/shaders/image.vs.glsl", "res/shaders/image.fs.glsl");
-
-		material = std::make_shared<Material>(shader);
-
-		material->Set("s_Albedos[0]", img, sampler);
-		material->Set("s_Albedos[1]", img, sampler);
-		material->Set("s_Albedos[2]", img, sampler);
-	}
+	shader->Load("res/shaders/image.vs.glsl", "res/shaders/image.fs.glsl");
+	material = std::make_shared<Material>(shader);
+	material->Set("s_Albedo", img, sampler);
+	
 
 
 	// TODO: should probably do error checking, but this is fine for now.

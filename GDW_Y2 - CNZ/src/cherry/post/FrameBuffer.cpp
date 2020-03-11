@@ -40,9 +40,6 @@ uint32_t cherry::FrameBuffer::GetHeight() const { return myHeight; }
 // gets the size of the buffer
 glm::u32vec2 cherry::FrameBuffer::GetSize() const { return { myWidth, myHeight }; }
 
-// gets the number of attachments.
-int cherry::FrameBuffer::GetAttachmentCount() const { return myLayers.size(); }
-
 // gets once of the frame attachments
 cherry::Texture2D::Sptr cherry::FrameBuffer::GetAttachment(RenderTargetAttachment attachment) {
 	if (myNumSamples > 1) {
@@ -60,7 +57,6 @@ cherry::Texture2D::Sptr cherry::FrameBuffer::GetAttachment(RenderTargetAttachmen
 			return nullptr;
 	}
 }
-
  
 void cherry::FrameBuffer::Resize(uint32_t newWidth, uint32_t newHeight) {
 	LOG_ASSERT(newWidth > 0, "Width must be greater than zero!");

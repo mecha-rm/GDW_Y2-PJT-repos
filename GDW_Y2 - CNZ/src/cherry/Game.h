@@ -43,6 +43,16 @@ namespace cherry
 		// destructor
 		~Game();
 
+		// returns the title of the game window. It's maximum letter count is determined by WINDOW_TITLE_CHAR_MAX
+		const std::string GetWindowTitle() const;
+
+		// gets the length of the window title.
+		// if this is to be called multiple times, it's recommended that its value be saved in a variable instead.
+		int GetWindowTitleLength() const;
+
+		// gets the GLFW window.
+		GLFWwindow* GetWindow() const;
+
 		// gets the window width
 		int GetWindowWidth() const;
 

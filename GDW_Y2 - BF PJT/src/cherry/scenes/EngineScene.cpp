@@ -168,13 +168,13 @@ void cherry::EngineScene::OnOpen()
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
 
 	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
+		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 1.0F / 1200.0F));
 
 	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F));
+		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 1.0F / 800.0F));
 
 	game->AddLightToScene(new Light(game->GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
-		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
+		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 1.0F/1000.0F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
@@ -469,16 +469,85 @@ void cherry::EngineScene::OnOpen()
 	// fb->AddAttachment()
 	Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
+	// both work now
 	// adds a post-processing 
-	// PostLayer* postLayer = new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl");
-	// postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
-	// // postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
-	// layers.push_back(postLayer);
-	 
-	// postLayer->AddLayer(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
-	layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
-	// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+	// ver. 1
+	// if(false)
+	// {
+	// 	PostLayer::Sptr postLayer = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
+	// 	postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+	// 	// postLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+	// 	layers.push_back(postLayer);
+	// }
+ 	// 
+	// // postLayer->AddLayer(new PostLayer(POST_VS, "res/shaders/post/invert.fs.glsl"));
+	// // ver 2.
+	// if(false)
+	// {
+	// 	layers.push_back(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl"));
+	// 	layers.push_back(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+	// }
+	// // layers.push_back(new PostLayer(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+	// 
+	// if (false)
+	// {
+	// 	Shader::Sptr shader = std::make_shared<Shader>();
+	// 	shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
+	// 	// identity
+	// 	// shader->SetUniform("a_Kernel", glm::mat3(
+	// 	// 	0.0F, 0.0F, 0.0F,
+	// 	// 	0.0F, 1.0F, 0.0F,
+	// 	// 	0.0F, 0.0F, 0.0F
+	// 	// ));
+	// 
+	// 	// box blur
+	// 	// shader->SetUniform("a_Kernel", glm::mat3(
+	// 	// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F,
+	// 	// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F,
+	// 	// 	1.0F / 9.0F, 1.0F / 9.0F, 1.0F / 9.0F
+	// 	// ));
+	// 
+	// 	// edge detection
+	// 	shader->SetUniform("a_Kernel", glm::mat3(
+	// 		-1, -1, -1,
+	// 		-1, 8, -1,
+	// 		-1, -1, -1
+	// 	));
+	// 
+	// 	FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+	// 	fBuffer->AddAttachment(sceneColor);
+	// 	fBuffer->AddAttachment(sceneDepth);
+	// 
+	// 	layers.push_back(std::make_shared<PostLayer>(shader, fBuffer));
+	// }
+
+	// temp
+	if (useLayers)
+	{
+		layer1 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
+		layer2 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/greyscale.fs.glsl");
+
+		Shader::Sptr shader = std::make_shared<Shader>();
+		shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
+		// edge detection
+		shader->SetUniform("a_Kernel", glm::mat3(
+			-1, -1, -1,
+			-1, 8, -1,
+			-1, -1, -1
+		));
+
+		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		fBuffer->AddAttachment(sceneColor);
+		fBuffer->AddAttachment(sceneDepth);
+
+		layer3 = std::make_shared<PostLayer>(shader, fBuffer);
+
+		// light list
+		lightList->ignoreBackground = false;
+		lightList->UpdatePostLayer();
+		layer4 = lightList->GetPostLayer();
+	}
+
 
 	useFrameBuffers = true;
 
@@ -647,6 +716,30 @@ void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
 			}
 
 		}
+		break;
+
+	// layer switching
+	case GLFW_KEY_1:
+		layers.clear();
+		break;
+	case GLFW_KEY_2:
+		layers.clear();
+		layers.push_back(layer1);
+		layer1->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
+	case GLFW_KEY_3:
+		layers.clear();
+		layers.push_back(layer2);
+		layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
+	case GLFW_KEY_4:
+		layers.clear();
+		layers.push_back(layer3);
+		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+	case GLFW_KEY_5:
+		layers.clear();
+		layers.push_back(layer4);
+		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	}
 }

@@ -27,11 +27,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	Camera::Sptr myCamera = game->myCamera;
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
 
-	pauseMenu = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName());
-	pauseMenu->SetWindowChild(true);
-	pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
-	pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.25f));
-
 	bool levelLoading = true;
 
 	description = SamplerDesc();
@@ -589,8 +584,17 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// fb->AddAttachment()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
+		Shader::Sptr vShader = std::make_shared<Shader>();
+		vShader->Load(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		vShader->SetUniform("a_Factor", 0.8F);
+
+		FrameBuffer::Sptr vBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		vBuffer->AddAttachment(sceneColor);
+		vBuffer->AddAttachment(sceneDepth);
+
 		// adds a post-processing 
-		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		layers.push_back(new PostLayer(vShader, vBuffer));
 
 		useFrameBuffers = true;
 	}
@@ -661,14 +665,6 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = true;
-		break;
-	case GLFW_KEY_ESCAPE:
-		paused = !paused;
-		break;
-	case GLFW_KEY_R:
-		if (paused) {
-			restart = true;
-		}
 		break;
 	}
 }
@@ -791,8 +787,6 @@ float cnz::CNZ_GameplayScene::GetXYAngle(cherry::Vec3 vec)
 
 void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 {
-	enemyList.clear();
-	curWave++;
 
 	int percent = rand() % 100;
 
@@ -816,7 +810,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 		}
 	}
 
-	cout << i << endl;
+	// cout << i << endl;
 	curGroup = i;
 
 	int n = enemyGroups[i].size();
@@ -875,7 +869,6 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 			//std::cout << "its a player" << std::endl;
 			this->playerObj = (cnz::Player*)allSceneObjects[i];
 			this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
-			this->playerSpawn = allSceneObjects[i]->GetPosition();
 			this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
 			this->playerObj->SetRotationXDegrees(90);
 			this->playerObj->SetRotationZDegrees(180);
@@ -955,108 +948,99 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
-	if (paused == false) {
-		pauseMenu->SetVisible(false);
-		CNZ_Game* game = (CNZ_Game*)cherry::Game::GetRunningGame();
-		cherry::Camera::Sptr myCamera = game->myCamera;
+	CNZ_Game* game = (CNZ_Game*)cherry::Game::GetRunningGame();
+	cherry::Camera::Sptr myCamera = game->myCamera;
 
-		//GLenum test = glGetError();
-		this->playerPrevPos = playerObj->GetPosition(); // store previous position
+	//GLenum test = glGetError();
+	this->playerPrevPos = playerObj->GetPosition(); // store previous position
 
-		if (showPBs) { // show player and projectile physics bodies if showPBs
-			playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-			for (int i = 0; i < projList.size(); i++) {
-				projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-			}
+	if (showPBs) { // show player and projectile physics bodies if showPBs
+		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+		for (int i = 0; i < projList.size(); i++) {
+			projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
+	}
 
-		float moveInc = -10.0F; // the movement incrementer.
+	float moveInc = -10.0F; // the movement incrementer.
 
-		vector<cherry::PhysicsBody*> playerObstacleCollisions; // obstacle PBs with which the player's PB is colliding with
-		vector<cherry::PhysicsBody*> playerEnemyCollisions; // enemy PBs with which the player's PB is colliding with
+	vector<cherry::PhysicsBody*> playerObstacleCollisions; // obstacle PBs with which the player's PB is colliding with
+	vector<cherry::PhysicsBody*> playerEnemyCollisions; // enemy PBs with which the player's PB is colliding with
 
-		// find all obstacles the player is colliding with
-		for (int i = 0; i < obstacles.size(); i++) {
-			bool collision = false;
-			if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
-				obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
-			}
-			collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
-			if (collision) {
-				playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
-				std::cout << "collision with obstacle " << i << std::endl;
-			}
+	// find all obstacles the player is colliding with
+	for (int i = 0; i < obstacles.size(); i++) {
+		bool collision = false;
+		if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
+			obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
 		}
-
-		// find all enemies the player is colliding with
-		for (int i = 0; i < enemyList.size(); i++) {
-			if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
-				if (showPBs) { // shows enemy pbs if showPBs
-					enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-				}
-				bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
-				if (collision) {
-					//Player takes damage
-					lives--;
-					playerObj->SetPosition(playerSpawn);
-				}
-			}
-			else {
-				cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
-			}
+		collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
+		if (collision) {
+			playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
+			// std::cout << "collision with obstacle " << i << std::endl;
 		}
+	}
 
-		cs = true;
-		cw = true;
-		ca = true;
-		cd = true;
+	// find all enemies the player is colliding with
+	for (int i = 0; i < enemyList.size(); i++) {
+		if (showPBs) { // shows enemy pbs if showPBs
+			enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+		}
+		bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
+		if (collision) {
+			//Player takes damage
+		}
+	}
+
+	cs = true;
+	cw = true;
+	ca = true;
+	cd = true;
 
 
-		// TODO: actually fix collisions... and allow player to move out if colliding in all directions. (AKA when all of the above booleans are false)
-		// check what directions the player can move in based on its collisions with obstacles in the scene.
-		if (playerObstacleCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
-			// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
-			for (int i = 0; i < playerObstacleCollisions.size(); i++) {
-				cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
+	// TODO: actually fix collisions... and allow player to move out if colliding in all directions. (AKA when all of the above booleans are false)
+	// check what directions the player can move in based on its collisions with obstacles in the scene.
+	if (playerObstacleCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
+		// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
+		for (int i = 0; i < playerObstacleCollisions.size(); i++) {
+			cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
 
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+				cs = false;
+			}
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+				cw = false;
+			}
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+				ca = false;
+			}
+			if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+				cd = false;
+			}
+			/* This is the old method of detecting which way the player can move. It's broken I'm pretty sure.
+			if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
 				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
 					cs = false;
 				}
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
 					cw = false;
 				}
+			}
+			else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
 				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
 					ca = false;
 				}
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+				else if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
 					cd = false;
 				}
-				/* This is the old method of detecting which way the player can move. It's broken I'm pretty sure.
-				if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
-					if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
-						cs = false;
-					}
-					else if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
-						cw = false;
-					}
-				}
-				else if (fabsf(dP.GetX()) > fabsf(dP.GetY())) { // this is the same thing, also why its cube only.
-					if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
-						ca = false;
-					}
-					else if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
-						cd = false;
-					}
-				}
-				*/
 			}
+			*/
 		}
+	}
 
-		//// side checks
-		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) // right of the object
-		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) // left of the object
-		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
-		//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
+	//// side checks
+	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) // right of the object
+	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) // left of the object
+	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) // above the object
+	//if ((playerObstacleCollisions[i]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) // below the object
 
 		cherry::Vec3 curMoveDir;
 
@@ -1078,38 +1062,35 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 		}
 
-		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) { // if the player is not moving
-			playerObj->SetState(0);
-		}
-		else { // if the player is walking
-			playerObj->SetState(1);
-		}
+		playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
 
-		playerObj->UpdateAngle(myCamera, game->GetCursorPosX(), game->GetCursorPosY(), game->GetWindowWidth(), game->GetWindowHeight());
-		playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
+		ls = false;
+	}
 
-		// dodge code
-		if (ls) {
-			cherry::Vec3 temp;
-			if (w && cw) {
-				temp.SetY(temp.GetY() - 1.0f);
-			}
-			if (s && cs) {
-				temp.SetY(temp.GetY() + 1.0f);
-			}
-			if (a && ca) {
-				temp.SetX(temp.GetX() + 1.0f);
-			}
-			if (d && cd) {
-				temp.SetX(temp.GetX() - 1.0f);
-			}
+	int enemyCount = 0;
 
-			playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
-
-			ls = false;
+	//Enemy AI
+	for (int i = 0; i < enemyList.size(); i++) {
+		if (enemyList[i]->alive == true) {
+			enemyCount++;
+			if (f == true && enemyList[i]->stunned == false) {
+				enemyList[i]->stunned = true;
+				enemyList[i]->stunTimer = 0;
+			}
+			else if (enemyList[i]->stunned == true) {
+				if (enemyList[i]->stunTimer >= 5.0f) {
+					enemyList[i]->stunned = false;
+				}
+				else {
+					enemyList[i]->stunTimer += deltaTime;
+				}
+			}
 		}
 
-		int enemyCount = 0;
+		if (enemyList[i]->stunned == false) {
+			//Look at player
+			enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
+			enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
 		//Enemy AI
 		for (int i = 0; i < enemyList.size(); i++) {
@@ -1194,45 +1175,40 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					enemyList[i]->Update(deltaTime);
 				}
 			}
-		}
-
-		// Spawn new wave when all enemies are dead
-		if (enemyCount == 0) {
-			SpawnEnemyGroup();
-		}
-
-		//Update Projectiles
-		for (int i = 0; i < projList.size(); i++) {
-			if (projList[i]->active == true) {
-				projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
-				projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
-				projTimeList[i] += deltaTime;
-				if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projList[i]->GetPhysicsBodies()[0])) {
-					projList[i]->RemovePhysicsBody(projList[i]->GetPhysicsBodies()[0]);
-					enemyList[projList[i]->GetWhichGroup()]->attacking = false;
-					projList[i]->active = false;
-					projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-					game->DeleteObjectFromScene(projList[i]);
-					projList.erase(projList.begin() + i);
-					projTimeList.erase(projTimeList.begin() + i);
+			else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
+				if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+					//Attack
+				}
+				else {
+					//Move towards player				
+					enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 				}
 			}
+			enemyList[i]->Update(deltaTime);
 		}
+	}
 
-		//// DASH CODE
-
-		// Dash indicator
-		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
-			//Display indicator
-			//indArrowAnim->Play();
-			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
-			indicatorObj->SetVisible(true);
-			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
+	// Spawn new wave when all enemies are dead
+	if (enemyCount == 0) {
+		SpawnEnemyGroup();
+	}
+	//Update Projectiles
+	for (int i = 0; i < projList.size(); i++) {
+		if (projList[i]->active == true) {
+			projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
+			projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
+			projTimeList[i] += deltaTime;
+			if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projList[i]->GetPhysicsBodies()[0])) {
+				projList[i]->RemovePhysicsBody(projList[i]->GetPhysicsBodies()[0]);
+				enemyList[projList[i]->GetWhichGroup()]->attacking = false;
+				projList[i]->active = false;
+				projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
+				game->DeleteObjectFromScene(projList[i]);
+				projList.erase(projList.begin() + i);
+				projTimeList.erase(projTimeList.begin() + i);
+			}
 		}
-		else { // dash timer is below 1.0f
-			//Hide indicator
-			indicatorObj->SetVisible(false);
-		}
+	}
 
 		if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
 		{
@@ -1242,84 +1218,91 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetState(4); // set state to dashing
 			playerObj->SetDashTime(0.0f);
 
-			cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
+	// Dash indicator
+	if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
+		//Display indicator
+		//indArrowAnim->Play();
+		indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+		indicatorObj->SetVisible(true);
+		indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
+	}
+	else { // dash timer is below 1.0f
+		//Hide indicator
+		indicatorObj->SetVisible(false);
+	}
 
-			if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
+	if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
+	{
+		cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
+		float tempDist = dashVec.GetLength();
+		playerObj->SetDash(true);
+		playerObj->SetState(3); // set state to dashing
+		playerObj->SetDashTime(0.0f);
+
+		cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
+		
+		if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
+			for (int i = 0; i < enemyList.size(); i++) { 
+				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
+					enemyList[i]->alive = false;
+				}
+			}
+			playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
+		}
+
+		else {
+			cherry::Vec3 dP = closestObstacle->GetLocalPosition() - playerObj->GetPosition();
+			cherry::Vec3 dPN;
+
+			cherry::Vec3 plyrMeshBody = (playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum());
+			cherry::Vec3 obstMeshBody{};
+
+			if (closestObstacle->GetObject() != nullptr) // checking for nullptr.
+				obstMeshBody = (closestObstacle->GetObject()->GetMeshBodyMaximum() - closestObstacle->GetObject()->GetMeshBodyMinimum());
+
+			if (dP.GetLength() < tempDist) {
+				if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
+					float tempX = 0;
+					if (dP.GetX() < 0) {
+						tempX = dP.GetX() + ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
+					}
+					else {
+						tempX = dP.GetX() - ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
+					}
+					float angle = GetXYAngle(dP);
+					float tempY = tempX / tanf(angle);
+					dPN.SetX(tempX);
+					dPN.SetY(tempY);
+				}
+				else {
+					float tempY = 0;
+					if (dP.GetY() < 0) {
+						tempY = dP.GetY() + ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
+					}
+					else {
+						tempY = dP.GetY() - ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
+					}
+					float angle = GetXYAngle(dP);
+					float tempX = tempY * tanf(angle);
+					dPN.SetX(tempX);
+					dPN.SetY(tempY);
+				}
+
 				for (int i = 0; i < enemyList.size(); i++) {
-					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
+					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
 						enemyList[i]->alive = false;
 					}
 				}
-				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
+				playerObj->SetPosition(playerObj->GetPosition() + dPN);
 			}
-
 			else {
-				cherry::Vec3 dP = closestObstacle->GetLocalPosition() - playerObj->GetPosition();
-				cherry::Vec3 dPN;
-
-				cherry::Vec3 plyrMeshBody = (playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum());
-				cherry::Vec3 obstMeshBody{};
-
-				if (closestObstacle->GetObject() != nullptr) // checking for nullptr.
-					obstMeshBody = (closestObstacle->GetObject()->GetMeshBodyMaximum() - closestObstacle->GetObject()->GetMeshBodyMinimum());
-
-				if (dP.GetLength() < tempDist) {
-					if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
-						float tempX = 0;
-						if (dP.GetX() < 0) {
-							tempX = dP.GetX() + ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
-						}
-						else {
-							tempX = dP.GetX() - ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
-						}
-						float angle = GetXYAngle(dP);
-						float tempY = tempX / tanf(angle);
-						dPN.SetX(tempX);
-						dPN.SetY(tempY);
+				for (int i = 0; i < enemyList.size(); i++) {
+					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+						enemyList[i]->alive = false;
 					}
-					else {
-						float tempY = 0;
-						if (dP.GetY() < 0) {
-							tempY = dP.GetY() + ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
-						}
-						else {
-							tempY = dP.GetY() - ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
-						}
-						float angle = GetXYAngle(dP);
-						float tempX = tempY * tanf(angle);
-						dPN.SetX(tempX);
-						dPN.SetY(tempY);
-					}
-
-					for (int i = 0; i < enemyList.size(); i++) {
-						if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
-							enemyList[i]->alive = false;
-						}
-					}
-					playerObj->SetPosition(playerObj->GetPosition() + dPN);
 				}
-				else {
-					for (int i = 0; i < enemyList.size(); i++) {
-						if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
-							enemyList[i]->alive = false;
-						}
-					}
-					playerObj->SetPosition(playerObj->GetPosition() + dashVec);
-				}
+				playerObj->SetPosition(playerObj->GetPosition() + dashVec);
 			}
-			for (int i = 0; i < enemyList.size(); i++) {
-				if (enemyList[i]->alive == false) {
-					enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
-					cherry::Object* obj = enemyList[i];
-					util::removeFromVector(enemyList, enemyList[i]);
-					objectList->RemoveObjectByPointer(obj);
-					delete obj;
-					kills++;
-					cout << kills << endl;
-					i--;
-				}
-			}
-
 		}
 		else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
 		{
@@ -1452,74 +1435,82 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+	}
+	else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
+	{
+		playerObj->SetState(2); // set state to dash charging
+		playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
+		//std::cout << playerObj->GetDashTime() << std::endl;
+	}
+	else if (mbLP == true && mbLR == true) { // left mouse has been released, reset dash timer
+		playerObj->SetDashTime(0.0f);
+		//Logger::GetLogger()->info(this->dashTime);
+		this->mbLP = false;
+		this->mbLR = false;
+	}
 
-		// camera position update code
-		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
-			if (!playerObj->IsDashing()) {
-				goto notDashing;
-			}
+	// Path update
+	// testObj->Update(deltaTime);
 
-			if (camLerpPercent >= 1.0f) {
-				camLerpPercent = 0.0f;
-			}
-			camLerpPercent += 0.01f;
+	//// update physics bodies
+	// player PB
+	playerObj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
+	// enemy PBs
+	for (int i = 0; i < enemyList.size(); i++) {
+		//enemyList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0,0,1));
+	}
+	// test PB
+	//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
 
-			glm::vec3 temp;
-			glm::vec2 xyCam;
-			glm::vec2 xyPla;
-			cherry::Vec2 xyCur;
 
-			xyCam.x = myCamera->GetPosition().x;
-			xyCam.y = myCamera->GetPosition().y;
+	//// ANIMATION UPDATES
+	// Player
+	if (playerObj->GetState() == 1) { // walking
 
-			xyPla.x = playerObj->GetPosition().GetX();
-			xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
-
-			xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
-
-			temp.x = xyCur.GetX();
-			temp.y = xyCur.GetY();
-			temp.z = 20.0f;
-
-			myCamera->SetPosition(temp);
-		}
-		else {
-			camLerpPercent = 0.0f;
-			playerObj->SetDash(false);
-		notDashing:
-			myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
+	}
+	else if (playerObj->GetState() == 2) { // charging dash attack
+		if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+			playerObj->SetCurrentAnimation(0);
+			playerObj->GetCurrentAnimation()->Play();
 		}
 	}
-	else {
-		//Pause Menu Code
-		if (restart) {
-			//Reset Everything
-			kills = 0;
-			curGroup = -1;
-			curWave = 0;
 
-			//Enemies
-			for (int i = 0; i < enemyList.size(); i++) {
-				enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
-				cherry::Object* obj = enemyList[i];
-				util::removeFromVector(enemyList, enemyList[i]);
-				objectList->RemoveObjectByPointer(obj);
-				delete obj;
-				kills++;
-				cout << kills << endl;
-				i--;
-			}
-			enemyList.clear();
 
-			//Player
-			playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-			playerObj->SetPosition(playerSpawn);
-
-			paused = false;
-			restart = false;
+	// camera position update code
+	if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
+		if (!playerObj->IsDashing()) {
+			goto notDashing;
 		}
 
-		pauseMenu->SetVisible(true);
+		if (camLerpPercent >= 1.0f) {
+			camLerpPercent = 0.0f;
+		}
+		camLerpPercent += 0.01f;
+
+		glm::vec3 temp;
+		glm::vec2 xyCam;
+		glm::vec2 xyPla;
+		cherry::Vec2 xyCur;
+
+		xyCam.x = myCamera->GetPosition().x;
+		xyCam.y = myCamera->GetPosition().y;
+
+		xyPla.x = playerObj->GetPosition().GetX();
+		xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
+
+		xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
+
+		temp.x = xyCur.GetX();
+		temp.y = xyCur.GetY();
+		temp.z = 20.0f;
+
+		myCamera->SetPosition(temp);
+	}
+	else {
+		camLerpPercent = 0.0f;
+		playerObj->SetDash(false);
+	notDashing:
+		myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
 	}
 
 	// calls the main game Update function to go through every object.
@@ -1527,12 +1518,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 }
 
 //Get Distance Between two Vectors in xy axis
-float GetDistance(cherry::Vec3 one, cherry::Vec3 two) {
-	float x = two.GetX() - one.GetX();
-	float y = two.GetY() - one.GetY();
-
-	return sqrt(pow(x, 2) + pow(y, 2));
-}
+float GetDistance(cherry::Vec3 one, cherry::Vec3 two) { return (two.v - one.v).length(); }
 
 //Gets unit direction vector between two vectors
 cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two) {

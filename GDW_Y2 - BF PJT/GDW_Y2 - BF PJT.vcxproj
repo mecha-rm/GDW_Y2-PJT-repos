@@ -97,6 +97,7 @@
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\PostLayer.cpp" />
     <ClCompile Include="src\cherry\scenes\GameplayScene.cpp" />
+    <ClCompile Include="src\cherry\scenes\MenuScene.cpp" />
     <ClCompile Include="src\cherry\textures\ITexture.cpp" />
     <ClCompile Include="src\cherry\objects\Image.cpp" />
     <ClCompile Include="src\cherry\lights\Light.cpp" />
@@ -436,6 +437,7 @@
     <ClInclude Include="src\cherry\post\KernelLayer.h" />
     <ClInclude Include="src\cherry\post\PostLayer.h" />
     <ClInclude Include="src\cherry\scenes\GameplayScene.h" />
+    <ClInclude Include="src\cherry\scenes\MenuScene.h" />
     <ClInclude Include="src\cherry\textures\ITexture.h" />
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Image.h" />
@@ -632,7 +634,8 @@
     <None Include="res\shaders\lighting.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
-    <None Include="res\shaders\post\blinn-phong-post.fs.glsl" />
+    <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
+    <None Include="res\shaders\post\gamma_correction.fs.glsl" />
     <None Include="res\shaders\post\greenscale.fs.glsl" />
     <None Include="res\shaders\post\greyscale.fs.glsl" />
     <None Include="res\shaders\post\invert.fs.glsl" />

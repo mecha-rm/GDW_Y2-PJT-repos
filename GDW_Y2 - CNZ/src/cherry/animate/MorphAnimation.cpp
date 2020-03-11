@@ -108,7 +108,7 @@ void cherry::MorphAnimation::Update(float deltaTime)
 
 	// getting the frame of animation
 	// TODO: optimize so that a pose isn't generated every frame.
-   	morphVerts = GeneratePose();
+	morphVerts = GeneratePose();
 	
 	object->GetMesh()->Morph(GeneratePose(), ((MorphAnimationFrame*)(GetCurrentFrame()))->GetValueAmount());
 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);

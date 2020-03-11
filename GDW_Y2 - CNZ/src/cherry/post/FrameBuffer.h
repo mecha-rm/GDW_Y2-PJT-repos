@@ -130,12 +130,8 @@ namespace cherry
 		// gets the size of the buffer, which is (width, height)
 		glm::u32vec2 GetSize() const;
 
-		// gets the amount of attachments on the frame buffer.
-		int GetAttachmentCount() const;
-
 		// gets the image attachment.
 		cherry::Texture2D::Sptr GetAttachment(RenderTargetAttachment attachment);
-
 
 		/*
 		 * Resizes this frame buffer to the new dimensions. Note that this will destroy any data currently stored within it,

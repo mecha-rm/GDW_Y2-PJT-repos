@@ -14,7 +14,9 @@ namespace cherry
 
 		// typedef std::shared_ptr<Shader> Sptr;
 		Shader();
+
 		~Shader();
+		
 		void Compile(const char* vs_source, const char* fs_source);
 
 		// Loads a shader program from 2 files. vsFile is the path to the vertex shader, and fsFile is the path to the fragment shader

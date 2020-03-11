@@ -66,6 +66,11 @@ void cherry::Scene::KeyReleased(GLFWwindow* window, int key)
 {
 }
 
+// DrawGUI
+void cherry::Scene::DrawGui(float deltaTime)
+{
+}
+
 // update loop.
 void cherry::Scene::Update(float deltaTime)
 {
