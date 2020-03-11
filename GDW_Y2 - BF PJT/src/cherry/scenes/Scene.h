@@ -37,6 +37,9 @@ namespace cherry
 
 		// void SetName(const std::string& name);
 
+		// if 'true', then the scene is using the imGui draw.
+		bool IsUsingImgui() const;
+
 		// if 'true', then the frame buffer is being used.
 		bool IsUsingFrameBuffers() const;
 
@@ -63,7 +66,7 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
-		// draws the ImGUI window for the scene.
+		// draws the ImGUI window for the scene. useImgui must be 'true' in order for this to be called.
 		// include <imgui/imgui.h> for ImGUI functionality.
 		virtual void DrawGui(float deltaTime);
 
@@ -87,5 +90,7 @@ namespace cherry
 		// TODO: set it to use the frame buffer.
 		// if 'true', then the game renders to the frame buffer.
 		bool useFrameBuffers = false;
+
+		bool useImgui = false;
 	};
 }

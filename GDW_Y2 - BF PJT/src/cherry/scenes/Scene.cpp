@@ -26,6 +26,9 @@ entt::registry& cherry::Scene::Registry() { return myRegistry; }
 
 const std::string& cherry::Scene::GetName() const { return myName; }
 
+// returns 'true' if using imGui
+bool cherry::Scene::IsUsingImgui() const { return useImgui; }
+
 // returns 'true' if the frame buffer(s) are being used.
 bool cherry::Scene::IsUsingFrameBuffers() const { return useFrameBuffers; }
 
