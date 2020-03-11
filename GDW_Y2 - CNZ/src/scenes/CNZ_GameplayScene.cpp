@@ -1400,12 +1400,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 }
 
 //Get Distance Between two Vectors in xy axis
-float GetDistance(cherry::Vec3 one, cherry::Vec3 two) {
-	float x = two.GetX() - one.GetX();
-	float y = two.GetY() - one.GetY();
-
-	return sqrt(pow(x, 2) + pow(y, 2));
-}
+float GetDistance(cherry::Vec3 one, cherry::Vec3 two) { return (two.v - one.v).length(); }
 
 //Gets unit direction vector between two vectors
 cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two) {

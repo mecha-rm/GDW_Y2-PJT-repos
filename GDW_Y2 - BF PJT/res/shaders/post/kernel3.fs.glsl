@@ -3,13 +3,11 @@ layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inScreenCoords;
 layout (location = 3) in vec2 inUV;
+layout (location = 4) in vec2 inScreenRes;
 
 layout (location = 0) out vec4 outColor;
 
 uniform sampler2D xImage;
-
-// the resolution of the image, which is the same as xBufferSize in post.vs.glsl.
-uniform vec2 xBufferSize;
 
 // the kernel for the operation
 uniform mat3 a_Kernel;
@@ -40,25 +38,25 @@ void main() {
 	mat3 clrArr; // matrix of surroundin colours
 
 	vec2 pixelPos; // pixel position
-	pixelPos.x = round(xBufferSize.x * inUV.x); 
-	pixelPos.y = round(xBufferSize.y * inUV.y); 
+	pixelPos.x = round(inScreenRes.x * inUV.x); 
+	pixelPos.y = round(inScreenRes.y * inUV.y); 
 
 	
 	// getting the pixels
 	// top row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / xBufferSize.x, (pixelPos.y + 1) / xBufferSize.y)); // left 1, up 1
-//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / xBufferSize.x, (pixelPos.y + 1) / xBufferSize.y)); // up 1
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / xBufferSize.x, (pixelPos.y + 1) / xBufferSize.y)); // right 1, up 1
+//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // left 1, up 1
+//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // up 1
+//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y + 1) / inScreenRes.y)); // right 1, up 1
 //
 //	// middle row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / xBufferSize.x, (pixelPos.y) / xBufferSize.y)); // left 1
+//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y) / inScreenRes.y)); // left 1
 //	pxArr[0][1] = texture(xImage, inUV); // centre
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / xBufferSize.x, (pixelPos.y) / xBufferSize.y)); // right 1
+//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y) / inScreenRes.y)); // right 1
 //
 //	// bottom row
-//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / xBufferSize.x, (pixelPos.y - 1) / xBufferSize.y)); // left 1, down 1
-//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / xBufferSize.x, (pixelPos.y - 1) / xBufferSize.y)); // down 1
-//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / xBufferSize.x, (pixelPos.y - 1) / xBufferSize.y)); // right 1, down 1
+//	pxArr[0][0] = texture(xImage, vec2((pixelPos.x - 1) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // left 1, down 1
+//	pxArr[0][1] = texture(xImage, vec2((pixelPos.x) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // down 1
+//	pxArr[0][2] = texture(xImage, vec2((pixelPos.x + 1) / inScreenRes.x, (pixelPos.y - 1) / inScreenRes.y)); // right 1, down 1
 	
 	// pixel row
 	for(int row = -1; row <= 1; row++)
@@ -67,9 +65,9 @@ void main() {
 		for(int col = -1; col <= 1; col++)
 		{
 			// if within the bounds
-			if(pixelPos.x + row >= 0 && pixelPos.x + row <= xBufferSize.x && pixelPos.y + col >= 0 && pixelPos.y + col <= xBufferSize.y)
+			if(pixelPos.x + row >= 0 && pixelPos.x + row <= inScreenRes.x && pixelPos.y + col >= 0 && pixelPos.y + col <= inScreenRes.y)
 			{
-				pxlArr[1 + row][1 + col] = texture(xImage, vec2((pixelPos.x + row) / xBufferSize.x, (pixelPos.y + col) / xBufferSize.y));
+				pxlArr[1 + row][1 + col] = texture(xImage, vec2((pixelPos.x + row) / inScreenRes.x, (pixelPos.y + col) / inScreenRes.y));
 			}
 		}
 	}

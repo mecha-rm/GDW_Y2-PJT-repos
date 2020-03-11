@@ -3,6 +3,8 @@
 
 #include "..\objects/ObjectManager.h"
 #include "..\utils/Utils.h"
+#include "..\post/PostLayer.h"
+#include "..\Game.h"
 
 std::vector<cherry::LightList*> cherry::LightManager::lightLists = std::vector<cherry::LightList*>();
 
@@ -182,7 +184,37 @@ bool cherry::LightManager::DestroySceneLightListByName(std::string sceneName)
 
 // LIGHT LIST
 // constructor
-cherry::LightList::LightList(std::string scene) : scene(scene) {}
+cherry::LightList::LightList(std::string scene) : scene(scene) 
+{
+	// gets the window size
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize();
+
+	// shader
+	shader = std::make_shared<Shader>();
+	shader->Load(POST_VS, POST_LIGHTING_FS);
+
+	// frame buffer
+	frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
+
+	// buffer color
+	RenderBufferDesc bufferColor = RenderBufferDesc();
+	bufferColor.ShaderReadable = true;
+	bufferColor.Attachment = RenderTargetAttachment::Color0;
+	bufferColor.Format = RenderTargetType::Color24; // loads with RGB
+
+	// buffer depth
+	RenderBufferDesc bufferDepth = RenderBufferDesc();
+	bufferDepth.ShaderReadable = true;
+	bufferDepth.Attachment = RenderTargetAttachment::Depth;
+	bufferDepth.Format = RenderTargetType::Depth24;
+
+	// frame buffer
+	frameBuffer->AddAttachment(bufferColor);
+	frameBuffer->AddAttachment(bufferDepth);
+
+	// makes the layer
+	layer = std::make_shared<PostLayer>(shader, frameBuffer);
+}
 
 // gets the name of the scene the light list is for.
 std::string cherry::LightList::GetSceneName() const { return scene; }
@@ -281,25 +313,25 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	phong->Load(vs.c_str(), fs.c_str()); // the shader
 	material = std::make_shared<Material>(phong); // loads in the shader.
 	 
-	material->Set("a_LightCount", lightCount);
+	material->Set("a_EnabledLights", lightCount);
 
 	// goes through each light, getting the values.
 	for (int i = 0; i < lightCount; i++)
 	{
 		temp = lights.at(i)->GetAmbientColorGLM();
-		material->Set("a_AmbientColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // ambient colour
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientColor", { temp[0], temp[1], temp[2] }); // ambient colour
 
-		material->Set("a_AmbientPower[" + std::to_string(i) + "]", lights.at(i)->GetAmbientPower()); // ambient power
-		material->Set("a_LightSpecPower[" + std::to_string(i) + "]", lights.at(i)->GetLightSpecularPower()); // specular power
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientPower", lights.at(i)->GetAmbientPower()); // ambient power
+		material->Set("a_Lights[" + std::to_string(i) + "].specularPower", lights.at(i)->GetLightSpecularPower()); // specular power
 
 		temp = lights.at(i)->GetLightPositionGLM();
-		material->Set("a_LightPos[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // position
+		material->Set("a_Lights[" + std::to_string(i) + "].position", { temp[0], temp[1], temp[2] }); // position
 
 		temp = lights.at(i)->GetLightColorGLM();
-		material->Set("a_LightColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // light colour
+		material->Set("a_Lights[" + std::to_string(i) + "].color", { temp[0], temp[1], temp[2] }); // light colour
 
-		material->Set("a_LightShininess[" + std::to_string(i) + "]", lights.at(i)->GetLightShininess()); // shininess
-		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
+		material->Set("a_Lights[" + std::to_string(i) + "].shininess", lights.at(i)->GetLightShininess()); // shininess
+		material->Set("a_Lights[" + std::to_string(i) + "].attenuation", lights.at(i)->GetLightAttenuation()); // attenuation
 	}
 
 	
@@ -322,6 +354,9 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	return material;
 }
 
+// gets the post layer for this light list.
+cherry::PostLayer::Sptr cherry::LightList::GetPostLayer() const { return layer; }
+
 // applies all the lights in the list.
 void cherry::LightList::ApplyLights(cherry::Material::Sptr& material) { ApplyLights(material,lights.size()); }
 
@@ -332,25 +367,25 @@ void cherry::LightList::ApplyLights(cherry::Material::Sptr & material, int light
 	int enabledLights = (abs(lightCount) < MAX_LIGHTS) ? abs(lightCount) : MAX_LIGHTS;
 
 	// setting the light count.
-	material->Set("a_LightCount", enabledLights);
+	material->Set("a_EnabledLights", enabledLights);
 
 	// goes through each light, getting the values.
 	for (int i = 0; i < enabledLights; i++)
 	{
 		temp = lights.at(i)->GetAmbientColorGLM();
-		material->Set("a_AmbientColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // ambient colour
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientColor", { temp[0], temp[1], temp[2] }); // ambient colour
 
-		material->Set("a_AmbientPower[" + std::to_string(i) + "]", lights.at(i)->GetAmbientPower()); // ambient power
-		material->Set("a_LightSpecPower[" + std::to_string(i) + "]", lights.at(i)->GetLightSpecularPower()); // specular power
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientPower", lights.at(i)->GetAmbientPower()); // ambient power
+		material->Set("a_Lights[" + std::to_string(i) + "].specularPower", lights.at(i)->GetLightSpecularPower()); // specular power
 
 		temp = lights.at(i)->GetLightPositionGLM();
-		material->Set("a_LightPos[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // position
+		material->Set("a_Lights[" + std::to_string(i) + "].position", { temp[0], temp[1], temp[2] }); // position
 
 		temp = lights.at(i)->GetLightColorGLM();
-		material->Set("a_LightColor[" + std::to_string(i) + "]", { temp[0], temp[1], temp[2] }); // light colour
+		material->Set("a_Lights[" + std::to_string(i) + "].color", { temp[0], temp[1], temp[2] }); // light colour
 
-		material->Set("a_LightShininess[" + std::to_string(i) + "]", lights.at(i)->GetLightShininess()); // shininess
-		material->Set("a_LightAttenuation[" + std::to_string(i) + "]", lights.at(i)->GetLightAttenuation()); // attenuation
+		material->Set("a_Lights[" + std::to_string(i) + "].shininess", lights.at(i)->GetLightShininess()); // shininess
+		material->Set("a_Lights[" + std::to_string(i) + "].attenuation", lights.at(i)->GetLightAttenuation()); // attenuation
 	}
 }
 
@@ -421,8 +456,8 @@ bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
 	}
 }
 
-// updates the lights for the objects this list is attachted to.
-void cherry::LightList::Update(float deltaTime)
+// updates the materials of the objects
+void cherry::LightList::UpdateMaterials()
 {
 	ObjectList* objectList = ObjectManager::GetSceneObjectListByName(scene);
 	Material::Sptr tempMat; // tempory material
@@ -436,4 +471,42 @@ void cherry::LightList::Update(float deltaTime)
 			ApplyLights(tempMat);
 		}
 	}
+}
+
+// updates post processing layer
+void cherry::LightList::UpdatePostLayer()
+{
+	glm::vec3 temp; // temporary glm::vector
+	int enabledLights = glm::clamp((int)lights.size(), 0, MAX_LIGHTS);
+
+	// setting the light count.
+	shader->SetUniform("a_EnabledLights", enabledLights);
+	shader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
+
+	// goes through each light, getting the values.
+	for (int i = 0; i < enabledLights; i++)
+	{
+		temp = lights.at(i)->GetAmbientColorGLM();
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].ambientColor").c_str(), { temp[0], temp[1], temp[2] }); // ambient colour
+
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].ambientPower").c_str(), lights.at(i)->GetAmbientPower()); // ambient power
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].specularPower").c_str(), lights.at(i)->GetLightSpecularPower()); // specular power
+
+		temp = lights.at(i)->GetLightPositionGLM();
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].position").c_str(), { temp[0], temp[1], temp[2] }); // position
+
+		temp = lights.at(i)->GetLightColorGLM();
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].color").c_str(), { temp[0], temp[1], temp[2] }); // light colour
+
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].shininess").c_str(), lights.at(i)->GetLightShininess()); // shininess
+		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].attenuation").c_str(), lights.at(i)->GetLightAttenuation()); // attenuation
+	}
+}
+
+// updates the lights for the objects this list is attachted to.
+void cherry::LightList::Update(float deltaTime)
+{
+	UpdateMaterials();
+	UpdatePostLayer();
+
 }

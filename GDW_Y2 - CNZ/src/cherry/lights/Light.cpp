@@ -15,7 +15,7 @@ cherry::Light::Light(const std::string a_Scene, cherry::Vec3 a_LightPos, cherry:
 
 	SetLightSpecularPower(a_LightSpecPower);
 	SetLightShininess(a_LightShininess);
-	SetLightAttenuation(m_LightAttenuation);
+	SetLightAttenuation(a_LightAttenuation);
 }
 
 // constructor

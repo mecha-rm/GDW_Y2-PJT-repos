@@ -166,8 +166,8 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		lastPass->Bind(1, RenderTargetAttachment::Depth); 
 		lastPass->Bind(2, RenderTargetAttachment::Color0);
 
+		// passing the resolution/buffer size
 		pass.Shader->SetUniform("xScreenRes", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
-		pass.Shader->SetUniform("xBufferSize", glm::vec2(pass.Output->GetWidth(), pass.Output->GetHeight()));
 	
 		// if(i == myPasses.size() - 1)
 		myFullscreenQuad->Draw(); 

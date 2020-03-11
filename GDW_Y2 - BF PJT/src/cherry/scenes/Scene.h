@@ -41,7 +41,7 @@ namespace cherry
 		bool IsUsingFrameBuffers() const;
 
 		// returns the post layers.
-		std::vector<cherry::PostLayer*> GetPostLayers() const;
+		std::vector<cherry::PostLayer::Sptr> GetPostLayers() const;
 
 		// these functions get called by the game class by default, but they can be overwritten.
 		// called when a mouse button has been pressed
@@ -71,7 +71,8 @@ namespace cherry
 		// the game update is called before this update.
 		virtual void Update(float deltaTime);
 
-
+		// post processing layers
+		std::vector<PostLayer::Sptr> layers;
 
 	private:
 		entt::registry myRegistry; // registry
@@ -86,8 +87,5 @@ namespace cherry
 		// TODO: set it to use the frame buffer.
 		// if 'true', then the game renders to the frame buffer.
 		bool useFrameBuffers = false;
-
-		// post processing layers
-		std::vector<PostLayer*> layers;
 	};
 }
