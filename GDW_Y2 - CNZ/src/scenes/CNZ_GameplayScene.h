@@ -76,6 +76,8 @@ namespace cnz
 		Level map; // the map
 		int curWave = 0; //Current enemy wave
 
+		cherry::Image* pauseMenu = nullptr;
+
 		// the GameplayScene already has the object list and light list.
 		// these should probably be removed, but it was kept in for ease of use.
 		cherry::ObjectList* objList = nullptr;
@@ -148,6 +150,7 @@ namespace cnz
 
 		glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
 		cherry::Vec3 playerPrevPos;
+		cherry::Vec3 playerSpawn;
 
 		// player movement
 		bool w = false;
@@ -162,8 +165,11 @@ namespace cnz
 		bool ca = true;
 		bool cs = true;
 		bool cd = true;
+		bool paused = false;
+		bool restart = false;
 
 		int kills = 0;
+		int lives = 3;
 		int curGroup = -1;
 
 		// camera

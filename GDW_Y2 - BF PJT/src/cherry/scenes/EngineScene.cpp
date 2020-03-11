@@ -25,6 +25,8 @@ void cherry::EngineScene::OnOpen()
 	if (game == nullptr)
 		return;
 
+	game->imguiMode = true;
+
 	// gets the window size
 	glm::ivec2 myWindowSize = game->GetWindowSize();
 
