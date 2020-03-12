@@ -131,13 +131,13 @@ namespace cherry
 		virtual void SetAlpha(float a);
 
 		// returns whether or not the object is visible
-		bool IsVisible() const;
+		virtual bool IsVisible() const;
 
 		// toggle's visibility on/off
-		void SetVisible();
+		virtual void SetVisible();
 
 		// sets whether the object is visible or not.
-		void SetVisible(bool visible);
+		virtual void SetVisible(bool visible);
 
 		// TODO: save in the Mesh class whether to draw in perspective or othographic.
 		// returns 'true' if the object is drawn in perspective mode.

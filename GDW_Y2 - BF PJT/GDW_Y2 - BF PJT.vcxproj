@@ -97,6 +97,7 @@
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\KernelLayer.cpp" />
     <ClCompile Include="src\cherry\post\PostLayer.cpp" />
+    <ClCompile Include="src\cherry\scenes\EngineMenuScene.cpp" />
     <ClCompile Include="src\cherry\scenes\GameplayScene.cpp" />
     <ClCompile Include="src\cherry\scenes\MenuScene.cpp" />
     <ClCompile Include="src\cherry\textures\ITexture.cpp" />
@@ -123,7 +124,7 @@
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
     <ClCompile Include="src\cherry\physics\PhysicsBody.cpp" />
-    <ClCompile Include="src\cherry\scenes\EngineScene.cpp" />
+    <ClCompile Include="src\cherry\scenes\EngineGameplayScene.cpp" />
     <ClCompile Include="src\cherry\scenes\Scene.cpp" />
     <ClCompile Include="src\cherry\scenes\SceneManager.cpp" />
     <ClCompile Include="src\cherry\Shader.cpp" />
@@ -437,6 +438,7 @@
     <ClInclude Include="src\cherry\post\FrameBuffer.h" />
     <ClInclude Include="src\cherry\post\KernelLayer.h" />
     <ClInclude Include="src\cherry\post\PostLayer.h" />
+    <ClInclude Include="src\cherry\scenes\EngineMenuScene.h" />
     <ClInclude Include="src\cherry\scenes\GameplayScene.h" />
     <ClInclude Include="src\cherry\scenes\MenuScene.h" />
     <ClInclude Include="src\cherry\textures\ITexture.h" />
@@ -465,7 +467,7 @@
     <ClInclude Include="src\cherry\animate\Path.h" />
     <ClInclude Include="src\cherry\physics\Physics.h" />
     <ClInclude Include="src\cherry\physics\PhysicsBody.h" />
-    <ClInclude Include="src\cherry\scenes\EngineScene.h" />
+    <ClInclude Include="src\cherry\scenes\EngineGameplayScene.h" />
     <ClInclude Include="src\cherry\scenes\Scene.h" />
     <ClInclude Include="src\cherry\scenes\SceneManager.h" />
     <ClInclude Include="src\cherry\Shader.h" />

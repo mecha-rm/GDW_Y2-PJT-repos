@@ -198,9 +198,6 @@
     <ClCompile Include="src\cherry\scenes\SceneManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\scenes\EngineScene.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -229,6 +226,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\cherry\post\KernelLayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\scenes\EngineGameplayScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\scenes\EngineMenuScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1082,9 +1085,6 @@
     <ClInclude Include="src\cherry\scenes\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\scenes\EngineScene.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cherry\IGraphicsResource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1266,6 +1266,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\scenes\MenuScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\scenes\EngineMenuScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\scenes\EngineGameplayScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
