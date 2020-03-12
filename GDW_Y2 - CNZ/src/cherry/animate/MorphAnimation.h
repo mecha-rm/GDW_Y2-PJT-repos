@@ -56,6 +56,7 @@ namespace cherry
 		// units determines the length of the lerp between the previous frame; default 1 second.
 		MorphAnimationFrame(std::string filePath, float units = 1.0F);
 
+		// destructor
 		~MorphAnimationFrame();
 		
 		// returns the pose

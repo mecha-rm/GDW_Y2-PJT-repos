@@ -577,7 +577,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
-				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				// moved down because the player kept colliding with it.
+				// obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, -1.0));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
 				// adding to the lists

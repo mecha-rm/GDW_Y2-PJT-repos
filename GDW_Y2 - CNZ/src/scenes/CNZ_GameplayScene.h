@@ -65,14 +65,24 @@ namespace cnz
 		// can also be used to find the angle between two positions by getting passing in their difference
 		float GetXYAngle(cherry::Vec3 vec);
 
-		void SpawnEnemyGroup(int i);
+		// spawns an enemy
+		void SpawnEnemyGroup(int i = -1);
 
 		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
 		void MapSceneObjectsToGame();
+		
+		// returns 'true' if physics bodies are visible.
+		// do note that this checks if they are on overall; individual objects can enable their own without this returning true.
+		bool GetVisiblePhysicsBodies() const;
+
+		// sets whether the bodies should be visible or not.
+		void SetVisiblePhysicsBodies(bool visible);
 
 		// update loop
 		void Update(float deltaTime) override;
+
 	private:
+		
 		Level map; // the map
 		int curWave = 0; //Current enemy wave
 
@@ -175,6 +185,7 @@ namespace cnz
 		// camera
 		bool debugMode = true; // allows for debug mode.
 
+		// if 'true', the physics bodies are shown.
 		bool showPBs = false;
 
 	protected:

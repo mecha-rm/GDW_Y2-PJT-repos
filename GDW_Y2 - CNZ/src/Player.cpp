@@ -223,6 +223,7 @@ glm::vec3 cnz::Player::GetDash(float dist) const {
 	dash.x = -(dist * glm::degrees(cosf(this->GetRadianAngle())));
 	dash.y = -(dist * glm::degrees(sinf(this->GetRadianAngle())));
 	dash.z = 0.0f;
+
 	return dash;
 }
 

@@ -121,6 +121,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// Marauder
 
 		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		// this takes a lot of time.
 		std::stringstream curPath;
 		float curFrameTime;
 		for (int i = 0; i < animList.size(); i++) {
@@ -441,6 +442,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 
 		// attach pbody
+		// TODO: outdated size
 		playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 		testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->GetPBodySize()));
 		wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->GetPBodySize()));
@@ -514,7 +516,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		objList->GetObjectByIndex(i)->SetVisible(true);
 	}*/
 
-	game->GetSceneLightList()->Update(0);
+	// sets if the physics bodies should be visible.
+	SetVisiblePhysicsBodies(showPBs);
 
 	// Post Processing
 	if(false)
@@ -687,50 +690,90 @@ void cnz::CNZ_GameplayScene::KeyReleased(GLFWwindow* window, int key)
 // Used later to verify if the player is allowed to dash the full distance in their intended direction
 cherry::PhysicsBody* cnz::CNZ_GameplayScene::GetClosestObstacle()
 {
+	using namespace cherry;
+	
+	// player position
+	glm::vec3 plyrPos = playerObj->GetPositionGLM();
+	// player dash distance
+	float plyr_xyAngle = GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
+
+	// closest body
 	cherry::PhysicsBody* closestBody = nullptr;
+	
 	float cbDist = 0.0f;
 	cherry::Vec3 delta;
-	float angleFromPlayer;
-	float dAngle;
+
+	float angleFromPlayer = 0.0F;
+	float dAngle = 0.0F;
+
+	// player physics bodies
+	std::vector<PhysicsBody*> plyrPbs;
+
 	for (int i = 0; i < obstacles.size(); i++) {
-		delta.SetX(obstacles[i]->GetPhysicsBodies()[0]->GetLocalPosition().GetX() - playerObj->GetPosition().GetX());
-		delta.SetY(obstacles[i]->GetPhysicsBodies()[0]->GetLocalPosition().GetY() - playerObj->GetPosition().GetY());
+		// obstacle physics bodies
+		std::vector<PhysicsBody*> obstPbs = obstacles[i]->GetPhysicsBodies();
 
-		angleFromPlayer = GetXYAngle(delta);
-		dAngle = angleFromPlayer - GetXYAngle(playerObj->GetDash(playerObj->GetDashDist()));
+		for (int j = 0; j < obstPbs.size(); j++)
+		{
+			delta.SetX(obstPbs[j]->GetLocalPosition().v.x - plyrPos.x);
+			delta.SetY(obstPbs[j]->GetLocalPosition().v.y - plyrPos.y);
 
-		if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-			if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway)
-				closestBody = obstacles[i]->GetPhysicsBodies()[0];
-				cbDist = delta.GetLength();
-			}
-			else if (delta.GetLength() < cbDist) { // if the current pbody is closer than the last.
-				closestBody = obstacles[i]->GetPhysicsBodies()[0];
-				cbDist = delta.GetLength();
+			angleFromPlayer = GetXYAngle(delta);
+
+			// gets the dAngle
+			dAngle = angleFromPlayer - plyr_xyAngle;
+
+			if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
+				float deltaLength = delta.GetLength();
+
+				if (cbDist == 0.0f) { // if this is the first loop. (we should never get a dist of 0.0f anyway)
+					closestBody = obstPbs[j];
+					cbDist = deltaLength;
+				}
+				else if (deltaLength < cbDist) { // if the current pbody is closer than the last.
+					closestBody = obstPbs[j];
+					cbDist = deltaLength;
+				}
 			}
 		}
 	}
 	return closestBody;
 }
 
+// gets the enemies in the dash.
 bool cnz::CNZ_GameplayScene::GetEnemiesInDash(cherry::Vec3 dashVec, cnz::Enemy* enemy, cnz::Player* player)
 {
+	using namespace cherry;
+
+	glm::vec3 plyrPos = player->GetPositionGLM();
 	cherry::Vec3 delta;
 	float angleFromPlayer;
+
 	float dAngle;
 	float dLen = dashVec.GetLength();
 
-	delta.SetX(enemy->GetPhysicsBodies()[0]->GetWorldPosition().GetX() - player->GetPosition().GetX());
-	delta.SetY(enemy->GetPhysicsBodies()[0]->GetWorldPosition().GetY() - player->GetPosition().GetY());
+	// gets the enemies physics bodies
+	std::vector<PhysicsBody*> pbs = enemy->GetPhysicsBodies();
 
-	angleFromPlayer = GetXYAngle(delta);
-	dAngle = angleFromPlayer - GetXYAngle(dashVec);
+	for (int i = 0; i < pbs.size(); i++)
+	{
+		glm::vec3 pbsPos = pbs[i]->GetWorldPositionGLM();
 
-	if (dAngle <= 0.25 && dAngle >= -0.25) { // if angle difference is less than ~15 degrees. 
-		if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
-			return true;
+		// getting the values
+		delta.v.x = pbsPos.x - plyrPos.x;
+		delta.v.y = pbsPos.y - plyrPos.y;
+
+		angleFromPlayer = GetXYAngle(delta);
+		dAngle = angleFromPlayer - GetXYAngle(dashVec);
+
+		if (dAngle <= 0.25 && dAngle >= -0.25) { // if the angle difference is less than ~15 degrees. 
+			if (delta.GetLength() < dLen) { // if the current pbody is closer than the last.
+				return true;
+			}
 		}
 	}
+
+	// not in dash
 	return false;
 }
 
@@ -738,11 +781,14 @@ bool cnz::CNZ_GameplayScene::GetEnemiesInDash(cherry::Vec3 dashVec, cnz::Enemy* 
 // this doesnt make sense to use on a position, but rather only on a difference in position
 float cnz::CNZ_GameplayScene::GetXYAngle(cherry::Vec3 vec)
 {
-	return atanf(vec.GetX() / vec.GetY());
+	return atanf(vec.v.x / vec.v.y);
 }
 
-void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
+// spawn enemy
+void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 {
+	using namespace cherry;
+
 	enemyList.clear();
 	curWave++;
 
@@ -790,13 +836,22 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 			enemyList.push_back(new Mechaspider(mechaspider, GetName()));
 		}
 
-		enemyList[enemyList.size() - 1]->SetRotation(cherry::Vec3(0, 0, 0), true);
-		enemyList[enemyList.size() - 1]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
-		enemyList[enemyList.size() - 1]->alive = true;
-		enemyList[enemyList.size() - 1]->SetRotationXDegrees(90);
-		enemyList[enemyList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[enemyList.size() - 1]->GetPosition(), enemyList[enemyList.size() - 1]->GetPBodySize()));
-		enemyList[enemyList.size() - 1]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
-		objectList->AddObject(enemyList[enemyList.size() - 1]);
+		// index
+		int index = enemyList.size() - 1;
+
+		enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
+		enemyList[index]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
+		enemyList[index]->alive = true;
+		enemyList[index]->SetRotationXDegrees(90);
+
+		// phyiscs body
+		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
+		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+		pb->SetVisible(showPBs);
+
+		enemyList[index]->AddPhysicsBody(pb);
+
+		objectList->AddObject(enemyList[index]);
 
 		if (j % 2 == 0) {
 			count++;
@@ -805,6 +860,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 	}
 }
 
+// 
 void cnz::CNZ_GameplayScene::MapSceneObjectsToGame() {
 	using namespace cherry;
 
@@ -815,8 +871,9 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame() {
 	ObjectList* objList = objectList;
 	LightList* lgtList = lightList;
 	
-	// grabs the obstacles
+	// grabs the objects
 	obstacles = map.GetObstacles();
+	playerObj = map.GetPlayerObject();
 
 	// updates the light list to apply lights to all materials
 	lgtList->Update(1.0F);
@@ -917,6 +974,28 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame() {
 	// allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
 }
 
+// gets the visible physics bodies.
+bool cnz::CNZ_GameplayScene::GetVisiblePhysicsBodies() const { return showPBs; }
+
+// sets if the physics bodies should be visible or not.
+void cnz::CNZ_GameplayScene::SetVisiblePhysicsBodies(bool visible)
+{
+	using namespace cherry;
+
+	// goes through each object
+	for (Object* obj : objectList->objects)
+	{
+		// gets the physics bodies
+		std::vector<PhysicsBody*> bodies = obj->GetPhysicsBodies();
+
+		// goes through all the bodies
+		for (PhysicsBody* body : bodies)
+			body->SetVisible(visible);
+	}
+	
+	showPBs = visible;
+}
+
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
@@ -928,12 +1007,12 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		//GLenum test = glGetError();
 		this->playerPrevPos = playerObj->GetPosition(); // store previous position
 
-		if (showPBs) { // show player and projectile physics bodies if showPBs
-			playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-			for (int i = 0; i < projList.size(); i++) {
-				projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-			}
-		}
+		// if (showPBs) { // show player and projectile physics bodies if showPBs
+		// 	playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+		// 	for (int i = 0; i < projList.size(); i++) {
+		// 		projList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+		// 	}
+		// }
 
 		float moveInc = -10.0F; // the movement incrementer.
 
@@ -943,9 +1022,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// find all obstacles the player is colliding with
 		for (int i = 0; i < obstacles.size(); i++) {
 			bool collision = false;
-			if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
-				obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
-			}
+			// if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
+			// 	obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
+			// }
 			collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
 			if (collision) {
 				playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
@@ -956,9 +1035,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// find all enemies the player is colliding with
 		for (int i = 0; i < enemyList.size(); i++) {
 			if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
-				if (showPBs) { // shows enemy pbs if showPBs
-					enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-				}
+				// if (showPBs) { // shows enemy pbs if showPBs
+				// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+				// }
 				bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
 				if (collision) {
 					//Player takes damage
@@ -1188,7 +1267,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
 			//Display indicator
 			//indArrowAnim->Play();
-			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -2));
+			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -1.90f));
 			indicatorObj->SetVisible(true);
 			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 		}
@@ -1308,10 +1387,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		//// update physics bodies
 		// player PB
 		playerObj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
-		// enemy PBs
-		for (int i = 0; i < enemyList.size(); i++) {
-			//enemyList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0,0,1));
-		}
+		// // enemy PBs
+		// for (int i = 0; i < enemyList.size(); i++) {
+		// 	//enemyList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0,0,1));
+		// }
 		// test PB
 		//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
 
@@ -1475,7 +1554,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			enemyList.clear();
 
 			//Player
-			playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+			// not needed?
+			// playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
 			playerObj->SetPosition(playerSpawn);
 
 			paused = false;
