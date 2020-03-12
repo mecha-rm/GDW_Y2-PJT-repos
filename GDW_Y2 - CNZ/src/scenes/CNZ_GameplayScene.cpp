@@ -91,64 +91,14 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
 	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
 
-
-	if (levelLoading) { // load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
+	// load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
+	if (levelLoading) {
 		//// LOAD LEVELS
-		// the level has already been registered, and set as the main scene.
-		
-		// the first map
-		// Level map = Level("res/loader/legend.csv", "res/loader/map.csv", "map");
+		// loads level
+		MapSceneObjectsToGame();
 
-		//// ADD SCENE NAMES TO SCENE LIST
-		// set scene name as string, or keep using levelName->GetSceneName();
-		// cherry::ObjectManager::CreateSceneObjectList(map.GetSceneName());
-
-		//// CREATE SCENE OBJECT LISTS
-		// cherry::ObjectManager::CreateSceneObjectList(sceneName);
-		// cherry::ObjectManager::CreateSceneObjectList(map.GetSceneName());
-
-		//// GET SCENE OBJECT LISTS
-		objList = objectList; // inherited
-		
-		// do this in Update() as well, and only here for start scene
-
-		//// REGISTER SCENES
-		// SceneManager::RegisterScene(sceneName);
-		// cherry::SceneManager::RegisterScene(map.GetSceneName());
-
-		//// SET CURRENT SCENE
-		// game->SetCurrentScene(map.GetSceneName(), true);
-		// cherry::SceneManager::SetCurrentScene(map.GetSceneName());
-
-		//// PUT OBJECTS IN OBJECT LIST
-		std::vector<cherry::Object*> mapobjList = map.GetObjects();
-
-		//// ADD OBJECTS TO SCENE
-		for (int i = 0; i < mapobjList.size(); i++) {
-			game->AddObjectToScene(mapobjList[i]);
-		}
-
-		//// Temp static light
-		tempList = lightList; // inherited
-
-		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 4), Vec3(1.0f, 1.0f, 1.0f), Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-
-		//Sun
-		//tempList->AddLight(new Light(GetName(), Vec3(0, 0, 30), Vec3(1.0f, 1.0f, 1.0f), Vec3(1.0f, 0.1f, 1.0f), 10.0f, 30.0f, 0.9f, 100.0f));
-
-		// make for loop apply light to every object's material
-
-		// only do this for starting scene, and do for current scene right after scene switch
-		MapSceneObjectsToGame(map.GetSceneName());
-
-		//// Stuff I dont need to change for now (stays as is in Game.cpp)
-		// lightManager->AddSceneLightList(sceneName);
-		// lightList = lightManager->GetSceneLightList(sceneName);
-		// for all lights:
-		// lightList->AddLight(new Light(sceneName, Vec3(), Vec3(), Vec3(), float, float, float, float);
-		// material stuff that happens in Game.cpp
-
-
+		ObjectList * objList = objectList;
+		LightList * tempList = lightList;
 		playerObj = map.GetPlayerObject();
 		
 		{
@@ -202,11 +152,15 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		// TODO: make this NOT a pointer.
 		//Skybox stuff
-		skyboxObj = new cherry::Skybox("res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
-									   "res/images/cubemaps/oFloor.jpg", "res/images/cubemaps/oSky.jpg", 
-									   "res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg");
-		skyboxObj->AddSkyboxToScene(game->GetCurrentScene());
-		game->SetSkybox(*skyboxObj, GetName());
+		skyboxObj = cherry::Skybox(
+			"res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
+			"res/images/cubemaps/oFloor.jpg", "res/images/cubemaps/oSky.jpg", 
+			"res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg"
+		);
+
+		// called in game->SetSkybox
+		// skyboxObj.AddSkyboxToScene(game->GetCurrentScene());
+		game->SetSkybox(skyboxObj, GetName());
 
 		//Jonah Load Enemy Stuff
 		sentry = new Sentry(GetName());
@@ -591,7 +545,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
 		// adds a post-processing 
-		layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
 
 		useFrameBuffers = true;
 	}
@@ -854,103 +808,116 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 	}
 }
 
-void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(std::string sceneName) {
+void cnz::CNZ_GameplayScene::MapSceneObjectsToGame() {
+	using namespace cherry;
 
-	objList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
-	std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
-	std::string curObjStr;
+	// generates the objects
+	map.GenerateObjects();
+	
+	// saves the object lsit
+	ObjectList* objList = objectList;
+	LightList* lgtList = lightList;
+	
+	// grabs the obstacles
+	obstacles = map.GetObstacles();
 
-	this->obstacles.clear();
+	// updates the light list to apply lights to all materials
+	lgtList->Update(1.0F);
 
-
-	for (int i = 0; i < allSceneObjects.size(); i++) {
-		curObjStr = allSceneObjects[i]->ToString();
-
-		if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
-			//std::cout << "its a wall" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
-			//std::cout << "its a player" << std::endl;
-			this->playerObj = (cnz::Player*)allSceneObjects[i];
-			this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
-			this->playerSpawn = allSceneObjects[i]->GetPosition();
-			this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-			this->playerObj->SetRotationXDegrees(90);
-			this->playerObj->SetRotationZDegrees(180);
-			this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-		}
-		else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
-			//std::cout << "its a dumpster" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
-			//std::cout << "its a lamp post" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
-		//	std::cout << "its a lamp post corner" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
-			//std::cout << "its a lamp post middle" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
-			//std::cout << "its a barrel" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
-			//std::cout << "its a katana" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
-			//std::cout << "its a pillar" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
-			//std::cout << "its a manhole" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("Road.blend") != std::string::npos) { // road
-			//std::cout << "its a road" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-		else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
-			//std::cout << "its a sidewalk" << std::endl;
-			this->obstacles.push_back(allSceneObjects[i]);
-			//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-			//tempList->ApplyLights(mat, tempList->GetLightCount());
-		}
-	}
-	tempList->Update(0.0f);
-	allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
+	// std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
+	// std::string curObjStr;
+	// 
+	// this->obstacles.clear();
+	// 
+	// 
+	// for (int i = 0; i < allSceneObjects.size(); i++) {
+	// 	curObjStr = allSceneObjects[i]->ToString();
+	// 
+	// 	if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
+	// 		//std::cout << "its a wall" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
+	// 		//std::cout << "its a player" << std::endl;
+	// 		this->playerObj = (cnz::Player*)allSceneObjects[i];
+	// 		this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
+	// 		this->playerSpawn = allSceneObjects[i]->GetPosition();
+	// 		this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	// 		this->playerObj->SetRotationXDegrees(90);
+	// 		this->playerObj->SetRotationZDegrees(180);
+	// 		this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+	// 	}
+	// 	else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
+	// 		//std::cout << "its a dumpster" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
+	// 		//std::cout << "its a lamp post" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+	// 
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
+	// 	//	std::cout << "its a lamp post corner" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+	// 
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
+	// 		//std::cout << "its a lamp post middle" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+	// 
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
+	// 		//std::cout << "its a barrel" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
+	// 		//std::cout << "its a katana" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
+	// 		//std::cout << "its a pillar" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
+	// 		//std::cout << "its a manhole" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("Road.blend") != std::string::npos) { // road
+	// 		//std::cout << "its a road" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// 	else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
+	// 		//std::cout << "its a sidewalk" << std::endl;
+	// 		this->obstacles.push_back(allSceneObjects[i]);
+	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
+	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
+	// 	}
+	// }
+	// tempList->Update(0.0f);
+	// allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
 }
 
 // update loop

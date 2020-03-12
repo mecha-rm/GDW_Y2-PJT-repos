@@ -3,7 +3,13 @@
 #pragma once
 
 #define POST_VS ("res/shaders/post/post.vs.glsl")
+
 #define POST_FS ("res/shaders/post/post.fs.glsl")
+#define POST_LIGHTING_FS "res/shaders/post/blinn-phong_post.fs.glsl"
+#define POST_KERNEL3_FS  "res/shaders/post/kernel3.fs.glsl"
+#define POST_KERNEL5_FS  "res/shaders/post/kernel5.fs.glsl"
+
+
 
 #include "FrameBuffer.h"
 #include "..\Shader.h"
@@ -16,6 +22,8 @@ namespace cherry
 	class PostLayer
 	{
 	public:
+		GraphicsClass(PostLayer);
+
 		// the vertex shader and fragement shader
 		PostLayer();
 

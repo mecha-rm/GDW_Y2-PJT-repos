@@ -1,4 +1,41 @@
 #pragma once
+
+// use these instead so that they can be updated with new objects easier.
+// #define ORIGIN_SYMBOL "Origin"
+// 
+// #define WALL_SYMBOL "Wall"
+// #define WALL_FILE "res/objects/GDW_1_Y2 - Wall Tile.obj"
+// 
+// #define DUMPSTER_SYMBOL "Dumpster"
+// #define DUMPSTER_FILE "res/objects/props/Dumpster.obj"
+// 
+// #define LAMP_POST_SYMBOL "Lamp post"
+// #define LAMP_POST_FILE "res/objects/props/Lamp_Side.obj"
+// 
+// #define LAMP_POST_CORNER_SYMBOL "Lamp post corner"
+// #define LAMP_POST_CORNER_FILE "res/objects/props/Lamp_Corner.obj"
+// 
+// #define LAMP_POST_CORNER_SYMBOL "Lamp post middle"
+// #define LAMP_POST_CORNER_FILE "res/objects/props/Lamp_Center.obj"
+// 
+// #define BARREL_SYMBOL "Barrel"
+// #define BARREL_FILE "res/objects/props/drum.obj"
+//  
+// #define KATANA_SYMBOL "Katana"
+// #define KATANA_FILE "res/objects/weapons/katana.obj"
+// 
+// #define PILLAR_SYMBOL "Pillar"
+// #define PILLAR_FILE "res/objects/GDW_1_Y2 - Pillar.obj"
+// 
+// #define MANHOLE_SYMBOL "Manhole cover"
+// #define MANHOLE_FILE "res/objects/props/manhole.obj"
+// 
+// #define MANHOLE_SYMBOL "Road"
+// #define MANHOLE_FILE "res/objects/props/Road.obj"
+// 
+// #define SIDEWALK_SYMBOL "Sidewalk"
+// #define SIDEWALK_FILE "res/objects/props/sidewalk.obj"
+
 #include <string>
 #include <map>
 #include <vector>
@@ -32,19 +69,9 @@ namespace cnz
 
 	class Level {
 	public:
-		Level();
+		Level() = default;
+
 		Level(std::string legendPath, std::string levelPath, std::string sceneName);
-
-		std::map<std::string, std::string> legend; // legend lookup table
-		std::vector<std::vector<std::string>> map; // 2d vector of strings, the scene map
-		std::vector<cherry::Object*> objList;	   // list of pointers to objects
-
-		std::string sceneName; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
-		// int obstacleNum; // a count of the obstacles in the scene. Maybe unneeded.
-		std::string levelPath; // path to the level CSV
-		std::string legendPath; // path to the legend CSV
-		bool isActiveScene; // if the scene is loaded
-
 
 		// return scene name as string
 		std::string GetSceneName() const;
@@ -62,25 +89,55 @@ namespace cnz
 		std::vector<std::vector<std::string>> GetMap(CSV level);
 
 
-		// return vector of all objects in level
-		std::vector<cherry::Object*> GetObjects();
+		// generates the objects for the level, and returns them.
+		// if objects have already been generated, the list is cleared.
+		// do note that the level loader does NOT delete the objects it generates. 
+		// They are put into an objectlist upon creation, so that should be deleted instead.
+		std::vector<cherry::Object*> GenerateObjects();
+
+		// gets the objects for the scene. 
+		// the vector will be empty if GenerateObjects() has not been called yet.
+		std::vector<cherry::Object*> GetObjects() const;
+
+		// gets the obstacles for the map. 
+		// this vector will be empty if GenerateObjects() has not been called, or if there were no obstacles in the map.
+		std::vector<cnz::Obstacle *> GetObstacles() const;
+
+		// returns 'true' if the objects have been generated at least once.
+		bool GetObjectsGenerated() const;
 
 		// gets the player object.
 		Player* GetPlayerObject() const;
 
 		// return properties of object at specific location on map
-		std::vector<float> GetObjProps(int y, int x);
+		std::vector<float> GetObjectProps(int y, int x);
 
 		// hacky fix for rotated physics bodies. When getting PB size based on mesh mins and maxes, they are all rotated 90 deg on one axis
 		cherry::Vec3 UnFlipVec3(cherry::Vec3 vecToFlip);
 
+		std::map<std::string, std::string> legend; // legend lookup table
+		std::vector<std::vector<std::string>> map; // 2d vector of strings, the scene map
+
+		std::vector<cherry::Object*> objects;	   // list of pointers to objects
+		std::vector<cnz::Obstacle*> obstacles; // list of pointers to obstacles
+		Player* playerObj = nullptr;
+
+		std::string sceneName; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
+		// int obstacleNum; // a count of the obstacles in the scene. Maybe unneeded.
+		std::string levelPath; // path to the level CSV
+
+		std::string legendPath; // path to the legend CSV
+
+		// not really needed.
+		// bool isActiveScene; // if the scene is loaded
 
 	private:
+		// becomes 'true' if the objects have been generated at least once.
+		bool objectsGenerated = false;
+
 		// the m_Scene material
 		cherry::Material::Sptr matStatic; // the static material
 		cherry::Material::Sptr matDynamic; // the dynamic material
-
-		Player* playerObj = nullptr;
 
 		// Obstacles
 		Obstacle* wall = nullptr;

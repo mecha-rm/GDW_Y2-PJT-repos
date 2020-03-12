@@ -2,11 +2,13 @@
 #pragma once
 
 #include "Light.h"
+#include "..\post/PostLayer.h"
+
 #include <vector>
 
 // the maximum amount of lights
 // if changed, make sure it is adjusted in the shaders as well.
-#define MAX_LIGHTS 16
+#define MAX_LIGHTS 20
 
 namespace cherry
 {
@@ -100,6 +102,10 @@ namespace cherry
 		// generates the material, providing it with the sampler.
 		cherry::Material::Sptr GenerateMaterial(std::string vs, std::string fs, const TextureSampler::Sptr& sampler) const;
 
+		// gets the post processing layer
+		// use the .get() function to get a regular pointer form this shared pointer.
+		cherry::PostLayer::Sptr GetPostLayer() const;
+
 		// applies all the lights in the list.
 		void ApplyLights(cherry::Material::Sptr& material);
 
@@ -125,14 +131,33 @@ namespace cherry
 		// deletes an object based on its name.
 		// bool DeleteLightByTag(std::string name);
 
+		// updates the materials of all objects
+		// it's recommended that this is called only when a light has definitely been changed.
+		void UpdateMaterials();
+
+		// updates the post processing layer associated with this light list.
+		void UpdatePostLayer();
+
 		// updates the lights for the objects its attachted it.
 		void Update(float deltaTime);
 
 		// vector of lights
 		std::vector<cherry::Light *> lights;
 
+		// if 'true', then the background is post processed with the lights along with everything else.
+		// if 'false', the background retains its regular pixel colour.
+		bool ignoreBackground = false;
+
 	private:
-		std::string scene = ""; // the scene te object is in.
+		// the scene te object is in.
+		std::string scene = "";
+		
+		// a post procesisng layer
+		cherry::PostLayer::Sptr layer = nullptr;
+
+		// shader and frame buffer components
+		Shader::Sptr shader;
+		FrameBuffer::Sptr frameBuffer;
 
 	protected:
 	};

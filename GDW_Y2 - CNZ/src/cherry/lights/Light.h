@@ -3,7 +3,7 @@
 
 #include "..\VectorCRY.h" // includes cherry::Vectors, and glm::vectors
 #include "..\Material.h"
-
+#include "..\post/PostLayer.h"
 
 namespace cherry
 {
@@ -153,12 +153,14 @@ namespace cherry
 		cherry::Vec3 m_LightColor; // light colour
 
 		cherry::Vec3 m_AmbientColor; // darkest colour of the object (i.e. no light present)
-		float m_AmbientPower; // power of ambient light
+		float m_AmbientPower = 0.0F; // power of ambient light
 
-		float m_LightSpecPower; // specular power
-		float m_LightShininess; // ranges from 0 to 256.
-		float m_LightAttenuation; // light area of effect/distance
+		float m_LightSpecPower = 0.0F; // specular power
+		float m_LightShininess = 0.0F; // ranges from 0 to 256.
+		float m_LightAttenuation = 0.0F; // light area of effect/distance
 
+		cherry::Shader::Sptr shader = nullptr;
+		cherry::FrameBuffer::Sptr frameBuffer = nullptr;
 	protected:
 	};
 }

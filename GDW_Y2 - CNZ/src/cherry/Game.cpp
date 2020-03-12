@@ -99,7 +99,7 @@ void CursorEnterCallback(GLFWwindow* window, int enter)
 		return;
 	}
 
-	// sets whether the mouse cursor is in the window
+	// sets whether the mouse cursor is in the window 
 	game->SetCursorInWindow(enter);
 }
 
@@ -159,13 +159,14 @@ cherry::Game::Game() :
 }
 
 // creates window with a width, height, and whether or not it's in full screen.
-cherry::Game::Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, cherry::Scene * _openingScene, bool _imgui)
+cherry::Game::Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, bool _loadDefaultScene, cherry::Scene * _openingScene, bool _imgui)
 	: Game()
 {
 	// setting the values
 	memcpy(myWindowTitle, windowTitle, strlen(windowTitle) + 1);
 	myWindowSize = glm::ivec2(_width, _height);
 	fullScreen = _fullScreen;
+	loadDefaultScene = _loadDefaultScene;
 	openingScene = _openingScene;
 	imguiMode = _imgui;
 }
@@ -877,19 +878,27 @@ void cherry::Game::LoadContent()
 	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
 	myCameraX->SetOrthographicMode(-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
 
-
-	// creating the scene
-	if (openingScene != nullptr) // if there is a startup scene.
+	// the default scene should be loaded into memory.
+	if (loadDefaultScene)
 	{
-		RegisterScene(new EngineScene(engineSceneName), false);
-
-		if (!RegisterScene(openingScene, true)) // initialize with startup scene.
-			SetCurrentScene(engineSceneName, false);
+		// registers the scene and makes it the main scene if the opening scene is not a nullptr.
+		if (openingScene == nullptr)
+		{
+			RegisterScene(new EngineScene(engineSceneName), true);
+		}
+		else // loads the default scene, but sets to the opening scene
+		{
+			RegisterScene(new EngineScene(engineSceneName), false);
+			RegisterScene(openingScene, true);
+		}
 	}
-	else // if there is no startup scene.
+	else // doesn't load default scene
 	{
-		RegisterScene(new EngineScene(engineSceneName), true);
+		// makes opening scene the main scene.
+		if(openingScene != nullptr)
+			RegisterScene(openingScene, true);
 	}
+
 }
 
 void cherry::Game::UnloadContent() {
@@ -1123,9 +1132,9 @@ void cherry::Game::Resize(int newWidth, int newHeight)
 			fb->Resize(newWidth, newHeight);
 
 			// gets the layers
-			std::vector<cherry::PostLayer*> layers = currScene->GetPostLayers();
+			std::vector<cherry::PostLayer::Sptr> layers = currScene->GetPostLayers();
 
-			for (PostLayer* layer : layers)
+			for (PostLayer::Sptr layer : layers)
 				layer->OnWindowResize(newWidth, newHeight);
 		}
 	}
@@ -1214,7 +1223,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	Scene* scene = CurrentScene(); // gets the current scene
 	
 	bool usingFrameBuffers = false; // if 'true', the frame buffer is being used.
-	std::vector<PostLayer*> layers;
+	std::vector<PostLayer::Sptr> layers;
 
 	// vector for post-post-process renders
 	std::vector<MeshRenderer> postRenders;
@@ -1424,15 +1433,15 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	if (usingFrameBuffers && !layers.empty())
 	{
 		fb->UnBind();
-		FrameBuffer::Sptr& fbx = fb; // the most recent buffer
+		FrameBuffer::Sptr fbx = fb; // the most recent buffer
 
 		// applies each layer
-		for (PostLayer* layer : layers)
+		for (PostLayer::Sptr layer : layers)
 		{
 			// in order to use multiple layers (each with their own post passes), the last buffer used is saved in fbx.
 			// fbx then gives it to the new layer so that the image can continue to be changed.
 
-			// layer->initialBuffer = fbx; // setting it to use the most recent buffer
+			layer->initialBuffer = fbx; // setting it to use the most recent buffer
 			layer->PostRender(camera);
 			fbx = layer->GetLastPassBuffer(); // saves the last frame buffer
 			

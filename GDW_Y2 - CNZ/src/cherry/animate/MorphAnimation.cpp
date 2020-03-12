@@ -119,6 +119,16 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	Animation::Update(deltaTime);
 }
 
+// to string
+std::string cherry::MorphAnimation::ToString() const
+{
+	return std::string(
+		"MorphAnimation: " + GetName() + " | " +
+		"Description: " + GetDescription() + " | " +
+		"Tag: " + GetTag()
+	);
+}
+
 
 ///////////////////////////////
 // MORPH ANIMATION FRAME
@@ -209,6 +219,14 @@ const cherry::Vertex* const cherry::MorphAnimationFrame::GetPose() const { retur
 
 // returns the value amount.
 unsigned int cherry::MorphAnimationFrame::GetValueAmount() const { return verticesTotal; }
+
+// to string
+std::string cherry::MorphAnimationFrame::ToString() const
+{
+	return std::string(
+		"MorphAnimationFrame - Vertex Count: " + std::to_string(verticesTotal)
+	);
+}
 
 
 

@@ -11,10 +11,8 @@ cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent);
 cnz::CNZ_Game::CNZ_Game() : Game() {}
 
 // constructor with window size
-// TODO: change 'true' to 'false' so default values aren't used;
-// TODO: don't use full screen.
 cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) 
-	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, nullptr, false) {
+	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, nullptr, false) {
 }
 
 

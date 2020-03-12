@@ -68,7 +68,7 @@ namespace cnz
 		void SpawnEnemyGroup(int i);
 
 		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
-		void MapSceneObjectsToGame(std::string sceneName);
+		void MapSceneObjectsToGame();
 
 		// update loop
 		void Update(float deltaTime) override;
@@ -80,8 +80,8 @@ namespace cnz
 
 		// the GameplayScene already has the object list and light list.
 		// these should probably be removed, but it was kept in for ease of use.
-		cherry::ObjectList* objList = nullptr;
-		cherry::LightList* tempList = nullptr;
+		// cherry::ObjectList* objList = nullptr;
+		// cherry::LightList* tempList = nullptr;
 
 		// default material
 		cherry::SamplerDesc description; // texture description 
@@ -116,14 +116,14 @@ namespace cnz
 		cnz::Mechaspider* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
 
-		std::vector<cherry::Object*> obstacles; // vector of every non moving object in the game. Non moving, for now.
+		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 		std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers
 
-		cherry::Skybox* skyboxObj;
+		cherry::Skybox skyboxObj;
 		cherry::Object* indArrow;
 
 		// Animations

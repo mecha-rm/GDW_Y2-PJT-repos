@@ -41,6 +41,12 @@ std::string cherry::Animation::GetDescription() const { return description; }
 // sets the description of the animation
 void cherry::Animation::SetDescription(std::string desc) { description = desc; }
 
+// gets the tag for this animation
+std::string cherry::Animation::GetTag() const { return tag; }
+
+// sets the tag
+void cherry::Animation::SetTag(std::string tag) { this->tag = tag; }
+
 // gets the given frame of animation
 cherry::AnimationFrame* cherry::Animation::GetFrame(unsigned int index) const
 {

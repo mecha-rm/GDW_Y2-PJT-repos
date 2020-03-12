@@ -46,7 +46,7 @@ int main()
 	Logger::Init();
 
 	// game object
-	cherry::Game* game = new cherry::Game("GDW_Y2 - Bonus Fruit - Cherry Engine", 850, 850, false, nullptr, true);
+	cherry::Game* game = new cherry::Game("GDW_Y2 - Bonus Fruit - Cherry Engine", 850, 850, false, true, nullptr, true);
 	cherry::Game::FPS = 0;
 	game->Run();
 	delete game;

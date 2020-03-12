@@ -4,10 +4,6 @@
 // cell offset
 const float cnz::Level::cellOffset = 6.25f;
 
-cnz::Level::Level() {
-	// uh, don't use this.
-}
-
 cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) {
 	this->sceneName = sceneName;
 
@@ -137,11 +133,32 @@ std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 	return tempMap;
 }
 
-std::vector<cherry::Object*> cnz::Level::GetObjects() {
-
-	int offsetX, offsetY;
-
+// generates objects
+std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
+	int offsetX = 0, offsetY = 0;
 	cherry::Vec3 objBodySize;
+
+	// gets the scene object list and light object list
+	cherry::ObjectList* objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
+	cherry::LightList* lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
+
+	// object list does not exist, so it must be created.
+	if (objectList == nullptr)
+	{
+		cherry::ObjectManager::CreateSceneObjectList(sceneName);
+		objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
+	}
+
+	// light list does not exist, so it must be created.
+	if (lightList)
+	{
+		cherry::LightManager::CreateSceneLightList(sceneName);
+		lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
+	}
+
+	// clearing the lists before giving them values
+	objects.clear();
+	obstacles.clear();
 
 	// put objects into list
 	for (int y = 0; y < this->map.size(); y++) {
@@ -161,7 +178,9 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				// cnz::Player* playerObj = cnz::Player::GenerateDefault(GetSceneName(), 
 				// 	glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0)); // creates the player.
 				
-				this->objList.push_back(playerObj);
+				// adding them to the lists
+				objectList->AddObject(playerObj);
+				objects.push_back(playerObj);
 			}
 			else if (legend[curObj] == "Wall") { // wall // TODO: orient walls properly.
 				Obstacle* obj;
@@ -174,7 +193,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -198,7 +217,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 2));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding them to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Dumpster") { // Dumpster
 				Obstacle* obj;
@@ -211,7 +233,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -234,7 +256,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists 
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post") { // Lamp post
 				Obstacle* obj;
@@ -249,7 +274,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				cherry::Vec3 objpbsize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), objpbsize));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -273,7 +298,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding a light
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post corner") { // Lamp post corner
 				Obstacle* obj;
@@ -286,7 +318,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -308,8 +340,12 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				}
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 3));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Lamp post middle") { // lamp post middle
 				Obstacle* obj;
@@ -322,7 +358,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -345,7 +381,14 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 3));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// light
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+
+
+				// adding to hte lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Barrel") { // barrel
 				Obstacle* obj;
@@ -358,7 +401,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -381,7 +424,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Katana") { // katana
 				Obstacle* obj;
@@ -394,7 +440,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -417,7 +463,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Pillar") { // pillar
 				Obstacle* obj;
@@ -430,7 +479,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -453,7 +502,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 2));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Manhole cover") { // manhole cover
 				Obstacle* obj;
@@ -466,7 +518,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -489,7 +541,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0.25));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Road") { // road
 				Obstacle* obj;
@@ -502,7 +557,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -525,7 +580,10 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 			else if (legend[curObj] == "Sidewalk") { // sidewalk
 				Obstacle* obj;
@@ -538,7 +596,7 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
-				std::vector<float> properties = GetObjProps(y, x);
+				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
 					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
@@ -561,18 +619,30 @@ std::vector<cherry::Object*> cnz::Level::GetObjects() {
 				obj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
 				obj->GetPhysicsBodies()[0]->SetVisible(false);
 
-				this->objList.push_back(obj);
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
 			}
 		}
 	}
 
-	return this->objList;
+	return objects;
 }
+
+// gets the objects; will be empty if it doesn't exist yet.
+std::vector<cherry::Object*> cnz::Level::GetObjects() const { return objects; }
+
+// gets the objects for the levle
+std::vector<cnz::Obstacle *> cnz::Level::GetObstacles() const { return obstacles; }
+
+// returns if the objects have been generated or not.
+bool cnz::Level::GetObjectsGenerated() const { return objectsGenerated; }
 
 // gets the player object
 cnz::Player* cnz::Level::GetPlayerObject() const { return playerObj; }
 
-std::vector<float> cnz::Level::GetObjProps(int y, int x) {
+std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	std::vector<float> properties;
 	std::string cell = this->map[y][x];
 	int strLen = cell.size();

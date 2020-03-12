@@ -14,9 +14,10 @@ void cherry::Scene::OnOpen()
 // on close
 void cherry::Scene::OnClose()
 {
-	for (PostLayer* layer : layers)
-		delete layer;
-
+	// now uses shared pointers
+	// for (PostLayer* layer : layers)
+	// 	delete layer;
+	
 	layers.clear();
 }
 
@@ -25,6 +26,9 @@ entt::registry& cherry::Scene::Registry() { return myRegistry; }
 
 const std::string& cherry::Scene::GetName() const { return myName; }
 
+// returns 'true' if using imGui
+bool cherry::Scene::IsUsingImgui() const { return useImgui; }
+
 // returns 'true' if the frame buffer(s) are being used.
 bool cherry::Scene::IsUsingFrameBuffers() const { return useFrameBuffers; }
 
@@ -32,7 +36,7 @@ bool cherry::Scene::IsUsingFrameBuffers() const { return useFrameBuffers; }
 void cherry::Scene::SetUsingFrameBuffers(bool useFbs) { useFrameBuffers = useFbs; }
 
 // returns the post layers.
-std::vector<cherry::PostLayer*> cherry::Scene::GetPostLayers() const { return layers; }
+std::vector<cherry::PostLayer::Sptr> cherry::Scene::GetPostLayers() const { return layers; }
 
 // void cherry::Scene::SetName(const std::string& name) { myName = name; }
 
