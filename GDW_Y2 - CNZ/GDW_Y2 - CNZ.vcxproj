@@ -103,6 +103,7 @@
     <ClCompile Include="src\cherry\objects\Text.cpp" />
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
+    <ClCompile Include="src\cherry\post\KernelLayer.cpp" />
     <ClCompile Include="src\cherry\post\PostLayer.cpp" />
     <ClCompile Include="src\cherry\scenes\EngineScene.cpp" />
     <ClCompile Include="src\cherry\scenes\GameplayScene.cpp" />
@@ -589,6 +590,37 @@
     <None Include="external\GLM\gtx\vector_angle.inl" />
     <None Include="external\GLM\gtx\vector_query.inl" />
     <None Include="external\GLM\gtx\wrap.inl" />
+    <None Include="res\shaders\blinn-phong-morph.fs.glsl" />
+    <None Include="res\shaders\blinn-phong.fs.glsl" />
+    <None Include="res\shaders\cubemap.fs.glsl" />
+    <None Include="res\shaders\cubemap.vs.glsl" />
+    <None Include="res\shaders\image.fs.glsl" />
+    <None Include="res\shaders\image.vs.glsl" />
+    <None Include="res\shaders\lighting-morph.vs.glsl" />
+    <None Include="res\shaders\lighting.vs.glsl" />
+    <None Include="res\shaders\normalView.fs.glsl" />
+    <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
+    <None Include="res\shaders\post\bluescale.fs.glsl" />
+    <None Include="res\shaders\post\gamma_correction.fs.glsl" />
+    <None Include="res\shaders\post\greenscale.fs.glsl" />
+    <None Include="res\shaders\post\greyscale.fs.glsl" />
+    <None Include="res\shaders\post\invert.fs.glsl" />
+    <None Include="res\shaders\post\kernel3.fs.glsl" />
+    <None Include="res\shaders\post\kernel5.fs.glsl" />
+    <None Include="res\shaders\post\motion_blur.fs.glsl" />
+    <None Include="res\shaders\post\post.fs.glsl" />
+    <None Include="res\shaders\post\post.vs.glsl" />
+    <None Include="res\shaders\post\redscale.fs.glsl" />
+    <None Include="res\shaders\post\sepiatone.fs.glsl" />
+    <None Include="res\shaders\post\vibrance.fs.glsl" />
+    <None Include="res\shaders\shader.fs.glsl" />
+    <None Include="res\shaders\shader.vs.glsl" />
+    <None Include="res\shaders\terrain.fs.glsl" />
+    <None Include="res\shaders\terrain.vs.glsl" />
+    <None Include="res\shaders\text.fs.glsl" />
+    <None Include="res\shaders\text.vs.glsl" />
+    <None Include="res\shaders\water-shader.fs.glsl" />
+    <None Include="res\shaders\water-shader.vs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="external\fmod\fmod64.lib" />

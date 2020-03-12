@@ -37,11 +37,14 @@ namespace cherry
 
 		// void SetName(const std::string& name);
 
+		// if 'true', then the scene is using the imGui draw.
+		bool IsUsingImgui() const;
+
 		// if 'true', then the frame buffer is being used.
 		bool IsUsingFrameBuffers() const;
 
 		// returns the post layers.
-		std::vector<cherry::PostLayer*> GetPostLayers() const;
+		std::vector<cherry::PostLayer::Sptr> GetPostLayers() const;
 
 		// these functions get called by the game class by default, but they can be overwritten.
 		// called when a mouse button has been pressed
@@ -63,7 +66,7 @@ namespace cherry
 		// called when a key has been released
 		virtual void KeyReleased(GLFWwindow* window, int key);
 
-		// draws the ImGUI window for the scene.
+		// draws the ImGUI window for the scene. useImgui must be 'true' in order for this to be called.
 		// include <imgui/imgui.h> for ImGUI functionality.
 		virtual void DrawGui(float deltaTime);
 
@@ -71,7 +74,8 @@ namespace cherry
 		// the game update is called before this update.
 		virtual void Update(float deltaTime);
 
-
+		// post processing layers
+		std::vector<PostLayer::Sptr> layers;
 
 	private:
 		entt::registry myRegistry; // registry
@@ -87,7 +91,6 @@ namespace cherry
 		// if 'true', then the game renders to the frame buffer.
 		bool useFrameBuffers = false;
 
-		// post processing layers
-		std::vector<PostLayer*> layers;
+		bool useImgui = false;
 	};
 }

@@ -159,13 +159,14 @@ cherry::Game::Game() :
 }
 
 // creates window with a width, height, and whether or not it's in full screen.
-cherry::Game::Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, cherry::Scene * _openingScene, bool _imgui)
+cherry::Game::Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, bool _loadDefaultScene, cherry::Scene * _openingScene, bool _imgui)
 	: Game()
 {
 	// setting the values
 	memcpy(myWindowTitle, windowTitle, strlen(windowTitle) + 1);
 	myWindowSize = glm::ivec2(_width, _height);
 	fullScreen = _fullScreen;
+	loadDefaultScene = _loadDefaultScene;
 	openingScene = _openingScene;
 	imguiMode = _imgui;
 }
@@ -877,19 +878,27 @@ void cherry::Game::LoadContent()
 	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
 	myCameraX->SetOrthographicMode(-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
 
-
-	// creating the scene
-	if (openingScene != nullptr) // if there is a startup scene.
+	// the default scene should be loaded into memory.
+	if (loadDefaultScene)
 	{
-		RegisterScene(new EngineScene(engineSceneName), false);
-
-		if (!RegisterScene(openingScene, true)) // initialize with startup scene.
-			SetCurrentScene(engineSceneName, false);
+		// registers the scene and makes it the main scene if the opening scene is not a nullptr.
+		if (openingScene == nullptr)
+		{
+			RegisterScene(new EngineScene(engineSceneName), true);
+		}
+		else // loads the default scene, but sets to the opening scene
+		{
+			RegisterScene(new EngineScene(engineSceneName), false);
+			RegisterScene(openingScene, true);
+		}
 	}
-	else // if there is no startup scene.
+	else // doesn't load default scene
 	{
-		RegisterScene(new EngineScene(engineSceneName), true);
+		// makes opening scene the main scene.
+		if(openingScene != nullptr)
+			RegisterScene(openingScene, true);
 	}
+
 }
 
 void cherry::Game::UnloadContent() {

@@ -36,9 +36,12 @@ namespace cherry
 		// creates the game with a width, height, and in fullscreen if requested.
 		// _debug is used to start the game in debug mode.
 		// variable '_default' opens the project with default settings for the camera, sceneLists, and more.
+		// if load default scene is true, then the default scene is loaded i.
+		// if _openingScene is not nullptr, then the opening scene is added.
+		//	- if loadDefaultScene is true, the default scene is still made, but the _openingScene is made the current scene.
 		// if _imgui is 'true', then the _imgui functions are used.
 		Game(const char windowTitle[WINDOW_TITLE_CHAR_MAX], float _width, float _height, bool _fullScreen, 
-			cherry::Scene * _openingScene = nullptr, bool _imgui = false);
+			bool _loadDefaultScene = true, cherry::Scene * _openingScene = nullptr, bool _imgui = false);
 
 		// destructor
 		~Game();
@@ -256,7 +259,9 @@ namespace cherry
 
 		// TODO: make private?
 		// audio component for the scene
-		cherry::AudioComponent audioEngine = cherry::AudioComponent();
+		// cherry::AudioComponent audioEngine = cherry::AudioComponent();
+		cherry::AudioEngine& audioEngine = cherry::AudioEngine::GetInstance();
+
 
 		// stores the main clear color of the game's window
 		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.
@@ -352,6 +357,9 @@ namespace cherry
 
 		// boolean for full screen
 		bool fullScreen;
+
+		// if 'true', the default scene is laoded in load content.
+		bool loadDefaultScene = true;
 		
 		// returns 'true' if the mouse is in the window content, false otherwise.
 		bool mouseEnter = false;

@@ -9,6 +9,7 @@ namespace cherry
 	{
 	public:
 		MorphAnimation();
+
 		~MorphAnimation() = default;
 
 		// the object being used for the morph target animation.
@@ -22,6 +23,9 @@ namespace cherry
 
 		// updates the morphing animation
 		void Update(float deltaTime);
+
+		// toString
+		std::string ToString() const override;
 
 	private:
 		// the value of 't'
@@ -67,6 +71,9 @@ namespace cherry
 
 		// updates the morph target
 		// void Update(float deltaTime);
+
+		// toString
+		std::string ToString() const override;
 
 	protected:
 	

@@ -1,17 +1,17 @@
 #include "Obstacle.h"
 
-Obstacle::Obstacle(std::string filePath, std::string scene, bool loadMtl) : Object(filePath, scene, loadMtl) {
+cnz::Obstacle::Obstacle(std::string filePath, std::string scene, bool loadMtl) : Object(filePath, scene, loadMtl) {
 }
 
-Obstacle::Obstacle(std::string filePath, std::string scene, cherry::Vec3 pbodySize, bool loadMtl) : Object(filePath, scene, loadMtl) {
+cnz::Obstacle::Obstacle(std::string filePath, std::string scene, cherry::Vec3 pbodySize, bool loadMtl) : Object(filePath, scene, loadMtl) {
 	this->pBodySize = pbodySize;
 }
 
-void Obstacle::Update(float deltaTime) {
+void cnz::Obstacle::Update(float deltaTime) {
 
 }
 
-void Obstacle::SetAngle(float angle, bool isDegrees) {
+void cnz::Obstacle::SetAngle(float angle, bool isDegrees) {
 	if (isDegrees) {
 		this->degreeAngle = angle;
 		this->radianAngle = (this->degreeAngle) * (M_PI / 180.0f);
@@ -22,11 +22,11 @@ void Obstacle::SetAngle(float angle, bool isDegrees) {
 	}
 }
 
-void Obstacle::SetAngle(glm::vec3 angle) {
+void cnz::Obstacle::SetAngle(glm::vec3 angle) {
 	this->worldAngle = angle;
 }
 
-bool Obstacle::SetDrawPBody(bool draw) {
+bool cnz::Obstacle::SetDrawPBody(bool draw) {
 	if (this->GetPhysicsBodyCount() == 0) {
 		this->drawPBody = false;
 		return false;
@@ -37,26 +37,26 @@ bool Obstacle::SetDrawPBody(bool draw) {
 	}
 }
 
-bool Obstacle::GetDrawPBody() const {
+bool cnz::Obstacle::GetDrawPBody() const {
 	return this->drawPBody;
 }
 
-cherry::Vec3 Obstacle::GetPBodySize() const {
+cherry::Vec3 cnz::Obstacle::GetPBodySize() const {
 	return this->pBodySize;
 }
 
-void Obstacle::SetPBodySize(cherry::Vec3 newSize) {
+void cnz::Obstacle::SetPBodySize(cherry::Vec3 newSize) {
 	this->pBodySize = newSize;
 }
 
-float Obstacle::GetPBodyWidth() const {
+float cnz::Obstacle::GetPBodyWidth() const {
 	return this->GetPBodySize().GetX() / 2;
 }
 
-float Obstacle::GetPBodyHeight() const {
+float cnz::Obstacle::GetPBodyHeight() const {
 	return this->GetPBodySize().GetY() / 2;
 }
 
-float Obstacle::GetPBodyDepth() const {
+float cnz::Obstacle::GetPBodyDepth() const {
 	return this->GetPBodySize().GetZ() / 2;
 }

@@ -49,6 +49,11 @@ namespace cherry
 		// sets the description
 		void SetDescription(std::string desc);
 
+		// gets the tag for this animation
+		std::string GetTag() const;
+
+		// sets the tag for this animation
+		void SetTag(std::string tag);
 
 		// gets a frame based on an index. Returns nullptr if the index is out of range.
 		AnimationFrame * GetFrame(unsigned int index) const;
@@ -127,6 +132,8 @@ namespace cherry
 		// updates the animation
 		virtual void Update(float deltaTime);
 		
+		// to string; this makes the class a pure virtual function.
+		virtual std::string ToString() const = 0;
 
 	private:
 
@@ -135,6 +142,9 @@ namespace cherry
 
 		// the description of the anismation
 		std::string description = "";
+
+		// animation tag
+		std::string tag = "";
 		
 		// list of frames
 		std::vector<AnimationFrame *> frames;
@@ -193,9 +203,11 @@ namespace cherry
 		// sets the tag 
 		void SetTag(std::string newTag);
 
-
 		// update for an animation frame; functionality varies based on type.
 		// virtual void Update(float deltaTime);
+
+		// to string
+		virtual std::string ToString() const = 0;
 
 	private:
 

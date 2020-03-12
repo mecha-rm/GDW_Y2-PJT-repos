@@ -92,6 +92,16 @@ void cherry::ImageAnimation::Update(float deltaTime)
 	Animation::Update(deltaTime);
 }
 
+// toString for image animation
+std::string cherry::ImageAnimation::ToString() const
+{
+	return std::string(
+		"ImageAnimation: " + GetName() + " | " +
+		"Description: " + GetDescription() + " | " +
+		"Tag: " + GetTag()
+	);
+}
+
 // TEXTURE ANIMATION FRAME
 // constructor
 cherry::ImageAnimationFrame::ImageAnimationFrame(std::string filePath, glm::vec2 uvMin, glm::vec2 uvMax, float units) :
@@ -153,3 +163,14 @@ float cherry::ImageAnimationFrame::GetVMinimum() const { return uvCoords.y; }
 
 // gets the maximum v-coordinate
 float cherry::ImageAnimationFrame::GetVMaximum() const { return uvCoords.q; }
+
+// to string function
+std::string cherry::ImageAnimationFrame::ToString() const
+{
+	util::math::Vec4 uvs(uvCoords.x, uvCoords.y, uvCoords.z, uvCoords.w);
+
+	return std::string(
+		"Image: " + image + " | " +
+		"UVs" + uvs.toString()
+	);
+}
