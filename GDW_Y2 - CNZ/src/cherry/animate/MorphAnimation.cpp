@@ -203,7 +203,7 @@ unsigned int cherry::MorphAnimationFrame::GetVertexCount() const { return vertic
 
 // loads in the vertices from a file. This is based on the loadObject code in the Object class.
 // it was added in because using the one in the Object class took too long.
-cherry::Vertex* cherry::MorphAnimationFrame::LoadPose()
+void cherry::MorphAnimationFrame::LoadPose()
 {
 	std::ifstream file; // file
 	std::string line = ""; // the current line of the file.
@@ -229,7 +229,8 @@ cherry::Vertex* cherry::MorphAnimationFrame::LoadPose()
 	if (!file)
 	{
 		std::runtime_error("File access failure");
-		return nullptr;
+		file.close();
+		return;
 	}
 
 	// while there are still lines to receive from the file.
@@ -303,6 +304,9 @@ cherry::Vertex* cherry::MorphAnimationFrame::LoadPose()
 		}
 	}
 
+	// file finished
+	file.close();
+
 	// vertex array
 	{
 		// deletes the current pose
@@ -338,8 +342,8 @@ cherry::Vertex* cherry::MorphAnimationFrame::LoadPose()
 		}
 	}
 
-	return nullptr;
-
+	
+	return;
 }
 
 

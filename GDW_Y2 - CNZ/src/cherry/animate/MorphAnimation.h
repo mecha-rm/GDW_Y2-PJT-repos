@@ -80,7 +80,7 @@ namespace cherry
 	private:
 
 		// loads in the vertices from a file
-		cherry::Vertex* LoadPose();
+		void LoadPose();
 
 		// the pose for this frame
 		Vertex* pose = nullptr; // vertices, colors, normals, and uvs

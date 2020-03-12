@@ -445,6 +445,9 @@ bool cherry::Object::LoadObject(bool loadMtl)
 		}
 	}
 
+	// closing the file since it's done being read from.
+	file.close();
+
 	// vertices and indices
 	{
 		verticesTotal = vertIndices.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.

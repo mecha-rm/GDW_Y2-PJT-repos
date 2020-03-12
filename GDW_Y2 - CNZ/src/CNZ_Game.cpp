@@ -15,6 +15,9 @@ cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen)
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	// 30 frames per second
+	FPS = 30;
+
 	// GL debug output
 	glEnable(GL_DEBUG_OUTPUT);
 
