@@ -3,10 +3,6 @@
 #include "cherry/scenes/SceneManager.h"
 #include "scenes/CNZ_GameplayScene.h"
 
-float GetDistance(cherry::Vec3 one, cherry::Vec3 two);
-cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two);
-cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent);
-
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
 

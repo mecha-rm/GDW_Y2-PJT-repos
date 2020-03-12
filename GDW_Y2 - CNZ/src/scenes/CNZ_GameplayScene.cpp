@@ -148,9 +148,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		playerObj->AddAnimation(playerRun_R.anim);
 
 
-
-
-		// TODO: make this NOT a pointer.
 		//Skybox stuff
 		skyboxObj = cherry::Skybox(
 			"res/images/cubemaps/oSky.jpg", "res/images/cubemaps/oSky.jpg", 
@@ -771,7 +768,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i = -1)
 		}
 	}
 
-	cout << i << endl;
+	// cout << i << endl;
 	curGroup = i;
 
 	int n = enemyGroups[i].size();
@@ -952,7 +949,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
 			if (collision) {
 				playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
-				std::cout << "collision with obstacle " << i << std::endl;
+				// std::cout << "collision with obstacle " << i << std::endl;
 			}
 		}
 
@@ -970,7 +967,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 			}
 			else {
-				cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
+				// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
 			}
 		}
 
@@ -1472,7 +1469,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				objectList->RemoveObjectByPointer(obj);
 				delete obj;
 				kills++;
-				cout << kills << endl;
+				// cout << kills << endl;
 				i--;
 			}
 			enemyList.clear();
@@ -1510,6 +1507,7 @@ cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two) {
 }
 
 //Lerp between two vectors in xy axis
+// todo: remove this function? Nothign calls it.
 cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent) {
 
 	glm::vec3 temp;
