@@ -367,6 +367,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		
 	}
 	else { // for testing, loads a level for testing collision, showing all objects and test paths and such
+		// TODO: move this as a default in the level loader
 		playerObj = cnz::Player::GenerateDefault(GetName()); // creates the player.
 		testObj = new Player("res/objects/monkey.obj", GetName()); // creates the not player.
 
@@ -1019,34 +1020,68 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		vector<cherry::PhysicsBody*> playerObstacleCollisions; // obstacle PBs with which the player's PB is colliding with
 		vector<cherry::PhysicsBody*> playerEnemyCollisions; // enemy PBs with which the player's PB is colliding with
 
-		// find all obstacles the player is colliding with
-		for (int i = 0; i < obstacles.size(); i++) {
-			bool collision = false;
-			// if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
-			// 	obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
-			// }
-			collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], obstacles[i]->GetPhysicsBodies()[0]);
-			if (collision) {
-				playerObstacleCollisions.push_back(obstacles[i]->GetPhysicsBodies()[0]);
-				// std::cout << "collision with obstacle " << i << std::endl;
-			}
-		}
+		// gets the player's physics body
+		vector<cherry::PhysicsBody*> playerBodies = playerObj->GetPhysicsBodies();
 
-		// find all enemies the player is colliding with
-		for (int i = 0; i < enemyList.size(); i++) {
-			if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
-				// if (showPBs) { // shows enemy pbs if showPBs
-				// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+		// goes through each physics body for hte player
+		for (cherry::PhysicsBody* pBody : playerBodies)
+		{
+			// find all obstacles the player is colliding with.
+			for (int i = 0; i < obstacles.size(); i++) {
+				
+				bool collision = false;
+				
+				// gets the enemy's phyiscs bodies
+				vector<cherry::PhysicsBody*> oBodies = obstacles[i]->GetPhysicsBodies();
+
+				// if (showPBs) { // shows obstacle physics bodies if showPBs // TODO: this shouldn't be checked every frame.
+				// 	obstacles[i]->GetPhysicsBodies()[0]->SetVisible(true);
 				// }
-				bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
-				if (collision) {
-					//Player takes damage
-					lives--;
-					playerObj->SetPosition(playerSpawn);
+				
+				for (cherry::PhysicsBody* oBody : oBodies)
+				{
+					collision = cherry::PhysicsBody::Collision(pBody, oBody);
+
+					if (collision) {
+						playerObstacleCollisions.push_back(oBody);
+						// std::cout << "collision with obstacle " << i << std::endl;
+					}
 				}
 			}
-			else {
-				// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
+
+			// find all enemies the player is colliding with
+			for (int i = 0; i < enemyList.size(); i++) 
+			{
+				// gets the enemy bodies
+				vector<cherry::PhysicsBody*> eBodies = enemyList[i]->GetPhysicsBodies();
+
+				for (cherry::PhysicsBody* eBody : eBodies)
+				{
+					// collision check
+					bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
+					
+					if (collision) {
+						//Player takes damage
+						lives--;
+						playerObj->SetPosition(playerSpawn);
+					}
+				}
+
+				// there shouldn't be nullptr bodies anyway, since they should just be removed along with the enemy.
+				// if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
+				// 	// if (showPBs) { // shows enemy pbs if showPBs
+				// 	// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+				// 	// }
+				// 	bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
+				// 	if (collision) {
+				// 		//Player takes damage
+				// 		lives--;
+				// 		playerObj->SetPosition(playerSpawn);
+				// 	}
+				// }
+				// else {
+				// 	// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
+				// }
 			}
 		}
 
@@ -1060,21 +1095,29 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// check what directions the player can move in based on its collisions with obstacles in the scene.
 		if (playerObstacleCollisions.size() != 0) { // allow movement only in directions oposite of the collision (CUBES ONLY)
 			// std::cout << "There are " << playerObstacleCollisions.size() << " playerObj collisions this update!" << std::endl;
+			
+			// player world position
+			cherry::Vec3 plyrPos = playerObj->GetPosition();
+
 			for (int i = 0; i < playerObstacleCollisions.size(); i++) {
 				cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
 
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
+				// gets the world position of the obstacle
+				cherry::Vec3 obstPos = playerObstacleCollisions[i]->GetWorldPosition();
+
+				if ((obstPos.GetY() - plyrPos.GetY()) >= 0) { // above the object
 					cs = false;
 				}
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) <= 0) { // below the object
+				if ((obstPos.GetY() - plyrPos.GetY()) <= 0) { // below the object
 					cw = false;
 				}
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) >= 0) { // right of the object
+				if ((obstPos.GetX() - plyrPos.GetX()) >= 0) { // right of the object
 					ca = false;
 				}
-				if ((playerObstacleCollisions[i]->GetWorldPosition().GetX() - playerObj->GetPosition().GetX()) <= 0) { // left of the object
+				if ((obstPos.GetX() - plyrPos.GetX()) <= 0) { // left of the object
 					cd = false;
 				}
+
 				/* This is the old method of detecting which way the player can move. It's broken I'm pretty sure.
 				if (fabsf(dP.GetX()) < fabsf(dP.GetY())) { // this is why its cubes only
 					if ((playerObstacleCollisions[i]->GetWorldPosition().GetY() - playerObj->GetPosition().GetY()) >= 0) { // above the object
@@ -1349,8 +1392,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					playerObj->SetPosition(playerObj->GetPosition() + dashVec);
 				}
 			}
+
+
 			for (int i = 0; i < enemyList.size(); i++) {
 				if (enemyList[i]->alive == false) {
+					// TODO: the destructor already removes the phyiscs body. So this is probably unneeded.
 					enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
 					cherry::Object* obj = enemyList[i];
 					util::removeFromVector(enemyList, enemyList[i]);
