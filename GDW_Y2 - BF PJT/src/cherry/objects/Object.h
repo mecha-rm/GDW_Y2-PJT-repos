@@ -56,6 +56,13 @@ namespace cherry
 		// destructor
 		virtual ~Object();
 
+		// this is used by the object loader and morph animation
+		// parses the line, gets the values as data type T, and stores them in a vector.
+		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.
+		// *** the symbol at the start is what's used to determine what the values in a given line of a .obj are for.
+		template<typename T>
+		static const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
+
 		// gets the file path of the requested object.
 		// if there is no file path, it will return a string with the ("") character inside it.
 		virtual const std::string & GetFilePath() const;
@@ -505,13 +512,6 @@ namespace cherry
 
 		// called to load the object
 		bool LoadObject(bool loadMtl = false);
-
-		// parses the line, gets the values as data type T, and stores them in a vector.
-		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.
-		// *** the symbol at the start is what's used to determine what the values in a given line of a .obj are for.
-		template<typename T>
-		const std::vector<T> parseStringForTemplate(std::string str, bool containsSymbol = true);
-
 
 		// template<typename T>
 		// void CalculateNormals(std::vector<);

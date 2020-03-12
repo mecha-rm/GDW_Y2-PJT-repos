@@ -419,7 +419,6 @@ bool cherry::Object::LoadObject(bool loadMtl)
 
 			vtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
 		}
-		// TODO: add vertex normals
 		else if (line.substr(0, line.find_first_of(" ")) == "vn") // Vertex Normals (x, y, z); not used at this stage
 		{
 			tempVecFlt = parseStringForTemplate<float>(line); // gets the values from the line

@@ -94,8 +94,10 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	// // time += 0.5;
 
 	// TODO: fix so that the morphing happens from the second animation
+	// gets the new pose to be generated.
 	MorphVertex* morphVerts = nullptr;
 	
+	// if no animation is playing, nothing happens.
 	if (isPlaying() == false)
 		return;
 
@@ -106,13 +108,15 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	if (t > 1.0F)
 		t = 1.0F;
 
-	// getting the frame of animation
+	// getting the pose
 	// TODO: optimize so that a pose isn't generated every frame.
+	// it needs to be saved so that the pose gets deleted afterwards.
 	morphVerts = GeneratePose();
 	
-	object->GetMesh()->Morph(GeneratePose(), ((MorphAnimationFrame*)(GetCurrentFrame()))->GetValueAmount());
+	object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
 	
+	// deleting the vertices
 	delete[] morphVerts;
 
 	// switches the frame if at the end of the animation.
@@ -179,33 +183,10 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(cherry::MorphVertex * newPose, 
 }
 
 // takes the vertices from an obj file.
-cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float units) : AnimationFrame(units)
+cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float units) : AnimationFrame(units), filePath(filePath)
 {
-	// creates an object that reads the file
-	Object obj(filePath);
-	// Object* obj = new Object(filePath); // TODO: make value variable
-
-	// stores the vertices from the obj file as morph vertices
-	const Vertex* tempVerts = obj.GetVertices();
-	// MorphVertex* tempVerts;
-	verticesTotal = obj.GetVerticesTotal();
-
-	// gets the vertices as morph target vertices
-	// tempVerts = Mesh::ConvertToMorphVertexArray(obj.GetVertices(), obj.GetVerticesTotal());
-
-	pose = new Vertex[verticesTotal];
-
-	memcpy(pose, tempVerts, sizeof(Vertex) * verticesTotal);
-
-	// gets the values from the morph vertices 
-	// TODO: maybe memcpy is more efficient?
-	// for (int i = 0; i < verticesTotal; i++)
-	// {
-	// 	pose[i].Position = tempVerts[i].Position;
-	// 	pose[i].Color = tempVerts[i].Color;
-	// 	pose[i].Normal = tempVerts[i].Normal;
-	// 	pose[i].UV = tempVerts[i].UV;
-	// }
+	// loads the pose for the frame
+	LoadPose();
 }
 
 // destructor.
@@ -218,15 +199,158 @@ cherry::MorphAnimationFrame::~MorphAnimationFrame()
 const cherry::Vertex* const cherry::MorphAnimationFrame::GetPose() const { return pose; }
 
 // returns the value amount.
-unsigned int cherry::MorphAnimationFrame::GetValueAmount() const { return verticesTotal; }
+unsigned int cherry::MorphAnimationFrame::GetVertexCount() const { return verticesTotal; }
+
+// loads in the vertices from a file. This is based on the loadObject code in the Object class.
+// it was added in because using the one in the Object class took too long.
+cherry::Vertex* cherry::MorphAnimationFrame::LoadPose()
+{
+	std::ifstream file; // file
+	std::string line = ""; // the current line of the file.
+
+	std::vector<float> tempVecFlt; // a temporary float vector. Used to save the results of a parsing operation.
+	std::vector<uint32_t>tempVecUint; // temporary vector for uin32_t data. Saves information from parsing operation.
+
+	// vertex indices
+	std::vector<Vertex> vertVec; // a vector of vertices; gets all vertices from the file before putting them in the array.
+	std::vector<uint32_t> vertIndices; // a vector of indices; gets all indices from the file before putting them into the array.
+
+	// textures
+	std::vector<glm::vec2>vtVec; // temporary vector for vertex vector coordinates; saves values, but doesn't actually get used
+	std::vector<unsigned int> textIndices; // a vector of texture indices.
+
+	// normals
+	std::vector<glm::vec3>vnVec; // temporary vector for vertex normals; saves values, but doesn't actually get used
+	std::vector<unsigned int> normIndices; // vector of vertex normal indices
+
+	file.open(filePath, std::ios::in); // opens file
+
+	// if the file is closed.
+	if (!file)
+	{
+		std::runtime_error("File access failure");
+		return nullptr;
+	}
+
+	// while there are still lines to receive from the file.
+	while (std::getline(file, line))
+	{
+		if (line.length() == 0) // if there was nothing on the line, then it is skipped.
+			continue;
+
+		// ignores object name (o), comments (#), and mtl file (mtllib)
+		// vertex
+		if (line.substr(0, line.find_first_of(" ")) == "v")
+		{
+			/*
+			 * Versions:
+			 *** (x, y, z) (version used by Blender)
+			 *** (x, y, z, r, g, b)
+			 *** (x, y, z, w)
+			 *** (x, y, z, w, r, g, b)
+			*/
+			tempVecFlt = Object::parseStringForTemplate<float>(line); // gets the values from the line
+
+			// checks what version was used.
+			switch (tempVecFlt.size())
+			{
+			case 3: // (x, y, z)
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
+
+			case 4: // (x, y, z, w) (n/a) ('w' value is ignored); currently same as case 3.
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
+
+			case 6: // (x, y, z, r, g, b)
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[3], tempVecFlt[4], tempVecFlt[5], 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
+
+			case 7: // (x, y, z, w, r, g, b) (n/a) ('w' value is ignored); currently the same as case 6.
+				vertVec.push_back(Vertex{ {tempVecFlt[0], tempVecFlt[1], tempVecFlt[2]}, {tempVecFlt[4], tempVecFlt[5], tempVecFlt[6], 1.0F}, {0.0F, 0.0F, 0.0F} });
+				break;
+			}
+		}
+		else if (line.substr(0, line.find_first_of(" ")) == "vt") // Texture UV (u, v); not used for anything
+		{
+			tempVecFlt = Object::parseStringForTemplate<float>(line); // gets values
+
+			vtVec.push_back(glm::vec2(tempVecFlt[0], tempVecFlt[1])); // saves values
+		}
+		else if (line.substr(0, line.find_first_of(" ")) == "vn") // Vertex Normals (x, y, z); not used at this stage
+		{
+			tempVecFlt = Object::parseStringForTemplate<float>(line); // gets the values from the line
+
+			vnVec.push_back(glm::vec3(tempVecFlt[0], tempVecFlt[1], tempVecFlt[2])); // stores them
+		}
+		// indices
+		else if (line.substr(0, line.find_first_of(" ")) == "f")
+		{
+			// passes the line and replaces all '/' with ' ' so that the string parser can work.
+			// format: (face/texture/normal) (shortened to (v1/vt/vn).
+			tempVecUint = Object::parseStringForTemplate<uint32_t>(util::replaceSubstring(line, "/", " "));
+
+			// We only need every 1st value in a set, which this loop accounts for.
+			for (int i = 0; i < tempVecUint.size(); i += 3)
+			{
+				// vertex indice/vertex texture indice/vertex normal indice
+				// v1/vt1/vn1
+				vertIndices.push_back(tempVecUint[i]);
+				textIndices.push_back(tempVecUint[i + 1]);
+				normIndices.push_back(tempVecUint[i + 2]);
+			}
+
+		}
+	}
+
+	// vertex array
+	{
+		// deletes the current pose
+		delete[] pose;
+
+		verticesTotal = vertIndices.size(); // gets the total amount of vertices, which is currenty based on the total amount of indices.
+		pose = new Vertex[verticesTotal]; // making the dynamic array of vertices
+
+		// puts the vertices into the dynamic vertex buffer array.
+		for (int i = 0; i < vertIndices.size(); i++)
+			pose[i] = vertVec[vertIndices[i] - 1];		
+	}
+
+	// calculating the normals
+	{
+		// vertex normal Indices and vertex Indices are the same size
+		// calculates how many times a given normal is used.
+		for (int i = 0; i < normIndices.size(); i++)
+		{
+			// adding the normal to the vertex
+			pose[i].Normal = vnVec.at(normIndices[i] - 1);
+		}
+	}
+
+	// calculating the UVs
+	{
+		// vertex normal Indices and vertex Indices are the same size
+		// calculates how many times a given normal is used.
+		for (int i = 0; i < textIndices.size(); i++)
+		{
+			// adding the uvs to the designated vertices
+			pose[i].UV = vtVec.at(textIndices.at(i) - 1);
+		}
+	}
+
+	return nullptr;
+
+}
+
 
 // to string
 std::string cherry::MorphAnimationFrame::ToString() const
 {
 	return std::string(
-		"MorphAnimationFrame - Vertex Count: " + std::to_string(verticesTotal)
+		"MorphAnimationFrame - File Path:" + filePath + " | Vertex Count: " + std::to_string(verticesTotal)
 	);
 }
+
 
 
 

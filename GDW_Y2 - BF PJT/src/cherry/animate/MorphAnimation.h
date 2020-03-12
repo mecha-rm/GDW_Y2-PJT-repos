@@ -61,8 +61,8 @@ namespace cherry
 		// returns the pose
 		const cherry::Vertex* const GetPose() const;
 
-		// gets the value amount, which is the same for vertices and 
-		unsigned int GetValueAmount() const;
+		// gets the amount of vertices
+		unsigned int GetVertexCount() const;
 
 		// gets the current time value for the morph target. The interpolation of the vertices happens in the shader.
 		// this gets the current value of 't' (or 'u')
@@ -78,13 +78,19 @@ namespace cherry
 	protected:
 	
 	private:
+
+		// loads in the vertices from a file
+		cherry::Vertex* LoadPose();
+
 		// the pose for this frame
-		// MorphVertex* pose;
-		Vertex* pose; // vertices, colors, normals, and uvs
+		Vertex* pose = nullptr; // vertices, colors, normals, and uvs
 
 		// total amount of vertices
 		unsigned int verticesTotal;
 
+		// saves the file path once it is deteremined to be accessible.
+		std::string filePath = "";
+		
 		// the value of 't'
 		// float t = 0;
 
