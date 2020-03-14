@@ -11,6 +11,7 @@ layout (location = 0) out vec4 outColor;
 
 uniform sampler2D xImage;
 
+// gamma correction factor
 uniform float a_Gamma;
 
 void main() {

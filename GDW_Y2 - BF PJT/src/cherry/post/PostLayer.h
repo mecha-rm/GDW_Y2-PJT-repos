@@ -8,7 +8,8 @@
 #define POST_LIGHTING_FS "res/shaders/post/blinn-phong_post.fs.glsl"
 #define POST_KERNEL3_FS  "res/shaders/post/kernel3.fs.glsl"
 #define POST_KERNEL5_FS  "res/shaders/post/kernel5.fs.glsl"
-
+#define POST_GAMMA_FS "res/shaders/post/gamma_correction.fs.glsl"
+#define POST_CEL_FS "res/shaders/post/toon-cel.fs.glsl"
 
 
 #include "FrameBuffer.h"

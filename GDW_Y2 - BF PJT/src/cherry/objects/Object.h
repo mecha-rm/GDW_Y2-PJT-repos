@@ -222,6 +222,12 @@ namespace cherry
 		// sets the position using the size of the window
 		void SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
 
+		// sets window position with the provided window size
+		void SetPositionByWindowSize(const cherry::Vec2 windowPos, glm::ivec2 windowSize, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
+
+		// sets the window position with the provided window size.
+		void SetPositionByWindowSize(const float x, const float y, const int windowWidth, const int windowHeight, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
+
 		// gets the rotation as a GLM vector
 		glm::vec3 GetRotationGLM(bool inDegrees) const;
 

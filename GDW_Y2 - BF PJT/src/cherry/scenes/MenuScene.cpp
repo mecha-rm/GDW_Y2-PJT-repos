@@ -4,6 +4,9 @@
 #include "..\Game.h"
 #include "..\utils/math/Rotation.h"
 
+// collision for the mouse
+// cherry::PhysicsBodyBox* cherry::MenuScene::mouseBox = new cherry::PhysicsBodyBox(1.0F, 1.0F, 0.1F);
+
 // constructor
 cherry::MenuScene::MenuScene(const std::string name)
 	: Scene(name)
@@ -22,13 +25,37 @@ void cherry::MenuScene::OnOpen()
 
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(GetName());
+
+	// cursor object
+	// cursorObject = new PrimitivePlane(1.0F, 1.0F, true);
+	// cursorObject = new Image("res/images/default.jpg", GetName(), false, false);
+	cursorBox = new PhysicsBodyBox(2.0F, 2.0F, 0.1F);
+	// cursorObject->AddPhysicsBody(cursorBox);
+
+	// cursorObject->SetVisible(false);
+	cursorBox->SetVisible(true);
+	// objectList->AddObject(cursorObject);
 }
 
 // caled when the scene is being closed.
 void cherry::MenuScene::OnClose()
 {
+	// mouse collision
+	// delete cursorObject; // deletes cursorBox as well.
+	delete cursorBox;
+
+	// deletes all buttons
+	// the objects, physics bodies, and texts will be deleted by their resepctive managers.
+	for (Button* button : buttons)
+		delete button;
+
+	buttons.clear();
+
+	// destroys the scene and light list. The objects part of these lights get removed as well.
 	ObjectManager::DestroySceneObjectListByPointer(objectList);
 	LightManager::DestroySceneLightListByPointer(lightList);
+
+
 
 	Scene::OnClose();
 }
@@ -36,6 +63,10 @@ void cherry::MenuScene::OnClose()
 // mouse button pressed
 void cherry::MenuScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
+	// saving the button
+	// mouseKeyLog.push(button);
+	mouseKey = button;
+	mousePressed = true;
 }
 
 // mouse button held
@@ -46,6 +77,9 @@ void cherry::MenuScene::MouseButtonHeld(GLFWwindow* window, int button)
 // mouse button released
 void cherry::MenuScene::MouseButtonReleased(GLFWwindow* window, int button)
 {
+	// if the button released is the same as the one most recently pressed.
+	if(button == mouseKey)
+		mousePressed = false;
 }
 
 // key pressed
@@ -70,14 +104,13 @@ void cherry::MenuScene::DrawGui(float deltaTime)
 }
 
 // adds a button to the scene
-cherry::Button& cherry::MenuScene::AddButton(cherry::Object* object, cherry::PhysicsBody* body, cherry::Text* text)
+cherry::Button* cherry::MenuScene::AddButton(cherry::Object* object, cherry::PhysicsBody* body, cherry::Text* text)
 {
 	// object doesn't exist.
 	if (object == nullptr)
 	{
 		LOG_ERROR("Button could not be created");
-		cherry::Button temp;
-		return temp;
+		return nullptr;
 	}
 
 	objectList->AddObject(object);
@@ -95,47 +128,106 @@ cherry::Button& cherry::MenuScene::AddButton(cherry::Object* object, cherry::Phy
 	// adds in the text.
 	objectList->AddObject(text);
 
-	cherry::Button button;
-	button.object = object;
-	button.body = body;
-	button.text = text;
+	cherry::Button * button = new Button();
+	button->object = object;
+	button->text = text;
 
 	buttons.push_back(button);
 	return button;
 }
 
-// adds a button.
-void cherry::MenuScene::AddButton(Button& button, bool addedToList)
+// adds a button->
+void cherry::MenuScene::AddButton(Button* button, bool addedToList)
 {
 	// if the button hasn't been added to hte object lists
 	if (!addedToList)
 	{
-		objectList->AddObject(button.object);
-		objectList->AddObject(button.text);
+		objectList->AddObject(button->object);
+		objectList->AddObject(button->text);
 	}
 
 	buttons.push_back(button);
 }
 
+// removes a button, and returns it.
+cherry::Button* cherry::MenuScene::RemoveButtonByPointer(Button* button)
+{
+	// removes object and text
+	if (button != nullptr)
+	{
+		// removes object, and text
+		objectList->RemoveObjectByPointer(button->object);
+		objectList->RemoveObjectByPointer(button->text);
+	}
+
+	// removes the button
+	util::removeFromVector(buttons, button);
+
+	return button;
+}
+
+// removes the button by its index in the list.
+cherry::Button* cherry::MenuScene::RemoveButtonByIndex(int index)
+{
+	// button not in list
+	if (index < 0 || index >= buttons.size())
+		return nullptr;
+
+	return RemoveButtonByPointer(buttons[index]);
+}
+
+// deletes the button
+bool cherry::MenuScene::DeleteButtonByPointer(Button* button)
+{
+	Button * b = RemoveButtonByPointer(button);
+
+	// button removed successfully.
+	if (b != nullptr)
+	{
+		delete b;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+// deletes a button by index
+bool cherry::MenuScene::DeleteButtonByIndex(int index)
+{
+	Button* b = RemoveButtonByIndex(index);
+
+	if (b != nullptr)
+	{
+		delete b;
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 // updates the button
-void cherry::MenuScene::UpdateButton(Button& button)
+void cherry::MenuScene::UpdateButton(Button* button)
 {
 	// button has no parent object, or no text child
-	if (button.object == nullptr || button.text == nullptr)
+	if (button->object == nullptr || button->text == nullptr)
 		return;
 
 	// updating text scale
 	{
 		// the scale of the text.
-		glm::vec3 parentScale = button.object->GetScaleGLM();
-		glm::vec3 childScale = button.localTextScale;
+		glm::vec3 parentScale = button->object->GetScaleGLM();
+		glm::vec3 childScale = button->localTextScale;
 
-		button.text->SetScale(parentScale * childScale);
+		button->text->SetScale(parentScale * childScale);
 	}
 
 	// updating rotation
 	{
-		button.text->SetRotationDegrees(button.object->GetRotationDegreesGLM() + button.localTextRot);
+		button->text->SetRotationDegrees(button->object->GetRotationDegreesGLM() + button->localTextRot);
 	}
 
 	// updating position if any of the values have been changed.
@@ -163,7 +255,7 @@ void cherry::MenuScene::UpdateButton(Button& button)
 
 		// parent translation (from world origin)
 		{
-			glm::vec3 parentPos = button.object->GetPositionGLM();
+			glm::vec3 parentPos = button->object->GetPositionGLM();
 
 			parent[0][3] = parentPos.x;
 			parent[1][3] = parentPos.y;
@@ -173,7 +265,7 @@ void cherry::MenuScene::UpdateButton(Button& button)
 
 		// parent rotation
 		{
-			glm::vec3 parentRot = button.object->GetRotationDegreesGLM();
+			glm::vec3 parentRot = button->object->GetRotationDegreesGLM();
 			
 			rotX = util::math::getRotationMatrixX(parentRot.x, true);
 			rotY = util::math::getRotationMatrixY(parentRot.y, true);
@@ -182,7 +274,7 @@ void cherry::MenuScene::UpdateButton(Button& button)
 
 		// parent scale
 		{
-			glm::vec3 parentScale = button.object->GetScaleGLM();
+			glm::vec3 parentScale = button->object->GetScaleGLM();
 
 			scale[0][0] = parentScale.x;
 			scale[1][1] = parentScale.y;
@@ -208,20 +300,73 @@ void cherry::MenuScene::UpdateButton(Button& button)
 		// text transformation matrix
 		glm::mat4 child
 		{
-			button.localTextPos.x, 0, 0, 0,
-			button.localTextPos.y, 0, 0, 0,
-			button.localTextPos.z, 0, 0, 0,
+			button->localTextPos.x, 0, 0, 0,
+			button->localTextPos.y, 0, 0, 0,
+			button->localTextPos.z, 0, 0, 0,
 			0, 0, 0, 0
 		};
 
 		result = parent * child;
 
-		button.text->SetPosition(result[0][3], result[1][3], result[2][3]);
+		button->text->SetPosition(result[0][3], result[1][3], result[2][3]);
 	}
 }
 
 // updates the buttons
 void cherry::MenuScene::Update(float deltaTime)
 {
-	Scene::Update(deltaTime);
+	Scene::Update(deltaTime); // update loop
+
+	// game and window
+	Game* const game = Game::GetRunningGame();
+	glm::ivec2 windowSize = game->GetWindowSize();
+
+	// cursor position (screen space)
+	glm::dvec2 cursorPos = game->GetCursorViewPositionGLM();
+
+	// cursor world space position
+	// the button positions are based on world space, but use an orthographic camera.
+	// the camera is looking at the origin of the game world, so the centre of the screen is (0, 0).
+	// the mouse position is given in screen space, where the bottom left-hand corner is the origin (0, 0)
+	// glm::vec3 cursor_wpos = { cursorPos.x, cursorPos.y, 0.0F };
+
+	// std::cout << "C1: " << Vec3(cursorPos.x, cursorPos.y, 0.0F).ToString() << std::endl;
+	// std::cout << "C2: " << Vec3(cursor_wpos).ToString() << std::endl;
+	// std::cout << "" << std::endl;
+
+	// sets the position of the mouse box so that it's aligned with the mouse position.
+	// cursorObject->SetPosition(cursorPos.x, cursorPos.y, 0.0F);
+	cursorBox->SetLocalPosition(cursorPos.x, cursorPos.y, 0.0F);
+	// cursorObject->Update(deltaTime); // update object representing mouse
+
+	// checks for collision
+	bool collision = false;
+
+	// button collision check
+	for (Button* button : buttons)
+	{
+		// all physics bodies
+		std::vector<PhysicsBody*> bodies = button->object->GetPhysicsBodies();
+		
+		for (PhysicsBody* body : bodies)
+		{
+			collision = PhysicsBody::Collision(body, cursorBox);
+			if (collision) // button collided with.
+			{
+				enteredButton = button;
+				break;
+			}
+		}
+		
+		if (collision)
+			break;
+
+		// collision check
+		// collision = PhysicsBody::Collision(button->body, cursorBox);
+	}
+
+	// no button has been entered yet.
+	if (collision == false)
+		enteredButton = nullptr;
+	
 }

@@ -32,8 +32,7 @@ cherry::PhysicsBody::PhysicsBody(int id, cherry::Vec3 pos) : id(id), position(po
 // deleting the object
 cherry::PhysicsBody::~PhysicsBody()
 {
-	if (body != nullptr)
-		delete body;
+	delete body;
 }
 
 
@@ -170,6 +169,9 @@ void cherry::PhysicsBody::SetLocalPosition(cherry::Vec3 lPos)
 
 // sets the model (local) position
 void cherry::PhysicsBody::SetLocalPosition(glm::vec3 lPos) { SetLocalPosition(cherry::Vec3(lPos)); }
+
+// sets the local position
+void cherry::PhysicsBody::SetLocalPosition(float x, float y, float z) { SetLocalPosition(Vec3(x, y, z)); }
 
 // gets the world position as a GLM vector
 glm::vec3 cherry::PhysicsBody::GetWorldPositionGLM() const

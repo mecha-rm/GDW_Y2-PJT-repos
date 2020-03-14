@@ -649,6 +649,7 @@
     <None Include="res\shaders\post\post.vs.glsl" />
     <None Include="res\shaders\post\redscale.fs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />
+    <None Include="res\shaders\post\toon-cel.fs.glsl" />
     <None Include="res\shaders\post\vibrance.fs.glsl" />
     <None Include="res\shaders\shader.fs.glsl" />
     <None Include="res\shaders\shader.vs.glsl" />

@@ -6,11 +6,11 @@
 namespace cherry
 {
 	// the scene the engine uses.
-	class EngineScene : public cherry::GameplayScene
+	class EngineGameplayScene : public cherry::GameplayScene
 	{
 	public:
 		// constructor
-		EngineScene(std::string sceneName);
+		EngineGameplayScene(std::string sceneName);
 
 		// loading the scene
 		void OnOpen() override;
@@ -72,6 +72,8 @@ namespace cherry
 		PostLayer::Sptr layer3 = nullptr;
 		PostLayer::Sptr layer4 = nullptr;
 		PostLayer::Sptr layer5 = nullptr;
+		PostLayer::Sptr layer6 = nullptr;
+		PostLayer::Sptr layer7 = nullptr;
 		bool useLayers = true;
 
 	protected:

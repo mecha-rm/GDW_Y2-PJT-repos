@@ -113,7 +113,7 @@ void CursorPosCallback(GLFWwindow* window, double xpos, double ypos)
 		return;
 	}
 	else {
-		game->UpdateCursorPos(xpos, ypos);
+		game->UpdateCursorPosition(xpos, ypos);
 	}
 }
 
@@ -222,32 +222,42 @@ bool cherry::Game::GetCursorInWindow() const { return mouseEnter; }
 void cherry::Game::SetCursorInWindow(bool inWindow) { mouseEnter = inWindow; }
 
 // updates cursor position variables
-void cherry::Game::UpdateCursorPos(double xpos, double ypos)
+void cherry::Game::UpdateCursorPosition(double xpos, double ypos)
 {
-	// Game* game = (Game*)glfwGetWindowUserPointer(myWindow);
-
-	mousePos = glm::dvec2(xpos - this->myWindowSize.x / 2.0F, ypos - this->myWindowSize.y / 2.0F);
-
-	//this->XcursorPos = xpos;
-	//this->YcursorPos = ypos;
-	// xpos = xpos - this->windowWidth / 2.0F;
-	// ypos = ypos - this->windowHeight / 2.0F;
-
-	//Logger::GetLogger()->info(xpos);
-	//Logger::GetLogger()->info(ypos);
-
+	mousePos = glm::dvec2(xpos, ypos);
 }
 
-// gets the cursor position
-cherry::Vec2 cherry::Game::GetCursorPos() const { return Vec2(mousePos); }
 
-// gets the cursor position as a glm vector
-glm::dvec2 cherry::Game::GetCursorPosGLM() const { return mousePos; }
+// gets the cursor's raw position
+cherry::Vec2 cherry::Game::GetCursorPosition() const { return Vec2(mousePos); }
 
-float cherry::Game::GetCursorPosX() const { return mousePos.x; }
+// gets the cursor's raw position as a glm vector
+glm::dvec2 cherry::Game::GetCursorPositionGLM() const { return mousePos; }
 
-// returns the cursor position on the y-axis
-float cherry::Game::GetCursorPosY() const { return mousePos.y; }
+// returns the cursor's raw position on the x-axis
+float cherry::Game::GetCursorPositionX() const { return mousePos.x; }
+
+// returns the cursor's raw position on the y-axis
+float cherry::Game::GetCursorPositionY() const { return mousePos.y; }
+
+// gets the cursor position in view space.
+cherry::Vec2 cherry::Game::GetCursorViewPosition()
+{
+	return Vec2(mousePos.x - myWindowSize.x / 2.0F, mousePos.y - myWindowSize.y / 2.0F);
+}
+
+// gets the cursor position in view space.
+glm::dvec2 cherry::Game::GetCursorViewPositionGLM()
+{
+	return glm::dvec2(mousePos.x - myWindowSize.x / 2.0F, mousePos.y - myWindowSize.y / 2.0F);
+}
+
+// gets the cursor's screen position (default)
+cherry::Vec2 cherry::Game::GetCursorScreenPosition() { return Vec2(mousePos); }
+
+// gets the cursor's screen position (default)
+glm::dvec2 cherry::Game::GetCursorScreenPositionGLM() { return mousePos; }
+
 
 // called when a mouse button has been pressed
 void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {
@@ -853,7 +863,8 @@ void cherry::Game::Shutdown() {
 // loads the content for the meshes and shaders
 void cherry::Game::LoadContent()
 {
-	std::string engineSceneName = "Cherry - Debug Scene";
+	std::string engineGameplayName = "Cherry - Debug Game";
+	std::string engineMenuName = "Cherry - Debug Menu";
 
 	// setting up the camera
 	myCamera = std::make_shared<Camera>();
@@ -885,11 +896,21 @@ void cherry::Game::LoadContent()
 		// registers the scene and makes it the main scene if the opening scene is not a nullptr.
 		if (openingScene == nullptr)
 		{
-			RegisterScene(new EngineScene(engineSceneName), true);
+			RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+
+			EngineMenuScene* menu = new EngineMenuScene(engineMenuName);
+			menu->nextScene = engineGameplayName;
+			RegisterScene(menu, true);
+
 		}
 		else // loads the default scene, but sets to the opening scene
 		{
-			RegisterScene(new EngineScene(engineSceneName), false);
+			RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+
+			EngineMenuScene* menu = new EngineMenuScene(engineMenuName);
+			menu->nextScene = engineGameplayName;
+			RegisterScene(menu, false);
+
 			RegisterScene(openingScene, true);
 		}
 	}
@@ -1264,7 +1285,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 
 	// TODO: set border colour, border size, and clear colour in cameras instead. 
 	// Clear our new inset area with the scene clear color
-	glClearColor(myClearColor.x, myClearColor.y, myClearColor.z, myClearColor.w);
+	glClearColor(camera->clearColor.x, camera->clearColor.y, camera->clearColor.z, camera->clearColor.w);
 	if (clear)
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
