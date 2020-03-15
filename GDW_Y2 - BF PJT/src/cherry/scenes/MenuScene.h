@@ -120,9 +120,6 @@ namespace cherry
 		int mouseKey = -1;
 
 	private:
-		// a queue of the keys pressed by the mouse
-		// std::queue<int> mouseKeyLog;
-
 		// mouse collision box
 		// object representing the mouse
 		// Object* cursorObject = nullptr;

@@ -26,6 +26,7 @@ namespace cnz
 	class CNZ_GameplayScene : public cherry::GameplayScene
 	{
 	public:
+		// constructor
 		CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName);
 
 		// called when the scene is being opened (equivalent to Game::LoadContent).
@@ -69,7 +70,8 @@ namespace cnz
 		void SpawnEnemyGroup(int i = -1);
 
 		// pass in scene name. Should be called on scene switch. Will overwrite game's object lists and objects and physics body lists with objects from new scene.
-		void MapSceneObjectsToGame();
+		// if 'true' is passed, then the level is loaded from the file. If false is passed, then the default load is used.
+		void MapSceneObjectsToGame(bool loadFromFile = true);
 		
 		// returns 'true' if physics bodies are visible.
 		// do note that this checks if they are on overall; individual objects can enable their own without this returning true.
@@ -99,33 +101,18 @@ namespace cnz
 		cherry::Material::Sptr matStatic = nullptr; // the static material
 		cherry::Material::Sptr matDynamic = nullptr; // the dynamic material
 
+		// object for the player.
+		cnz::Player* playerObj = nullptr; 
 
-		cnz::Player* playerObj = nullptr; // object for the player.
-
-		//Weapons
-		Obstacle* bow = nullptr;
-		Obstacle* katana = nullptr;
-		Obstacle* spear = nullptr;
-
-		//Props
-		Obstacle* drum = nullptr;
-		Obstacle* dumpster = nullptr;
-		Obstacle* lamp_Center = nullptr;
-		Obstacle* lamp_Corner = nullptr;
-		Obstacle* lamp_Side = nullptr;
-		Obstacle* manhole = nullptr;
-		Obstacle* road = nullptr;
-		Obstacle* piller = nullptr;
-
-
-		//Load enemies // Create multiple enemies using these with only loading one .obj
+		// loads enemies 
+		// Create multiple enemies using these with only loading one .obj
 		cnz::Sentry* sentry = nullptr; //Sentry enemy : Bowman
 		cnz::Oracle* oracle = nullptr; //Oracle enemy : Polearmsman
 		cnz::Marauder* marauder = nullptr; //Marauder enemy : Swordsman
 		cnz::Bastion* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Mechaspider* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
-
+		// 
 		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 		std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
@@ -133,7 +120,10 @@ namespace cnz
 		std::vector<Projectile*> projList; //list of projectiles
 		std::vector<float> projTimeList; //list of projectile timers
 
+		// skybox object.
 		cherry::Skybox skyboxObj;
+
+		// indicator arrow for the dash.
 		cherry::Object* indArrow;
 
 		// Animations
@@ -148,7 +138,6 @@ namespace cnz
 		cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
 
-		cnz::Player* testObj = nullptr; // object for the player.
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
 		bool mbLP = false, mbLR = false;
 
@@ -171,10 +160,13 @@ namespace cnz
 		bool ls = false;
 		bool spaceP = false;
 		bool spaceR = false;
+
+		// stops the player from moving through solid objects.
 		bool cw = true;
 		bool ca = true;
 		bool cs = true;
 		bool cd = true;
+
 		bool paused = false;
 		bool restart = false;
 

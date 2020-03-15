@@ -6,6 +6,12 @@
 // constructor
 cherry::Animation::Animation() {}
 
+// copy constructor
+// cherry::Animation::Animation(const cherry::Animation& animeCopy)
+// {
+// 
+// }
+
 // constructor
 cherry::Animation::Animation(int id) : id(id) {}
 

@@ -285,10 +285,10 @@ void cherry::Text::LoadText(const std::string scene)
 	vertices = new Vertex[verticesTotal]
 	{
 		//  {nx, ny, nz}, {r, g, b, a}, {nx, ny, nz}, {u, v}
-		{{ -1.0F, -1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
-		{{  1.0F, -1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
-		{{ -1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
-		{{  1.0F,  1.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
+		{{ -1.0F / 2.0F, -1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 0.0F}}, // bottom left
+		{{  1.0F / 2.0F, -1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 0.0F}}, // bottom right
+		{{ -1.0F / 2.0F,  1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {0.0F, 1.0F}}, // top left
+		{{  1.0F / 2.0F,  1.0F / 2.0F, 0.0f }, { 1.0F, 1.0F, 1.0F, 1.0F }, {0.0F, 0.0F, 1.0F}, {1.0F, 1.0F}}, // top right
 	};
 
 	// making the indices for the quad
@@ -309,7 +309,7 @@ void cherry::Text::LoadText(const std::string scene)
 	// creating a plane to represent the size.
 	// CreateEntity(scene, textMaterial);
 	CreateEntity(scene, textMaterial); // empty material
-	SetVisible(false);
+	mesh->SetVisible(false); // either use the parent's function, or call the mesh directly.
 
 	worldPos = position + Vec3(1, 1, 1);
 	worldScale = scale;

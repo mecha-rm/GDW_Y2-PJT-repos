@@ -12,11 +12,11 @@
 #include <imgui\imgui.h>
 
 // creating the engine scene.
-cherry::EngineScene::EngineScene(std::string sceneName) : GameplayScene(sceneName)
+cherry::EngineGameplayScene::EngineGameplayScene(std::string sceneName) : GameplayScene(sceneName)
 {
 }
 
-void cherry::EngineScene::OnOpen()
+void cherry::EngineGameplayScene::OnOpen()
 {
 	GameplayScene::OnOpen();
 
@@ -66,6 +66,7 @@ void cherry::EngineScene::OnOpen()
 	myCameraX->SetPerspectiveMode(glm::radians(60.0f), 1.0f, 0.01f, 1000.0f, false);
 	myCameraX->SetOrthographicMode(-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
 
+	game->Resize(myWindowSize.x, myWindowSize.y);
 	// creating the object manager and light manager
 	// objManager = std::make_shared<ObjectManager>();
 	// lightManager = std::make_shared<LightManager>();
@@ -567,6 +568,24 @@ void cherry::EngineScene::OnOpen()
 
 		// little change
 		// layer5 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
+
+		// layer 6
+		layer6 = std::make_shared<PostLayer>(POST_VS, POST_GAMMA_FS);
+
+		// layer 7
+		// layer7 = std::make_shared<PostLayer>(POST_VS, POST_CEL_FS);
+
+		Shader::Sptr celShader = std::make_shared<Shader>();
+		celShader->Load(POST_VS, POST_CEL_FS);
+		// edge detection
+		celShader->SetUniform("a_OutlineSize", 0.1F);
+		celShader->SetUniform("a_Levels", 5);
+
+		FrameBuffer::Sptr cfb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		cfb->AddAttachment(sceneColor);
+		cfb->AddAttachment(sceneDepth);
+
+		layer7 = std::make_shared<PostLayer>(celShader, cfb);
 	}
 
 
@@ -590,13 +609,13 @@ void cherry::EngineScene::OnOpen()
 }
 
 // called when the scene is being closed.
-void cherry::EngineScene::OnClose()
+void cherry::EngineGameplayScene::OnClose()
 {
 	GameplayScene::OnClose();
 }
 
 // mouse button has been pressed.
-void cherry::EngineScene::MouseButtonPressed(GLFWwindow* window, int button)
+void cherry::EngineGameplayScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
 	// checks each button
 	switch (button) {
@@ -613,7 +632,7 @@ void cherry::EngineScene::MouseButtonPressed(GLFWwindow* window, int button)
 }
 
 // mouse button is being held.
-void cherry::EngineScene::MouseButtonHeld(GLFWwindow* window, int button)
+void cherry::EngineGameplayScene::MouseButtonHeld(GLFWwindow* window, int button)
 {
 	// checks each button
 	switch (button) {
@@ -630,7 +649,7 @@ void cherry::EngineScene::MouseButtonHeld(GLFWwindow* window, int button)
 }
 
 // mouse button has been released.
-void cherry::EngineScene::MouseButtonReleased(GLFWwindow* window, int button)
+void cherry::EngineGameplayScene::MouseButtonReleased(GLFWwindow* window, int button)
 {
 	// checks each button
 	switch (button) {
@@ -646,7 +665,7 @@ void cherry::EngineScene::MouseButtonReleased(GLFWwindow* window, int button)
 	}
 }
 
-void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
+void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -769,15 +788,25 @@ void cherry::EngineScene::KeyPressed(GLFWwindow* window, int key)
 		layers.push_back(layer5);
 		layer5->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
+	case GLFW_KEY_7:
+		layers.clear();
+		layers.push_back(layer6);
+		layer6->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
+	case GLFW_KEY_8:
+		layers.clear();
+		layers.push_back(layer7);
+		layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
 	}
 }
 
 // key held
-void cherry::EngineScene::KeyHeld(GLFWwindow* window, int key)
+void cherry::EngineGameplayScene::KeyHeld(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
-	if (game == nullptr) // if game is 'null', then it is returned
+	if (game == nullptr) // if game is 'null', then it is returned  
 		return;
 
 	switch (key)
@@ -836,7 +865,7 @@ void cherry::EngineScene::KeyHeld(GLFWwindow* window, int key)
 }
 
 // key released
-void cherry::EngineScene::KeyReleased(GLFWwindow* window, int key)
+void cherry::EngineGameplayScene::KeyReleased(GLFWwindow* window, int key)
 {
 	Game* game = (Game*)glfwGetWindowUserPointer(window);
 
@@ -892,7 +921,7 @@ void cherry::EngineScene::KeyReleased(GLFWwindow* window, int key)
 }
 
 // imgui draw function
-void cherry::EngineScene::DrawGui(float deltaTime)
+void cherry::EngineGameplayScene::DrawGui(float deltaTime)
 {
 	Game* game = Game::GetRunningGame();
 
@@ -947,7 +976,7 @@ void cherry::EngineScene::DrawGui(float deltaTime)
 }
 
 // update loop
-void cherry::EngineScene::Update(float deltaTime)
+void cherry::EngineGameplayScene::Update(float deltaTime)
 {
 	Game* const game = Game::GetRunningGame();
 	// TODO: remove this line.

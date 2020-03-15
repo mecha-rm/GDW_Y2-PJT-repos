@@ -635,6 +635,8 @@
     <None Include="res\shaders\image.vs.glsl" />
     <None Include="res\shaders\lighting-morph.vs.glsl" />
     <None Include="res\shaders\lighting.vs.glsl" />
+    <None Include="res\shaders\model.fs.glsl" />
+    <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />

@@ -26,15 +26,11 @@ void cherry::MenuScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(GetName());
 
-	// cursor object
-	// cursorObject = new PrimitivePlane(1.0F, 1.0F, true);
-	// cursorObject = new Image("res/images/default.jpg", GetName(), false, false);
+	// cursor hitbox
 	cursorBox = new PhysicsBodyBox(2.0F, 2.0F, 0.1F);
-	// cursorObject->AddPhysicsBody(cursorBox);
 
-	// cursorObject->SetVisible(false);
-	cursorBox->SetVisible(true);
-	// objectList->AddObject(cursorObject);
+	// doesn't do anything.
+	// cursorBox->SetVisible(true);
 }
 
 // caled when the scene is being closed.

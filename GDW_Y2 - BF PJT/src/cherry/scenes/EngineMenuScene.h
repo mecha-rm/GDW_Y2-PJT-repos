@@ -18,6 +18,7 @@ namespace cherry
 		// update loop
 		void Update(float deltaTime) override;
 
+		// the next scene to be travelled to.
 		std::string nextScene = "";
 
 	private:

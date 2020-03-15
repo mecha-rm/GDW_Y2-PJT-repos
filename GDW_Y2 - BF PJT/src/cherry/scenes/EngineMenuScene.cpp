@@ -27,7 +27,7 @@ void cherry::EngineMenuScene::OnOpen()
 	Camera::Sptr& myCamera = game->myCamera; // camera reference
 	myCamera->clearColor = game->myClearColor; // setting the clear colour
 
-	myCamera->SetPosition(glm::vec3(0, 0.001F, 1.0F));
+	myCamera->SetPosition(glm::vec3(0, 0.001F, 1.0F)); 
 	// myCamera->SetPosition(glm::vec3(0, 5, 12));
 	myCamera->LookAt(glm::vec3(0));
 	myCamera->SetPerspectiveMode(glm::radians(45.0f), 1.0f, 0.01f, 1000.0f);
@@ -58,16 +58,27 @@ void cherry::EngineMenuScene::OnOpen()
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(image->GetWidth(), image->GetHeight(), 0.01F);
 		image->AddPhysicsBody(pbb); // if addded here, collision doesn't trigger.
 		image->SetWindowChild(true);
-		pbb->SetVisible(true);
-		
+		image->SetScale(0.2F);
+		// pbb->SetVisible(true);
 		button->object = image;
+
+		button->text = new Text("John", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 1.0F);
+		button->text->SetPosition(0.0F, 0.0F, -10.0F);
+		button->text->SetScale(0.01F);
+		// button->text->SetWindowChild(true);
+
+		// button->text->GetMesh()->cullFaces = false;
+		button->text->SetVisible(true);
+		objectList->AddObject(button->text);
+		// button-
 
 		// image->SetPositionByWindowSize(myWindowSize.x / 4.0F, myWindowSize.y / 2.0F * 3);
 		// image->AddPhysicsBody(pbb);
-		image->SetScale(0.2F);
+		
 		// objectList->AddObject(image);
 
 		AddButton(button);
+		// UpdateButton(button);
 	}
 
 	game->imguiMode = true;

@@ -48,6 +48,9 @@ namespace cherry
 		// set model (local space) position (GLM version)
 		void SetLocalPosition(glm::vec3 lPos);
 
+		// sets the model (local space) position
+		void SetLocalPosition(float x, float y, float z);
+
 
 		// gets the world position as a glm vector
 		glm::vec3 GetWorldPositionGLM() const;

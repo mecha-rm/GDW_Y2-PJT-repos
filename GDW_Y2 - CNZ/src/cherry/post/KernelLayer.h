@@ -6,8 +6,21 @@
 
 #include "PostLayer.h"
 
-// 1/9 filled matrix
-// #define KERNEL3_BOX_BLUR glm::mat3(1.0F/9.0F)
+// identity matrix
+#define KERNEL_IDENTITY glm::mat3(0, 0, 0, 0, 1, 0, 0, 0, 0);
+
+// edge detection matrices
+#define KERNEL_EDGE_1 glm::mat3(1, 0, -1, 0, 0, 0, -1, 0, 1);
+#define KERNEL_EDGE_2 glm::mat3(0, 1, 0, 1, -4, 1, 0, 1, 0);
+#define KERNEL_EDGE_3 glm::mat3(-1, -1, -1, -1, 8, -1, -1, -1, -1);
+
+#define KERNEL_SHARPEN glm::mat3(0, -1, 0, -1, 5, -1, 0, -1, 0);
+
+// box blur (1/9 for all components)
+#define KERNEL_BOX_BLUR glm::mat3(0.11111111111F)
+
+// gaussian blur (3 x 3)
+#define KERNEL_GAUSSIAN_BLUR glm::mat3(0.0625F, 0.125F, 0.0625F, 0.125F, 0.25F, 0.125F, 0.0625F, 0.125F, 0.625F)
 
 namespace cherry
 {

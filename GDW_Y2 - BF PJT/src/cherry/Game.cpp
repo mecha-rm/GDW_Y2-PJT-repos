@@ -241,23 +241,34 @@ float cherry::Game::GetCursorPositionX() const { return mousePos.x; }
 float cherry::Game::GetCursorPositionY() const { return mousePos.y; }
 
 // gets the cursor position in view space.
-cherry::Vec2 cherry::Game::GetCursorViewPosition()
+cherry::Vec2 cherry::Game::GetCursorViewPosition() const
 {
 	return Vec2(mousePos.x - myWindowSize.x / 2.0F, mousePos.y - myWindowSize.y / 2.0F);
 }
 
 // gets the cursor position in view space.
-glm::dvec2 cherry::Game::GetCursorViewPositionGLM()
+glm::dvec2 cherry::Game::GetCursorViewPositionGLM() const
 {
 	return glm::dvec2(mousePos.x - myWindowSize.x / 2.0F, mousePos.y - myWindowSize.y / 2.0F);
 }
 
-// gets the cursor's screen position (default)
-cherry::Vec2 cherry::Game::GetCursorScreenPosition() { return Vec2(mousePos); }
+// returns the cursor's view position on the x-axis
+float cherry::Game::GetCursorViewPositionX() const { return mousePos.x - myWindowSize.x / 2.0F; }
+
+// returns the cursor's view position on the y-axis
+float cherry::Game::GetCursorViewPositionY() const { return mousePos.y - myWindowSize.y / 2.0F; }
 
 // gets the cursor's screen position (default)
-glm::dvec2 cherry::Game::GetCursorScreenPositionGLM() { return mousePos; }
+cherry::Vec2 cherry::Game::GetCursorScreenPosition() const { return Vec2(mousePos); }
 
+// gets the cursor's screen position (default)
+glm::dvec2 cherry::Game::GetCursorScreenPositionGLM() const { return mousePos; }
+
+// returns the cursor's screen position on the x-axis (default)
+float cherry::Game::GetCursorScreenPositionX() const { return mousePos.x; }
+
+// returns the cursor's screen position on the y-axis (default)
+float cherry::Game::GetCursorScreenPositionY() const { return mousePos.y; }
 
 // called when a mouse button has been pressed
 void cherry::Game::MouseButtonPressed(GLFWwindow* window, int button) {

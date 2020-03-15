@@ -95,6 +95,9 @@ namespace cnz
 		// They are put into an objectlist upon creation, so that should be deleted instead.
 		std::vector<cherry::Object*> GenerateObjects();
 
+		// generates the default objects and puts them into the scene.
+		std::vector<cherry::Object*> GenerateDefaults();
+
 		// gets the objects for the scene. 
 		// the vector will be empty if GenerateObjects() has not been called yet.
 		std::vector<cherry::Object*> GetObjects() const;

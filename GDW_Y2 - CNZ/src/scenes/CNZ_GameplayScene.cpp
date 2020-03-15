@@ -49,14 +49,17 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
 
-	lightList->AddLight(new Light(GetName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
+	// if (!levelLoading)
+	{
+		lightList->AddLight(new Light(GetName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+			Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
 
-	lightList->AddLight(new Light(GetName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F));
+		lightList->AddLight(new Light(GetName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
+			Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 0.15F));
 
-	lightList->AddLight(new Light(GetName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
-		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
+		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+			Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
+	}
 
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
@@ -162,11 +165,22 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		//Jonah Load Enemy Stuff
 		sentry = new Sentry(GetName());
+		sentry->SetVisible(false);
+
 		oracle = new Oracle(GetName());
+		oracle->SetVisible(false);
+
 		marauder = new Marauder(GetName());
+		marauder->SetVisible(false);
+
 		bastion = new Bastion(GetName());
+		bastion->SetVisible(false);
+
 		mechaspider = new Mechaspider(GetName());
+		mechaspider->SetVisible(false);
+
 		arrowBase = new Projectile("res/objects/weapons/arrow.obj", GetName());
+		arrowBase->SetVisible(false);
 
 		for (int i = 0; i < 20; i++) {
 			enemyGroups.push_back(std::vector<string>());
@@ -323,7 +337,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		enemyGroups[19].push_back("bastion");
 		enemyGroups[19].push_back("mechaspider");
 		enemyGroups[19].push_back("mechaspider");
-		enemyGroups[19].push_back("mechaspider");
+		enemyGroups[19].push_back("mechaspider"); 
 
 		// adds all the enemies to the scene.
 		// for (int i = 0; i < enemyGroups.size(); i++)
@@ -337,13 +351,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_End.obj", 2.0F));
 		
-		indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
-		indArrow->SetRotationXDegrees(90);
+		// indArrow = new Object("res/objects/Arrow_Start.obj", GetName(), matDynamic, false, true);
+		// indArrow->SetRotationXDegrees(90);
 		//indArrow->AddAnimation(indArrowAnim);
 		//AddObjectToScene(indArrow);
 
 		indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
 		indicatorObj->SetRotationXDegrees(90);
+
+		// indicatorObj = new Image("res/images/indicator_arrow.png", GetName(), true, false);
+		
 		//indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
 		game->AddObjectToScene(indicatorObj);
 
@@ -366,150 +383,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		
 	}
-	else { // for testing, loads a level for testing collision, showing all objects and test paths and such
-		// TODO: move this as a default in the level loader
-		playerObj = cnz::Player::GenerateDefault(GetName()); // creates the player.
-		testObj = new Player("res/objects/monkey.obj", GetName()); // creates the not player.
-
-
-		// arena obstacles
-		Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(10, 2, 2));
-		Obstacle* wall2 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-		Obstacle* wall3 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-		Obstacle* wall4 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-		Obstacle* wall5 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-		Obstacle* wall6 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-		Obstacle* wall7 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", GetName(), cherry::Vec3(2, 2, 2));
-
-
-		bow = new Obstacle("res/objects/weapons/bow.obj", GetName(), false);
-		katana = new Obstacle("res/objects/weapons/katana.obj", GetName(), false);
-		spear = new Obstacle("res/objects/weapons/spear.obj", GetName(), false);
-		obstacles.push_back(bow);
-		obstacles.push_back(katana);
-		obstacles.push_back(spear);
-
-		drum = new Obstacle("res/objects/props/drum.obj", GetName(), false);
-		dumpster = new Obstacle("res/objects/props/Dumpster.obj", GetName(), false);
-		lamp_Center = new Obstacle("res/objects/props/Lamp_Center.obj", GetName(), false);
-		lamp_Corner = new Obstacle("res/objects/props/Lamp_Corner.obj", GetName(), false);
-		lamp_Side = new Obstacle("res/objects/props/Lamp_Side.obj", GetName(), false);
-		manhole = new Obstacle("res/objects/props/manhole.obj", GetName(), false);
-		piller = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", GetName(), false);
-		road = new Obstacle("res/objects/props/Road.obj", GetName(), false);
-		obstacles.push_back(drum);
-		obstacles.push_back(dumpster);
-		obstacles.push_back(lamp_Center);
-		obstacles.push_back(lamp_Corner);
-		obstacles.push_back(lamp_Side);
-		obstacles.push_back(manhole);
-		obstacles.push_back(piller);
-		obstacles.push_back(road);
-
-		// big wall bois
-		obstacles.push_back(wall1);
-		obstacles.push_back(wall2);
-		obstacles.push_back(wall3);
-		obstacles.push_back(wall4);
-		obstacles.push_back(wall5);
-		obstacles.push_back(wall6);
-		obstacles.push_back(wall7);
-
-		// rotations
-		playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-		playerObj->SetRotationXDegrees(90);
-		playerObj->SetRotationZDegrees(180);
-		testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-
-		wall1->SetRotation(cherry::Vec3(90, 0, 180), true); // top wall
-		wall2->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
-		wall3->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
-		wall4->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
-		wall5->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
-		wall6->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
-		wall7->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
-
-		// positions
-		testObj->SetPosition(cherry::Vec3(0, -5, 0));
-		wall1->SetPosition(cherry::Vec3(15, -1, 0));
-		wall2->SetPosition(cherry::Vec3(15, 14, 0));
-		wall3->SetPosition(cherry::Vec3(8, 14, 0));
-		wall4->SetPosition(cherry::Vec3(4, 10, 0));
-		wall5->SetPosition(cherry::Vec3(4, 3, 0));
-		wall6->SetPosition(cherry::Vec3(19, 10, 0));
-		wall7->SetPosition(cherry::Vec3(19, 3, 0));
-
-		// scale. if needed.
-
-
-		// attach pbody
-		// TODO: outdated size
-		playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-		testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->GetPBodySize()));
-		wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->GetPBodySize()));
-		wall2->AddPhysicsBody(new cherry::PhysicsBodyBox(wall2->GetPosition(), wall2->GetPBodySize()));
-		wall3->AddPhysicsBody(new cherry::PhysicsBodyBox(wall3->GetPosition(), wall3->GetPBodySize()));
-		wall4->AddPhysicsBody(new cherry::PhysicsBodyBox(wall4->GetPosition(), wall4->GetPBodySize()));
-		wall5->AddPhysicsBody(new cherry::PhysicsBodyBox(wall5->GetPosition(), wall5->GetPBodySize()));
-		wall6->AddPhysicsBody(new cherry::PhysicsBodyBox(wall6->GetPosition(), wall6->GetPBodySize()));
-		wall7->AddPhysicsBody(new cherry::PhysicsBodyBox(wall7->GetPosition(), wall7->GetPBodySize()));
-
-		// set pbody pos and maybe rotation for static objects
-		//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
-		wall1->GetPhysicsBodies()[0]->SetLocalPosition(wall1->GetPosition());
-		wall2->GetPhysicsBodies()[0]->SetLocalPosition(wall2->GetPosition());
-		wall3->GetPhysicsBodies()[0]->SetLocalPosition(wall3->GetPosition());
-		wall4->GetPhysicsBodies()[0]->SetLocalPosition(wall4->GetPosition());
-		wall5->GetPhysicsBodies()[0]->SetLocalPosition(wall5->GetPosition());
-		wall6->GetPhysicsBodies()[0]->SetLocalPosition(wall6->GetPosition());
-		wall7->GetPhysicsBodies()[0]->SetLocalPosition(wall7->GetPosition());
-
-		// debug draw pbdody
-		wall1->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall2->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall3->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall4->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall5->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall6->GetPhysicsBodies()[0]->SetVisible(showPBs);
-		wall7->GetPhysicsBodies()[0]->SetVisible(showPBs);
-
-		playerObj->GetPhysicsBodies()[0]->SetVisible(true);
-
-		// Path stuff
-		cherry::Path testPath = cherry::Path();
-		testPath.AddNode(1.0f, 1.0f, 0.0f);
-		testPath.AddNode(0.0f, 5.0f, 0.0f);
-		testPath.AddNode(-2.0f, 5.0f, 0.0f);
-		testPath.AddNode(-3.0f, 7.0f, 0.0f);
-		testPath.AddNode(-6.0f, 8.0f, 0.0f);
-		testPath.AddNode(-6.0f, 6.0f, 0.0f);
-		testPath.AddNode(-2.0f, 4.0f, 0.0f);
-		testPath.AddNode(1.0f, 1.0f, 0.0f);
-
-		testPath.SetIncrementer(0.5f);
-		testPath.SetInterpolationMode(1);
-
-		testObj->SetPath(testPath, true);
-
-		// add objects
-		game->AddObjectToScene(playerObj);
-		game->AddObjectToScene(testObj);
-		int x = -27;
-		for (int i = 0; i < obstacles.size(); i++) {
-			game->AddObjectToScene(obstacles[i]);
-
-			if (i > 0 && i < 11) {
-				obstacles[i]->SetRotationXDegrees(90);
-				obstacles[i]->SetRotationZDegrees(180);
-				obstacles[i]->SetPosition(x, -40, 0);
-			}
-			x += 5;
-		}
-
-		road->SetRotationXDegrees(90);
-		road->SetRotationZDegrees(180);
-		road->SetPosition(0, -30, -1);
-		manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
+	else // for testing, loads a level for testing collision, showing all objects and test paths and such
+	{
+		MapSceneObjectsToGame(levelLoading);
 	}
 
 	/*for (int i = 0; i < objList->GetObjectCount(); i++)
@@ -521,7 +397,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	SetVisiblePhysicsBodies(showPBs);
 
 	// Post Processing
-	if(false)
+	// if(levelLoading)
+	if (false)
 	{
 		// frame buffer
 		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
@@ -547,6 +424,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		// adds a post-processing 
 		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		layers.push_back(lightList->GetPostLayer());
 
 		useFrameBuffers = true;
 	}
@@ -862,11 +740,14 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 }
 
 // 
-void cnz::CNZ_GameplayScene::MapSceneObjectsToGame() {
+void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(bool loadFromFile) {
 	using namespace cherry;
 
 	// generates the objects
-	map.GenerateObjects();
+	if (loadFromFile)
+		map.GenerateObjects();
+	else
+		map.GenerateDefaults();
 	
 	// saves the object lsit
 	ObjectList* objList = objectList;
@@ -1172,7 +1053,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetState(1);
 		}
 
-		playerObj->UpdateAngle(myCamera, game->GetCursorPosX(), game->GetCursorPosY(), game->GetWindowWidth(), game->GetWindowHeight());
+		playerObj->UpdateAngle(myCamera, game->GetCursorViewPositionX(), game->GetCursorViewPositionY(), game->GetWindowWidth(), game->GetWindowHeight());
 		playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 
 		// dodge code

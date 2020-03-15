@@ -632,6 +632,179 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 	return objects;
 }
 
+// generates the default objects and puts them into the scene.
+std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
+{
+	// gets the scene object list and light object list
+	cherry::ObjectList* objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
+	cherry::LightList* lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
+
+	// object list does not exist, so it must be created.
+	if (objectList == nullptr)
+	{
+		cherry::ObjectManager::CreateSceneObjectList(sceneName);
+		objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
+	}
+
+	// light list does not exist, so it must be created.
+	if (lightList)
+	{
+		cherry::LightManager::CreateSceneLightList(sceneName);
+		lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
+	}
+
+	// clearing the lists before giving them values
+	objects.clear();
+	obstacles.clear();
+
+	playerObj = cnz::Player::GenerateDefault(sceneName); // creates the player.
+	cnz::Player* testObj = new Player("res/objects/monkey.obj", sceneName); // creates the not player.
+
+	// arena obstacles
+	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(10, 2, 2));
+	Obstacle* wall2 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall3 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall4 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall5 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall6 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall7 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+
+
+	Obstacle * bow = new Obstacle("res/objects/weapons/bow.obj", sceneName, false);
+	Obstacle * katana = new Obstacle("res/objects/weapons/katana.obj", sceneName, false);
+	Obstacle * spear = new Obstacle("res/objects/weapons/spear.obj", sceneName, false);
+	obstacles.push_back(bow);
+	obstacles.push_back(katana);
+	obstacles.push_back(spear);
+
+	Obstacle * drum = new Obstacle("res/objects/props/drum.obj", sceneName, false);
+	Obstacle * dumpster = new Obstacle("res/objects/props/Dumpster.obj", sceneName, false);
+	Obstacle * lamp_Center = new Obstacle("res/objects/props/Lamp_Center.obj", sceneName, false);
+	Obstacle * lamp_Corner = new Obstacle("res/objects/props/Lamp_Corner.obj", sceneName, false);
+	Obstacle * lamp_Side = new Obstacle("res/objects/props/Lamp_Side.obj", sceneName, false);
+	Obstacle * manhole = new Obstacle("res/objects/props/manhole.obj", sceneName, false);
+	Obstacle * piller = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", sceneName, false);
+	Obstacle * road = new Obstacle("res/objects/props/Road.obj", sceneName, false);
+
+	obstacles.push_back(drum);
+	obstacles.push_back(dumpster);
+	obstacles.push_back(lamp_Center);
+	obstacles.push_back(lamp_Corner);
+	obstacles.push_back(lamp_Side);
+	obstacles.push_back(manhole);
+	obstacles.push_back(piller);
+	obstacles.push_back(road);
+
+	// big wall bois
+	obstacles.push_back(wall1);
+	obstacles.push_back(wall2);
+	obstacles.push_back(wall3);
+	obstacles.push_back(wall4);
+	obstacles.push_back(wall5);
+	obstacles.push_back(wall6);
+	obstacles.push_back(wall7);
+
+	// rotations
+	playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+	playerObj->SetRotationXDegrees(90);
+	playerObj->SetRotationZDegrees(180);
+	testObj->SetRotation(cherry::Vec3(0, 0, 0), true);
+
+	wall1->SetRotation(cherry::Vec3(90, 0, 180), true); // top wall
+	wall2->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
+	wall3->SetRotation(cherry::Vec3(90, 0, 0), true); // bottom wall
+	wall4->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
+	wall5->SetRotation(cherry::Vec3(90, 0, 90), true); // right wall
+	wall6->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
+	wall7->SetRotation(cherry::Vec3(90, 0, 270), true); // left wall
+
+	// positions
+	testObj->SetPosition(cherry::Vec3(0, -5, 0));
+	wall1->SetPosition(cherry::Vec3(15, -1, 0));
+	wall2->SetPosition(cherry::Vec3(15, 14, 0));
+	wall3->SetPosition(cherry::Vec3(8, 14, 0));
+	wall4->SetPosition(cherry::Vec3(4, 10, 0));
+	wall5->SetPosition(cherry::Vec3(4, 3, 0));
+	wall6->SetPosition(cherry::Vec3(19, 10, 0));
+	wall7->SetPosition(cherry::Vec3(19, 3, 0));
+
+	// scale. if needed.
+
+
+	// attach pbody
+	// TODO: outdated size
+	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+	testObj->AddPhysicsBody(new cherry::PhysicsBodyBox(testObj->GetPosition(), testObj->GetPBodySize()));
+	wall1->AddPhysicsBody(new cherry::PhysicsBodyBox(wall1->GetPosition(), wall1->GetPBodySize()));
+	wall2->AddPhysicsBody(new cherry::PhysicsBodyBox(wall2->GetPosition(), wall2->GetPBodySize()));
+	wall3->AddPhysicsBody(new cherry::PhysicsBodyBox(wall3->GetPosition(), wall3->GetPBodySize()));
+	wall4->AddPhysicsBody(new cherry::PhysicsBodyBox(wall4->GetPosition(), wall4->GetPBodySize()));
+	wall5->AddPhysicsBody(new cherry::PhysicsBodyBox(wall5->GetPosition(), wall5->GetPBodySize()));
+	wall6->AddPhysicsBody(new cherry::PhysicsBodyBox(wall6->GetPosition(), wall6->GetPBodySize()));
+	wall7->AddPhysicsBody(new cherry::PhysicsBodyBox(wall7->GetPosition(), wall7->GetPBodySize()));
+
+	// set pbody pos and maybe rotation for static objects
+	//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
+	// wall1->GetPhysicsBodies()[0]->SetLocalPosition(wall1->GetPosition());
+	// wall2->GetPhysicsBodies()[0]->SetLocalPosition(wall2->GetPosition());
+	// wall3->GetPhysicsBodies()[0]->SetLocalPosition(wall3->GetPosition());
+	// wall4->GetPhysicsBodies()[0]->SetLocalPosition(wall4->GetPosition());
+	// wall5->GetPhysicsBodies()[0]->SetLocalPosition(wall5->GetPosition());
+	// wall6->GetPhysicsBodies()[0]->SetLocalPosition(wall6->GetPosition());
+	// wall7->GetPhysicsBodies()[0]->SetLocalPosition(wall7->GetPosition());
+
+	// debug draw pbdody
+	// wall1->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall2->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall3->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall4->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall5->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall6->GetPhysicsBodies()[0]->SetVisible(showPBs);
+	// wall7->GetPhysicsBodies()[0]->SetVisible(showPBs);
+
+	playerObj->GetPhysicsBodies()[0]->SetVisible(true);
+
+	// Path stuff
+	cherry::Path testPath = cherry::Path();
+	testPath.AddNode(1.0f, 1.0f, 0.0f);
+	testPath.AddNode(0.0f, 5.0f, 0.0f);
+	testPath.AddNode(-2.0f, 5.0f, 0.0f);
+	testPath.AddNode(-3.0f, 7.0f, 0.0f);
+	testPath.AddNode(-6.0f, 8.0f, 0.0f);
+	testPath.AddNode(-6.0f, 6.0f, 0.0f);
+	testPath.AddNode(-2.0f, 4.0f, 0.0f);
+	testPath.AddNode(1.0f, 1.0f, 0.0f);
+
+	testPath.SetIncrementer(0.5f);
+	testPath.SetInterpolationMode(1);
+
+	testObj->SetPath(testPath, true);
+
+	// add objects
+	objectList->AddObject(playerObj);
+	objectList->AddObject(testObj);
+	
+	int x = -27;
+	for (int i = 0; i < obstacles.size(); i++) {
+		objectList->AddObject(obstacles[i]);
+
+		if (i > 0 && i < 11) {
+			obstacles[i]->SetRotationXDegrees(90);
+			obstacles[i]->SetRotationZDegrees(180);
+			obstacles[i]->SetPosition(x, -40, 0);
+		}
+		x += 5;
+	}
+
+	road->SetRotationXDegrees(90);
+	road->SetRotationZDegrees(180);
+	road->SetPosition(0, -30, -1);
+	manhole->SetPosition(manhole->GetPosition().GetX(), manhole->GetPosition().GetY(), -1);
+
+	// returning hte objects
+	return objectList->objects;
+}
+
 // gets the objects; will be empty if it doesn't exist yet.
 std::vector<cherry::Object*> cnz::Level::GetObjects() const { return objects; }
 

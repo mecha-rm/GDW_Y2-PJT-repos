@@ -103,18 +103,30 @@ namespace cherry
 
 		// gets the cursor position in view space, where the origin is the centre of the window.
 		// This is in view space (screen centre is the origin). 
-		cherry::Vec2 GetCursorViewPosition();
+		cherry::Vec2 GetCursorViewPosition() const;
 
 		// gets the cursor position in view space, where the origin is the centre of the window.
-		glm::dvec2 GetCursorViewPositionGLM();
+		glm::dvec2 GetCursorViewPositionGLM() const;
+
+		// gets the cursor position on the x-axis (view space)
+		float GetCursorViewPositionX() const;
+
+		// gets the cursor position on the y-axis (view space)
+		float GetCursorViewPositionY() const;
 
 		// gets the cursor position in view space, where the origin is the centre of the window.
 		// This is in view space (screen centre is the origin). This is the same as GetCursorPosition().
-		cherry::Vec2 GetCursorScreenPosition();
+		cherry::Vec2 GetCursorScreenPosition() const;
 
 		// gets the cursor position in view space, where the origin is the centre of the window.
 		// this is the same as GetCursorPositionGLM().
-		glm::dvec2 GetCursorScreenPositionGLM();
+		glm::dvec2 GetCursorScreenPositionGLM() const;
+
+		// gets the cursor position on the x-axis (view space)
+		float GetCursorScreenPositionX() const;
+
+		// gets the cursor position on the y-axis (view space)
+		float GetCursorScreenPositionY() const;
 
 		
 

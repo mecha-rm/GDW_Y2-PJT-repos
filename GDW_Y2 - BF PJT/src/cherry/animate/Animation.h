@@ -7,18 +7,18 @@
 
 namespace cherry
 {
-	// TODO: add AnimationManager
 	// forward declarations
 	class AnimationFrame;
 	class Object;
 
-	// TODO: make abstract class?
 	class Animation
 	{
 	public:
 		// animation constructor
 		Animation();
-		// Animation(bool bones);
+		
+		// copy constructor
+		// Animation(const cherry::Animation&);
 
 		// destructor
 		virtual ~Animation();
@@ -214,9 +214,11 @@ namespace cherry
 		// the pose for the given frame.
 		Mesh::Sptr pose;
 
-		float delayUnits = 0; // the delay units (in milliseconds) between this frame and the following frame.
+		// the delay units (in milliseconds) between this frame and the following frame.
+		float delayUnits = 0;
 
-		std::string tag = ""; // the tag for the animation
+		// the tag for the animation
+		std::string tag = "";
 	
 	protected:
 	};

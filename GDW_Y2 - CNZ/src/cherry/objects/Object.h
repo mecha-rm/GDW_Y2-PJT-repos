@@ -131,13 +131,13 @@ namespace cherry
 		virtual void SetAlpha(float a);
 
 		// returns whether or not the object is visible
-		bool IsVisible() const;
+		virtual bool IsVisible() const;
 
 		// toggle's visibility on/off
-		void SetVisible();
+		virtual void SetVisible();
 
 		// sets whether the object is visible or not.
-		void SetVisible(bool visible);
+		virtual void SetVisible(bool visible);
 
 		// TODO: save in the Mesh class whether to draw in perspective or othographic.
 		// returns 'true' if the object is drawn in perspective mode.
@@ -221,6 +221,12 @@ namespace cherry
 
 		// sets the position using the size of the window
 		void SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
+
+		// sets window position with the provided window size
+		void SetPositionByWindowSize(const cherry::Vec2 windowPos, glm::ivec2 windowSize, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
+
+		// sets the window position with the provided window size.
+		void SetPositionByWindowSize(const float x, const float y, const int windowWidth, const int windowHeight, const cherry::Vec2 camOrigin = Vec2(0.5F, 0.5F));
 
 		// gets the rotation as a GLM vector
 		glm::vec3 GetRotationGLM(bool inDegrees) const;

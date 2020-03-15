@@ -616,17 +616,25 @@ void cherry::Object::SetPositionZ(float z) { position.v.z = z; }
 // sets the position by the screen portion.
 void cherry::Object::SetPositionByWindowSize(const cherry::Vec2 windowPos, const cherry::Vec2 camOrigin)
 {
-	// gets the size of the window.
-	glm::vec2 windowSize = Game::GetRunningGame()->GetWindowSize();
+	SetPositionByWindowSize(windowPos, Game::GetRunningGame()->GetWindowSize(), camOrigin);
+}
 
+// sets the window size.
+void cherry::Object::SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin)
+{
+	SetPositionByWindowSize(Vec2(x, y), Game::GetRunningGame()->GetWindowSize(), camOrigin);
+}
+
+void cherry::Object::SetPositionByWindowSize(const cherry::Vec2 windowPos, glm::ivec2 windowSize, const cherry::Vec2 camOrigin)
+{
 	position.v.x = (windowSize.x * windowPos.v.x) - windowSize.x * camOrigin.v.x;
 	position.v.y = (windowSize.y * windowPos.v.y) - windowSize.y * camOrigin.v.y;
 }
 
-// sets the window size
-void cherry::Object::SetPositionByWindowSize(const float x, const float y, const cherry::Vec2 camOrigin)
+// sets the window position with the provided window size.
+void cherry::Object::SetPositionByWindowSize(const float x, const float y, const int windowWidth, const int windowHeight, const cherry::Vec2 camOrigin)
 {
-	SetPositionByWindowSize(Vec2(x, y), camOrigin);
+	SetPositionByWindowSize(Vec2(x, y), glm::ivec2(windowWidth, windowHeight), camOrigin);
 }
 
 

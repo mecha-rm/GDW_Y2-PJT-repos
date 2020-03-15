@@ -90,7 +90,7 @@
          cherry::Vec4 color; // colour
          
          // checks to see if the text is visible or not.
-         bool visible = false;
+         bool visible = true;
 
          float spacing = 0;
 

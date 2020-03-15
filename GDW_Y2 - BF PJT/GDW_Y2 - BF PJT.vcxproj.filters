@@ -1674,6 +1674,8 @@
     <None Include="res\shaders\post\kernel5.fs.glsl" />
     <None Include="res\shaders\post\motion_blur.fs.glsl" />
     <None Include="res\shaders\post\toon-cel.fs.glsl" />
+    <None Include="res\shaders\model.vs.glsl" />
+    <None Include="res\shaders\model.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

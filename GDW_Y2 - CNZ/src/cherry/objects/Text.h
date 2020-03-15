@@ -47,10 +47,28 @@
          // destructor
          virtual ~Text();
 
+         // returns whether or not the object is visible
+         bool IsVisible() const override;
+
+         // toggle's visibility on/off
+         void SetVisible() override;
+
+         // sets whether the object is visible or not.
+         void SetVisible(bool visible) override;
+
          // gets the text.
          std::string GetText() const;
 
-         // sets a new color.
+         // changes the text
+         void SetText(const std::string newText);
+
+         // // edits the existing text
+         // void EditText();
+
+         // clears all characters.
+         void ClearText();
+
+         // sets a new color. If the alpha value has been changed, SetAlpha is called.
          void SetColor(cherry::Vec4 newColor);
 
          // generates text from a text file.
@@ -71,6 +89,9 @@
          std::string fontMap = ""; // font
          cherry::Vec4 color; // colour
          
+         // checks to see if the text is visible or not.
+         bool visible = true;
+
          float spacing = 0;
 
          // the font size
@@ -91,6 +112,11 @@
          // the world position, scale, and rotation.
          // the characters need to be updated if there are changes.
          Vec3 worldPos, worldScale, worldRotDeg;
+
+         // materials for characters and characters with no symbol
+         Material::Sptr knownCharMaterial = nullptr;
+
+         Material::Sptr unknownCharMaterial = nullptr;
      protected:
  
      };

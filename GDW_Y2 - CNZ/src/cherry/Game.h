@@ -1,3 +1,5 @@
+// References: https://learnopengl.com/Getting-started/Coordinate-Systems
+
 #pragma once
 // GAME CLASS (HEADER)
 #define WINDOW_TITLE_CHAR_MAX 50
@@ -68,8 +70,7 @@ namespace cherry
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
 
-		// resize has been moved to the bottom of the code to be accurate to where it is in the framework.
-
+		// resize has been moved to the bottom of the code to be accurate to where it is in the framework
 
 		// returns 'true' if the cursor is in the window content, and false if it's not.
 		bool GetCursorInWindow() const;
@@ -77,20 +78,56 @@ namespace cherry
 		// called to set whether or not the mouse cursor is in the window. This is excluively for the glfwCursorEnterCallback.
 		void SetCursorInWindow(bool inWindow);
 
-		// gets the cursor position as a cherry::Vec2
-		cherry::Vec2 GetCursorPos() const;
-
-		// gets the current cursor position as a glm vector
-		glm::dvec2 GetCursorPosGLM() const;
-
-		// gets the cursor position on the x-axis
-		float GetCursorPosX() const;
-
-		// gets the cursor position on the y-axis
-		float GetCursorPosY() const;
-
 		// updates the cursor position variables when callback fuciton is called
-		virtual void UpdateCursorPos(double xpos, double ypos);
+		virtual void UpdateCursorPosition(double xpos, double ypos);
+
+
+
+
+		// gets the cursor position as a cherry::Vec2.
+		// This is in screen space (bottom-left corner is the origin). 
+		cherry::Vec2 GetCursorPosition() const;
+
+		// gets the current cursor position as a glm vector.
+		// This is in screen space (bottom-left corner is the origin). 
+		glm::dvec2 GetCursorPositionGLM() const;
+
+		// gets the cursor position on the x-axis. It is in screen space.
+		// This is in screen space (bottom-left corner is the origin). 
+		float GetCursorPositionX() const;
+
+		// gets the cursor position on the y-axis. It is in screen space.
+		// This is in screen space (bottom-left corner is the origin). 
+		float GetCursorPositionY() const;
+		
+
+		// gets the cursor position in view space, where the origin is the centre of the window.
+		// This is in view space (screen centre is the origin). 
+		cherry::Vec2 GetCursorViewPosition() const;
+
+		// gets the cursor position in view space, where the origin is the centre of the window.
+		glm::dvec2 GetCursorViewPositionGLM() const;
+
+		// gets the cursor position on the x-axis (view space)
+		float GetCursorViewPositionX() const;
+
+		// gets the cursor position on the y-axis (view space)
+		float GetCursorViewPositionY() const;
+
+		// gets the cursor position in view space, where the origin is the centre of the window.
+		// This is in view space (screen centre is the origin). This is the same as GetCursorPosition().
+		cherry::Vec2 GetCursorScreenPosition() const;
+
+		// gets the cursor position in view space, where the origin is the centre of the window.
+		// this is the same as GetCursorPositionGLM().
+		glm::dvec2 GetCursorScreenPositionGLM() const;
+
+		// gets the cursor position on the x-axis (view space)
+		float GetCursorScreenPositionX() const;
+
+		// gets the cursor position on the y-axis (view space)
+		float GetCursorScreenPositionY() const;
+
 		
 
 		// called when a mouse button has been pressed
