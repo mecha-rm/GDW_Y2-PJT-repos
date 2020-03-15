@@ -69,7 +69,7 @@ void cherry::EngineMenuScene::OnOpen()
 
 		// button->text->GetMesh()->cullFaces = false;
 		button->text->SetVisible(true);
-		objectList->AddObject(button->text);
+		// objectList->AddObject(button->text);
 		// button-
 
 		// image->SetPositionByWindowSize(myWindowSize.x / 4.0F, myWindowSize.y / 2.0F * 3);

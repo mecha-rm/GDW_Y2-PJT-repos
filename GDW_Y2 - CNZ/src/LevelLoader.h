@@ -98,6 +98,10 @@ namespace cnz
 		// generates the default objects and puts them into the scene.
 		std::vector<cherry::Object*> GenerateDefaults();
 
+		// generates the source objects. This should only be called once.
+		// these objects are put in a random scene
+		static void GenerateSources();
+
 		// gets the objects for the scene. 
 		// the vector will be empty if GenerateObjects() has not been called yet.
 		std::vector<cherry::Object*> GetObjects() const;
@@ -123,6 +127,8 @@ namespace cnz
 
 		std::vector<cherry::Object*> objects;	   // list of pointers to objects
 		std::vector<cnz::Obstacle*> obstacles; // list of pointers to obstacles
+
+		// player object.
 		Player* playerObj = nullptr;
 
 		std::string sceneName; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
@@ -134,6 +140,27 @@ namespace cnz
 		// not really needed.
 		// bool isActiveScene; // if the scene is loaded
 
+		// source player object; copy this object for faster object construction.
+		static Player* sourcePlayer;
+
+		// source sentry object; copy this object for faster object construction.
+		static Sentry* sourceSentry;
+
+		// source oracle object; copy this object for faster object construction.
+		static Oracle* sourceOracle;
+
+		// source marauder object; copy this object for faster object construction.
+		static Marauder* sourceMarauder;
+
+		// source bastion object; copy this object for faster object construction.
+		static Bastion* sourceBastion;
+
+		// source mechaspider object; copy this object for faster object construction.
+		static Mechaspider* sourceSpider;
+
+		// static Projectile* sourceProjectile;
+
+
 	private:
 		// becomes 'true' if the objects have been generated at least once.
 		bool objectsGenerated = false;
@@ -142,6 +169,7 @@ namespace cnz
 		cherry::Material::Sptr matStatic; // the static material
 		cherry::Material::Sptr matDynamic; // the dynamic material
 
+		// TODO: I don't think these are being used properly.
 		// Obstacles
 		Obstacle* wall = nullptr;
 		Obstacle* dumpster = nullptr;

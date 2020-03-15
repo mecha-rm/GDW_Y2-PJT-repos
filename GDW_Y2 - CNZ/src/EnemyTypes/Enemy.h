@@ -47,13 +47,6 @@ namespace cnz
 		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 		virtual std::string WhoAmI() { return description; }
 
-		std::string description = "Enemy";
-		bool attacking = false;
-		cherry::Object* arrow = nullptr;
-		bool alive = false;
-		bool stunned = false;
-		float stunTimer;
-
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
 		float GetDegreeAngle() const;
@@ -86,6 +79,14 @@ namespace cnz
 		float GetPBodyWidth() const;
 		float GetPBodyHeight() const;
 		float GetPBodyDepth() const;
+
+
+		std::string description = "Enemy";
+		bool attacking = false;
+		cherry::Object* arrow = nullptr;
+		bool alive = false;
+		bool stunned = false;
+		float stunTimer = 0.0F;
 
 	private:
 										//		   z?		something is really funky here...

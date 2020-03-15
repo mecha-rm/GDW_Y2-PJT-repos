@@ -87,6 +87,7 @@
     <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\toolkit\Logging.cpp" />
     <ClCompile Include="external\toolkit\Sys.cpp" />
+    <ClCompile Include="src\AnimationLoader.cpp" />
     <ClCompile Include="src\cherry\animate\Animation.cpp" />
     <ClCompile Include="src\cherry\animate\AnimationManager.cpp" />
     <ClCompile Include="src\cherry\animate\MorphAnimation.cpp" />
@@ -165,6 +166,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
     <ClCompile Include="src\scenes\CNZ_GameplayScene.cpp" />
+    <ClCompile Include="src\scenes\CNZ_TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -394,6 +396,7 @@
     <ClInclude Include="external\toolkit\EnumToString.h" />
     <ClInclude Include="external\toolkit\Logging.h" />
     <ClInclude Include="external\toolkit\Sys.h" />
+    <ClInclude Include="src\AnimationLoader.h" />
     <ClInclude Include="src\cherry\animate\Animation.h" />
     <ClInclude Include="src\cherry\animate\AnimationManager.h" />
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
@@ -479,6 +482,7 @@
     <ClInclude Include="src\CNZ_Game.h" />
     <ClInclude Include="src\Projectile.h" />
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
+    <ClInclude Include="src\scenes\CNZ_TitleScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\GLM\detail\func_common.inl" />

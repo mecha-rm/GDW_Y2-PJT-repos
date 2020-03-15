@@ -1,5 +1,14 @@
 #include "LevelLoader.h"
+#include "cherry/scenes/SceneManager.h"
 #include <toolkit/Logging.h>
+
+// sources
+cnz::Player* cnz::Level::sourcePlayer = nullptr;
+cnz::Sentry* cnz::Level::sourceSentry = nullptr;
+cnz::Oracle* cnz::Level::sourceOracle = nullptr;
+cnz::Marauder* cnz::Level::sourceMarauder = nullptr;
+cnz::Bastion* cnz::Level::sourceBastion = nullptr;
+cnz::Mechaspider* cnz::Level::sourceSpider = nullptr;
 
 // cell offset
 const float cnz::Level::cellOffset = 6.25f;
@@ -31,7 +40,7 @@ cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sce
 }
 
 std::string cnz::Level::GetSceneName() const {
-	return this->sceneName;
+	return sceneName;
 }
 
 bool cnz::Level::LoadLegend(std::string legendPath) {
@@ -169,13 +178,23 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 				offsetX = x;
 				offsetY = y;
 				
+				// if the source player hasn't been made yet.
+				if (sourcePlayer == nullptr)
+					GenerateSources();
+
+				playerObj = new Player(sourcePlayer, sceneName);
+
 				// original
-				playerObj = cnz::Player::GenerateDefault(GetSceneName());
-				// playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->GetSceneName()); // creates the player.
+				// playerObj = cnz::Player::GenerateDefault(sceneName);
+				
+				// heroes
+				// playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->sceneName); // creates the player.
+				
+				
 				playerObj->SetPosition(glm::vec3(cellOffset * (x), cellOffset * (y), 0));
 
 				// new
-				// cnz::Player* playerObj = cnz::Player::GenerateDefault(GetSceneName(), 
+				// cnz::Player* playerObj = cnz::Player::GenerateDefault(sceneName, 
 				// 	glm::vec3(cellOffset * (x + offsetX), cellOffset * (y + offsetY), 0)); // creates the player.
 				
 				// adding them to the lists
@@ -184,12 +203,16 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Wall") { // wall // TODO: orient walls properly.
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->wall);
-				}
+				obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->sceneName, true);
+				// if (wall == nullptr) {
+				// 	wall = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->sceneName, true);
+				// 	obj = wall;
+				// 	// obj = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->sceneName, true);
+				// }
+				// else {
+				// 	obj = new Obstacle(wall, sceneName);
+				// }
+
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -224,12 +247,16 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Dumpster") { // Dumpster
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Dumpster.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->dumpster);
-				}
+				obj = new Obstacle("res/objects/props/Dumpster.obj", this->sceneName, true);
+				// if (this->dumpster == nullptr) {
+				// 	dumpster = new Obstacle("res/objects/props/Dumpster.obj", this->sceneName, true);
+				// 	obj = dumpster;
+				// 
+				// 	// obj = new Obstacle("res/objects/props/Dumpster.obj", this->sceneName, true);
+				// }
+				// else {
+				// 	obj = new Obstacle(this->dumpster, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -263,12 +290,15 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Lamp post") { // Lamp post
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->lampPost);
-				}
+				obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->sceneName, true);
+				// if (this->lampPost == nullptr) {
+				// 	lampPost = new Obstacle("res/objects/props/Lamp_Side.obj", this->sceneName, true);
+				// 	obj = lampPost;
+				// 	// obj = new Obstacle("res/objects/props/Lamp_Side.obj", this->sceneName, true);
+				// }
+				// else {
+				// 	obj = new Obstacle(lampPost, sceneName);
+				// }
 				//obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				//obj->SetPBodySize((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum()));
 				cherry::Vec3 objpbsize = (obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
@@ -309,12 +339,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Lamp post corner") { // Lamp post corner
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->lampPostCorner);
-				}
+				obj = new Obstacle("res/objects/props/Lamp_Corner.obj", this->sceneName, true);
+				// if (lampPostCorner == nullptr) {
+				// 	lampPostCorner = new Obstacle("res/objects/props/Lamp_Corner.obj", this->sceneName, true);
+				// 	obj = lampPostCorner;
+				// }
+				// else {
+				// 	obj = new Obstacle(lampPostCorner, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -349,12 +381,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Lamp post middle") { // lamp post middle
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->lampPostMiddle);
-				}
+				obj = new Obstacle("res/objects/props/Lamp_Center.obj", this->sceneName, true);
+				// if (lampPostMiddle == nullptr) {
+				// 	lampPostMiddle = new Obstacle("res/objects/props/Lamp_Center.obj", this->sceneName, true);
+				// 	obj = lampPostMiddle;
+				// }
+				// else {
+				// 	obj = new Obstacle(lampPostMiddle, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -392,12 +426,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Barrel") { // barrel
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/drum.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->barrel);
-				}
+				obj = new Obstacle("res/objects/props/drum.obj", this->sceneName, true);
+				// if (this->barrel == nullptr) {
+				// 	barrel = new Obstacle("res/objects/props/drum.obj", this->sceneName, true);
+				// 	obj = barrel;
+				// }
+				// else {
+				// 	obj = new Obstacle(barrel, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -431,12 +467,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Katana") { // katana
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/weapons/katana.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->katana);
-				}
+				obj = new Obstacle("res/objects/weapons/katana.obj", this->sceneName, true);
+				// if (this->katana == nullptr) {
+				// 	katana = new Obstacle("res/objects/weapons/katana.obj", this->sceneName, true);
+				// 	obj = katana;
+				// }
+				// else {
+				// 	obj = new Obstacle(katana, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -470,12 +508,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Pillar") { // pillar
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->pillar);
-				}
+				obj = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->sceneName, true);
+				// if (pillar == nullptr) {
+				// 	pillar = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->sceneName, true);
+				// 	obj = pillar;
+				// }
+				// else {
+				// 	obj = new Obstacle(pillar, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -509,12 +549,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Manhole cover") { // manhole cover
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/manhole.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->manHoleCover);
-				}
+				obj = new Obstacle("res/objects/props/manhole.obj", this->sceneName, true);
+				// if (manHoleCover == nullptr) {
+				// 	manHoleCover = new Obstacle("res/objects/props/manhole.obj", this->sceneName, true);
+				// 	obj = manHoleCover;
+				// }
+				// else {
+				// 	obj = new Obstacle(manHoleCover, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -548,12 +590,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Road") { // road
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/Road.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->road);
-				}
+				obj = new Obstacle("res/objects/props/Road.obj", this->sceneName, true);
+				// if (this->road == nullptr) {
+				// 	road = new Obstacle("res/objects/props/Road.obj", this->sceneName, true);
+				// 	obj = road;
+				// }
+				// else {
+				// 	obj = new Obstacle(road, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -589,12 +633,14 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 			}
 			else if (legend[curObj] == "Sidewalk") { // sidewalk
 				Obstacle* obj;
-				if (this->wall == nullptr) {
-					obj = new Obstacle("res/objects/props/sidewalk.obj", this->GetSceneName(), true);
-				}
-				else {
-					obj = new Obstacle(*this->sidewalk);
-				}
+				obj = new Obstacle("res/objects/props/sidewalk.obj", this->sceneName, true);
+				// if (sidewalk == nullptr) {
+				// 	sidewalk = new Obstacle("res/objects/props/sidewalk.obj", this->sceneName, true);
+				// 	obj = sidewalk;
+				// }
+				// else {
+				// 	obj = new Obstacle(sidewalk, sceneName);
+				// }
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
@@ -805,6 +851,45 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 	return objectList->objects;
 }
 
+// generates the soruce objects.
+void cnz::Level::GenerateSources()
+{
+	// scene name
+	std::string sceneName = "rand_";
+
+	// character to be added
+	int chr = 0;
+
+	for (int i = 0; i < 10; i++)
+	{
+		chr = rand() % 256;
+
+		// sceneName
+		switch (rand() % 2)
+		{
+		case 1:
+			sceneName += std::to_string(chr); // int
+			break;
+		case 0:
+		default:
+			sceneName.push_back(chr);
+		}
+	}
+
+	// creating the scene
+	cherry::SceneManager::RegisterScene(sceneName);
+
+	// generating defaults
+	sourcePlayer = cnz::Player::GenerateDefault(sceneName);
+	sourceSentry = new Sentry(sceneName);
+
+	sourceOracle = new Oracle(sceneName);
+	sourceMarauder = new Marauder(sceneName);
+
+	sourceBastion = new Bastion(sceneName);
+	sourceSpider = new Mechaspider(sceneName);
+}
+
 // gets the objects; will be empty if it doesn't exist yet.
 std::vector<cherry::Object*> cnz::Level::GetObjects() const { return objects; }
 
@@ -894,6 +979,7 @@ std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 		return properties;
 	}
 }
+
 
 cherry::Vec3 cnz::Level::UnFlipVec3(cherry::Vec3 vecToFlip) {
 	cherry::Vec3 flippedVec;

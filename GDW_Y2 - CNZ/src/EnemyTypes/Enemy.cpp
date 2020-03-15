@@ -9,6 +9,13 @@ cnz::Enemy::Enemy() {}
 // copy constructor
 cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 {
+	description = emy.description;
+	attacking = emy.attacking;
+
+	alive = emy.alive;
+	stunned = emy.alive;
+	stunTimer = emy.stunTimer;
+
 	pBodySize = emy.GetPBodySize();
 	drawPBody = emy.GetDrawPBody();
 	degreeAngle = emy.GetDegreeAngle();

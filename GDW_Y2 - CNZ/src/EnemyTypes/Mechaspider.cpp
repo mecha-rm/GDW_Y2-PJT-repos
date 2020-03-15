@@ -17,6 +17,7 @@ cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 // copy constructor
 cnz::Mechaspider::Mechaspider(const cnz::Mechaspider& enemy) : Enemy(enemy)
 {
+	description = "Mechaspider";
 }
 
 cnz::Mechaspider::Mechaspider(cnz::Enemy* obj, std::string scene) : Enemy(obj, scene)

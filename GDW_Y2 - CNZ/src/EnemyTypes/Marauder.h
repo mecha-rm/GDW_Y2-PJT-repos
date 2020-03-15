@@ -12,10 +12,11 @@ namespace cnz {
 		// constructor
 		Marauder(std::string scene, cherry::Material::Sptr mat);
 
+		// faux copy constructor.
+		Marauder(cnz::Enemy* obj, std::string scene);
+
 		// copy constructor.
 		Marauder(const cnz::Marauder&);
-
-		Marauder(cnz::Enemy* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 

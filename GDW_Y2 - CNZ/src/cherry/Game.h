@@ -179,11 +179,11 @@ namespace cherry
 
 		
 
-		// gets the current scene.
+		// gets the scene.
 		cherry::Scene* GetScene(std::string sceneName) const;
 
 		// gets the current scene.
-		cherry::Scene* GetCurrentScene() const;
+		static cherry::Scene* GetCurrentScene();
 
 		// sets the current scene. If the scene doesn't exist, then nothing happens.
 		// if 'createScene' is true, then a new scene is made if it doesn't exist, which causes 'true' to be returned.

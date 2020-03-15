@@ -10,18 +10,19 @@
 #include "..\Projectile.h"
 #include "..\cherry/animate/Path.h"
 #include "..\LevelLoader.h"
+#include "..\AnimationLoader.h"
 
 //Enemy Sub-classes
 #include "..\EnemyTypes/Enemies.h"
 
 namespace cnz
 {
-	struct AnimStruct { // easier to batch add frames with a morphanim this way.
-		int numFrames;
-		std::string basePath;
-		float animTime;
-		cherry::MorphAnimation* anim;
-	};
+	// struct AnimStruct { // easier to batch add frames with a morphanim this way.
+	// 	int numFrames;
+	// 	std::string basePath;
+	// 	float animTime;
+	// 	cherry::MorphAnimation* anim;
+	// };
 
 	class CNZ_GameplayScene : public cherry::GameplayScene
 	{
@@ -129,7 +130,7 @@ namespace cnz
 		// Animations
 		std::vector<cnz::AnimStruct*> animList;
 
-		cherry::MorphAnimation* indArrowAnim;
+		// cherry::MorphAnimation* indArrowAnim;
 		cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerCharged = { 1, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };

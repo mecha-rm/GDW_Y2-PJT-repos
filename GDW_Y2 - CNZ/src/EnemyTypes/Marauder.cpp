@@ -14,16 +14,16 @@ cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 }
 
 
-// copy constructor
-cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
-{
-}
-
 cnz::Marauder::Marauder(cnz::Enemy* obj, std::string scene) : cnz::Enemy(obj, scene)
 {
 	description = "Marauder";
 }
 
+// copy constructor
+cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
+{
+	description = "Marauder";
+}
 void cnz::Marauder::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 }

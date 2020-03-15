@@ -17,6 +17,7 @@ cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 // copy constructor
 cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 {
+	description = "Oracle";
 }
 
 cnz::Oracle::Oracle(cnz::Enemy* obj, std::string scene) : cnz::Enemy(obj, scene) 

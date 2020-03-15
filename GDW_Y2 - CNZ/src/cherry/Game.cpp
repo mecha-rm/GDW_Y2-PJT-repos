@@ -557,7 +557,7 @@ bool cherry::Game::RegisterScene(cherry::Scene* scene, const cherry::Skybox skyb
 cherry::Scene* cherry::Game::GetScene(std::string sceneName) const { return SceneManager::Get(sceneName); }
 
 // gets the current scene.
-cherry::Scene* cherry::Game::GetCurrentScene() const { return CurrentScene(); }
+cherry::Scene* cherry::Game::GetCurrentScene() { return CurrentScene(); }
 
 // sets the current scene
 bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene)

@@ -7,8 +7,29 @@ cnz::Obstacle::Obstacle(std::string filePath, std::string scene, cherry::Vec3 pb
 	this->pBodySize = pbodySize;
 }
 
-void cnz::Obstacle::Update(float deltaTime) {
+cnz::Obstacle::Obstacle(Obstacle* obj, std::string sceneName)
+	: Obstacle(*obj)
+{
+	SetScene(sceneName);
+}
 
+// copy constructor
+cnz::Obstacle::Obstacle(const Obstacle& obj)
+	: Object(obj)
+{
+	pBodySize = obj.pBodySize;
+	drawPBody = obj.drawPBody;
+
+	degreeAngle = obj.degreeAngle;
+	radianAngle = obj.radianAngle;
+
+	worldAngle = obj.worldAngle;
+}
+
+// update
+void cnz::Obstacle::Update(float deltaTime) 
+{
+	cherry::Object::Update(deltaTime);
 }
 
 void cnz::Obstacle::SetAngle(float angle, bool isDegrees) {

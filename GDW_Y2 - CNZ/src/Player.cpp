@@ -30,8 +30,36 @@ cnz::Player::Player(std::string modelPath, std::string scene, cherry::Vec3 pos)
 	position = pos;
 }
 
-cnz::Player::Player(cherry::Object obj) : Object(obj) {
+// copy constructor
+cnz::Player::Player(Player* player, std::string sceneName)
+	: Player(*player)
+{
+	SetScene(sceneName);
+}
+
+cnz::Player::Player(const Player& obj) : Object(obj) 
+{
 	position = obj.GetPosition();
+	dash = obj.dash;
+	dashDist = obj.dashDist;
+	dashTime = obj.dashTime;
+
+	// cT = obj.cT;
+	// cB = obj.cB;
+	// cL = obj.cL;
+	// cR = obj.cR;
+
+	pBodySize = obj.pBodySize;
+	drawPBody = obj.drawPBody;
+	
+	degreeAngle = obj.degreeAngle;
+	radianAngle = obj.radianAngle;
+
+	worldAngle = obj.worldAngle;
+
+	playerCurMovement = obj.playerCurMovement;
+	state = obj.state;
+
 }
 
 // TODO: either fix this, or remove it.
@@ -70,43 +98,104 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	Player* plyr = new Player("res/objects/hero_ver.2/One_T.obj", scene, position);
 
 	// animation 1
-	if(false) // commenting out
+	// if(false) // commenting out
+	// {
+	// 	MorphAnimation* mph = new MorphAnimation(plyr);
+	// 
+	// 	// first 10 frames
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000000.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000001.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000002.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000003.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000004.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000005.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000006.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000007.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000008.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000009.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000010.obj"));
+	// 
+	// 	// second 10 frames
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000011.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000012.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000013.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000014.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000015.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000016.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000017.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000018.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000019.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000020.obj"));
+	// 
+	// 	// final frames
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000021.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000022.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000023.obj"));
+	// 	mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000024.obj"));
+	// 
+	// 	plyr->AddAnimation(mph, true);
+	// 	mph->Play();
+	// }
+
+	// TODO: optimize
+	// loading animations
+	if(false)
 	{
-		MorphAnimation* mph = new MorphAnimation(plyr);
+		// std::vector<cnz::AnimStruct*> animList;
 
-		// first 10 frames
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000000.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000001.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000002.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000003.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000004.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000005.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000006.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000007.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000008.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000009.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000010.obj"));
+		// animList.push_back(&plyr->playerCharging);
+		// animList.push_back(&plyr->playerCharged);
+		// animList.push_back(&plyr->playerDashing);
+		// animList.push_back(&plyr->playerRun_F);
+		// animList.push_back(&plyr->playerRun_B);
+		// animList.push_back(&plyr->playerRun_L);
+		// animList.push_back(&plyr->playerRun_R);
 
-		// second 10 frames
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000011.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000012.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000013.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000014.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000015.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000016.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000017.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000018.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000019.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000020.obj"));
+		// plyr->playerCharging = LoadAnimation(plyr->playerCharging);
+		// plyr->playerCharged = LoadAnimation(plyr->playerCharged);
+		// plyr->playerDashing = LoadAnimation(plyr->playerDashing);
+		// plyr->playerRun_F = LoadAnimation(plyr->playerRun_F);
+		// plyr->playerRun_B = LoadAnimation(plyr->playerRun_B);
+		// plyr->playerRun_L = LoadAnimation(plyr->playerRun_L);
+		// plyr->playerRun_R = LoadAnimation(plyr->playerRun_R);
 
-		// final frames
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000021.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000022.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000023.obj"));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero_ver.2/OneAnimationTest_000024.obj"));
+		LoadAnimation(plyr->playerCharging);
+		LoadAnimation(plyr->playerCharged);
+		LoadAnimation(plyr->playerDashing);
+		LoadAnimation(plyr->playerRun_F);
+		LoadAnimation(plyr->playerRun_B);
+		LoadAnimation(plyr->playerRun_L);
+		LoadAnimation(plyr->playerRun_R);
 
-		plyr->AddAnimation(mph, true);
-		mph->Play();
+		// Marauder
+
+		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		// this takes a lot of time.
+		// std::stringstream curPath;
+		// float curFrameTime;
+		// for (int i = 0; i < animList.size(); i++) {
+		// 	curFrameTime = animList[i]->animTime / animList[i]->numFrames;
+		// 	for (int frame = 0; frame < animList[i]->numFrames; frame++) {
+		// 		curPath = std::stringstream();
+		// 		if (frame < 10) {
+		// 			curPath << animList[i]->basePath << 0 << frame << ".obj";
+		// 		}
+		// 		else {
+		// 			curPath << animList[i]->basePath << frame << ".obj";
+		// 		}
+		// 		animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+		// 	}
+		// }
+
+		//// Add finished animations to objects
+		// Player
+		plyr->AddAnimation(plyr->playerCharging.anim);
+		plyr->AddAnimation(plyr->playerCharged.anim);
+		plyr->AddAnimation(plyr->playerDashing.anim);
+		plyr->AddAnimation(plyr->playerRun_F.anim);
+		plyr->AddAnimation(plyr->playerRun_B.anim);
+		plyr->AddAnimation(plyr->playerRun_L.anim);
+		plyr->AddAnimation(plyr->playerRun_R.anim);
 	}
 
 	return plyr;

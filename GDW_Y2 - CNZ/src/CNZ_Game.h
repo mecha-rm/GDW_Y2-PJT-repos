@@ -26,10 +26,10 @@ namespace cnz
 		CNZ_Game(float windowWidth, float windowHeight, bool fullScreen);
 
 		// overwritten function for loading in game content.
-		virtual void LoadContent();
+		virtual void LoadContent() override;
 
 		// overwritten from the game class's data.
-		virtual void Update(float deltaTime);
+		virtual void Update(float deltaTime) override;
 
 	protected:
 

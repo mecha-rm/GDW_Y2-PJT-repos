@@ -120,11 +120,11 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		animList.push_back(&playerRun_B);
 		animList.push_back(&playerRun_L);
 		animList.push_back(&playerRun_R);
-
-		// Marauder
-
-		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		// this takes a lot of time.
+		// 
+		// // Marauder
+		// 
+		// //// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		// // this takes a lot of time.
 		std::stringstream curPath;
 		float curFrameTime;
 		for (int i = 0; i < animList.size(); i++) {
@@ -163,21 +163,26 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// skyboxObj.AddSkyboxToScene(game->GetCurrentScene());
 		game->SetSkybox(skyboxObj, GetName());
 
-		//Jonah Load Enemy Stuff
-		sentry = new Sentry(GetName());
-		sentry->SetVisible(false);
+		// Jonah Load Enemy Stuff
+		sentry = Level::sourceSentry;
+		// sentry = new Sentry(GetName());
+		// sentry->SetVisible(false);
 
-		oracle = new Oracle(GetName());
-		oracle->SetVisible(false);
+		oracle = Level::sourceOracle;
+		// oracle = new Oracle(GetName());
+		// oracle->SetVisible(false);
 
-		marauder = new Marauder(GetName());
-		marauder->SetVisible(false);
+		marauder = Level::sourceMarauder;
+		// marauder = new Marauder(GetName());
+		// marauder->SetVisible(false);
 
-		bastion = new Bastion(GetName());
-		bastion->SetVisible(false);
+		bastion = Level::sourceBastion;
+		// bastion = new Bastion(GetName());
+		// bastion->SetVisible(false);
 
-		mechaspider = new Mechaspider(GetName());
-		mechaspider->SetVisible(false);
+		mechaspider = Level::sourceSpider;
+		// mechaspider = new Mechaspider(GetName());
+		// mechaspider->SetVisible(false);
 
 		arrowBase = new Projectile("res/objects/weapons/arrow.obj", GetName());
 		arrowBase->SetVisible(false);
@@ -428,6 +433,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		useFrameBuffers = true;
 	}
+
+	// resizing the window so that it fixes the aspect ratio when switching scenes
+	// game->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // called when the scene is being closed.
@@ -668,6 +676,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 {
 	using namespace cherry;
 
+	std::string sceneName = GetName();
 	enemyList.clear();
 	curWave++;
 
@@ -700,19 +709,19 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 
 	for (int j = 0; j < n; j++) {
 		if (enemyGroups[i][j] == "sentry") {
-			enemyList.push_back(new Sentry(sentry, GetName()));
+			enemyList.push_back(new Sentry(sentry, sceneName));
 		}
 		else if (enemyGroups[i][j] == "bastion") {
-			enemyList.push_back(new Bastion(bastion, GetName()));
+			enemyList.push_back(new Bastion(bastion, sceneName));
 		}
 		else if (enemyGroups[i][j] == "oracle") {
-			enemyList.push_back(new Oracle(oracle, GetName()));
+			enemyList.push_back(new Oracle(oracle, sceneName));
 		}
 		else if (enemyGroups[i][j] == "marauder") {
-			enemyList.push_back(new Marauder(marauder, GetName()));
+			enemyList.push_back(new Marauder(marauder, sceneName));
 		}
 		else if (enemyGroups[i][j] == "mechaspider") {
-			enemyList.push_back(new Mechaspider(mechaspider, GetName()));
+			enemyList.push_back(new Mechaspider(mechaspider, sceneName));
 		}
 
 		// index

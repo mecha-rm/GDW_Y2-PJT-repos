@@ -2,6 +2,7 @@
 #include <GLM/gtc/matrix_transform.hpp> // camera modes
 #include "cherry/scenes/SceneManager.h"
 #include "scenes/CNZ_GameplayScene.h"
+#include "scenes/CNZ_TitleScene.h"
 
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
@@ -25,9 +26,29 @@ void cnz::CNZ_Game::LoadContent()
 	
 	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
 						 
-	// loads in the first map
-	CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
-	RegisterScene(map1Scene, true); // this is the current scene.
+	// Title Scene
+	if(false)
+	{
+		CNZ_TitleScene* title = new CNZ_TitleScene("Title Screen");
+
+		// loads in the first map
+		CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
+		title->destScene = map1Scene->GetName(); // destination
+
+		RegisterScene(title, true);
+		// RegisterScene(map1Scene, true); // this is the current scene.
+		RegisterScene(map1Scene, false); // this is the current scene.
+	}
+	else
+	{
+		// loads in the first map
+		CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
+
+		RegisterScene(map1Scene, true);
+	}
+
+	// generates source objects.
+	Level::GenerateSources();
 }
 
 // Update function

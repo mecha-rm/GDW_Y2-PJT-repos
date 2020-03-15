@@ -16,6 +16,12 @@ namespace cnz
 		// same as above with option to specifiy a physics body size. This does not create the physics body!
 		Obstacle(std::string filePath, std::string scene, cherry::Vec3 pbodySize, bool loadMtl = false);
 
+		// faux copy constructor
+		Obstacle(Obstacle* obj, std::string sceneName);
+
+		// copy constructor
+		Obstacle(const Obstacle&);
+
 		// Update (probably wont need unless we have animated/moving/rotating obstacles
 		void Update(float deltaTime);
 
@@ -56,6 +62,6 @@ namespace cnz
 		glm::vec3 worldAngle;
 
 		// a vector of physics bodies
-		std::vector<cherry::PhysicsBody*> bodies;
+		// std::vector<cherry::PhysicsBody*> bodies;
 	};
 }

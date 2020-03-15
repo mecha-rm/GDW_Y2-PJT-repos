@@ -15,6 +15,7 @@ namespace cnz {
 		// copy constuctor
 		Oracle(const cnz::Oracle&);
 
+		// faux copy constructor
 		Oracle(cnz::Enemy* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
