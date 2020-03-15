@@ -598,7 +598,8 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects() {
 				// else {
 				// 	obj = new Obstacle(road, sceneName);
 				// }
-				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				// obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				obj->SetPBodySize(obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum());
 				obj->AddPhysicsBody(new cherry::PhysicsBodyBox(obj->GetPosition(), obj->GetPBodySize()));
 
 				std::vector<float> properties = GetObjectProps(y, x);

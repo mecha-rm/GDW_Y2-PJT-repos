@@ -94,10 +94,6 @@ cherry::Object::Object(std::string filePath, std::string scene, Material::Sptr m
 // copy constructor
 cherry::Object::Object(const cherry::Object& obj)
 {
-	// temporary variables
-	const Vertex* tempVerts = obj.GetVertices();
-	const uint32_t* tempIndices = obj.GetIndices();
-
 	// total vertices and indices
 	verticesTotal = obj.GetVerticesTotal();
 	indicesTotal = obj.GetIndicesTotal();
@@ -133,6 +129,23 @@ cherry::Object::Object(const cherry::Object& obj)
 	position = obj.GetPosition();
 	scale = obj.GetScale();
 	rotation = obj.GetRotationDegrees();
+
+	// if the file is an obj file, then the indices shouldn't be used for the mesh.
+	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
+	{
+		// if it's a dynmaic object, then it gets morph vertices.
+		// if it's a static object, it just gets the regular vertices.
+		(dynamicObject) ?
+			mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0) :
+			mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
+	}
+	else // runtime primitive
+	{
+		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+	}
+
+	// creating the entity (must happen BEFORE the physics bodies are created)
+	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 	
 	// copying the animation manager.
 	animations = obj.animations;
@@ -159,24 +172,6 @@ cherry::Object::Object(const cherry::Object& obj)
 		}
 		
 	}
-	// TODO: add animation manager
-	// TODO: copy physics bodies
-
-	// if the file is an obj file, then the indices shouldn't be used for the mesh.
-	if (filePath.substr(filePath.find_last_of(".") + 1) == "obj") // obj file
-	{
-		// if it's a dynmaic object, then it gets morph vertices.
-		// if it's a static object, it just gets the regular vertices.
-		(dynamicObject) ? 
-			mesh = std::make_shared<Mesh>(Mesh::ConvertToMorphVertexArray(vertices, verticesTotal), verticesTotal, nullptr, 0) :
-			mesh = std::make_shared<Mesh>(vertices, verticesTotal, nullptr, 0);
-	}
-	else // runtime primitive
-	{
-		mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
-	}
-
-	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 }
 
 // the protected constructor used for default primitives
