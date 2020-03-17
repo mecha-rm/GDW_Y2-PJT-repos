@@ -82,7 +82,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 	}
 	
 	// only one light
-	Set("a_LightCount", 1);
+	Set("a_EnabledLights", 1);
 
 	// default textures
 	Set("s_Albedos[0]", defaultAlbedo);
@@ -114,12 +114,12 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		else if (line.substr(0, line.find_first_of(" ")) == "Ka")
 		{
 			std::vector<float> avec = util::splitString<float>(line.substr(line.find_first_of(" ") + 1));
-			Set("a_AmbientColor[0]", { avec[0], avec[1], avec[2] });
+			Set("a_Lights[0].ambientColor", { avec[0], avec[1], avec[2] });
 		}
 		// weight of ambient colour (ambient power)
 		else if (line.substr(0, line.find_first_of(" ")) == "Na")
 		{
-			Set("a_AmbientPower[0]", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
+			Set("a_Lights[0].ambientPower", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
 		}
 		// diffuse colour
 		else if (line.substr(0, line.find_first_of(" ")) == "Kd")
@@ -142,7 +142,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		// weight of specular colour (specular power)
 		else if (line.substr(0, line.find_first_of(" ")) == "Ns")
 		{
-			Set("a_LightSpecPower[0]", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
+			Set("a_Lights[0].specularPower", util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
 		}
 
 		// TODO: change properties to look in 'res/sceneLists/' folder directly.

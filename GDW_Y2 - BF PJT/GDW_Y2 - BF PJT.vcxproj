@@ -131,7 +131,9 @@
     <ClCompile Include="src\cherry\Skybox.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
     <ClCompile Include="src\cherry\Target.cpp" />
+    <ClCompile Include="src\cherry\textures\LookUpTable.cpp" />
     <ClCompile Include="src\cherry\textures\Texture2D.cpp" />
+    <ClCompile Include="src\cherry\textures\Texture3D.cpp" />
     <ClCompile Include="src\cherry\textures\TextureCube.cpp" />
     <ClCompile Include="src\cherry\textures\TextureSampler.cpp" />
     <ClCompile Include="src\cherry\utils\Array.cpp" />
@@ -474,7 +476,9 @@
     <ClInclude Include="src\cherry\Skybox.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
     <ClInclude Include="src\cherry\Target.h" />
+    <ClInclude Include="src\cherry\textures\LookUpTable.h" />
     <ClInclude Include="src\cherry\textures\Texture2D.h" />
+    <ClInclude Include="src\cherry\textures\Texture3D.h" />
     <ClInclude Include="src\cherry\textures\TextureCube.h" />
     <ClInclude Include="src\cherry\textures\TextureEnums.h" />
     <ClInclude Include="src\cherry\textures\TextureSampler.h" />
@@ -646,6 +650,7 @@
     <None Include="res\shaders\post\invert.fs.glsl" />
     <None Include="res\shaders\post\kernel3.fs.glsl" />
     <None Include="res\shaders\post\kernel5.fs.glsl" />
+    <None Include="res\shaders\post\lut.fs.glsl" />
     <None Include="res\shaders\post\motion_blur.fs.glsl" />
     <None Include="res\shaders\post\post.fs.glsl" />
     <None Include="res\shaders\post\post.vs.glsl" />

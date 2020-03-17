@@ -118,7 +118,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 	// no longer needed since GenerateMaterial() exists.
 	// matStatic = std::make_shared<Material>(phong);
-	// matStatic->Set("a_LightCount", 1);
+	// matStatic->Set("a_EnabledLights", 1);
 	// matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
 	// matStatic->Set("a_LightColor[0]", { 0.5f, 0.1f, 0.9f});
 	// matStatic->Set("a_AmbientColor[0]", { 0.9f, 0.1f, 0.01f });

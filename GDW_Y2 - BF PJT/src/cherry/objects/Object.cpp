@@ -203,13 +203,17 @@ std::string cherry::Object::GetSceneName() const { return scene; }
 // sets the new scene name.
 void cherry::Object::SetScene(std::string newScene)
 {
+	// if the scene is the same.
+	if (scene == newScene)
+		return;
+
 	// removes the object from its object list.
 	ObjectManager::RemoveObjectFromSceneObjectList(this);
 	
 	CreateEntity(newScene, material); // re-creates the entity to switch its scene.
 
 	// adds the object to its scene object list.
-	ObjectManager::AddObjectToSceneObjectList(this, true);
+	// ObjectManager::AddObjectToSceneObjectList(this, true);
 }
 
 // gets the name of the object.
@@ -912,6 +916,54 @@ bool cherry::Object::RemovePhysicsBody(unsigned int index)
 	}
 
 	return false;
+}
+
+// clears all physics bodies.
+void cherry::Object::ClearAllPhysicsBodies() { bodies.clear(); }
+
+// deletes a physics body.
+bool cherry::Object::DeletePhysicsBody(cherry::PhysicsBody* body)
+{
+	if (body == nullptr)
+		return false;
+
+	// removes the physics body
+	bool removed = RemovePhysicsBody(body);
+	
+	if (removed)
+		delete body;
+	
+	return removed;
+}
+
+// deletes a phyiscs body
+bool cherry::Object::DeletePhysicsBody(unsigned int index)
+{
+	// index out of bounds.
+	if (index >= bodies.size())
+		return false;
+
+	// gets the body
+	PhysicsBody* body = bodies[index];
+
+	// removes the body from the list.
+	RemovePhysicsBody(body);
+
+	// deletes the body.
+	delete body;
+
+	return true;
+}
+
+// deletes all physics bodies.
+void cherry::Object::DeleteAllPhysicsBodies()
+{
+	// deletes all bodies
+	for (PhysicsBody* body : bodies)
+		delete body;
+
+	// clears all the bodies
+	bodies.clear();
 }
 
 // gets the amount of physics bodies

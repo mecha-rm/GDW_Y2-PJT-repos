@@ -37,7 +37,7 @@ void cnz::CNZ_Game::LoadContent()
 
 		RegisterScene(title, true);
 		// RegisterScene(map1Scene, true); // this is the current scene.
-		RegisterScene(map1Scene, false); // this is the current scene.
+		RegisterScene(map1Scene, false); // this is the current scene. 
 	}
 	else
 	{

@@ -71,6 +71,7 @@ namespace cherry
 		std::string GetSceneName() const;
 
 		// sets a new scene for the object to be part of. This removes the object from the list its currently part of.
+		// do note that THIS DOESN'T ADD THE OBJECT TO AN EXISTING LIST, only remove it from the one its currently in (if applicable).
 		// if the scene doesn't exist, then a new one is created.
 		void SetScene(std::string newScene);
 
@@ -410,6 +411,20 @@ namespace cherry
 
 		// removes a physics body based on its index.
 		bool RemovePhysicsBody(unsigned int index);
+
+		// clears the physics bodies from the list. 
+		// If you want to delete them, call DeleteAllPhysicsBodies.
+		void ClearAllPhysicsBodies();
+
+		// deletes a physics body; returns 'true' if successful.
+		// if it isn't in the list, then the provided body isn't deleted, and false is returned.
+		bool DeletePhysicsBody(cherry::PhysicsBody* body);
+
+		// delets a physics body based on its index.
+		bool DeletePhysicsBody(unsigned int index);
+
+		// deletes all physics bodies.
+		void DeleteAllPhysicsBodies();
 
 		// gets the amount of physics bodies
 		unsigned int GetPhysicsBodyCount() const;

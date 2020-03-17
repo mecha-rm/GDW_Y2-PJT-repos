@@ -411,6 +411,20 @@ namespace cherry
 		// removes a physics body based on its index.
 		bool RemovePhysicsBody(unsigned int index);
 
+		// clears the physics bodies from the list. 
+		// If you want to delete them, call DeleteAllPhysicsBodies.
+		void ClearAllPhysicsBodies();
+
+		// deletes a physics body; returns 'true' if successful.
+		// if it isn't in the list, then the provided body isn't deleted, and false is returned.
+		bool DeletePhysicsBody(cherry::PhysicsBody* body);
+
+		// delets a physics body based on its index.
+		bool DeletePhysicsBody(unsigned int index);
+
+		// deletes all physics bodies.
+		void DeleteAllPhysicsBodies();
+
 		// gets the amount of physics bodies
 		unsigned int GetPhysicsBodyCount() const;
 

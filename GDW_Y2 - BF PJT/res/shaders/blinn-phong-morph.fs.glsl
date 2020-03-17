@@ -14,6 +14,12 @@ uniform vec3  a_CameraPos;
 
 #define MAX_LIGHTS 20
 
+// the emissive colour.
+uniform vec3 a_EmissiveColor;
+
+// emissive power
+uniform float a_EmissivePower;
+
 // light struct
 struct Light
 {
@@ -74,8 +80,11 @@ vec3 ComputeBlinnPhong(Light light, vec3 normal, vec4 albedo) {
     // by zero errors and allow us to control the light's attenuation via a uniform
     float attenuation = 1.0 / (1.0 + light.attenuation* pow(distToLight, 2));
 	
+	// calculating emissive power
+    vec3 emissiveOut = a_EmissiveColor * a_EmissivePower;
+	
 	// Our result is our lighting multiplied by our object's color
-	return vec3(ambientOut + attenuation * (diffuseOut + specOut)) * albedo.xyz * inColor.xyz;
+	return vec3(emissiveOut + ambientOut + attenuation * (diffuseOut + specOut)) * albedo.xyz * inColor.xyz;
 }
 
 void main() {

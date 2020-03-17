@@ -12,7 +12,9 @@ namespace cherry
 		DepthStencil = GL_DEPTH_STENCIL,
 		R8 = GL_R8,
 		R16 = GL_R16,
+		RG8 = GL_RG8,
 		RGB8 = GL_RGB8,
+		RGB10 = GL_RGB10,
 		RGB16 = GL_RGB16,
 		RGBA8 = GL_RGBA8,
 		RGBA16 = GL_RGBA16
