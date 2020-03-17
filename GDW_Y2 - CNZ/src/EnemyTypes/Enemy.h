@@ -47,6 +47,7 @@ namespace cnz
 		virtual void Update(float dt);
 
 		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
+
 		virtual std::string WhoAmI() { return description; }
 
 		// Holdovers from the Object class.
@@ -94,6 +95,7 @@ namespace cnz
 		int state = 0;
 
 	private:
+
 										//		   z?		something is really funky here...
 		cherry::Vec3 pBodySize = cherry::Vec3(1, 2, 1);
 		bool drawPBody = false;
@@ -106,6 +108,11 @@ namespace cnz
 		glm::vec3 worldAngle;
 
 	protected:
+		// loads in all animations. This is a pure virtual function since all enemies need animations.
+		virtual void LoadAnimations() = 0;
 
+		// becomes 'true' if the animations have been loaded.
+		// TODO: add this
+		// bool animsLoaded = false;
 	};
 }

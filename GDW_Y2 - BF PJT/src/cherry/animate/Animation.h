@@ -18,7 +18,7 @@ namespace cherry
 		Animation();
 		
 		// copy constructor
-		// Animation(const cherry::Animation&);
+		Animation(const cherry::Animation&);
 
 		// destructor
 		virtual ~Animation();
@@ -77,6 +77,15 @@ namespace cherry
 
 		// removes the provided frame
 		bool RemoveFrame(AnimationFrame* frame);
+
+		// deletes the frame if it's part of the list.
+		bool DeleteFrame(AnimationFrame* frame);
+
+		// clears out all frames
+		void ClearAllFrames();
+
+		// deletes all frames
+		void DeleteAllFrames();
 
 		// gets the frame count for the animation
 		unsigned int GetFrameCount() const;
@@ -140,7 +149,7 @@ namespace cherry
 		// the name of the animation
 		std::string name = "";
 
-		// the description of the anismation
+		// the description of the animation
 		std::string description = "";
 
 		// animation tag
@@ -177,6 +186,7 @@ namespace cherry
 		// 3: image animation
 		Animation(int id);
 
+		// identification number
 		int id = 0;
 
 		// sets the object the animation is attached to.
@@ -190,6 +200,9 @@ namespace cherry
 		// creates the animation frame. The amount of 'units' determines how long (in milliseconds) the frame stays on for.
 		// a pose can also be set for the animation if you want.
 		AnimationFrame(float units = 0);
+
+		// copy constructor
+		AnimationFrame(const AnimationFrame&);
 
 		// length of time in milliseconds the frame lasts for.
 		float GetDelayUnits() const;
@@ -210,9 +223,6 @@ namespace cherry
 		virtual std::string ToString() const = 0;
 
 	private:
-
-		// the pose for the given frame.
-		Mesh::Sptr pose;
 
 		// the delay units (in milliseconds) between this frame and the following frame.
 		float delayUnits = 0;

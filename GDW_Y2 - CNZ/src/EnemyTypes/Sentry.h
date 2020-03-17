@@ -16,7 +16,7 @@ namespace cnz {
 		Sentry(const cnz::Sentry&);
 
 		// copies the enemy and sets its scene.
-		Sentry(const cnz::Enemy* obj, std::string scene);
+		Sentry(const cnz::Sentry* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
@@ -27,6 +27,9 @@ namespace cnz {
 	private:
 		cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);
 		float arrowST = 0;
+
+	protected:
+		void LoadAnimations() override;
 	};
 }
 

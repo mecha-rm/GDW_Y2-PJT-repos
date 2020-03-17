@@ -16,13 +16,18 @@ namespace cnz {
 		Oracle(const cnz::Oracle&);
 
 		// faux copy constructor
-		Oracle(cnz::Enemy* obj, std::string scene);
+		Oracle(cnz::Oracle* obj, std::string scene);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
 		void Update(float dt);
 
 		cherry::MorphAnimation walk;
+		
+	private:
+
+	protected:
+		void LoadAnimations() override;
 	};
 }
 

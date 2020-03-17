@@ -463,6 +463,12 @@ namespace cherry
 		// sets the current animation
 		void SetCurrentAnimation(unsigned int index);
 
+		// clears out all animations. This does not delete the data itself.
+		void ClearAllAnimations();
+
+		// deletes all animations
+		void DeleteAllAnimations();
+
 		/// PATH ///
 		// gets the path that the object is locked to.
 		cherry::Path GetPath() const;

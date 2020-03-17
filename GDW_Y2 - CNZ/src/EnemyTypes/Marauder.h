@@ -13,7 +13,7 @@ namespace cnz {
 		Marauder(std::string scene, cherry::Material::Sptr mat);
 
 		// faux copy constructor.
-		Marauder(cnz::Enemy* obj, std::string scene);
+		Marauder(cnz::Marauder* obj, std::string scene);
 
 		// copy constructor.
 		Marauder(const cnz::Marauder&);
@@ -23,6 +23,12 @@ namespace cnz {
 		void Update(float dt);
 
 		cherry::MorphAnimation walk;
+
+	private:
+
+	protected:
+		// loads all animations
+		void LoadAnimations() override;
 	};
 }
 

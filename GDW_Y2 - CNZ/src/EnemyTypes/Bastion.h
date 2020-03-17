@@ -13,15 +13,22 @@ namespace cnz {
 		// scene and material
 		Bastion(std::string scene, cherry::Material::Sptr mat);
 
-		Bastion(const cnz::Bastion&);
+		// faux copy constructor
+		Bastion(cnz::Bastion* obj, std::string scene);
 
-		Bastion(cnz::Enemy* obj, std::string scene);
+		// copy constructor
+		Bastion(const cnz::Bastion&);
 
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
 		void Update(float dt);
 
 		cherry::MorphAnimation walk;
+	private:
+		// loads all aniamtions
+		void LoadAnimations() override;
+
+	protected:
 	};
 }
 

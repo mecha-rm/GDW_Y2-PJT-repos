@@ -8,6 +8,12 @@
 // TEXTURE ANIMATION
 cherry::ImageAnimation::ImageAnimation() : Animation(3) { }
 
+// copying the image animation
+cherry::ImageAnimation::ImageAnimation(const ImageAnimation& ani)
+	: Animation(ani)
+{
+}
+
 // update loop
 void cherry::ImageAnimation::Update(float deltaTime)
 {
@@ -141,6 +147,14 @@ cherry::ImageAnimationFrame::ImageAnimationFrame(std::string filePath, cherry::V
 
 	// closes the file since it was only opened for this check.
 	file.close();
+}
+
+// copy constructor
+cherry::ImageAnimationFrame::ImageAnimationFrame(const ImageAnimationFrame& frame)
+	: AnimationFrame(frame)
+{
+	image = frame.image;
+	uvCoords = frame.uvCoords;
 }
 
 // gets the file path of the image for this frame.

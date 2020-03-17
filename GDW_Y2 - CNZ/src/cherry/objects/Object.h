@@ -71,6 +71,7 @@ namespace cherry
 		std::string GetSceneName() const;
 
 		// sets a new scene for the object to be part of. This removes the object from the list its currently part of.
+		// do note that THIS DOESN'T ADD THE OBJECT TO AN EXISTING LIST, only remove it from the one its currently in (if applicable).
 		// if the scene doesn't exist, then a new one is created.
 		void SetScene(std::string newScene);
 
@@ -461,6 +462,12 @@ namespace cherry
 
 		// sets the current animation
 		void SetCurrentAnimation(unsigned int index);
+
+		// clears out all animations. This does not delete the data itself.
+		void ClearAllAnimations();
+
+		// deletes all animations
+		void DeleteAllAnimations();
 
 		/// PATH ///
 		// gets the path that the object is locked to.

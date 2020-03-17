@@ -7,10 +7,45 @@
 cherry::Animation::Animation() {}
 
 // copy constructor
-// cherry::Animation::Animation(const cherry::Animation& animeCopy)
-// {
-// 
-// }
+cherry::Animation::Animation(const cherry::Animation& ani)
+{
+	// descriptors
+	name = ani.name;
+	description = ani.description;
+	tag = ani.tag;
+
+	// deletes frames for this object
+	DeleteAllFrames();
+	
+	// copying frames
+	for (AnimationFrame* f : frames)
+	{
+		switch (ani.GetId()) // id of animation
+		{
+		case 1: // morph targets
+			frames.push_back(new MorphAnimationFrame(*((MorphAnimationFrame*)f)));
+			break;
+		case 3: // image animation
+			frames.push_back(new ImageAnimationFrame(*((ImageAnimationFrame*)f)));
+			break;
+		}
+	}
+
+	// the amount of loops for the animation
+	loopsTotal = ani.loopsTotal;
+
+	// tells the animation to loop infinitely.
+	infiniteLoop = ani.infiniteLoop;
+
+	// if in reverse mode
+	reverse = ani.reverse;
+
+	// same id
+	id = ani.id;
+
+	// same object
+	object = ani.object;
+}
 
 // constructor
 cherry::Animation::Animation(int id) : id(id) {}
@@ -92,6 +127,30 @@ bool cherry::Animation::AddFrame(AnimationFrame* frame) { return util::addToVect
 
 // removes the animation frame
 bool cherry::Animation::RemoveFrame(AnimationFrame* frame) { return util::removeFromVector(frames, frame); }
+
+// deletes the frame if it's part of the list
+bool cherry::Animation::DeleteFrame(AnimationFrame* frame)
+{
+	bool removed = RemoveFrame(frame);
+
+	// if removed successfully
+	if (removed)
+		delete frame;
+
+	return removed;
+}
+
+// clears all frames
+void cherry::Animation::ClearAllFrames() { frames.clear(); }
+
+// deletes all frames
+void cherry::Animation::DeleteAllFrames()
+{
+	for (AnimationFrame* frame : frames)
+		delete frame;
+
+	frames.clear();
+}
 
 // gets the total amount of frames for the animation
 unsigned int cherry::Animation::GetFrameCount() const { return frames.size(); }
@@ -190,6 +249,13 @@ void cherry::Animation::Update(float deltaTime)
 cherry::AnimationFrame::AnimationFrame(float units)
 {
 	delayUnits = (units < 0) ? 0 : units;
+}
+
+// copy constructor
+cherry::AnimationFrame::AnimationFrame(const AnimationFrame& frame)
+{
+	delayUnits = frame.delayUnits;
+	tag = frame.tag;
 }
 
 // gets the delay until moving onto the next frame.

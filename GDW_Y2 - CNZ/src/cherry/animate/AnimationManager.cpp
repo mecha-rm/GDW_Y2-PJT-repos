@@ -6,6 +6,26 @@ cherry::AnimationManager::AnimationManager()
 {
 }
 
+// copy constructor
+cherry::AnimationManager::AnimationManager(const AnimationManager& anim)
+{
+	DeleteAllAnimations();
+	
+	// copying the animations
+	for (Animation* a : anim.animations)
+	{
+		switch (a->GetId()) // id
+		{
+		case 1: // morph targets
+			animations.push_back(new MorphAnimation(*((MorphAnimation*)a)));
+			break;
+		case 3: // image animation
+			animations.push_back(new ImageAnimation(*((ImageAnimation*)a)));
+			break;
+		}
+	}
+}
+
 // destructor
 cherry::AnimationManager::~AnimationManager()
 {
@@ -50,6 +70,18 @@ bool cherry::AnimationManager::RemoveAnimation(unsigned int index)
 	{
 		return false;
 	}
+}
+
+// clears out all animations
+void cherry::AnimationManager::ClearAllAnimations() { animations.clear(); }
+
+// deletes all animations
+void cherry::AnimationManager::DeleteAllAnimations()
+{
+	for (Animation* ani : animations)
+		delete ani;
+
+	animations.clear();
 }
 
 // gets the total amount of animations

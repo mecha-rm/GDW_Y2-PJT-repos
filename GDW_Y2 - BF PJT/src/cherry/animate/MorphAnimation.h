@@ -10,6 +10,10 @@ namespace cherry
 	public:
 		MorphAnimation();
 
+		// copy constructor
+		MorphAnimation(const MorphAnimation&);
+
+		// destructor
 		~MorphAnimation() = default;
 
 		// the object being used for the morph target animation.
@@ -56,6 +60,10 @@ namespace cherry
 		// units determines the length of the lerp between the previous frame; default 1 second.
 		MorphAnimationFrame(std::string filePath, float units = 1.0F);
 
+		// copy constructor
+		MorphAnimationFrame(const MorphAnimationFrame&);
+
+		// destructor
 		~MorphAnimationFrame();
 		
 		// returns the pose

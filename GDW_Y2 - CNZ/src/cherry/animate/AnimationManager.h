@@ -13,6 +13,9 @@ namespace cherry
 		// animation manager constructor
 		AnimationManager();
 
+		// copy constructor
+		AnimationManager(const AnimationManager&);
+
 		// destructor
 		~AnimationManager();
 
@@ -21,6 +24,12 @@ namespace cherry
 
 		// removes an animation at a given index
 		bool RemoveAnimation(unsigned int index);
+
+		// clears out all aniamtions, but does not delete them from memory
+		void ClearAllAnimations();
+
+		// deletes all animations
+		void DeleteAllAnimations();
 
 		// gets the total amount of animations.
 		unsigned int GetAnimationsTotal() const;

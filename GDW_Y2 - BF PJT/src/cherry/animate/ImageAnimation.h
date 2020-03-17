@@ -10,6 +10,9 @@ namespace cherry
 		// constructor.
 		ImageAnimation();
 
+		// constructor
+		ImageAnimation(const ImageAnimation&);
+
 		// updates the texture animation.
 		void Update(float deltaTime);
 
@@ -42,6 +45,9 @@ namespace cherry
 		// uv coordinates for the current frame (as a vec4)
 		// (x, y, z, w) = (x_min, y_min, x_max, y_max)
 		ImageAnimationFrame(std::string filePath, cherry::Vec4 uvs, float units = 1.0F);
+
+		// copy constructor
+		ImageAnimationFrame(const ImageAnimationFrame&);
 
 		// gets passed a row and column number, and a width and height of a given size.
 		// this goes from the top to the bottom, with row and colum starting at 0.

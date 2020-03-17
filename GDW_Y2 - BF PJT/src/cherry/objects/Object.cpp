@@ -1039,6 +1039,12 @@ cherry::Animation * cherry::Object::GetCurrentAnimation() { return animations.Ge
 // sets the current animation
 void cherry::Object::SetCurrentAnimation(unsigned int index) { animations.SetCurrentAnimation(index); }
 
+// clears all animations.
+void cherry::Object::ClearAllAnimations() { animations.ClearAllAnimations(); }
+
+// deletes all animations
+void cherry::Object::DeleteAllAnimations() { animations.DeleteAllAnimations(); }
+
 
 // gets the path
 cherry::Path cherry::Object::GetPath() const { return path; }

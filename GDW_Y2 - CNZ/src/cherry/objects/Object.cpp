@@ -145,10 +145,7 @@ cherry::Object::Object(const cherry::Object& obj)
 	}
 
 	// creating the entity (must happen BEFORE the physics bodies are created)
-	std::string sceneName = obj.GetSceneName();
-	Material::Sptr mat = obj.GetMaterial();
-
-	CreateEntity(sceneName, mat);
+	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 	
 	// copying the animation manager.
 	animations = obj.animations;
@@ -1041,6 +1038,12 @@ cherry::Animation * cherry::Object::GetCurrentAnimation() { return animations.Ge
 
 // sets the current animation
 void cherry::Object::SetCurrentAnimation(unsigned int index) { animations.SetCurrentAnimation(index); }
+
+// clears all animations.
+void cherry::Object::ClearAllAnimations() { animations.ClearAllAnimations(); }
+
+// deletes all animations
+void cherry::Object::DeleteAllAnimations() { animations.DeleteAllAnimations(); }
 
 
 // gets the path

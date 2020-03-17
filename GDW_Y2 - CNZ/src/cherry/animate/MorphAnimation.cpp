@@ -7,6 +7,12 @@
 // set as animation 1 in the list
 cherry::MorphAnimation::MorphAnimation() : Animation(1) {}
 
+cherry::MorphAnimation::MorphAnimation(const MorphAnimation& ani)
+	: Animation(ani)
+{
+	t = ani.t;
+}
+
 
 // constructor
 cherry::MorphAnimation::MorphAnimation(Object* obj)
@@ -187,6 +193,21 @@ cherry::MorphAnimationFrame::MorphAnimationFrame(std::string filePath, float uni
 {
 	// loads the pose for the frame
 	LoadPose();
+}
+
+// morph animation frame
+cherry::MorphAnimationFrame::MorphAnimationFrame(const MorphAnimationFrame& frame)
+	: AnimationFrame(frame)
+{
+	// copy file path
+	filePath = frame.filePath;
+
+	// copying vertex count
+	verticesTotal = frame.verticesTotal;
+
+	// copies the pose
+	pose = new Vertex[verticesTotal];
+	memcpy(pose, frame.pose, sizeof(Vertex) * frame.verticesTotal);
 }
 
 // destructor.
