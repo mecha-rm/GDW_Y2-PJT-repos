@@ -120,6 +120,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		animList.push_back(&playerRun_B);
 		animList.push_back(&playerRun_L);
 		animList.push_back(&playerRun_R);
+		animList.push_back(&playerDodge_F);
+		animList.push_back(&playerDodge_B);
+		animList.push_back(&playerDodge_L);
+		animList.push_back(&playerDodge_R);
+		animList.push_back(&playerDeath);
+		animList.push_back(&playerSpecial);
+		animList.push_back(&playerBash);
 		// 
 		// // Marauder
 		// 
@@ -150,6 +157,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		playerObj->AddAnimation(playerRun_B.anim);
 		playerObj->AddAnimation(playerRun_L.anim);
 		playerObj->AddAnimation(playerRun_R.anim);
+		playerObj->AddAnimation(playerDodge_F.anim);
+		playerObj->AddAnimation(playerDodge_B.anim);
+		playerObj->AddAnimation(playerDodge_L.anim);
+		playerObj->AddAnimation(playerDodge_R.anim);
+		playerObj->AddAnimation(playerDeath.anim);
+		playerObj->AddAnimation(playerSpecial.anim);
+		playerObj->AddAnimation(playerBash.anim);
 
 
 		//Skybox stuff
@@ -1125,46 +1139,82 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
 						projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
 						game->AddObjectToScene(projList[projList.size() - 1]);
+
+						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							enemyList[i]->GetCurrentAnimation()->Stop();
+						}
 					}
 					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							enemyList[i]->SetCurrentAnimation(0); // walk anim
+							enemyList[i]->GetCurrentAnimation()->Play();
+						}
 					}
 				}
 				else if (enemyList[i]->WhoAmI() == "Marauder" && enemyList[i]->attacking == false) {
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
 						//Attack
+						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							enemyList[i]->GetCurrentAnimation()->Stop();
+						}
 					}
 					else {
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							enemyList[i]->SetCurrentAnimation(0); // walk anim
+							enemyList[i]->GetCurrentAnimation()->Play();
+						}
 					}
 				}
 				else if (enemyList[i]->WhoAmI() == "Oracle" && enemyList[i]->attacking == false) {
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
 						//Attack
+						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							enemyList[i]->GetCurrentAnimation()->Stop();
+						}
 					}
 					else {
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							enemyList[i]->SetCurrentAnimation(0); // walk anim
+							enemyList[i]->GetCurrentAnimation()->Play();
+						}
 					}
 				}
 				else if (enemyList[i]->WhoAmI() == "Bastion" && enemyList[i]->attacking == false) {
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
 						//Attack
+						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							enemyList[i]->GetCurrentAnimation()->Stop();
+						}
 					}
 					else {
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							enemyList[i]->SetCurrentAnimation(0); // walk anim
+							enemyList[i]->GetCurrentAnimation()->Play();
+						}
 					}
 				}
 				else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
 						//Attack
+						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							enemyList[i]->GetCurrentAnimation()->Stop();
+						}
 					}
 					else {
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							enemyList[i]->SetCurrentAnimation(0); // walk anim
+							enemyList[i]->GetCurrentAnimation()->Play();
+						}
 					}
 				}
 				enemyList[i]->Update(deltaTime);

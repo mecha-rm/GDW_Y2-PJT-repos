@@ -1,0 +1,11 @@
+Time in Seconds
+
+Attack: 1.54
+
+Stun: 1.58
+
+Stun Recover: 1.5
+
+All walks: 1.38
+
+Dying: 0.875

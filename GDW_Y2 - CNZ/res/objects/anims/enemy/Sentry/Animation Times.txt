@@ -1,0 +1,13 @@
+Attack:1.75
+
+Die:0.58
+
+Hit Stun:0.42
+
+Hit Stun Recover:0.42
+
+Stun:1.17
+
+Stun Recover:0.71
+
+All Walks:1.17
