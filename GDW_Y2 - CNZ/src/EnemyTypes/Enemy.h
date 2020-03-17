@@ -1,6 +1,8 @@
 #pragma once
 
 #include "..\cherry\objects/Object.h"
+#include "..\AnimationLoader.h"
+
 
 // class for the Enemy
 namespace cnz
@@ -80,6 +82,8 @@ namespace cnz
 		float GetPBodyHeight() const;
 		float GetPBodyDepth() const;
 
+		int GetState() const;
+		void SetState(int newState);
 
 		std::string description = "Enemy";
 		bool attacking = false;
@@ -87,6 +91,7 @@ namespace cnz
 		bool alive = false;
 		bool stunned = false;
 		float stunTimer = 0.0F;
+		int state = 0;
 
 	private:
 										//		   z?		something is really funky here...

@@ -138,6 +138,14 @@ namespace cnz
 		cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_F = { 12, "res/objects/anims/player/Dodge_F/One_DF_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_B = { 12, "res/objects/anims/player/Dodge_B/One_DB_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerSpecial = { 37, "res/onjects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
+
 
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
 		bool mbLP = false, mbLR = false;

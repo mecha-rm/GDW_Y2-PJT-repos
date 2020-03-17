@@ -1,0 +1,11 @@
+Die:0.67
+
+Hit:0.54
+
+Hit Recover:0.88
+
+Stun:1.71
+
+Stun Recover:1.13
+
+All Walks:1.21

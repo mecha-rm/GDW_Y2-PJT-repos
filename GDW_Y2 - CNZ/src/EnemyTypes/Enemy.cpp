@@ -149,3 +149,11 @@ float cnz::Enemy::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;
 }
+
+int cnz::Enemy::GetState() const {
+	return this->state;
+}
+
+void cnz::Enemy::SetState(int newState) {
+	this->state = newState;
+}

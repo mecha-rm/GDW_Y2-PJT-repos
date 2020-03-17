@@ -1,0 +1,11 @@
+Oracle
+
+All times in seconds
+
+Attack: 1.38
+
+Reload: 1.04
+
+Death: 0.63
+
+All Walks: 1.21
