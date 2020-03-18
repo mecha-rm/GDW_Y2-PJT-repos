@@ -1,5 +1,6 @@
 #include "CNZ_TitleScene.h"
 #include "..\cherry/Game.h"
+#include "..\LevelLoader.h"
 
 // title scene
 cnz::CNZ_TitleScene::CNZ_TitleScene(std::string sceneName)
@@ -28,6 +29,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 		AddButton(entryButton, false);
 	}
+
+	Level::GenerateSources();
 }
 
 // closing

@@ -16,6 +16,8 @@ cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen)
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	bool loadMenu = true; // if 'true', it loads in from the menu.
+
 	// 30 frames per second
 	FPS = 30;
 
@@ -27,7 +29,7 @@ void cnz::CNZ_Game::LoadContent()
 	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
 						 
 	// Title Scene
-	if(false)
+	if(loadMenu)
 	{
 		CNZ_TitleScene* title = new CNZ_TitleScene("Title Screen");
 

@@ -14,7 +14,7 @@ namespace cherry
 		MorphAnimation(const MorphAnimation&);
 
 		// destructor
-		~MorphAnimation() = default;
+		// ~MorphAnimation() = default;
 
 		// the object being used for the morph target animation.
 		MorphAnimation(Object* obj);

@@ -97,6 +97,9 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 
 	Player* plyr = new Player("res/objects/hero_ver.2/One_T.obj", scene, position);
 
+	Vec3 dmns = plyr->GetMeshBodyMaximum() - plyr->GetMeshBodyMinimum();
+	plyr->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
+
 	// animation 1
 	// if(false) // commenting out
 	// {
@@ -139,63 +142,76 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 
 	// TODO: optimize
 	// loading animations
-	if(false)
+	if(true)
 	{
-		// std::vector<cnz::AnimStruct*> animList;
+		// animations
+		cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerCharged = { 1, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_F = { 24, "res/objects/anims/player/Run_F/One_RF_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_F = { 12, "res/objects/anims/player/Dodge_F/One_DF_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_B = { 12, "res/objects/anims/player/Dodge_B/One_DB_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerSpecial = { 37, "res/onjects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
 
-		// animList.push_back(&plyr->playerCharging);
-		// animList.push_back(&plyr->playerCharged);
-		// animList.push_back(&plyr->playerDashing);
-		// animList.push_back(&plyr->playerRun_F);
-		// animList.push_back(&plyr->playerRun_B);
-		// animList.push_back(&plyr->playerRun_L);
-		// animList.push_back(&plyr->playerRun_R);
+		std::vector<cnz::AnimStruct*> animList;
 
-		// plyr->playerCharging = LoadAnimation(plyr->playerCharging);
-		// plyr->playerCharged = LoadAnimation(plyr->playerCharged);
-		// plyr->playerDashing = LoadAnimation(plyr->playerDashing);
-		// plyr->playerRun_F = LoadAnimation(plyr->playerRun_F);
-		// plyr->playerRun_B = LoadAnimation(plyr->playerRun_B);
-		// plyr->playerRun_L = LoadAnimation(plyr->playerRun_L);
-		// plyr->playerRun_R = LoadAnimation(plyr->playerRun_R);
+		animList.push_back(&playerCharging);
+		animList.push_back(&playerCharged);
+		animList.push_back(&playerDashing);
+		animList.push_back(&playerRun_F);
+		animList.push_back(&playerRun_B);
+		animList.push_back(&playerRun_L);
+		animList.push_back(&playerRun_R);
+		animList.push_back(&playerDodge_F);
+		animList.push_back(&playerDodge_B);
+		animList.push_back(&playerDodge_L);
+		animList.push_back(&playerDodge_R);
+		animList.push_back(&playerDeath);
+		animList.push_back(&playerSpecial);
+		animList.push_back(&playerBash);
 
-		LoadAnimation(plyr->playerCharging);
-		LoadAnimation(plyr->playerCharged);
-		LoadAnimation(plyr->playerDashing);
-		LoadAnimation(plyr->playerRun_F);
-		LoadAnimation(plyr->playerRun_B);
-		LoadAnimation(plyr->playerRun_L);
-		LoadAnimation(plyr->playerRun_R);
-
-		// Marauder
-
-		//// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		// this takes a lot of time.
-		// std::stringstream curPath;
-		// float curFrameTime;
-		// for (int i = 0; i < animList.size(); i++) {
-		// 	curFrameTime = animList[i]->animTime / animList[i]->numFrames;
-		// 	for (int frame = 0; frame < animList[i]->numFrames; frame++) {
-		// 		curPath = std::stringstream();
-		// 		if (frame < 10) {
-		// 			curPath << animList[i]->basePath << 0 << frame << ".obj";
-		// 		}
-		// 		else {
-		// 			curPath << animList[i]->basePath << frame << ".obj";
-		// 		}
-		// 		animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
-		// 	}
-		// }
+		// 
+		// //// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		// // this takes a lot of time.
+		std::stringstream curPath;
+		float curFrameTime;
+		for (int i = 0; i < animList.size(); i++) {
+			curFrameTime = animList[i]->animTime / animList[i]->numFrames;
+			for (int frame = 0; frame < animList[i]->numFrames; frame++) {
+				curPath = std::stringstream();
+				if (frame < 10) {
+					curPath << animList[i]->basePath << 0 << frame << ".obj";
+				}
+				else {
+					curPath << animList[i]->basePath << frame << ".obj";
+				}
+				animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+			}
+		}
 
 		//// Add finished animations to objects
 		// Player
-		plyr->AddAnimation(plyr->playerCharging.anim);
-		plyr->AddAnimation(plyr->playerCharged.anim);
-		plyr->AddAnimation(plyr->playerDashing.anim);
-		plyr->AddAnimation(plyr->playerRun_F.anim);
-		plyr->AddAnimation(plyr->playerRun_B.anim);
-		plyr->AddAnimation(plyr->playerRun_L.anim);
-		plyr->AddAnimation(plyr->playerRun_R.anim);
+		plyr->AddAnimation(playerCharging.anim);
+		plyr->AddAnimation(playerCharged.anim);
+		plyr->AddAnimation(playerDashing.anim);
+		plyr->AddAnimation(playerRun_F.anim);
+		plyr->AddAnimation(playerRun_B.anim);
+		plyr->AddAnimation(playerRun_L.anim);
+		plyr->AddAnimation(playerRun_R.anim);
+		plyr->AddAnimation(playerDodge_F.anim);
+		plyr->AddAnimation(playerDodge_B.anim);
+		plyr->AddAnimation(playerDodge_L.anim);
+		plyr->AddAnimation(playerDodge_R.anim);
+		plyr->AddAnimation(playerDeath.anim);
+		plyr->AddAnimation(playerSpecial.anim);
+		plyr->AddAnimation(playerBash.anim);
 	}
 
 	return plyr;

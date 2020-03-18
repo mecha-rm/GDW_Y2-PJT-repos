@@ -13,11 +13,14 @@ namespace cherry
 		// animation manager constructor
 		AnimationManager();
 
-		// copy constructor
+		// copy constructor. ReplaceAnimations serves the same purpose.
 		AnimationManager(const AnimationManager&);
 
 		// destructor
 		~AnimationManager();
+
+		// sets the object for all animations in the list.
+		void SetObject(Object* object);
 
 		// adds the animation, and makes it the current one
 		bool AddAnimation(cherry::Animation * newAni, bool current = false);
@@ -30,6 +33,10 @@ namespace cherry
 
 		// deletes all animations
 		void DeleteAllAnimations();
+
+		// replaces the animations in this object with copies of the provided manager.
+		// remember to set the new object for the animations
+		void ReplaceAnimations(const AnimationManager& manager);
 
 		// gets the total amount of animations.
 		unsigned int GetAnimationsTotal() const;

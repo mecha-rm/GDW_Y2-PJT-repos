@@ -1,5 +1,6 @@
 #include "CNZ_GameplayScene.h"
 #include "..\CNZ_Game.h"
+#include <stack>
 
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
@@ -104,66 +105,66 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		LightList * tempList = lightList;
 		playerObj = map.GetPlayerObject();
 		
-		{
-			// adding a physics body.
-			Vec3 dmns = playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum();
-			playerObj->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
-		}
+		//{
+		//	// adding a physics body.
+		//	Vec3 dmns = playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum();
+		//	playerObj->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
+		//}
 
 		//// ANIMATIONS
 		//// Setting animation data
 		// Player
-		animList.push_back(&playerCharging);
-		animList.push_back(&playerCharged);
-		animList.push_back(&playerDashing);
-		animList.push_back(&playerRun_F);
-		animList.push_back(&playerRun_B);
-		animList.push_back(&playerRun_L);
-		animList.push_back(&playerRun_R);
-		animList.push_back(&playerDodge_F);
-		animList.push_back(&playerDodge_B);
-		animList.push_back(&playerDodge_L);
-		animList.push_back(&playerDodge_R);
-		animList.push_back(&playerDeath);
-		animList.push_back(&playerSpecial);
-		animList.push_back(&playerBash);
-		// 
-		// // Marauder
-		// 
-		// //// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		// // this takes a lot of time.
-		std::stringstream curPath;
-		float curFrameTime;
-		for (int i = 0; i < animList.size(); i++) {
-			curFrameTime = animList[i]->animTime / animList[i]->numFrames;
-			for (int frame = 0; frame < animList[i]->numFrames; frame++) {
-				curPath = std::stringstream();
-				if (frame < 10) {
-					curPath << animList[i]->basePath << 0 << frame << ".obj";
-				}
-				else {
-					curPath << animList[i]->basePath << frame << ".obj";
-				}
-				animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
-			}
-		}
+		//animList.push_back(&playerCharging);
+		//animList.push_back(&playerCharged);
+		//animList.push_back(&playerDashing);
+		//animList.push_back(&playerRun_F);
+		//animList.push_back(&playerRun_B);
+		//animList.push_back(&playerRun_L);
+		//animList.push_back(&playerRun_R);
+		//animList.push_back(&playerDodge_F);
+		//animList.push_back(&playerDodge_B);
+		//animList.push_back(&playerDodge_L);
+		//animList.push_back(&playerDodge_R);
+		//animList.push_back(&playerDeath);
+		//animList.push_back(&playerSpecial);
+		//animList.push_back(&playerBash);
+		//// 
+		//// // Marauder
+		//// 
+		//// //// Auto creation of animations based on data (DO NOT CHANGE THIS)
+		//// // this takes a lot of time.
+		//std::stringstream curPath;
+		//float curFrameTime;
+		//for (int i = 0; i < animList.size(); i++) {
+		//	curFrameTime = animList[i]->animTime / animList[i]->numFrames;
+		//	for (int frame = 0; frame < animList[i]->numFrames; frame++) {
+		//		curPath = std::stringstream();
+		//		if (frame < 10) {
+		//			curPath << animList[i]->basePath << 0 << frame << ".obj";
+		//		}
+		//		else {
+		//			curPath << animList[i]->basePath << frame << ".obj";
+		//		}
+		//		animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
+		//	}
+		//}
 
-		//// Add finished animations to objects
-		// Player
-		playerObj->AddAnimation(playerCharging.anim);
-		playerObj->AddAnimation(playerCharged.anim);
-		playerObj->AddAnimation(playerDashing.anim);
-		playerObj->AddAnimation(playerRun_F.anim);
-		playerObj->AddAnimation(playerRun_B.anim);
-		playerObj->AddAnimation(playerRun_L.anim);
-		playerObj->AddAnimation(playerRun_R.anim);
-		playerObj->AddAnimation(playerDodge_F.anim);
-		playerObj->AddAnimation(playerDodge_B.anim);
-		playerObj->AddAnimation(playerDodge_L.anim);
-		playerObj->AddAnimation(playerDodge_R.anim);
-		playerObj->AddAnimation(playerDeath.anim);
-		playerObj->AddAnimation(playerSpecial.anim);
-		playerObj->AddAnimation(playerBash.anim);
+		////// Add finished animations to objects
+		//// Player
+		//playerObj->AddAnimation(playerCharging.anim);
+		//playerObj->AddAnimation(playerCharged.anim);
+		//playerObj->AddAnimation(playerDashing.anim);
+		//playerObj->AddAnimation(playerRun_F.anim);
+		//playerObj->AddAnimation(playerRun_B.anim);
+		//playerObj->AddAnimation(playerRun_L.anim);
+		//playerObj->AddAnimation(playerRun_R.anim);
+		//playerObj->AddAnimation(playerDodge_F.anim);
+		//playerObj->AddAnimation(playerDodge_B.anim);
+		//playerObj->AddAnimation(playerDodge_L.anim);
+		//playerObj->AddAnimation(playerDodge_R.anim);
+		//playerObj->AddAnimation(playerDeath.anim);
+		//playerObj->AddAnimation(playerSpecial.anim);
+		//playerObj->AddAnimation(playerBash.anim);
 
 
 		//Skybox stuff
@@ -782,101 +783,6 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(bool loadFromFile) {
 
 	// updates the light list to apply lights to all materials
 	lgtList->Update(1.0F);
-
-	// std::vector<cherry::Object*> allSceneObjects = objList->GetObjects();
-	// std::string curObjStr;
-	// 
-	// this->obstacles.clear();
-	// 
-	// 
-	// for (int i = 0; i < allSceneObjects.size(); i++) {
-	// 	curObjStr = allSceneObjects[i]->ToString();
-	// 
-	// 	if (curObjStr.find("GDW_1_Y2 - Tile Sets (MAS_1 - ASN03 - Texturing).blend") != std::string::npos) { // wall
-	// 		//std::cout << "its a wall" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("charactoereee.blend") != std::string::npos) { // player
-	// 		//std::cout << "its a player" << std::endl;
-	// 		this->playerObj = (cnz::Player*)allSceneObjects[i];
-	// 		this->playerObj->SetPosition(allSceneObjects[i]->GetPosition());
-	// 		this->playerSpawn = allSceneObjects[i]->GetPosition();
-	// 		this->playerObj->SetRotation(cherry::Vec3(0, 0, 0), true);
-	// 		this->playerObj->SetRotationXDegrees(90);
-	// 		this->playerObj->SetRotationZDegrees(180);
-	// 		this->playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
-	// 	}
-	// 	else if (curObjStr.find("Dumpster.blend") != std::string::npos) { // dumpster
-	// 		//std::cout << "its a dumpster" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("Lamp_Side.blend") != std::string::npos) { // lamp post
-	// 		//std::cout << "its a lamp post" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-	// 
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("Lamp_Corner.blend") != std::string::npos) { // lamp post corner
-	// 	//	std::cout << "its a lamp post corner" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-	// 
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("Lamp_Center.blend") != std::string::npos) { // lamp post middle
-	// 		//std::cout << "its a lamp post middle" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		tempList->AddLight(new cherry::Light(GetName(), allSceneObjects[i]->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
-	// 
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("drum.blend") != std::string::npos) { // barrel
-	// 		//std::cout << "its a barrel" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("katana.blend") != std::string::npos) { // katana
-	// 		//std::cout << "its a katana" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("GDW_1_Y2 - Pillar.blend") != std::string::npos) { // pillar
-	// 		//std::cout << "its a pillar" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("manhole.blend") != std::string::npos) { // manhole
-	// 		//std::cout << "its a manhole" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("Road.blend") != std::string::npos) { // road
-	// 		//std::cout << "its a road" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// 	else if (curObjStr.find("sidewalk.blend") != std::string::npos) { // sidewalk
-	// 		//std::cout << "its a sidewalk" << std::endl;
-	// 		this->obstacles.push_back(allSceneObjects[i]);
-	// 		//cherry::Material::Sptr mat = allSceneObjects[i]->GetMaterial();
-	// 		//tempList->ApplyLights(mat, tempList->GetLightCount());
-	// 	}
-	// }
-	// tempList->Update(0.0f);
-	// allSceneObjects.clear(); // clear up some memory since all of these pointers are added to other lists
 }
 
 // gets the visible physics bodies.
@@ -1333,20 +1239,46 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 			}
 
-
+			// stacks of indexes to be removed.
+			std::stack<int> indexes;
+			
 			for (int i = 0; i < enemyList.size(); i++) {
 				if (enemyList[i]->alive == false) {
-					// TODO: the destructor already removes the phyiscs body. So this is probably unneeded.
-					enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
-					cherry::Object* obj = enemyList[i];
-					util::removeFromVector(enemyList, enemyList[i]);
-					objectList->RemoveObjectByPointer(obj);
-					delete obj;
+					// deletes the object.
+					bool destroyed = objectList->DeleteObjectByPointer(enemyList[i]);
+
+					// kill count
 					kills++;
-					cout << kills << endl;
-					i--;
+
+					// if the object was sucessfully destroyed.
+					if(destroyed)
+						indexes.push(i); // the index to be removed.
 				}
 			}
+
+			// while the stack is not empty.
+			while (!indexes.empty())
+			{
+				int index = indexes.top(); // gets the top value
+
+				enemyList.erase(enemyList.begin() + index);
+				indexes.pop(); // pops off value.
+
+			}
+
+			// for (int i = 0; i < enemyList.size(); i++) {
+			// 	if (enemyList[i]->alive == false) {
+			// 		// TODO: the destructor already removes the phyiscs body. So this is probably unneeded.
+			// 		enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+			// 		cherry::Object* obj = enemyList[i];
+			// 		util::removeFromVector(enemyList, enemyList[i]);
+			// 		objectList->RemoveObjectByPointer(obj);
+			// 		delete obj;
+			// 		kills++;
+			// 		cout << kills << endl;
+			// 		i--;
+			// 	}
+			// }
 
 		}
 		else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held

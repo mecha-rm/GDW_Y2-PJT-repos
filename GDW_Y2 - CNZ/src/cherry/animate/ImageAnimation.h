@@ -49,6 +49,8 @@ namespace cherry
 		// copy constructor
 		ImageAnimationFrame(const ImageAnimationFrame&);
 
+		// ~ImageAnimationFrame() = default;
+
 		// gets passed a row and column number, and a width and height of a given size.
 		// this goes from the top to the bottom, with row and colum starting at 0.
 		// need to get maximum row and column count as well

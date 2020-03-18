@@ -433,7 +433,15 @@ void cherry::EngineGameplayScene::OnOpen()
 		//mph->SetLoopsTotal(3);
 		mph->Play();
 		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+		// objectList->objects.at(objectList->objects.size() - 1)->DeleteAllAnimations();
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
+
+		Object* test = new Object(*objectList->objects.at(objectList->objects.size() - 1));
+		test->GetAnimationManager().SetObject(test);
+		test->SetPosition(objectList->objects.at(objectList->objects.size() - 1)->GetPosition() + Vec3(10.0F, 10.0F, 0.0F));
+		test->SetCurrentAnimation(0);
+		test->GetCurrentAnimation()->Play();
+		objectList->AddObject(test);
 
 	}
 

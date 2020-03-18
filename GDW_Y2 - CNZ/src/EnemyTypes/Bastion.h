@@ -23,7 +23,7 @@ namespace cnz {
 
 		void Update(float dt);
 
-		cherry::MorphAnimation walk;
+		cherry::MorphAnimation * walk;
 	private:
 		// loads all aniamtions
 		void LoadAnimations() override;

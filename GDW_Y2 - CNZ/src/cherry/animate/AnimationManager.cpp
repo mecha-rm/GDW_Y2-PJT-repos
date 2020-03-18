@@ -35,6 +35,16 @@ cherry::AnimationManager::~AnimationManager()
 	animations.clear();
 }
 
+// sets the object for all animations in the list.
+void cherry::AnimationManager::SetObject(Object* object)
+{
+	if (object == nullptr)
+		return;
+
+	for (Animation* ani : animations)
+		ani->SetObject(object);
+}
+
 // adds an animation, and makes it the current one if a 'true' is passed
 bool cherry::AnimationManager::AddAnimation(cherry::Animation * newAni, bool current)
 {
@@ -82,6 +92,26 @@ void cherry::AnimationManager::DeleteAllAnimations()
 		delete ani;
 
 	animations.clear();
+}
+
+// replaces all animations
+void cherry::AnimationManager::ReplaceAnimations(const AnimationManager& manager)
+{
+	DeleteAllAnimations();
+
+	// copying the animations
+	for (Animation* a : manager.animations)
+	{
+		switch (a->GetId()) // id
+		{
+		case 1: // morph targets
+			animations.push_back(new MorphAnimation(*((MorphAnimation*)a)));
+			break;
+		case 3: // image animation
+			animations.push_back(new ImageAnimation(*((ImageAnimation*)a)));
+			break;
+		}
+	}
 }
 
 // gets the total amount of animations

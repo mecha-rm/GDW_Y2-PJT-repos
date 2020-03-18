@@ -148,7 +148,11 @@ cherry::Object::Object(const cherry::Object& obj)
 	CreateEntity(obj.GetSceneName(), obj.GetMaterial());
 	
 	// copying the animation manager.
-	animations = obj.animations;
+	animations.DeleteAllAnimations();
+
+	// replaces all animations
+	animations.ReplaceAnimations(obj.animations);
+	animations.SetObject(this); // set the animations to use the new object.
 
 	PhysicsBodyBox* box = nullptr;
 	PhysicsBodySphere* sphere = nullptr;

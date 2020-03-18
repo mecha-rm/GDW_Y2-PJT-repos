@@ -18,7 +18,7 @@ cherry::Animation::Animation(const cherry::Animation& ani)
 	DeleteAllFrames();
 	
 	// copying frames
-	for (AnimationFrame* f : frames)
+	for (AnimationFrame* f : ani.frames)
 	{
 		switch (ani.GetId()) // id of animation
 		{

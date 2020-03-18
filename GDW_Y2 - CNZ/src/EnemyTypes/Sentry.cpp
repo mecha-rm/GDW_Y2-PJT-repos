@@ -24,8 +24,10 @@ cnz::Sentry::Sentry(const cnz::Sentry& sentry)
 {
 	description = "Sentry";
 
-	walk = sentry.walk;
-	AddAnimation(&walk);
+	// getting references to the animations
+	cherry::AnimationManager& ani = GetAnimationManager();
+
+	walk = (cherry::MorphAnimation*)ani.GetAnimation(0);
 }
 
 // copies the enemy and replaces its scene.
@@ -33,44 +35,47 @@ cnz::Sentry::Sentry(const cnz::Sentry* obj, std::string scene) : cnz::Enemy(obj,
 {
 	description = "Sentry";
 
-	walk = obj->walk;
-	AddAnimation(&walk);
+	// getting references to the animations
+	cherry::AnimationManager& ani = GetAnimationManager();
+
+	walk = (cherry::MorphAnimation*)ani.GetAnimation(0);
 }
 
 // load aniamtions
 void cnz::Sentry::LoadAnimations()
 {
-	walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000000.obj", 0.04034f));
-	walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000001.obj", 0.04034f));
-	walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000002.obj", 0.04034f));
-	walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000003.obj", 0.04034f));
-	walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000004.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000005.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000006.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000007.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000008.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000009.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000010.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000011.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000012.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000013.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000014.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000015.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000016.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000017.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000018.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000019.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000020.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000021.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000022.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000023.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000024.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000025.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000026.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000027.obj", 0.04034f));
-	//walk.AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000028.obj", 0.04034f));
+	walk = new cherry::MorphAnimation();
+	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000000.obj", 0.04034f));
+	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000001.obj", 0.04034f));
+	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000002.obj", 0.04034f));
+	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000003.obj", 0.04034f));
+	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000004.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000005.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000006.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000007.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000008.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000009.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000010.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000011.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000012.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000013.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000014.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000015.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000016.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000017.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000018.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000019.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000020.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000021.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000022.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000023.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000024.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000025.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000026.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000027.obj", 0.04034f));
+	//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk_Forward/Sentry_WF_000028.obj", 0.04034f));
 
-	this->AddAnimation(&walk);
+	this->AddAnimation(walk);
 }
 
 void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)

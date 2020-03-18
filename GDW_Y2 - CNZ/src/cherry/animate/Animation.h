@@ -204,6 +204,9 @@ namespace cherry
 		// copy constructor
 		AnimationFrame(const AnimationFrame&);
 
+		// destructor
+		virtual ~AnimationFrame() = default;
+
 		// length of time in milliseconds the frame lasts for.
 		float GetDelayUnits() const;
 

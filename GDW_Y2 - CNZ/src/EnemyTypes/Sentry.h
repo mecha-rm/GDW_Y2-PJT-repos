@@ -22,7 +22,7 @@ namespace cnz {
 
 		void Update(float dt);
 
-		cherry::MorphAnimation walk;
+		cherry::MorphAnimation* walk;
 
 	private:
 		cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);
