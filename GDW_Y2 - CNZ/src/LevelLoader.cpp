@@ -1,5 +1,6 @@
 #include "LevelLoader.h"
 #include "cherry/scenes/SceneManager.h"
+#include "scenes/CNZ_GameplayScene.h"
 #include <toolkit/Logging.h>
 
 // sources
@@ -9,6 +10,7 @@ cnz::Oracle* cnz::Level::sourceOracle = nullptr;
 cnz::Marauder* cnz::Level::sourceMarauder = nullptr;
 cnz::Bastion* cnz::Level::sourceBastion = nullptr;
 cnz::Mechaspider* cnz::Level::sourceSpider = nullptr;
+cnz::Projectile* cnz::Level::arrowBase = nullptr;
 
 // cell offset
 const float cnz::Level::cellOffset = 6.25f;
@@ -983,7 +985,7 @@ void cnz::Level::GenerateSources()
 		}
 	}
 
-	// creating the scene
+	// creating the scene base objects
 	cherry::SceneManager::RegisterScene(sceneName);
 
 	// generating defaults
@@ -995,6 +997,11 @@ void cnz::Level::GenerateSources()
 
 	sourceBastion = new Bastion(sceneName);
 	sourceSpider = new Mechaspider(sceneName);
+
+	arrowBase = new Projectile("res/objects/weapons/arrow.obj", sceneName);
+
+	// creating the enemy groups
+	CNZ_GameplayScene::LoadEnemyGroups();
 }
 
 // gets the objects; will be empty if it doesn't exist yet.

@@ -2,6 +2,10 @@
 #include "..\CNZ_Game.h"
 #include <stack>
 
+// static variables
+std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
+bool cnz::CNZ_GameplayScene::groupsLoaded = false;
+
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
 float GetDistance(cherry::Vec3, cherry::Vec3);
@@ -65,35 +69,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
-	
-	
-
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000001.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000002.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000003.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000004.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000005.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000007.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000008.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000009.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000010.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000011.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000013.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000014.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000015.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000016.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000017.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000019.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000020.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000021.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000022.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000023.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000024.obj", 0.041538f));
-	//this->playerCharging->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 0.041538f));
 
 	// load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
 	if (levelLoading) {
@@ -105,67 +80,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		LightList * tempList = lightList;
 		playerObj = map.GetPlayerObject();
 		
-		//{
-		//	// adding a physics body.
-		//	Vec3 dmns = playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum();
-		//	playerObj->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
-		//}
-
-		//// ANIMATIONS
-		//// Setting animation data
-		// Player
-		//animList.push_back(&playerCharging);
-		//animList.push_back(&playerCharged);
-		//animList.push_back(&playerDashing);
-		//animList.push_back(&playerRun_F);
-		//animList.push_back(&playerRun_B);
-		//animList.push_back(&playerRun_L);
-		//animList.push_back(&playerRun_R);
-		//animList.push_back(&playerDodge_F);
-		//animList.push_back(&playerDodge_B);
-		//animList.push_back(&playerDodge_L);
-		//animList.push_back(&playerDodge_R);
-		//animList.push_back(&playerDeath);
-		//animList.push_back(&playerSpecial);
-		//animList.push_back(&playerBash);
-		//// 
-		//// // Marauder
-		//// 
-		//// //// Auto creation of animations based on data (DO NOT CHANGE THIS)
-		//// // this takes a lot of time.
-		//std::stringstream curPath;
-		//float curFrameTime;
-		//for (int i = 0; i < animList.size(); i++) {
-		//	curFrameTime = animList[i]->animTime / animList[i]->numFrames;
-		//	for (int frame = 0; frame < animList[i]->numFrames; frame++) {
-		//		curPath = std::stringstream();
-		//		if (frame < 10) {
-		//			curPath << animList[i]->basePath << 0 << frame << ".obj";
-		//		}
-		//		else {
-		//			curPath << animList[i]->basePath << frame << ".obj";
-		//		}
-		//		animList[i]->anim->AddFrame(new cherry::MorphAnimationFrame(curPath.str(), curFrameTime));
-		//	}
-		//}
-
-		////// Add finished animations to objects
-		//// Player
-		//playerObj->AddAnimation(playerCharging.anim);
-		//playerObj->AddAnimation(playerCharged.anim);
-		//playerObj->AddAnimation(playerDashing.anim);
-		//playerObj->AddAnimation(playerRun_F.anim);
-		//playerObj->AddAnimation(playerRun_B.anim);
-		//playerObj->AddAnimation(playerRun_L.anim);
-		//playerObj->AddAnimation(playerRun_R.anim);
-		//playerObj->AddAnimation(playerDodge_F.anim);
-		//playerObj->AddAnimation(playerDodge_B.anim);
-		//playerObj->AddAnimation(playerDodge_L.anim);
-		//playerObj->AddAnimation(playerDodge_R.anim);
-		//playerObj->AddAnimation(playerDeath.anim);
-		//playerObj->AddAnimation(playerSpecial.anim);
-		//playerObj->AddAnimation(playerBash.anim);
-
 
 		//Skybox stuff
 		skyboxObj = cherry::Skybox(
@@ -199,170 +113,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// mechaspider = new Mechaspider(GetName());
 		// mechaspider->SetVisible(false);
 
-		arrowBase = new Projectile("res/objects/weapons/arrow.obj", GetName());
-		arrowBase->SetVisible(false);
+		arrowBase = Level::arrowBase;
+		// arrowBase->SetVisible(false);
 
-		for (int i = 0; i < 20; i++) {
-			enemyGroups.push_back(std::vector<string>());
-		}
-
-		//Easy
-		enemyGroups[0].push_back("marauder");
-		enemyGroups[0].push_back("marauder");
-		enemyGroups[0].push_back("sentry");
-
-		//Easy
-		enemyGroups[1].push_back("mechaspider");
-		enemyGroups[1].push_back("mechaspider");
-		enemyGroups[1].push_back("mechaspider");
-		enemyGroups[1].push_back("mechaspider");
-		enemyGroups[1].push_back("mechaspider");
-
-		//Easy
-		enemyGroups[2].push_back("bastion");
-		enemyGroups[2].push_back("mechaspider");
-		enemyGroups[2].push_back("mechaspider");
-		enemyGroups[2].push_back("mechaspider");
-
-		//Easy
-		enemyGroups[3].push_back("marauder");
-		enemyGroups[3].push_back("marauder");
-		enemyGroups[3].push_back("oracle");
-		enemyGroups[3].push_back("oracle");
-
-		//Easy
-		enemyGroups[4].push_back("marauder");
-		enemyGroups[4].push_back("marauder");
-		enemyGroups[4].push_back("marauder");
-		enemyGroups[4].push_back("marauder");
-		enemyGroups[4].push_back("marauder");
-
-		//Easy
-		enemyGroups[5].push_back("bastion");
-		enemyGroups[5].push_back("bastion");
-
-		//Medium
-		enemyGroups[6].push_back("sentry");
-		enemyGroups[6].push_back("sentry");
-		enemyGroups[6].push_back("oracle");
-
-		//Medium
-		enemyGroups[7].push_back("marauder");
-		enemyGroups[7].push_back("sentry");
-		enemyGroups[7].push_back("oracle");
-		enemyGroups[7].push_back("bastion");
-
-		//Medium
-		enemyGroups[8].push_back("oracle");
-		enemyGroups[8].push_back("oracle");
-		enemyGroups[8].push_back("bastion");
-		enemyGroups[8].push_back("mechaspider");
-
-		//Medium
-		enemyGroups[9].push_back("sentry");
-		enemyGroups[9].push_back("bastion");
-		enemyGroups[9].push_back("bastion");
-
-		//Medium
-		enemyGroups[10].push_back("oracle");
-		enemyGroups[10].push_back("oracle");
-		enemyGroups[10].push_back("oracle");
-		enemyGroups[10].push_back("oracle");
-
-		//Medium
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("marauder");
-		enemyGroups[11].push_back("mechaspider");
-
-		//Medium
-		enemyGroups[12].push_back("sentry");
-		enemyGroups[12].push_back("sentry");
-		enemyGroups[12].push_back("bastion");
-		enemyGroups[12].push_back("bastion");
-		enemyGroups[12].push_back("bastion");
-
-		//Hard
-		enemyGroups[13].push_back("sentry");
-		enemyGroups[13].push_back("sentry");
-		enemyGroups[13].push_back("sentry");
-		enemyGroups[13].push_back("sentry");
-		enemyGroups[13].push_back("sentry");
-
-		//Hard
-		enemyGroups[14].push_back("sentry");
-		enemyGroups[14].push_back("oracle");
-		enemyGroups[14].push_back("oracle");
-		enemyGroups[14].push_back("oracle");
-		enemyGroups[14].push_back("bastion");
-
-		//Hard
-		enemyGroups[15].push_back("marauder");
-		enemyGroups[15].push_back("marauder");
-		enemyGroups[15].push_back("oracle");
-		enemyGroups[15].push_back("oracle");
-		enemyGroups[15].push_back("oracle");
-		enemyGroups[15].push_back("mechaspider");
-		enemyGroups[15].push_back("mechaspider");
-		enemyGroups[15].push_back("mechaspider");
-
-		//Hard
-		enemyGroups[16].push_back("bastion");
-		enemyGroups[16].push_back("bastion");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-		enemyGroups[16].push_back("mechaspider");
-
-		//Hard
-		enemyGroups[17].push_back("marauder");
-		enemyGroups[17].push_back("marauder");
-		enemyGroups[17].push_back("marauder");
-		enemyGroups[17].push_back("marauder");
-		enemyGroups[17].push_back("sentry");
-		enemyGroups[17].push_back("sentry");
-		enemyGroups[17].push_back("bastion");
-		enemyGroups[17].push_back("bastion");
-		enemyGroups[17].push_back("bastion");
-
-		//Insane
-		enemyGroups[18].push_back("sentry");
-		enemyGroups[18].push_back("sentry");
-		enemyGroups[18].push_back("sentry");
-		enemyGroups[18].push_back("oracle");
-		enemyGroups[18].push_back("oracle");
-		enemyGroups[18].push_back("oracle");
-		enemyGroups[18].push_back("bastion");
-		enemyGroups[18].push_back("bastion");
-		enemyGroups[18].push_back("bastion");
-
-		//Insane
-		enemyGroups[19].push_back("marauder");
-		enemyGroups[19].push_back("marauder");
-		enemyGroups[19].push_back("sentry");
-		enemyGroups[19].push_back("sentry");
-		enemyGroups[19].push_back("sentry");
-		enemyGroups[19].push_back("oracle");
-		enemyGroups[19].push_back("oracle");
-		enemyGroups[19].push_back("bastion");
-		enemyGroups[19].push_back("mechaspider");
-		enemyGroups[19].push_back("mechaspider");
-		enemyGroups[19].push_back("mechaspider"); 
-
-		// adds all the enemies to the scene.
-		// for (int i = 0; i < enemyGroups.size(); i++)
-		// 	for (int j = 0; j < enemyGroups[i].size(); j++)
-		// 		AddObjectToScene(enemyGroups[i][j]);
+		// if the enemy groups have not been loaded yet.
+		if (!groupsLoaded || enemyGroups.empty())
+			LoadEnemyGroups();
+		
 
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(4);
@@ -763,7 +520,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 	}
 }
 
-// 
+// generates the objects.
 void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(bool loadFromFile) {
 	using namespace cherry;
 
@@ -783,6 +540,172 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(bool loadFromFile) {
 
 	// updates the light list to apply lights to all materials
 	lgtList->Update(1.0F);
+}
+
+// loads the enemy strings
+void cnz::CNZ_GameplayScene::LoadEnemyGroups()
+{
+	enemyGroups.clear();
+
+	// filling the vector
+	for (int i = 0; i < 20; i++) {
+		enemyGroups.push_back(std::vector<string>());
+	}
+
+	//Easy
+	enemyGroups[0].push_back("marauder");
+	enemyGroups[0].push_back("marauder");
+	enemyGroups[0].push_back("sentry");
+
+	//Easy
+	enemyGroups[1].push_back("mechaspider");
+	enemyGroups[1].push_back("mechaspider");
+	enemyGroups[1].push_back("mechaspider");
+	enemyGroups[1].push_back("mechaspider");
+	enemyGroups[1].push_back("mechaspider");
+
+	//Easy
+	enemyGroups[2].push_back("bastion");
+	enemyGroups[2].push_back("mechaspider");
+	enemyGroups[2].push_back("mechaspider");
+	enemyGroups[2].push_back("mechaspider");
+
+	//Easy
+	enemyGroups[3].push_back("marauder");
+	enemyGroups[3].push_back("marauder");
+	enemyGroups[3].push_back("oracle");
+	enemyGroups[3].push_back("oracle");
+
+	//Easy
+	enemyGroups[4].push_back("marauder");
+	enemyGroups[4].push_back("marauder");
+	enemyGroups[4].push_back("marauder");
+	enemyGroups[4].push_back("marauder");
+	enemyGroups[4].push_back("marauder");
+
+	//Easy
+	enemyGroups[5].push_back("bastion");
+	enemyGroups[5].push_back("bastion");
+
+	//Medium
+	enemyGroups[6].push_back("sentry");
+	enemyGroups[6].push_back("sentry");
+	enemyGroups[6].push_back("oracle");
+
+	//Medium
+	enemyGroups[7].push_back("marauder");
+	enemyGroups[7].push_back("sentry");
+	enemyGroups[7].push_back("oracle");
+	enemyGroups[7].push_back("bastion");
+
+	//Medium
+	enemyGroups[8].push_back("oracle");
+	enemyGroups[8].push_back("oracle");
+	enemyGroups[8].push_back("bastion");
+	enemyGroups[8].push_back("mechaspider");
+
+	//Medium
+	enemyGroups[9].push_back("sentry");
+	enemyGroups[9].push_back("bastion");
+	enemyGroups[9].push_back("bastion");
+
+	//Medium
+	enemyGroups[10].push_back("oracle");
+	enemyGroups[10].push_back("oracle");
+	enemyGroups[10].push_back("oracle");
+	enemyGroups[10].push_back("oracle");
+
+	//Medium
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("marauder");
+	enemyGroups[11].push_back("mechaspider");
+
+	//Medium
+	enemyGroups[12].push_back("sentry");
+	enemyGroups[12].push_back("sentry");
+	enemyGroups[12].push_back("bastion");
+	enemyGroups[12].push_back("bastion");
+	enemyGroups[12].push_back("bastion");
+
+	//Hard
+	enemyGroups[13].push_back("sentry");
+	enemyGroups[13].push_back("sentry");
+	enemyGroups[13].push_back("sentry");
+	enemyGroups[13].push_back("sentry");
+	enemyGroups[13].push_back("sentry");
+
+	//Hard
+	enemyGroups[14].push_back("sentry");
+	enemyGroups[14].push_back("oracle");
+	enemyGroups[14].push_back("oracle");
+	enemyGroups[14].push_back("oracle");
+	enemyGroups[14].push_back("bastion");
+
+	//Hard
+	enemyGroups[15].push_back("marauder");
+	enemyGroups[15].push_back("marauder");
+	enemyGroups[15].push_back("oracle");
+	enemyGroups[15].push_back("oracle");
+	enemyGroups[15].push_back("oracle");
+	enemyGroups[15].push_back("mechaspider");
+	enemyGroups[15].push_back("mechaspider");
+	enemyGroups[15].push_back("mechaspider");
+
+	//Hard
+	enemyGroups[16].push_back("bastion");
+	enemyGroups[16].push_back("bastion");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+	enemyGroups[16].push_back("mechaspider");
+
+	//Hard
+	enemyGroups[17].push_back("marauder");
+	enemyGroups[17].push_back("marauder");
+	enemyGroups[17].push_back("marauder");
+	enemyGroups[17].push_back("marauder");
+	enemyGroups[17].push_back("sentry");
+	enemyGroups[17].push_back("sentry");
+	enemyGroups[17].push_back("bastion");
+	enemyGroups[17].push_back("bastion");
+	enemyGroups[17].push_back("bastion");
+
+	//Insane
+	enemyGroups[18].push_back("sentry");
+	enemyGroups[18].push_back("sentry");
+	enemyGroups[18].push_back("sentry");
+	enemyGroups[18].push_back("oracle");
+	enemyGroups[18].push_back("oracle");
+	enemyGroups[18].push_back("oracle");
+	enemyGroups[18].push_back("bastion");
+	enemyGroups[18].push_back("bastion");
+	enemyGroups[18].push_back("bastion");
+
+	//Insane
+	enemyGroups[19].push_back("marauder");
+	enemyGroups[19].push_back("marauder");
+	enemyGroups[19].push_back("sentry");
+	enemyGroups[19].push_back("sentry");
+	enemyGroups[19].push_back("sentry");
+	enemyGroups[19].push_back("oracle");
+	enemyGroups[19].push_back("oracle");
+	enemyGroups[19].push_back("bastion");
+	enemyGroups[19].push_back("mechaspider");
+	enemyGroups[19].push_back("mechaspider");
+	enemyGroups[19].push_back("mechaspider");
+
+	groupsLoaded = true;
 }
 
 // gets the visible physics bodies.
@@ -1035,16 +958,31 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
 						////Spawn projectiles
 						enemyList[i]->attacking = true;
-						projList.push_back(new Projectile(*arrowBase));
+
+						Projectile* proj = new Projectile(*arrowBase);
+
+						projList.push_back(proj);
 						projTimeList.push_back(0);
-						projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
-						projList[projList.size() - 1]->SetWhichGroup(i);
-						//projList[projList.size() - 1]->SetWhichEnemy(j);
-						projList[projList.size() - 1]->active = true;
-						projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
-						projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-						projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-						game->AddObjectToScene(projList[projList.size() - 1]);
+
+						proj->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
+						proj->SetWhichGroup(i);
+						//proj->SetWhichEnemy(j);
+						proj->active = true;
+						proj->SetPosition(enemyList[i]->GetPosition());
+						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+						proj->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+						game->AddObjectToScene(proj);
+
+						// projList.push_back(new Projectile(*arrowBase));
+						// projTimeList.push_back(0);
+						// projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
+						// projList[projList.size() - 1]->SetWhichGroup(i);
+						// //projList[projList.size() - 1]->SetWhichEnemy(j);
+						// projList[projList.size() - 1]->active = true;
+						// projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
+						// projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+						// projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+						// game->AddObjectToScene(projList[projList.size() - 1]);
 
 						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 							enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1136,6 +1074,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		for (int i = 0; i < projList.size(); i++) {
 			if (projList[i]->active == true) {
 				projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
+
+				// is this needed?
 				projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
 				projTimeList[i] += deltaTime;
 				if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projList[i]->GetPhysicsBodies()[0])) {
@@ -1156,7 +1096,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
 			//Display indicator
 			//indArrowAnim->Play();
-			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -1.90f));
+			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -0.80f));
 			indicatorObj->SetVisible(true);
 			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 		}

@@ -158,6 +158,9 @@ namespace cnz
 		// source mechaspider object; copy this object for faster object construction.
 		static Mechaspider* sourceSpider;
 
+		// source arrow base
+		static Projectile* arrowBase;
+
 		// static Projectile* sourceProjectile;
 
 

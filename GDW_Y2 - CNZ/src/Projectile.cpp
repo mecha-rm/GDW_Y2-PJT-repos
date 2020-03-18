@@ -1,13 +1,13 @@
 #include "Projectile.h"
 
-Projectile::Projectile(const Projectile & arrow) : Object(arrow)
+cnz::Projectile::Projectile(const Projectile & arrow) : Object(arrow)
 {
 	// *this = arrow;
 	pBodySize = arrow.GetPBodySize();
 	drawPBody = arrow.GetDrawPBody();
 }
 
-void Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
+void cnz::Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
 {
 	arrowDirVec = endPos - startPos;
 
@@ -17,11 +17,11 @@ void Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
 	arrowDirVec.SetZ(arrowDirVec.GetZ() / temp);
 }
 
-void Projectile::SetDirVec(cherry::Vec3 dirVec) {
+void cnz::Projectile::SetDirVec(cherry::Vec3 dirVec) {
 	arrowDirVec = dirVec;
 }
 
-bool Projectile::SetDrawPBody(bool draw)
+bool cnz::Projectile::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
 		this->drawPBody = false;
@@ -33,27 +33,27 @@ bool Projectile::SetDrawPBody(bool draw)
 	}
 }
 
-bool Projectile::GetDrawPBody() const
+bool cnz::Projectile::GetDrawPBody() const
 {
 	return this->drawPBody;
 }
 
-cherry::Vec3 Projectile::GetPBodySize() const
+cherry::Vec3 cnz::Projectile::GetPBodySize() const
 {
 	return this->pBodySize;
 }
 
-float Projectile::GetPBodyWidth() const
+float cnz::Projectile::GetPBodyWidth() const
 {
 	return this->GetPBodySize().GetX() / 2;
 }
 
-float Projectile::GetPBodyHeight() const
+float cnz::Projectile::GetPBodyHeight() const
 {
 	return this->GetPBodySize().GetY() / 2;
 }
 
-float Projectile::GetPBodyDepth() const
+float cnz::Projectile::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;
 }

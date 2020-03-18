@@ -16,7 +16,7 @@ cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen)
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
-	bool loadMenu = true; // if 'true', it loads in from the menu.
+	bool loadMenu = false; // if 'true', it loads in from the menu.
 
 	// 30 frames per second
 	FPS = 30;

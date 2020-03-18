@@ -74,6 +74,9 @@ namespace cnz
 		// if 'true' is passed, then the level is loaded from the file. If false is passed, then the default load is used.
 		void MapSceneObjectsToGame(bool loadFromFile = true);
 		
+		// loads the enemy strings
+		static void LoadEnemyGroups();
+
 		// returns 'true' if physics bodies are visible.
 		// do note that this checks if they are on overall; individual objects can enable their own without this returning true.
 		bool GetVisiblePhysicsBodies() const;
@@ -115,7 +118,10 @@ namespace cnz
 		Projectile* arrowBase = nullptr;
 		// 
 		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
-		std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+
+		static std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
+		static bool groupsLoaded; // becomes 'true' when the groups are loaded in.
+
 		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
