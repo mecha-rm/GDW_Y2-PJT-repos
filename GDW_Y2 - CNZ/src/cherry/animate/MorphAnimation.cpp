@@ -255,7 +255,7 @@ void cherry::MorphAnimationFrame::LoadPose()
 	// if the file is closed.
 	if (!file)
 	{
-		std::runtime_error("File access failure");
+		throw std::runtime_error("File access failure.");
 		file.close();
 		return;
 	}

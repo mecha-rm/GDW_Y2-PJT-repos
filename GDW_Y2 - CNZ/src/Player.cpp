@@ -100,6 +100,10 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	Vec3 dmns = plyr->GetMeshBodyMaximum() - plyr->GetMeshBodyMinimum();
 	plyr->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
 
+	// setting emissive colour and power
+	plyr->SetEmissiveColor(Vec3(0.0F, 1.0F, 1.0F));
+	plyr->SetEmissivePower(0.3F);
+
 	// animation 1
 	// if(false) // commenting out
 	// {
@@ -142,7 +146,6 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 
 	// TODO: optimize
 	// loading animations
-	if(true)
 	{
 		// full
 		// animations
@@ -158,7 +161,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 		// cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
 		// cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
 		// cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
-		// cnz::AnimStruct playerSpecial = { 37, "res/onjects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerSpecial = { 37, "res/objects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
 		// cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
 
 		// testing
@@ -174,7 +177,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 		cnz::AnimStruct playerDodge_L = { 1, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerDodge_R = { 1, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerDeath = { 1, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerSpecial = { 1, "res/onjects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+		cnz::AnimStruct playerSpecial = { 1, "res/objects/anims/player/Special Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
 		cnz::AnimStruct playerBash = { 1, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
 
 		std::vector<cnz::AnimStruct*> animList;

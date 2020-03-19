@@ -70,6 +70,11 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 	// TODO: maybe make this static so that you can share defaults?
 	Texture2D::Sptr defaultAlbedo = Texture2D::LoadFromFile("res/images/default.png"); // default albedo
 
+	// the albedos for ambient, diffuse, and specular lighting
+	Texture2D::Sptr ambiAlbedo = nullptr;
+	Texture2D::Sptr diffAlbedo = nullptr;
+	Texture2D::Sptr specAlbedo = nullptr;
+
 	// std::ifstream file(filePath, std::ios::in); // opens the file
 	// file.open(filePath, std::ios::in); // opens file
 
@@ -80,14 +85,14 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		throw std::runtime_error("Error opening .mtl file. Is it in the right location?");
 		return false;
 	}
-	
+
 	// only one light
 	Set("a_EnabledLights", 1);
 
 	// default textures
-	Set("s_Albedos[0]", defaultAlbedo);
-	Set("s_Albedos[1]", defaultAlbedo);
-	Set("s_Albedos[2]", defaultAlbedo);
+	Set("s_Albedos[0]", defaultAlbedo); // s_Albedos[0]
+	Set("s_Albedos[1]", defaultAlbedo); // s_Albedos[1]
+	Set("s_Albedos[2]", defaultAlbedo); // s_Albedos[2]
 
 	// gets each line
 	while (std::getline(file, line))
@@ -158,9 +163,16 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// getting the file.
 			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
 
+			// if the file couldn't be found.
+			if (!util::fileAccessible(file))
+				continue;
+
+			// saves ambient albedo
+			ambiAlbedo = Texture2D::LoadFromFile(file);
+
 			// if the file exists and is accessible, then the texture is set.
-			if(util::fileAccessible(file))
-				Set("s_Albedos[0]", Texture2D::LoadFromFile(file));
+			if (util::fileAccessible(file))
+				Set("s_Albedos[0]", ambiAlbedo);
 		}
 		// diffuse map (i.e. texture). This is set to Albedo[1] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Kd")
@@ -171,9 +183,16 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// getting the file.
 			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
 
+			// if the file couldn't be found.
+			if (!util::fileAccessible(file))
+				continue;
+
+			// saves diffuse albedo
+			diffAlbedo = Texture2D::LoadFromFile(file);
+
 			// if the file exists and is accessible, then the texture is set.
 			if (util::fileAccessible(file))
-				Set("s_Albedos[1]", Texture2D::LoadFromFile(file));
+				Set("s_Albedos[1]", diffAlbedo);
 		}
 		// specular map (i.e. texture). This is set to Albedo[2] for multi-texturing.
 		else if (line.substr(0, line.find_first_of(" ")) == "map_Ks")
@@ -184,11 +203,18 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			// getting the file.
 			std::string file = tstr + line.substr(line.find_first_of(" ") + 1);
 
+			// if the file couldn't be found.
+			if (!util::fileAccessible(file))
+				continue;
+
+			// saves specular albedo
+			specAlbedo = Texture2D::LoadFromFile(file);
+
 			// if the file exists and is accessible, then the texture is set.
-			if(util::fileAccessible(file))
-				Set("s_Albedos[2]", Texture2D::LoadFromFile(file));
+			if (util::fileAccessible(file))
+				Set("s_Albedos[2]", specAlbedo);
 		}
-		
+
 		// Index of Refraction (Optical Density)
 		else if (line.substr(0, line.find_first_of(" ")) == "Ni")
 		{
@@ -210,7 +236,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		{
 			/*
 			 * Source: https://en.wikipedia.org/wiki/Wavefront_.obj_file#Material_template_library
-			 * Each value refers to a different illumination mode. 
+			 * Each value refers to a different illumination mode.
 			 * The modes are listed below:
 				0. Color On, Ambient Off
 				1. Color On, Ambient On
@@ -225,11 +251,30 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 				10. Casts shadows onto invisible surfaces
 			*/
 		}
-		
+
 	}
 
 	file.close(); // closing the file
 
+	// makes all textures the same if only one texture was provided.
+	// only an ambient albedo map were given
+	if (ambiAlbedo != nullptr && diffAlbedo == nullptr && specAlbedo == nullptr)
+	{
+		Set("s_Albedos[1]", ambiAlbedo);
+		Set("s_Albedos[2]", ambiAlbedo);
+	}
+	// only a diffuse map was given
+	else if (ambiAlbedo == nullptr && diffAlbedo != nullptr && specAlbedo == nullptr)
+	{
+		Set("s_Albedos[0]", diffAlbedo);
+		Set("s_Albedos[2]", diffAlbedo);
+	}
+	// only a specular map was given
+	else if (ambiAlbedo == nullptr && diffAlbedo == nullptr && specAlbedo != nullptr)
+	{
+		Set("s_Albedos[0]", specAlbedo);
+		Set("s_Albedos[1]", specAlbedo);
+	}
 	return true;
 }
 
@@ -241,7 +286,7 @@ cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, const
 	shader->Load(vs.c_str(), fs.c_str());
 
 	cherry::Material::Sptr tempMat = std::make_shared<cherry::Material>(shader);
-	
+
 	tempMat->LoadMtl(filePath, sampler);
 
 	return tempMat;

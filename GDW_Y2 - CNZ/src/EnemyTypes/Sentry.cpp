@@ -10,8 +10,8 @@ cnz::Sentry::Sentry(std::string scene)
 {
 	description = "Sentry";
 
-	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
-	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
+	SetEmissiveColor(EMISSIVE_COLOR);
+	SetEmissivePower(EMISSIVE_POWER);
 	
 	LoadAnimations();
 }
@@ -22,8 +22,8 @@ cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 {
 	description = "Sentry";
 
-	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
-	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
+	SetEmissiveColor(EMISSIVE_COLOR);
+	SetEmissivePower(EMISSIVE_POWER);
 
 	LoadAnimations();
 }
@@ -55,7 +55,7 @@ cnz::Sentry::Sentry(const cnz::Sentry* obj, std::string scene) : cnz::Enemy(obj,
 void cnz::Sentry::LoadAnimations()
 {
 	walk = new cherry::MorphAnimation();
-	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000000.obj", 0.04034f));
+	// walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000000.obj", 0.04034f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000001.obj", 0.04034f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000002.obj", 0.04034f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000003.obj", 0.04034f));

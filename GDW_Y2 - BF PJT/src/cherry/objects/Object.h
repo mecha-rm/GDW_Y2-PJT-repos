@@ -131,6 +131,25 @@ namespace cherry
 		// Some items need transparency, so if that's the case this and the getter function should be overloaded.
 		virtual void SetAlpha(float a);
 
+
+		// gets the emissive color as a glm vector
+		glm::vec3 GetEmissiveColorGLM() const;
+
+		// gets the emissive color
+		cherry::Vec3 GetEmissiveColor() const;
+
+		// sets the emissive colour of the object (if applicable to the current material).
+		void SetEmissiveColor(cherry::Vec3 emsClr);
+
+		// sets the emissive colour of the object (if applicable to the current material).
+		void SetEmissiveColor(glm::vec3 emsClr);
+
+		// sets the emissive power. The material does not necessarily have an emissive power factor.
+		float GetEmissivePower() const;
+
+		// sets the emissive power. The material does not necessarily have an emissive power factor.
+		void SetEmissivePower(float emsPwr);
+
 		// returns whether or not the object is visible
 		virtual bool IsVisible() const;
 
@@ -573,6 +592,12 @@ namespace cherry
 
 		// the object as a target.
 		std::shared_ptr<cherry::Target> leaderTarget = std::make_shared<cherry::Target>();
+
+		// the emissive color
+		cherry::Vec3 emissiveColor{};
+
+		// the emissive power
+		float emissivePower = 0.0F;
 
 	protected:
 		// constructor used for default primitives

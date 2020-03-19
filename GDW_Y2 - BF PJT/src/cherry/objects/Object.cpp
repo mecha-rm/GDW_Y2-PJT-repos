@@ -286,6 +286,44 @@ void cherry::Object::SetAlpha(float a)
 	}
 }
 
+
+// gets the emissive colour
+glm::vec3 cherry::Object::GetEmissiveColorGLM() const { return glm::vec3(emissiveColor.v.x, emissiveColor.v.y, emissiveColor.v.z); }
+
+// gets the emissive color
+cherry::Vec3 cherry::Object::GetEmissiveColor() const { return cherry::Vec3(emissiveColor); }
+
+// sets the emissive color
+void cherry::Object::SetEmissiveColor(cherry::Vec3 emsClr)
+{
+	// colour bounds
+	emissiveColor.v.x = clamp(emsClr.v.x, 0.0F, 1.0F);
+	emissiveColor.v.y = clamp(emsClr.v.y, 0.0F, 1.0F);
+	emissiveColor.v.z = clamp(emsClr.v.z, 0.0F, 1.0F);
+
+	// setting the value if the material exists
+	if (material != nullptr)
+		material->Set("a_EmissiveColor", glm::vec3( emissiveColor.v.x, emissiveColor.v.y, emissiveColor.v.z));
+}
+
+// sets the emissive color
+void cherry::Object::SetEmissiveColor(glm::vec3 emsClr) { SetEmissiveColor(Vec3(emsClr)); }
+
+// gets the emissive power.
+float cherry::Object::GetEmissivePower() const { return emissivePower; }
+
+// sets the emissive power
+void cherry::Object::SetEmissivePower(float emsPwr) 
+{
+	// emissive power bounds
+	emissivePower = (emsPwr > 0.0F) ? emsPwr : 0.0F;
+
+	// setting the value if the material exists
+	if (material != nullptr)
+		material->Set("a_EmissivePower", emissivePower);
+}
+
+
 // returns if the object is visible
 bool cherry::Object::IsVisible() const { return mesh->IsVisible(); }
 

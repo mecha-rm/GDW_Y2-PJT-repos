@@ -10,8 +10,8 @@ cnz::Marauder::Marauder(std::string scene)
 {
 	description = "Marauder";
 
-	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
-	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
+	SetEmissiveColor(EMISSIVE_COLOR);
+	SetEmissivePower(EMISSIVE_POWER);
 
 	LoadAnimations();
 }
@@ -21,8 +21,8 @@ cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 {
 	description = "Marauder";
 
-	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
-	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
+	SetEmissiveColor(EMISSIVE_COLOR);
+	SetEmissivePower(EMISSIVE_POWER);
 
 	LoadAnimations();
 }
@@ -51,7 +51,8 @@ cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
 void cnz::Marauder::LoadAnimations()
 {
 	walk = new cherry::MorphAnimation();
-	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000000.obj", 0.04181f));
+	
+	// walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000000.obj", 0.04181f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000001.obj", 0.04181f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000002.obj", 0.04181f));
 	walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000003.obj", 0.04181f));

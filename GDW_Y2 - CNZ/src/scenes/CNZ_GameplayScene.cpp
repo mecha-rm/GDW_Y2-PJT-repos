@@ -806,14 +806,17 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						d = false;
 						f = false;
 						ls = false;
+
+						mbLP = false;
+						mbLR = false;
 						spaceP = false;
 						spaceR = false;
 
 						// stops the player from moving through solid objects.
-						cw = true;
-						ca = true;
-						cs = true;
-						cd = true;
+						cw = false;
+						ca = false;
+						cs = false;
+						cd = false;
 					}
 				}
 
