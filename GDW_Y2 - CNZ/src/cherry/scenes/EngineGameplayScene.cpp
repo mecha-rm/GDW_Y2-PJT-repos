@@ -258,6 +258,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 		// Height Map
 		{
+			// Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/dp_test_01.jpg", 30.0f, 50, false);
 			Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 30.0f, 50, false);
 			terrain->SetTexture(0, "res/images/red.png");
 			terrain->SetTexture(1, "res/images/green.png");
