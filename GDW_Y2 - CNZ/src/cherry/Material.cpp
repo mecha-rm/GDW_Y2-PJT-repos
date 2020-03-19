@@ -85,7 +85,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		throw std::runtime_error("Error opening .mtl file. Is it in the right location?");
 		return false;
 	}
-
+	
 	// only one light
 	Set("a_EnabledLights", 1);
 
@@ -171,7 +171,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			ambiAlbedo = Texture2D::LoadFromFile(file);
 
 			// if the file exists and is accessible, then the texture is set.
-			if (util::fileAccessible(file))
+			if(util::fileAccessible(file))
 				Set("s_Albedos[0]", ambiAlbedo);
 		}
 		// diffuse map (i.e. texture). This is set to Albedo[1] for multi-texturing.
@@ -211,10 +211,10 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 			specAlbedo = Texture2D::LoadFromFile(file);
 
 			// if the file exists and is accessible, then the texture is set.
-			if (util::fileAccessible(file))
+			if(util::fileAccessible(file))
 				Set("s_Albedos[2]", specAlbedo);
 		}
-
+		
 		// Index of Refraction (Optical Density)
 		else if (line.substr(0, line.find_first_of(" ")) == "Ni")
 		{
@@ -236,7 +236,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		{
 			/*
 			 * Source: https://en.wikipedia.org/wiki/Wavefront_.obj_file#Material_template_library
-			 * Each value refers to a different illumination mode.
+			 * Each value refers to a different illumination mode. 
 			 * The modes are listed below:
 				0. Color On, Ambient Off
 				1. Color On, Ambient On
@@ -251,7 +251,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 				10. Casts shadows onto invisible surfaces
 			*/
 		}
-
+		
 	}
 
 	file.close(); // closing the file
@@ -286,7 +286,7 @@ cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, const
 	shader->Load(vs.c_str(), fs.c_str());
 
 	cherry::Material::Sptr tempMat = std::make_shared<cherry::Material>(shader);
-
+	
 	tempMat->LoadMtl(filePath, sampler);
 
 	return tempMat;

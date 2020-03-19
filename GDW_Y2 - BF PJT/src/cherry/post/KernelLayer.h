@@ -65,13 +65,13 @@ namespace cherry
 		Kernel3Layer();
 
 		// creates a kernel layer with the provided mat3
-		Kernel3Layer(glm::mat3& kernel);
+		Kernel3Layer(glm::mat3 kernel);
 
 		// gets the matrix
 		glm::mat3 GetMatrix() const;
 
 		// sets the matrix
-		void SetMatrix(glm::mat3& kernel);
+		void SetMatrix(glm::mat3 kernel);
 
 		// to string
 		std::string ToString() const override;

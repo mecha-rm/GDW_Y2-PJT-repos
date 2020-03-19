@@ -613,7 +613,8 @@ void cherry::EngineGameplayScene::OnOpen()
 	// Play the event
 	audioEngine.PlayEvent("Music");
 	audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
-
+	
+	game->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // called when the scene is being closed.

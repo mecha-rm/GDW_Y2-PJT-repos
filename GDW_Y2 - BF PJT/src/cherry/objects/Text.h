@@ -113,10 +113,17 @@
          // the characters need to be updated if there are changes.
          Vec3 worldPos, worldScale, worldRotDeg;
 
+         // checks to see if the text has been made into a window child.
+         bool windowChild = false;
+
          // materials for characters and characters with no symbol
          Material::Sptr knownCharMaterial = nullptr;
 
+         // unusuable character material
          Material::Sptr unknownCharMaterial = nullptr;
+
+         // the name of the current scene
+         std::string sceneName = "";
      protected:
  
      };

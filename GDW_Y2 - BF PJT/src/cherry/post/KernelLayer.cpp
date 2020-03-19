@@ -108,7 +108,7 @@ cherry::Kernel3Layer::Kernel3Layer()
 }
 
 
-cherry::Kernel3Layer::Kernel3Layer(glm::mat3& kernel)
+cherry::Kernel3Layer::Kernel3Layer(glm::mat3 kernel)
 	: KernelLayer(), kernel3(kernel)
 {
 }
@@ -117,7 +117,7 @@ cherry::Kernel3Layer::Kernel3Layer(glm::mat3& kernel)
 glm::mat3 cherry::Kernel3Layer::GetMatrix() const { return kernel3; }
 
 // sets the matrix
-void cherry::Kernel3Layer::SetMatrix(glm::mat3& kernel)
+void cherry::Kernel3Layer::SetMatrix(glm::mat3 kernel)
 {
 	kernel3 = kernel;
 	shader->SetUniform("a_Kernel", kernel3);

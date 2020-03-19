@@ -628,13 +628,23 @@ cherry::Vec3 cherry::Object::GetPosition() const { return position; }
 glm::vec3 cherry::Object::GetPositionGLM() const { return glm::vec3(position.v.x, position.v.y, position.v.z); }
 
 // sets the position
-void cherry::Object::SetPosition(float x, float y, float z) { SetPosition(glm::vec3(x, y, z)); }
+void cherry::Object::SetPosition(float x, float y, float z) 
+{ 
+	position.v.x = x;
+	position.v.y = y;
+	position.v.z = z;
+}
 
 // setting a new position
 void cherry::Object::SetPosition(cherry::Vec3 newPos) { position = newPos; }
 
 // sets the position
-void cherry::Object::SetPosition(glm::vec3 newPos) { position = cherry::Vec3(newPos); }
+void cherry::Object::SetPosition(glm::vec3 newPos) 
+{ 
+	position.v.x = newPos.x;
+	position.v.y = newPos.y;
+	position.v.z = newPos.z;
+}
 
 // gets the x-position
 float cherry::Object::GetPositionX() const { return position.v.x; }

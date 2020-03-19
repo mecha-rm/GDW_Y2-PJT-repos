@@ -44,6 +44,10 @@ cherry::Text::Text(const cherry::Text& txt)
 	filePath = txt.filePath; // text path
 	fontMap = txt.fontMap; // font
 	color = txt.color; // colour
+	
+	windowChild = txt.windowChild;
+	sceneName = txt.sceneName;
+
 }
 
 // destructor.
@@ -102,12 +106,14 @@ void cherry::Text::SetText(const std::string newText)
 		Character* charCopy = new Character(*charObject);
 
 		charCopy->localPosition = Vec3(spacing * i, 0, 0);
+		charCopy->SetPosition(charCopy->localPosition);
 		charCopy->SetScale(0.1F);
 		charCopy->SetVisible(visible);
 
 		// for some reason, the material's transparency is turned off at some point.
 		// this turns it back on.
 		charCopy->GetMaterial()->HasTransparency = true;
+		charCopy->GetMesh()->SetWindowChild(windowChild);
 
 		// TODO: add in alpha change for letters.
 
@@ -162,6 +168,9 @@ void cherry::Text::LoadText(const std::string scene)
 
 	std::fstream file; // file
 	std::string line;
+
+	// saves the scene name
+	sceneName = scene;
 
 	// character shader.
 	charShader = std::make_shared<Shader>();
@@ -311,6 +320,9 @@ void cherry::Text::LoadText(const std::string scene)
 	CreateEntity(scene, textMaterial); // empty material
 	mesh->SetVisible(false); // either use the parent's function, or call the mesh directly.
 
+	// default orientation
+	SetRotationDegrees(GetRotationDegrees() + Vec3(0.0F, 0.0F, 180.0F));
+
 	worldPos = position + Vec3(1, 1, 1);
 	worldScale = scale;
 	worldRotDeg = GetRotationDegrees();
@@ -319,8 +331,27 @@ void cherry::Text::LoadText(const std::string scene)
 // update time
 void cherry::Text::Update(float deltaTime)
 {
+	// update's text
 	Object::Update(deltaTime);
 
+	// changing scenes
+	if (sceneName != GetSceneName())
+	{
+		sceneName = GetSceneName();
+		for (Character* chr : textChars)
+			chr->SetScene(sceneName);
+	}
+
+	// if the window status of the child has been changed.
+	if (IsWindowChild() != windowChild)
+	{
+		windowChild = IsWindowChild();
+
+		for (Character* chr : textChars)
+			chr->GetMesh()->SetWindowChild(windowChild);
+	}
+
+	// current rotation (degrees)
 	Vec3 currRotDeg = GetRotationDegrees();
 
 	// TODO: optimize.
@@ -428,7 +459,7 @@ void cherry::Text::Update(float deltaTime)
 
 			result = parent * child;
 
-			chr->SetPosition(result[0][3], result[1][3], result[2][3]);
+			chr->SetPosition(result[0][0], result[1][0], result[2][0]);
 		}
 	}
 
@@ -439,7 +470,9 @@ void cherry::Text::Update(float deltaTime)
 
 	// update loop.
 	for (Character* chr : textChars)
+	{
 		chr->Update(deltaTime);
+	}
 }
 
 // toString
@@ -469,6 +502,8 @@ cherry::Character::Character(const char a_CHAR, std::string scene, cherry::Mater
 	};
 
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
+
+	SetRotationZDegrees(180.0F);
 
 	// fontMap->Set("a_Text", );
 	CreateEntity(scene, fontMap);

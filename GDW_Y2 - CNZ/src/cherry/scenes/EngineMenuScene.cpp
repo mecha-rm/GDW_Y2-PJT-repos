@@ -33,6 +33,8 @@ void cherry::EngineMenuScene::OnOpen()
 	myCamera->SetPerspectiveMode(glm::radians(45.0f), 1.0f, 0.01f, 1000.0f);
 	myCamera->SetOrthographicMode(
 		-myWindowSize.x / 2.0F, myWindowSize.x / 2.0F, -myWindowSize.y / 2.0F, myWindowSize.y / 2.0F, 0.0f, 1000.0f, true);
+	
+	// myCamera->SetPerspectiveMode(true);
 	// myCamera->SetOrthographicMode(-5.0f, 5.0f, -5.0f, 5.0f, 0.0f, 100.0f, false);
 	
 	myCamera->targetOffset = cherry::Vec3(0, 5, 12);
@@ -62,10 +64,10 @@ void cherry::EngineMenuScene::OnOpen()
 		// pbb->SetVisible(true);
 		button->object = image;
 
-		button->text = new Text("John", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 1.0F);
-		button->text->SetPosition(0.0F, 0.0F, -10.0F);
-		button->text->SetScale(0.01F);
-		// button->text->SetWindowChild(true);
+		button->text = new Text("Johnny Boy", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 100.0F);
+		button->text->SetPosition(0.0F, 0.0F, 10.0F);
+		button->text->SetScale(10.0F);
+		button->text->SetWindowChild(false);
 
 		// button->text->GetMesh()->cullFaces = false;
 		button->text->SetVisible(true);
