@@ -10,7 +10,7 @@ cnz::Oracle* cnz::Level::sourceOracle = nullptr;
 cnz::Marauder* cnz::Level::sourceMarauder = nullptr;
 cnz::Bastion* cnz::Level::sourceBastion = nullptr;
 cnz::Mechaspider* cnz::Level::sourceSpider = nullptr;
-cnz::Projectile* cnz::Level::arrowBase = nullptr;
+cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 
 // cell offset
 const float cnz::Level::cellOffset = 6.25f;
@@ -998,7 +998,10 @@ void cnz::Level::GenerateSources()
 	sourceBastion = new Bastion(sceneName);
 	sourceSpider = new Mechaspider(sceneName);
 
-	arrowBase = new Projectile("res/objects/weapons/arrow.obj", sceneName);
+	// arrow projectile
+	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);
+	sourceArrow->SetPBodySize(sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum());
+	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize()));
 
 	// creating the enemy groups
 	CNZ_GameplayScene::LoadEnemyGroups();

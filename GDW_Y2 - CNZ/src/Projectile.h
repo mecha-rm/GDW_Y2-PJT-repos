@@ -7,35 +7,45 @@ namespace cnz
 	class Projectile : public cherry::Object
 	{
 	public:
-		// copy constructor.
-		Projectile(const Projectile& arrow);
-
-		Projectile(std::string modelFile, std::string sceneName) : Projectile(modelFile, sceneName, cherry::Vec3()) {}
+		// creates the projectile
+		Projectile(std::string modelFile, std::string sceneName);
 
 		// sets the Enemy file, and position
-		Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos) : Object(modelFile, sceneName, true)
-		{
-			position = pos;
-			// TODO: replace with a more accurate hitbox
-			//AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
-		}
+		Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos);
+
+		// copies the projectile and sets the scene.
+		Projectile(const Projectile* proj, std::string scene);
+
+		// copy constructor.
+		Projectile(const Projectile& proj);
+
 
 		void SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos);
 		void SetDirVec(cherry::Vec3 dirVec);
 
 		cherry::Vec3 GetDirectionVec() { return arrowDirVec; }
 
-		void SetWhichGroup(int i) { whichGroup = i; }
-		void SetWhichEnemy(int i) { whichEnemy = i; }
-		int GetWhichGroup() const { return whichGroup; }
-		int GetWhichEnemy() const { return whichEnemy; }
+		// gets which group the projectile is for.
+		int GetWhichGroup() const;
 
-		bool active = false;
+		// sets the group
+		void SetWhichGroup(int i);
+
+		// gets which enemy the projectile is for.
+		int GetWhichEnemy() const;
+
+		// sets the enemy
+		void SetWhichEnemy(int i);
+
+		
 		// set draw pbody
 		bool SetDrawPBody(bool draw);
 
 		// get draw pbody
 		bool GetDrawPBody() const;
+
+		// sets the pbody size
+		void SetPBodySize(cherry::Vec3 size);
 
 		// get pbody size
 		cherry::Vec3 GetPBodySize() const;
@@ -44,6 +54,8 @@ namespace cnz
 		float GetPBodyWidth() const;
 		float GetPBodyHeight() const;
 		float GetPBodyDepth() const;
+
+		bool active = false;
 
 	private:
 		cherry::Vec3 pBodySize = cherry::Vec3(0.1f, 0.1f, 0.1f);

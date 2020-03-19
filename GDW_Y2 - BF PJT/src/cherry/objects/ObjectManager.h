@@ -55,6 +55,9 @@ namespace cherry
 		// deletes a scene list via the name of the scene.
 		static bool DestroySceneObjectListByName(std::string sceneName);
 
+		// destroys all the lists
+		static void DestroyAllSceneObjectLists();
+
 		// standard operators (taken out because free access isn't needed)
 		// reading
 		// const cherry::ObjectList & operator[](const int index) const;

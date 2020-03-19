@@ -1,18 +1,28 @@
 #include "Marauder.h"
 
+// emissive properties
+const glm::vec3 cnz::Marauder::EMISSIVE_COLOR = glm::vec3(0.9F, 0.1231F, 0.5F);
+const float cnz::Marauder::EMISSIVE_POWER = 0.91F;
+
 // constructor
 cnz::Marauder::Marauder(std::string scene) 
-	: Enemy("res/objects/enemies/Enemy_Sword.obj", scene, true)
+	: Enemy("res/objects/enemies/Marauder.obj", scene, true)
 {
 	description = "Marauder";
+
+	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
+	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
 
 	LoadAnimations();
 }
 
 cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
-	: Enemy("res/objects/enemies/Enemy_Sword.obj", scene, mat)
+	: Enemy("res/objects/enemies/Marauder.obj", scene, mat)
 {
 	description = "Marauder";
+
+	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
+	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
 
 	LoadAnimations();
 }

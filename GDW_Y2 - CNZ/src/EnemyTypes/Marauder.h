@@ -25,6 +25,10 @@ namespace cnz {
 		cherry::MorphAnimation* walk;
 
 	private:
+		// emissive colour and power
+		static const glm::vec3 EMISSIVE_COLOR;
+		static const float EMISSIVE_POWER;
+
 
 	protected:
 		// loads all animations

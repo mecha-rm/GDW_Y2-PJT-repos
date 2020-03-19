@@ -159,7 +159,7 @@ namespace cnz
 		static Mechaspider* sourceSpider;
 
 		// source arrow base
-		static Projectile* arrowBase;
+		static Projectile* sourceArrow;
 
 		// static Projectile* sourceProjectile;
 

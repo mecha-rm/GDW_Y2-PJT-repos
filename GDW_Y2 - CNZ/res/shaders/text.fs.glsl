@@ -25,5 +25,5 @@ void main() {
     vec3 result = inColor.rgb * (vec3(1, 1, 1) - txtClr.rgb) * a_Color.rgb;
 
 	// Write the output
-	outColor = vec4(result, inColor.a * txtClr.a);
+	outColor = vec4(result, inColor.a * txtClr.a * a_Color.a);
 }

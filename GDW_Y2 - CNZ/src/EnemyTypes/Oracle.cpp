@@ -1,19 +1,28 @@
 #include "Oracle.h"
 
+const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.77F, 0.451F, 0.2F);
+const float cnz::Oracle::EMISSIVE_POWER = 1.2F;
+
 // constructor
 cnz::Oracle::Oracle(std::string scene)
-	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, true)
+	: Enemy("res/objects/enemies/Oracle.obj", scene, true)
 {
 	description = "Oracle";
+
+	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
+	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
 
 	LoadAnimations();
 }
 
 // constructor
 cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
-	: Enemy("res/objects/enemies/Enemy_Spear.obj", scene, mat)
+	: Enemy("res/objects/enemies/Oracle.obj", scene, mat)
 {
 	description = "Oracle";
+
+	GetMaterial()->GetShader()->SetUniform("a_EmissiveColor", EMISSIVE_COLOR);
+	GetMaterial()->GetShader()->SetUniform("a_EmissivePower", EMISSIVE_POWER);
 
 	LoadAnimations();
 }

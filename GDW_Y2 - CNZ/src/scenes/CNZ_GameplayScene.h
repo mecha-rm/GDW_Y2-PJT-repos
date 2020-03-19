@@ -175,6 +175,9 @@ namespace cnz
 		// if 'true', the physics bodies are shown.
 		bool showPBs = false;
 
+		// set to 'true' if post processing should be used.
+		bool postProcess = false;
+
 	protected:
 
 	};

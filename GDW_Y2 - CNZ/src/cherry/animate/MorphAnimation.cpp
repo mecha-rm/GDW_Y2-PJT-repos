@@ -57,6 +57,12 @@ cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 	currPose = currFrame->GetPose();
 	nextPose = nextFrame->GetPose();
 
+	// checks for vertex counts being equal
+	if (valsTtl != currFrame->GetVertexCount() || valsTtl != nextFrame->GetVertexCount())
+	{
+		throw std::runtime_error("Error. Vertex count inequality between frames.");
+	}
+
 	// gets all the values
 	for (int i = 0; i < valsTtl; i++)
 	{

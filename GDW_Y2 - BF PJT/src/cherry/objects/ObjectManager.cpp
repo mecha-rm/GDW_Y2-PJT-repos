@@ -3,6 +3,8 @@
 #include "..\utils\Utils.h"
 #include "..\physics/PhysicsBody.h"
 #include "..\Game.h"
+#include <toolkit/Logging.h>
+#include <stack>
 
 // object manager
 std::vector<cherry::ObjectList*> cherry::ObjectManager::objectLists = std::vector<cherry::ObjectList*>();
@@ -169,6 +171,18 @@ bool cherry::ObjectManager::DestroySceneObjectListByName(std::string sceneName)
 	ObjectList* obj = GetSceneObjectListByName(sceneName);
 
 	return DestroySceneObjectListByPointer(obj);
+}
+
+// destroys all scene object lists
+void cherry::ObjectManager::DestroyAllSceneObjectLists()
+{
+	// while there are still object lists to be deleted.
+	while (!objectLists.empty())
+	{
+		ObjectList* temp = objectLists[0];
+		util::removeFromVector(objectLists, temp);
+		delete temp;
+	}
 }
 
 // reading
@@ -439,13 +453,30 @@ void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
 // updates all sceneLists in the list
 void cherry::ObjectList::Update(float deltaTime)
 {
+	// stack of defective objects
+	std::stack<Object*> defects;
+
 	// updates all objects.
 	for (Object* obj : objects)
 	{
-		obj->Update(deltaTime);
-		obj->SetIntersection(false);
+		try
+		{
+			obj->Update(deltaTime);
+			obj->SetIntersection(false);
+		}
+		catch (...) // generic catch
+		{
+			LOG_ERROR("Unknown object update exception. Deleting defective object.");
+			defects.push(obj); // mark as defect
+		}
 	}
 
+	// while the defects stack isn't empty, delete all defects.
+	while (!defects.empty())
+	{
+		DeleteObjectByPointer(defects.top());
+		defects.pop();
+	}
 
 	// collision calculations
 //mainLoop:

@@ -28,6 +28,10 @@ namespace cnz {
 		// loads all aniamtions
 		void LoadAnimations() override;
 
+		// emissive colour and power
+		static const glm::vec3 EMISSIVE_COLOR;
+		static const float EMISSIVE_POWER;
+
 	protected:
 	};
 }

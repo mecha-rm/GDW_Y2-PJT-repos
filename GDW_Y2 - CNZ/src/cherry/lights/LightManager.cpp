@@ -182,6 +182,18 @@ bool cherry::LightManager::DestroySceneLightListByName(std::string sceneName)
 	return DestroySceneLightListByPointer(ll);
 }
 
+// destroys all scene light lists
+void cherry::LightManager::DestroyAllSceneLightLists()
+{
+	// while there are still object lists to be deleted.
+	while (!lightLists.empty())
+	{
+		LightList* temp = lightLists[0];
+		util::removeFromVector(lightLists, temp);
+		delete temp;
+	}
+}
+
 // LIGHT LIST
 // constructor
 cherry::LightList::LightList(std::string scene) : scene(scene) 

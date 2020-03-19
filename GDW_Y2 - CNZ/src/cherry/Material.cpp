@@ -202,6 +202,7 @@ bool cherry::Material::LoadMtl(std::string filePath, const TextureSampler::Sptr&
 		// alpha (transparency) of material (1.0 by default) (inverted: Tr = 1 - d)
 		else if (line.substr(0, line.find_first_of(" ")) == "Tr")
 		{
+			// Set("a_Alpha", 1.0F - util::convertString<float>(line.substr(line.find_first_of(" ") + 1)));
 			// unused
 		}
 		// illumination mode (0 - 10)

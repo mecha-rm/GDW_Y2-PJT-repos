@@ -937,6 +937,9 @@ void cherry::Game::LoadContent()
 void cherry::Game::UnloadContent() {
 	audioEngine.Shutdown(); // shutdown the audio component.
 	SceneManager::DestroyScenes(); // destroys all the scenes.
+
+	ObjectManager::DestroyAllSceneObjectLists();
+	LightManager::DestroyAllSceneLightLists();
 }
 
 void cherry::Game::Update(float deltaTime) {

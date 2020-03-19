@@ -60,7 +60,8 @@ namespace cherry
 		// deletes a scene list via the name of the scene.
 		static bool DestroySceneLightListByName(std::string sceneName);
 
-		
+		// destroys all scene light lists
+		static void DestroyAllSceneLightLists();
 
 	private:
 

@@ -113,7 +113,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// mechaspider = new Mechaspider(GetName());
 		// mechaspider->SetVisible(false);
 
-		arrowBase = Level::arrowBase;
+		arrowBase = Level::sourceArrow;
 		// arrowBase->SetVisible(false);
 
 		// if the enemy groups have not been loaded yet.
@@ -175,7 +175,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	// Post Processing
 	// if(levelLoading)
-	if (false)
+	if (postProcess)
 	{
 		// frame buffer
 		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
@@ -797,6 +797,23 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						//Player takes damage
 						lives--;
 						playerObj->SetPosition(playerSpawn);
+						
+						// resetting variables
+						// this is to fix a glitch where the player's attakc would stop working on respawn.
+						w = false;
+						a = false;
+						s = false;
+						d = false;
+						f = false;
+						ls = false;
+						spaceP = false;
+						spaceR = false;
+
+						// stops the player from moving through solid objects.
+						cw = true;
+						ca = true;
+						cs = true;
+						cd = true;
 					}
 				}
 
@@ -956,22 +973,22 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 				if (enemyList[i]->WhoAmI() == "Sentry") {
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
-						////Spawn projectiles
+						// Spawn projectiles
 						enemyList[i]->attacking = true;
 
-						Projectile* proj = new Projectile(*arrowBase);
+						Projectile* proj = new Projectile(arrowBase, GetName());
 
+						// adding to lists
 						projList.push_back(proj);
 						projTimeList.push_back(0);
 
-						proj->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
 						proj->SetWhichGroup(i);
 						//proj->SetWhichEnemy(j);
 						proj->active = true;
 						proj->SetPosition(enemyList[i]->GetPosition());
 						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
 						proj->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-						game->AddObjectToScene(proj);
+						objectList->AddObject(proj);
 
 						// projList.push_back(new Projectile(*arrowBase));
 						// projTimeList.push_back(0);
@@ -1061,7 +1078,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						}
 					}
 				}
-				enemyList[i]->Update(deltaTime);
+				// TODO: why is this being called here? It errors out.
+				// enemyList[i]->Update(deltaTime);
 			}
 		}
 
@@ -1070,24 +1088,82 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			SpawnEnemyGroup();
 		}
 
+		// temporary stack of projectiles to be deleted
+		std::stack<Projectile*> projKillList;
+		std::stack<int> indexKillList;
+
 		//Update Projectiles
 		for (int i = 0; i < projList.size(); i++) {
 			if (projList[i]->active == true) {
 				projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
 
-				// is this needed?
-				projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
-				projTimeList[i] += deltaTime;
-				if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projList[i]->GetPhysicsBodies()[0])) {
-					projList[i]->RemovePhysicsBody(projList[i]->GetPhysicsBodies()[0]);
-					enemyList[projList[i]->GetWhichGroup()]->attacking = false;
-					projList[i]->active = false;
-					projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
-					game->DeleteObjectFromScene(projList[i]);
-					projList.erase(projList.begin() + i);
-					projTimeList.erase(projTimeList.begin() + i);
+				// collision check
+				std::vector<cherry::PhysicsBody*>projBodies = projList[i]->GetPhysicsBodies();
+				std::vector<cherry::PhysicsBody*>playerBodies = playerObj->GetPhysicsBodies();
+
+				// collision check
+				bool deleteProj = false;
+
+				// projectile bodies
+				for (cherry::PhysicsBody* projBody : projBodies)
+				{
+					for (cherry::PhysicsBody* plyrBody : playerBodies)
+					{
+						// checks for collision
+						deleteProj = cherry::PhysicsBody::Collision(projBody, plyrBody);
+						if (deleteProj == true) // colision has occurred.
+						{
+							break;
+						}
+					}
+
+					if (deleteProj) // collision has occurred
+						break;
 				}
+
+				projTimeList[i] += deltaTime;
+
+				// no collision, but alloted time has passed.
+				if (!deleteProj && projTimeList[i] >= 5.0F)
+					deleteProj = true;
+
+				if (deleteProj)
+				{
+					projKillList.push(projList[i]); // saves object to delete.
+					indexKillList.push(i); // saves index of value to delete.
+				}
+				// is this needed?
+				// projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
+				
+				// if (projTimeList[i] >= 5 || cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], projList[i]->GetPhysicsBodies()[0])) {
+				// 	projList[i]->RemovePhysicsBody(projList[i]->GetPhysicsBodies()[0]);
+				// 	enemyList[projList[i]->GetWhichGroup()]->attacking = false;
+				// 	projList[i]->active = false;
+				// 	projList[i]->SetPosition(cherry::Vec3(1000, 1000, 1000));
+				// 	game->DeleteObjectFromScene(projList[i]);
+				// 	projList.erase(projList.begin() + i);
+				// 	projTimeList.erase(projTimeList.begin() + i);
+				// }
 			}
+		}
+
+		// removing and kills projectiles
+		while (!projKillList.empty())
+		{
+			Projectile* temp = projKillList.top();
+
+			// removing from lists
+			projKillList.pop();
+			util::removeFromVector(projList, temp);
+			objectList->DeleteObjectByPointer(temp);
+		}
+
+		// removing time values from the proj time list
+		while (!indexKillList.empty())
+		{
+			// removing from the time list
+			projTimeList.erase(projTimeList.begin() + indexKillList.top());
+			indexKillList.pop(); // removing value
 		}
 
 		//// DASH CODE
@@ -1096,7 +1172,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
 			//Display indicator
 			//indArrowAnim->Play();
-			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, -0.80f));
+			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 0.001f));
 			indicatorObj->SetVisible(true);
 			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 		}
@@ -1191,8 +1267,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					kills++;
 
 					// if the object was sucessfully destroyed.
-					if(destroyed)
+					if (destroyed)
 						indexes.push(i); // the index to be removed.
+					else
+						std::cout << "WHAT" << std::endl;
 				}
 			}
 
