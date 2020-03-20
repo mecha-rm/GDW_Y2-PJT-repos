@@ -1,8 +1,9 @@
 #include "Sentry.h"
 
 // setting emissive values
-const glm::vec3 cnz::Sentry::EMISSIVE_COLOR = glm::vec3(0.811F, 0.3231F, 0.421F);
-const float cnz::Sentry::EMISSIVE_POWER = 1.2F;
+// const glm::vec3 cnz::Sentry::EMISSIVE_COLOR = glm::vec3(0.811F, 0.3231F, 0.421F);
+const glm::vec3 cnz::Sentry::EMISSIVE_COLOR = glm::vec3(0.960784314F, 0.980392157F, 0.352941176F);
+const float cnz::Sentry::EMISSIVE_POWER = 1.8F;
 
 // enemy
 cnz::Sentry::Sentry(std::string scene)

@@ -203,6 +203,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				
 				
 				playerObj->SetPosition(glm::vec3(cellOffset * (x), cellOffset * (y), 0));
+				playerSpawn = cherry::Vec3(cellOffset * (x), cellOffset * (y), 0); // player spawn point
 
 				// new
 				// cnz::Player* playerObj = cnz::Player::GenerateDefault(sceneName, 
@@ -1002,6 +1003,9 @@ void cnz::Level::GenerateSources()
 	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);
 	sourceArrow->SetPBodySize(sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum());
 	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize()));
+	sourceArrow->SetEmissiveColor(cherry::Vec3(1.0F, 0.1F, 0.24F));
+	sourceArrow->SetEmissivePower(2.0F);
+
 
 	// creating the enemy groups
 	CNZ_GameplayScene::LoadEnemyGroups();
@@ -1018,6 +1022,9 @@ bool cnz::Level::GetObjectsGenerated() const { return objectsGenerated; }
 
 // gets the player object
 cnz::Player* cnz::Level::GetPlayerObject() const { return playerObj; }
+
+// gets the player's spawn position.
+const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const { return playerSpawn; }
 
 std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	std::vector<float> properties;

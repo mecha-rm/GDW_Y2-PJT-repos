@@ -561,5 +561,8 @@
     <None Include="res\shaders\text.vs.glsl" />
     <None Include="res\shaders\water-shader.vs.glsl" />
     <None Include="res\shaders\water-shader.fs.glsl" />
+    <None Include="res\shaders\model.vs.glsl" />
+    <None Include="res\shaders\model.fs.glsl" />
+    <None Include="res\shaders\post\toon-cel.fs.glsl" />
   </ItemGroup>
 </Project>

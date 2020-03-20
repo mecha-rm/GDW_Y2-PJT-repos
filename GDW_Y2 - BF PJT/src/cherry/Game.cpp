@@ -1344,7 +1344,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
 
-	// copy past mesh renderer component and make ui rendere component?
+	// sorting to make sure transparent items are rendered last, and above items that are opaque or have lower transparencies.
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
 			return false;

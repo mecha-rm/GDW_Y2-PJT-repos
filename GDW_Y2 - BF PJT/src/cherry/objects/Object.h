@@ -139,10 +139,20 @@ namespace cherry
 		cherry::Vec3 GetEmissiveColor() const;
 
 		// sets the emissive colour of the object (if applicable to the current material).
+		// [0, 1] colour range
 		void SetEmissiveColor(cherry::Vec3 emsClr);
 
 		// sets the emissive colour of the object (if applicable to the current material).
+		// [0, 1] colour range
 		void SetEmissiveColor(glm::vec3 emsClr);
+
+		// sets the emissive colour of the object (if applicable to the current material).
+		// [0, 1] colour range
+		void SetEmissiveColor(float r, float g, float b);
+
+		// sets the emissive colour of the object (if applicable to the current material).
+		// [0, 255] colour range
+		void SetEmissiveColor(unsigned int r, unsigned int g, unsigned int b);
 
 		// sets the emissive power. The material does not necessarily have an emissive power factor.
 		float GetEmissivePower() const;

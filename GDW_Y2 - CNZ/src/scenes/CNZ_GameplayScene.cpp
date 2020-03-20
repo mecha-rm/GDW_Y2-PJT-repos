@@ -54,7 +54,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
 
-	// if (!levelLoading)
+	// default lights if no level has been loaded.
+	if (!levelLoading)
 	{
 		lightList->AddLight(new Light(GetName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
 			Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 0.15F));
@@ -64,6 +65,11 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
 			Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 0.85F));
+	}
+	else
+	{
+		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 0.0F, 45.0F), Vec3(1.0F, 0.0F, 0.73333333333F),
+			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 8000.0F));
 	}
 
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
@@ -78,8 +84,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		ObjectList * objList = objectList;
 		LightList * tempList = lightList;
-		playerObj = map.GetPlayerObject();
-		
+		playerObj = map.GetPlayerObject(); // gets player object
+		playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point
 
 		//Skybox stuff
 		skyboxObj = cherry::Skybox(
@@ -200,8 +206,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
 
 		// adds a post-processing 
+		
+		// lighting layer
 		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
+		lightList->SetIgnoreBackground(true);
 		layers.push_back(lightList->GetPostLayer());
+
+		glm::mat3 postMat3 = KERNEL_EDGE_3;
+		// glm::mat3 postMat3 = KERNEL_BOX_BLUR;
+		// edge detection layer
+		edgeDetect.SetMatrix(postMat3);
 
 		useFrameBuffers = true;
 	}
@@ -272,6 +286,12 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_F: // right
 		f = true;
+
+		if (postProcess) // add post processing layer
+		{
+			// layers.clear();
+			util::addToVector(layers, edgeDetect.GetPostLayer());
+		}
 		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = true;
@@ -960,8 +980,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					enemyList[i]->stunTimer = 0;
 				}
 				else if (enemyList[i]->stunned == true) {
+					// TODO: maybe make this static so that all enemies stop getting stunned at the same time
 					if (enemyList[i]->stunTimer >= 5.0f) {
 						enemyList[i]->stunned = false;
+
+						if (postProcess) // removes edge detection layer
+						{
+							util::removeFromVector(layers, edgeDetect.GetPostLayer());
+							// util::addToVector(layers, lightList->GetPostLayer());
+						}
 					}
 					else {
 						enemyList[i]->stunTimer += deltaTime;

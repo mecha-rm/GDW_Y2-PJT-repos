@@ -102,7 +102,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 
 	// setting emissive colour and power
 	plyr->SetEmissiveColor(Vec3(0.0F, 1.0F, 1.0F));
-	plyr->SetEmissivePower(0.3F);
+	plyr->SetEmissivePower(1.8F);
 
 	// animation 1
 	// if(false) // commenting out

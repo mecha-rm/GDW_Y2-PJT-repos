@@ -556,7 +556,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		layer3 = std::make_shared<PostLayer>(shader, fBuffer);
 
 		// light list
-		lightList->ignoreBackground = false;
+		lightList->SetIgnoreBackground(false);
 		lightList->UpdatePostLayer();
 		layer4 = lightList->GetPostLayer();
 

@@ -607,6 +607,8 @@
     <None Include="res\shaders\image.vs.glsl" />
     <None Include="res\shaders\lighting-morph.vs.glsl" />
     <None Include="res\shaders\lighting.vs.glsl" />
+    <None Include="res\shaders\model.fs.glsl" />
+    <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
@@ -621,6 +623,7 @@
     <None Include="res\shaders\post\post.vs.glsl" />
     <None Include="res\shaders\post\redscale.fs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />
+    <None Include="res\shaders\post\toon-cel.fs.glsl" />
     <None Include="res\shaders\post\vibrance.fs.glsl" />
     <None Include="res\shaders\shader.fs.glsl" />
     <None Include="res\shaders\shader.vs.glsl" />

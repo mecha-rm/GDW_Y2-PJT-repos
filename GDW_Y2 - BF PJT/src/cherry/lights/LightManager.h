@@ -132,6 +132,13 @@ namespace cherry
 		// deletes an object based on its name.
 		// bool DeleteLightByTag(std::string name);
 
+		// returns 'true' if the background is ignored for post processed lighting.
+		bool IsIgnoringBackground() const;
+
+		// sets whether the background should be effected by the lighting or not.
+		// this is only relevant if using the post processing layer
+		void SetIgnoreBackground(bool ignore);
+
 		// updates the materials of all objects
 		// it's recommended that this is called only when a light has definitely been changed.
 		void UpdateMaterials();
@@ -145,16 +152,16 @@ namespace cherry
 		// vector of lights
 		std::vector<cherry::Light *> lights;
 
-		// if 'true', then the background is post processed with the lights along with everything else.
-		// if 'false', the background retains its regular pixel colour.
-		bool ignoreBackground = false;
-
 	private:
 		// the scene te object is in.
 		std::string scene = "";
 		
 		// a post procesisng layer
 		cherry::PostLayer::Sptr layer = nullptr;
+
+		// if 'true', then the background is post processed with the lights along with everything else.
+		// if 'false', the background retains its regular pixel colour.
+		bool ignoreBackground = false;
 
 		// shader and frame buffer components
 		Shader::Sptr shader;

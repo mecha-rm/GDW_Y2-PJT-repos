@@ -468,6 +468,16 @@ bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
 	}
 }
 
+// gets whether or not the background is being ignored
+bool cherry::LightList::IsIgnoringBackground() const { return ignoreBackground; }
+
+// sets whether or not to ignore the background for post processed ligthing.
+void cherry::LightList::SetIgnoreBackground(bool ignore)
+{
+	ignoreBackground = ignore;
+	shader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
+}
+
 // updates the materials of the objects
 void cherry::LightList::UpdateMaterials()
 {

@@ -309,6 +309,18 @@ void cherry::Object::SetEmissiveColor(cherry::Vec3 emsClr)
 // sets the emissive color
 void cherry::Object::SetEmissiveColor(glm::vec3 emsClr) { SetEmissiveColor(Vec3(emsClr)); }
 
+// sets the emissive colour in rgb, [0, 1] format.
+void cherry::Object::SetEmissiveColor(float r, float g, float b)
+{
+	SetEmissiveColor(Vec3(r, g, b));
+}
+
+// sets the emissive colour in rgb, [0, 255] format
+void cherry::Object::SetEmissiveColor(unsigned int r, unsigned int g, unsigned int b)
+{
+	SetEmissiveColor(Vec3((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F));
+}
+
 // gets the emissive power.
 float cherry::Object::GetEmissivePower() const { return emissivePower; }
 

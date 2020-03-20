@@ -116,6 +116,9 @@ namespace cnz
 		// gets the player object.
 		Player* GetPlayerObject() const;
 
+		// gets the player's spawn position
+		const cherry::Vec3 GetPlayerSpawnPosition() const;
+
 		// return properties of object at specific location on map
 		std::vector<float> GetObjectProps(int y, int x);
 
@@ -171,6 +174,9 @@ namespace cnz
 		// the m_Scene material
 		cherry::Material::Sptr matStatic; // the static material
 		cherry::Material::Sptr matDynamic; // the dynamic material
+
+		// the player's spawn point
+		cherry::Vec3 playerSpawn;
 
 		// TODO: I don't think these are being used properly.
 		// Obstacles

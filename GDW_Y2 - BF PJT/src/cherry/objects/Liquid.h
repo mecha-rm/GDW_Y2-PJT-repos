@@ -2,6 +2,9 @@
 #pragma once
 #include "Object.h"
 
+// maximum amount of waves
+#define MAX_WAVES 8
+
 namespace cherry
 {
 	class Liquid : public Object
@@ -98,8 +101,6 @@ namespace cherry
 	private:
 		float size; // size of wave
 		float numSections; // number of sections
-
-		static const int MAX_WAVES; // maximum amount of waves
 
 		// number of enabled waves (all enabled by default)
 		int enabledWaves = 8;

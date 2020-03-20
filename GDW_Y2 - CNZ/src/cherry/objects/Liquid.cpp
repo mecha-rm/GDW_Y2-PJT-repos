@@ -1,10 +1,6 @@
 #include "Liquid.h"
 #include <string>
 
-// the maximum amount of waves.
-// NOTE: make sure this value aligns with the macro 'MAX_WAVES' in the 'water-shader.vs.glsl'
-const int cherry::Liquid::MAX_WAVES = 8;
-
 // constructor
 cherry::Liquid::Liquid(std::string scene, float size, float numSections, bool worldUVs)
 	:Object()

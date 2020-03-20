@@ -11,7 +11,7 @@ cherry::KernelLayer::KernelLayer()
 
 	// shader
 	shader = std::make_shared<Shader>();
-	shader->Load(POST_VS, POST_LIGHTING_FS);
+	shader->Load(POST_VS, POST_FS);
 
 	// frame buffer
 	frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
@@ -95,7 +95,7 @@ cherry::PostLayer::Sptr cherry::KernelLayer::GetPostLayer() const { return layer
 
 /// KERNEL 3 ///
 // constructor
-cherry::Kernel3Layer::Kernel3Layer()
+cherry::Kernel3Layer::Kernel3Layer() : KernelLayer(POST_VS, POST_KERNEL3_FS)
 {
 	// identity matrix
 	kernel3 = glm::mat3(
@@ -109,7 +109,7 @@ cherry::Kernel3Layer::Kernel3Layer()
 
 
 cherry::Kernel3Layer::Kernel3Layer(glm::mat3 kernel)
-	: KernelLayer(), kernel3(kernel)
+	: KernelLayer(POST_VS, POST_KERNEL3_FS), kernel3(kernel)
 {
 }
 

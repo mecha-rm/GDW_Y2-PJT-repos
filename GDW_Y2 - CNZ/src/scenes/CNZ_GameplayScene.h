@@ -11,6 +11,7 @@
 #include "..\cherry/animate/Path.h"
 #include "..\LevelLoader.h"
 #include "..\AnimationLoader.h"
+#include "..\cherry/post/KernelLayer.h"
 
 //Enemy Sub-classes
 #include "..\EnemyTypes/Enemies.h"
@@ -177,6 +178,9 @@ namespace cnz
 
 		// set to 'true' if post processing should be used.
 		bool postProcess = false;
+
+		// edge detection object
+		cherry::Kernel3Layer edgeDetect;
 
 	protected:
 

@@ -1,7 +1,8 @@
 #include "Oracle.h"
 
-const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.77F, 0.451F, 0.2F);
-const float cnz::Oracle::EMISSIVE_POWER = 1.2F;
+// const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.77F, 0.451F, 0.2F);
+const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.8F, 0.6F, 1.0F);
+const float cnz::Oracle::EMISSIVE_POWER = 1.8F;
 
 // constructor
 cnz::Oracle::Oracle(std::string scene)
