@@ -24,15 +24,22 @@ cherry::Text::Text(std::string text, std::string scene, std::string font, cherry
 	LoadText(scene);
 }
 
+
 // constructor
+cherry::Text::Text(std::string text, std::string scene, std::string font, glm::vec4 color, float size)
+	: Text(text, scene, font, Vec4(color), size)
+{
+}
+
+// constructor with individual colour values rather than a vector
 cherry::Text::Text(std::string text, std::string scene, std::string font, float r, float g, float b, float a, float size)
 	: Text(text, scene, font, Vec4(r, g, b, a), size)
 {
 }
 
-// constructor
-cherry::Text::Text(std::string text, std::string scene, std::string font, glm::vec4 color, float size)
-	: Text(text, scene, font, Vec4(color), size)
+// constructor with [0, 255] colour range for individual colour values.
+cherry::Text::Text(std::string text, std::string scene, std::string font, int r, int g, int b, float a, float size)
+	: Text(text, scene, font, Vec4((float)r / 255.0F, (float)g / 255.0F, (float)b / 255.0F, a), size)
 {
 }
 
@@ -84,14 +91,10 @@ std::string cherry::Text::GetText() const { return text; }
 // sets the text
 void cherry::Text::SetText(const std::string newText)
 {
-	// TODO: make this more efficient.
+	// clears out all the text.
+	ClearText(); 
+
 	text = newText;
-
-	// deleting the current characters
-	for (int i = 0; i < textChars.size(); i++)
-		delete textChars[i];
-
-	textChars.clear();
 
 	// creating the new characters
 	for (int i = 0; i < text.size(); i++)
@@ -105,7 +108,7 @@ void cherry::Text::SetText(const std::string newText)
 		// making a copy of the character.
 		Character* charCopy = new Character(*charObject);
 
-		charCopy->localPosition = Vec3(spacing * i, 0, 0);
+		charCopy->localPosition = Vec3(spacing * fontSize * i, 0, 0);
 		charCopy->SetPosition(charCopy->localPosition);
 		charCopy->SetScale(0.1F);
 		charCopy->SetVisible(visible);
@@ -120,6 +123,8 @@ void cherry::Text::SetText(const std::string newText)
 		textChars.push_back(charCopy);
 	}
 
+	// calculations transformations.
+	CalculateTextTransform();
 }
 
 // clears all characters
@@ -131,6 +136,8 @@ void cherry::Text::ClearText()
 
 	textChars.clear();
 
+	// no text
+	text = "";
 }
 
 // set a new colour for the text
@@ -147,6 +154,24 @@ void cherry::Text::SetColor(cherry::Vec4 newColor)
 	if (unknownCharMaterial != nullptr)
 		unknownCharMaterial->Set("a_Color", { color.v.x, color.v.y, color.v.z, color.v.w });
 }
+
+// gets the file path for the font.
+const std::string& cherry::Text::GetFilePath() const { return filePath; }
+
+// gets the name of the font being used.
+std::string cherry::Text::GetFontName() const { return name; }
+
+// gets the font file path.
+std::string cherry::Text::GetFontMapFilePath() const { return fontMap; }
+
+// gets the cell size.
+glm::vec2 cherry::Text::GetCellSize() const { return cellSize; }
+
+// gets the font size.
+int cherry::Text::GetFontSize() const { return fontSize; }
+
+// gets the font spacing.
+float cherry::Text::GetSpacing() const { return spacing; }
 
 // load text
 void cherry::Text::LoadText(const std::string scene)
@@ -267,11 +292,11 @@ void cherry::Text::LoadText(const std::string scene)
 			// if there are no uvs, then the default character is used.
 			if (uvs != glm::vec4(0, 0, 0, 0))
 			{
-				chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize, uvs);
+				chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
 			}
 			else
 			{
-				chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize, glm::vec4(0, 0, 1, 1));
+				chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
 			}
 
 			chars[index]->SetVisible(false);
@@ -328,12 +353,247 @@ void cherry::Text::LoadText(const std::string scene)
 	worldRotDeg = GetRotationDegrees();
 }
 
+// calculates the text's scale
+void cherry::Text::CalculateTextScale()
+{
+	// the scale of the text.
+	Vec3 textScale = GetScale();
+
+	// setting the scale proportional to the body.
+	for (Character* chr : textChars)
+	{
+		Vec3 charScale = chr->GetScale(); // character's scale
+		Vec3 newScale; // new scale
+
+		// calculating the new scale.
+		newScale.v.x = charScale.v.x * textScale.v.x;
+		newScale.v.y = charScale.v.y * textScale.v.y;
+		newScale.v.z = charScale.v.z * textScale.v.z;
+
+		// setting the new scale.
+		chr->SetScale(newScale);
+	}
+
+	// saving scale
+	worldScale = scale;
+}
+
+// calculates text rotation.
+void cherry::Text::CalculateTextRotation()
+{
+	// current text rotation
+	Vec3 currRotDeg = GetRotationDegrees();
+
+	// rotation
+	for (Character* chr : textChars)
+		chr->SetRotationDegrees(currRotDeg + chr->GetRotationDegrees());
+
+	// saving rotation
+	worldRotDeg = currRotDeg;
+}
+
+// calculates text position
+void cherry::Text::CalculateTextPosition()
+{
+	// the text box is the parent.
+	glm::mat4 parent = glm::mat4(1.0F);
+
+	// the resulting matrix.
+	glm::mat4 result = glm::mat4(1.0F);
+
+	// rotation and scale
+	util::math::Mat3 rotScale{
+		1.0F, 0.0F, 0.0F,
+		0.0F, 1.0F, 0.0F,
+		0.0F, 0.0F, 1.0F
+	};
+
+	// scale
+	util::math::Mat3 scale = rotScale;
+
+	// rotations
+	util::math::Mat3 rotX = rotScale;
+	util::math::Mat3 rotY = rotScale;
+	util::math::Mat3 rotZ = rotScale;
+
+	// translation
+	parent[0][3] = position.v.x;
+	parent[1][3] = position.v.y;
+	parent[2][3] = position.v.z;
+	parent[3][3] = 1.0F;
+
+	// rotation
+	rotX = util::math::getRotationMatrixX(GetRotationXDegrees(), true);
+	rotY = util::math::getRotationMatrixY(GetRotationYDegrees(), true);
+	rotZ = util::math::getRotationMatrixZ(GetRotationZDegrees(), true);
+
+	// scale
+	scale[0][0] = Object::scale.v.x;
+	scale[1][1] = Object::scale.v.y;
+	scale[2][2] = Object::scale.v.z;
+
+	// rotation and scale.
+	rotScale = scale * (rotZ * rotX * rotY);
+
+	// saving the rotation and scale transformations.
+	parent[0][0] = rotScale[0][0];
+	parent[0][1] = rotScale[0][1];
+	parent[0][2] = rotScale[0][2];
+
+	parent[1][0] = rotScale[1][0];
+	parent[1][1] = rotScale[1][1];
+	parent[1][2] = rotScale[1][2];
+
+	parent[2][0] = rotScale[2][0];
+	parent[2][1] = rotScale[2][1];
+	parent[2][2] = rotScale[2][2];
+
+	// updates all characters.
+	for (Character* chr : textChars)
+	{
+		Vec3 chrPos = chr->GetLocalPosition();
+
+		// gets the position of the character.
+		glm::mat4 child
+		{
+			chrPos.v.x, 0, 0, 0,
+			chrPos.v.y, 0, 0, 0,
+			chrPos.v.z, 0, 0, 0,
+			0, 0, 0, 0
+		};
+
+		result = parent * child;
+
+		chr->SetPosition(result[0][0], result[1][0], result[2][0]);
+	}
+
+	worldPos = position;
+}
+
+// calculates the text transformation
+void cherry::Text::CalculateTextTransform()
+{
+	// calls all transform functions.
+	CalculateTextScale();
+	CalculateTextRotation();
+	CalculateTextPosition();
+
+	// // current rotation (degrees)
+	// Vec3 currRotDeg = GetRotationDegrees();
+	// 
+	// // Scale
+	// {
+	// 	// the scale of the text.
+	// 	Vec3 textScale = GetScale();
+	// 
+	// 	// setting the scale proportional to the body.
+	// 	for (Character* chr : textChars)
+	// 	{
+	// 		Vec3 charScale = chr->GetScale(); // character's scale
+	// 		Vec3 newScale; // new scale
+	// 
+	// 		// calculating the new scale.
+	// 		newScale.v.x = charScale.v.x * textScale.v.x;
+	// 		newScale.v.y = charScale.v.y * textScale.v.y;
+	// 		newScale.v.z = charScale.v.z * textScale.v.z;
+	// 
+	// 		// setting the new scale.
+	// 		chr->SetScale(newScale);
+	// 	}
+	// }
+	// 
+	// // Rotation
+	// {
+	// 	// rotation
+	// 	for (Character* chr : textChars)
+	// 		chr->SetRotationDegrees(GetRotationDegrees() + chr->GetRotationDegrees());
+	// 
+	// }
+	// 
+	// // Position
+	// {
+	// 	// the text box is the parent.
+	// 	glm::mat4 parent = glm::mat4(1.0F);
+	// 
+	// 	// the resulting matrix.
+	// 	glm::mat4 result = glm::mat4(1.0F);
+	// 
+	// 	// rotation and scale
+	// 	util::math::Mat3 rotScale{
+	// 		1.0F, 0.0F, 0.0F,
+	// 		0.0F, 1.0F, 0.0F,
+	// 		0.0F, 0.0F, 1.0F
+	// 	};
+	// 
+	// 	// scale
+	// 	util::math::Mat3 scale = rotScale;
+	// 
+	// 	// rotations
+	// 	util::math::Mat3 rotX = rotScale;
+	// 	util::math::Mat3 rotY = rotScale;
+	// 	util::math::Mat3 rotZ = rotScale;
+	// 
+	// 	// translation
+	// 	parent[0][3] = position.v.x;
+	// 	parent[1][3] = position.v.y;
+	// 	parent[2][3] = position.v.z;
+	// 	parent[3][3] = 1.0F;
+	// 
+	// 	// rotation
+	// 	rotX = util::math::getRotationMatrixX(GetRotationXDegrees(), true);
+	// 	rotY = util::math::getRotationMatrixY(GetRotationYDegrees(), true);
+	// 	rotZ = util::math::getRotationMatrixZ(GetRotationZDegrees(), true);
+	// 
+	// 	// scale
+	// 	scale[0][0] = Object::scale.v.x;
+	// 	scale[1][1] = Object::scale.v.y;
+	// 	scale[2][2] = Object::scale.v.z;
+	// 
+	// 	// rotation and scale.
+	// 	rotScale = scale * (rotZ * rotX * rotY);
+	// 
+	// 	// saving the rotation and scale transformations.
+	// 	parent[0][0] = rotScale[0][0];
+	// 	parent[0][1] = rotScale[0][1];
+	// 	parent[0][2] = rotScale[0][2];
+	// 
+	// 	parent[1][0] = rotScale[1][0];
+	// 	parent[1][1] = rotScale[1][1];
+	// 	parent[1][2] = rotScale[1][2];
+	// 
+	// 	parent[2][0] = rotScale[2][0];
+	// 	parent[2][1] = rotScale[2][1];
+	// 	parent[2][2] = rotScale[2][2];
+	// 
+	// 	// updates all characters.
+	// 	for (Character* chr : textChars)
+	// 	{
+	// 		Vec3 chrPos = chr->GetLocalPosition();
+	// 
+	// 		// gets the position of the character.
+	// 		glm::mat4 child
+	// 		{
+	// 			chrPos.v.x, 0, 0, 0,
+	// 			chrPos.v.y, 0, 0, 0,
+	// 			chrPos.v.z, 0, 0, 0,
+	// 			0, 0, 0, 0
+	// 		};
+	// 
+	// 		result = parent * child;
+	// 
+	// 		chr->SetPosition(result[0][0], result[1][0], result[2][0]);
+	// 	}
+	// }
+	// 
+	// // saving the values.
+	// worldPos = position;
+	// worldScale = scale;
+	// worldRotDeg = currRotDeg;
+}
+
 // update time
 void cherry::Text::Update(float deltaTime)
 {
-	// update's text
-	Object::Update(deltaTime);
-
 	// changing scenes
 	if (sceneName != GetSceneName())
 	{
@@ -351,128 +611,33 @@ void cherry::Text::Update(float deltaTime)
 			chr->GetMesh()->SetWindowChild(windowChild);
 	}
 
-	// current rotation (degrees)
-	Vec3 currRotDeg = GetRotationDegrees();
+	// checks to see what values need to be updated.
+	bool updateScale = worldScale != scale;
+	bool updateRotation = worldRotDeg != GetRotationDegrees();
+	bool updatePosition = worldPos != position;
 
-	// TODO: optimize.
-
-	// updating scale
-	if (worldScale != scale)
+	// checking if a transformation is needed.
+	if (updateScale || updateRotation || updatePosition)
 	{
-		// the scale of the text.
-		Vec3 textScale = GetScale();
+		// scale has changed
+		if (updateScale)
+			CalculateTextScale();
 
-		// setting the scale proportional to the body.
-		for (Character* chr : textChars)
-		{
-			Vec3 charScale = chr->GetScale(); // character's scale
-			Vec3 newScale; // new scale
+		// rotation has changed
+		if (updateRotation)
+			CalculateTextRotation();
 
-			// calculating the new scale.
-			newScale.v.x = charScale.v.x * textScale.v.x;
-			newScale.v.y = charScale.v.y * textScale.v.y;
-			newScale.v.z = charScale.v.z * textScale.v.z;
-
-			// setting the new scale.
-			chr->SetScale(newScale);
-		}
+		CalculateTextPosition();
 	}
-
-	// updating rotation
-	if (worldRotDeg != currRotDeg)
-	{
-		// rotation
-		for (Character* chr : textChars)
-			chr->SetRotationDegrees(GetRotationDegrees() + chr->GetRotationDegrees());
-
-	}
-
-	// updating position if any of the values have been changed.
-	if (worldPos != position || worldScale != scale || worldRotDeg != currRotDeg)
-	{
-		// the text box is the parent.
-		glm::mat4 parent = glm::mat4(1.0F);
-
-		// the resulting matrix.
-		glm::mat4 result = glm::mat4(1.0F);
-
-		// rotation and scale
-		util::math::Mat3 rotScale{
-			1.0F, 0.0F, 0.0F,
-			0.0F, 1.0F, 0.0F,
-			0.0F, 0.0F, 1.0F
-		};
-
-		// scale
-		util::math::Mat3 scale = rotScale;
-
-		// rotations
-		util::math::Mat3 rotX = rotScale;
-		util::math::Mat3 rotY = rotScale;
-		util::math::Mat3 rotZ = rotScale;
-
-		// translation
-		parent[0][3] = position.v.x;
-		parent[1][3] = position.v.y;
-		parent[2][3] = position.v.z;
-		parent[3][3] = 1.0F;
-
-		// rotation
-		rotX = util::math::getRotationMatrixX(GetRotationXDegrees(), true);
-		rotY = util::math::getRotationMatrixY(GetRotationYDegrees(), true);
-		rotZ = util::math::getRotationMatrixZ(GetRotationZDegrees(), true);
-
-		// scale
-		scale[0][0] = Object::scale.v.x;
-		scale[1][1] = Object::scale.v.y;
-		scale[2][2] = Object::scale.v.z;
-
-		// rotation and scale.
-		rotScale = scale * (rotZ * rotX * rotY);
-
-		// saving the rotation and scale transformations.
-		parent[0][0] = rotScale[0][0];
-		parent[0][1] = rotScale[0][1];
-		parent[0][2] = rotScale[0][2];
-
-		parent[1][0] = rotScale[1][0];
-		parent[1][1] = rotScale[1][1];
-		parent[1][2] = rotScale[1][2];
-
-		parent[2][0] = rotScale[2][0];
-		parent[2][1] = rotScale[2][1];
-		parent[2][2] = rotScale[2][2];
-
-		// updates all characters.
-		for (Character* chr : textChars)
-		{
-			Vec3 chrPos = chr->GetLocalPosition();
-
-			// gets the position of the character.
-			glm::mat4 child
-			{
-				chrPos.v.x, 0, 0, 0,
-				chrPos.v.y, 0, 0, 0,
-				chrPos.v.z, 0, 0, 0,
-				0, 0, 0, 0
-			};
-
-			result = parent * child;
-
-			chr->SetPosition(result[0][0], result[1][0], result[2][0]);
-		}
-	}
-
-	// saving the values.
-	worldPos = position;
-	worldScale = scale;
-	worldRotDeg = currRotDeg;
 
 	// update loop.
 	for (Character* chr : textChars)
 	{
 		chr->Update(deltaTime);
 	}
+
+	// update's text
+	Object::Update(deltaTime);
 }
 
 // toString

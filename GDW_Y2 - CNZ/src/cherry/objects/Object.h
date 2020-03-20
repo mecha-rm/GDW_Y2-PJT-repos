@@ -237,11 +237,12 @@ namespace cherry
 		// sets the z-position.
 		void SetPositionZ(float z);
 
-		// TODO: fix the position so that ti goes in the right direction
+		// TODO: fix the position so that it goes in the right direction
 		/*
 		 * sets the object's position via the window size. This is meant for the overlay objects.
 		 * Variables:
-		 *	screenPos: the new position. It is treated as a percentage of the screen size, juding it as a [0, 1] range.
+		 *	windowPos: the new position. It is treated as a percentage of the screen size, juding it as a [0, 1] range.
+			* do note that due to a glitch, this is currently inverted on the x-axis. So left is right, and right is left (flip +/-).
 		 *	camOrigin: the origin of the camera in reference to the screen.
 			* the overlay camera's origin is the centre of the screen. However, screen space treats the bottom-left corner as the origin.
 			* the camOrigin is used to offset the providied posiition so that it is in the expected screen space location.

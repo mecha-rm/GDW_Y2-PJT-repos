@@ -5,6 +5,7 @@
 // static variables
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
+const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
@@ -72,6 +73,20 @@ void cnz::CNZ_GameplayScene::OnOpen()
 			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 8000.0F));
 	}
 
+	// score
+	{
+		std::string tempStr = "";
+		tempStr.resize(DIGITS_MAX, '0');
+
+		scoreText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		scoreText->SetWindowChild(true);
+		scoreText->SetPostProcess(false);
+		scoreText->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
+		scoreText->SetVisible(true);
+
+		objectList->AddObject(scoreText);
+	}
+	
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
@@ -750,9 +765,33 @@ void cnz::CNZ_GameplayScene::SetVisiblePhysicsBodies(bool visible)
 	showPBs = visible;
 }
 
+// updates the score string
+void cnz::CNZ_GameplayScene::UpdateScore()
+{
+	// maximum score
+	std::string maxScoreStr = std::string(DIGITS_MAX, '9');
+	int maxScore = util::convertString<int>(maxScoreStr);
+
+	std::string zeroFilled = util::zeroFill(score, DIGITS_MAX);
+
+	// because window object positions are reversed, the string must be too.
+	// std::reverse(zeroFilled.begin(), zeroFilled.end());
+
+	// clamping the score.
+	score = glm::clamp(score, 0, maxScore);
+
+
+	// setting the text.
+	scoreText->SetText(zeroFilled);
+	// scoreText->SetPositionByWindowSize(cherry::Vec2(0.95F, 0.05F), cherry::Game::GetRunningGame()->GetWindowSize());
+}
+
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
+	// if 'true', the score text gets updated.
+	bool updateScore = false;
+
 	if (paused == false) {
 		pauseMenu->SetVisible(false);
 		CNZ_Game* game = (CNZ_Game*)cherry::Game::GetRunningGame();
@@ -1035,7 +1074,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							enemyList[i]->GetCurrentAnimation()->Stop();
 						}
 					}
-					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
+					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
@@ -1225,6 +1264,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				for (int i = 0; i < enemyList.size(); i++) {
 					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
 						enemyList[i]->alive = false;
+						score += enemyList[i]->GetPoints();
+						updateScore = true;
 					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
@@ -1505,6 +1546,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			kills = 0;
 			curGroup = -1;
 			curWave = 0;
+			score = 0;
+
+			// score needs to be updated.
+			updateScore = true;
 
 			//Enemies
 			for (int i = 0; i < enemyList.size(); i++) {
@@ -1530,6 +1575,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		pauseMenu->SetVisible(true);
 	}
+
+	// updates the score if it has been changed.
+	if (updateScore)
+		UpdateScore();
 
 	// calls the main game Update function to go through every object.
 	cherry::GameplayScene::Update(deltaTime);

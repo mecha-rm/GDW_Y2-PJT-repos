@@ -44,7 +44,7 @@ void cherry::EngineMenuScene::OnOpen()
 
 	myCameraX->clearColor = game->myClearColor;
 	myCameraX->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
-	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
+	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, 0.0f));
 	myCameraX->LookAt(glm::vec3(0));
 
 	// this camera is used for UI elements
@@ -64,10 +64,15 @@ void cherry::EngineMenuScene::OnOpen()
 		// pbb->SetVisible(true);
 		button->object = image;
 
-		button->text = new Text("Johnny Boy", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 100.0F);
-		button->text->SetPosition(0.0F, 0.0F, 10.0F);
-		button->text->SetScale(10.0F);
-		button->text->SetWindowChild(false);
+		button->text = new Text("Johnny Boy", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		// button->text->ClearText();
+		button->text->SetText("DEBUG MENU");
+		// button->text->SetWindowChild(false);
+		// button->text->SetPosition(0.0F, 0.0F, 10.0F);
+		
+		
+		button->text->SetWindowChild(true);
+		button->text->SetPositionByWindowSize(Vec2(0.9F, 0.25F));
 
 		// button->text->GetMesh()->cullFaces = false;
 		button->text->SetVisible(true);

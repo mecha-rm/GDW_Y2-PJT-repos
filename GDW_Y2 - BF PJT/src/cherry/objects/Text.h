@@ -32,15 +32,27 @@
      public:
          // constructors
          // Text(characters, font file path, position, color, size)
+         // [0, 1] colour range
          // if the size is set to 0, then it will be set to 1.
+         // the font size cannot be changed, but the text scale can.
          Text(std::string text, std::string scene, std::string font, cherry::Vec4 color, float size = 1.0F);
      
-         // Text(characters, font file path, pos.x, pos.y, pos.z, color.r, color.g, color.b, color.a, size)
-         Text(std::string text, std::string scene, std::string font, float r, float g, float b, float a, float size = 1.0F);
-         
          // Text(characters, font file path, position, color, size)
+         // [0, 1] colour range
+         // the font size cannot be changed, but the text scale can.
          Text(std::string text, std::string scene, std::string font, glm::vec4 color, float size = 1.0F);
- 
+
+         // Text(characters, font file path, pos.x, pos.y, pos.z, color.r, color.g, color.b, color.a, size)
+         // [0, 1] colour range
+         // the font size cannot be changed, but the text scale can.
+         Text(std::string text, std::string scene, std::string font, float r, float g, float b, float a, float size = 1.0F);
+        
+         // Text(characters, font file path, position, color.r, color.g, color.b, color.a, size)
+         // [0, 255] colour range
+         // if the size is set to 0, then it will be set to 1.
+         // the font size cannot be changed, but the text scale can.
+         Text(std::string text, std::string scene, std::string font, int r, int g, int b, float a, float size = 1.0F);
+
          // copy constructor.
          Text(const cherry::Text&);
 
@@ -71,6 +83,25 @@
          // sets a new color. If the alpha value has been changed, SetAlpha is called.
          void SetColor(cherry::Vec4 newColor);
 
+         // gets the file path for the txt file that specifies the font name, font image, and characters.
+         const std::string& GetFilePath() const override;
+
+         // gets the name of the font being used. Calling GetName() on this object will get the same result.
+         std::string GetFontName() const;
+
+         // gets the file path of the font map.
+         std::string GetFontMapFilePath() const;
+
+         // gets the cell size of the font. This is used to determine the size of each character on the font map.
+         glm::vec2 GetCellSize() const;
+
+         // gets the font size of the text. This is the default size of the text (i.e. scale = (1.0, 1.0, 1.0)).
+         int GetFontSize() const;
+
+         // gets the spacing for the characters. 
+         // While the character images may have different amounts of empty space, the spacing is the same for all character quads.
+         float GetSpacing() const;
+
          // generates text from a text file.
         //  static cherry::Text GenerateText(std::string filePath, std::string font, cherry::Vec3 pos, cherry::Vec4 color, float size);
  
@@ -92,6 +123,7 @@
          // checks to see if the text is visible or not.
          bool visible = true;
 
+         // the spacing for text.
          float spacing = 0;
 
          // the font size
@@ -125,6 +157,18 @@
          // the name of the current scene
          std::string sceneName = "";
      protected:
+
+         // calculates the scale of the text.
+         void CalculateTextScale();
+
+         // calculates the rotation of the text
+         void CalculateTextRotation();
+
+         // calculates the position of the text.
+         void CalculateTextPosition();
+
+         // transforms the characters for scale
+         void CalculateTextTransform();
  
      };
 

@@ -79,6 +79,12 @@ namespace util
 		return val;
 	}
 
+	// returns a string of size 'LENGTH' with zeros filling in the rest of the string's size.
+	// if the length provided is less than the length of the number provided, the number is truncated.
+	std::string zeroFill(int num, const unsigned int LENGTH);
+	
+	// TODO: zero front fill and back fill for decimal numbers.
+
 	// returns 'true' if a file can be opened successsfully, and false if it cannot.
 	bool fileAccessible(const std::string & filePath);
 

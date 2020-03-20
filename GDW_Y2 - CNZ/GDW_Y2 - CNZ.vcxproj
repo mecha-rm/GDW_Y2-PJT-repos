@@ -618,6 +618,7 @@
     <None Include="res\shaders\post\invert.fs.glsl" />
     <None Include="res\shaders\post\kernel3.fs.glsl" />
     <None Include="res\shaders\post\kernel5.fs.glsl" />
+    <None Include="res\shaders\post\lut.fs.glsl" />
     <None Include="res\shaders\post\motion_blur.fs.glsl" />
     <None Include="res\shaders\post\post.fs.glsl" />
     <None Include="res\shaders\post\post.vs.glsl" />

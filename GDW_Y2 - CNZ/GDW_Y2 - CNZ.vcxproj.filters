@@ -564,5 +564,6 @@
     <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\post\toon-cel.fs.glsl" />
+    <None Include="res\shaders\post\lut.fs.glsl" />
   </ItemGroup>
 </Project>

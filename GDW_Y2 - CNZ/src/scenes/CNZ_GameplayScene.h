@@ -15,6 +15,7 @@
 
 //Enemy Sub-classes
 #include "..\EnemyTypes/Enemies.h"
+#include <cherry\objects\Text.h>
 
 namespace cnz
 {
@@ -84,6 +85,9 @@ namespace cnz
 
 		// sets whether the bodies should be visible or not.
 		void SetVisiblePhysicsBodies(bool visible);
+
+		// updates the player's score string
+		void UpdateScore();
 
 		// update loop
 		void Update(float deltaTime) override;
@@ -169,6 +173,16 @@ namespace cnz
 		int kills = 0;
 		int lives = 3;
 		int curGroup = -1;
+
+		// score
+		int score = 0;
+
+		// the maximum amount of digits
+		static const int DIGITS_MAX;
+
+		// score text.
+		cherry::Text* scoreText = nullptr;
+
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
