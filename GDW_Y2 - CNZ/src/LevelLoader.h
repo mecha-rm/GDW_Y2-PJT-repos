@@ -191,6 +191,16 @@ namespace cnz
 		Obstacle* manHoleCover = nullptr;
 		Obstacle* road = nullptr;
 		Obstacle* sidewalk = nullptr;
+		Obstacle* building = nullptr;
+		Obstacle* concrete = nullptr;
+		Obstacle* metalBox = nullptr;
+		Obstacle* woodenBox = nullptr;
+		Obstacle* floodLight = nullptr;
+		Obstacle* concretePillar = nullptr;
+		Obstacle* shelves = nullptr;
+		Obstacle* edgeGround = nullptr;
+		Obstacle* bench = nullptr;
+		Obstacle* tent = nullptr;
 
 		// initialization in cpp file.
 		static const float cellOffset;

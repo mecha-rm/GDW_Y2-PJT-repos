@@ -26,7 +26,7 @@ void cnz::CNZ_Game::LoadContent()
 
 	Game::LoadContent(); // calls the load content
 	
-	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
+	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map2.csv", "map1" };
 						 
 	// Title Scene
 	if(loadMenu)
