@@ -912,10 +912,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			cherry::Vec3 plyrPos = playerObj->GetPosition();
 
 			for (int i = 0; i < playerObstacleCollisions.size(); i++) {
-				cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
-
 				// gets the world position of the obstacle
 				cherry::Vec3 obstPos = playerObstacleCollisions[i]->GetWorldPosition();
+				//cherry::Vec3 dP = obstPos - plyrPos;
 
 				if ((obstPos.GetY() - plyrPos.GetY()) >= 0) { // above the object
 					cs = false;
