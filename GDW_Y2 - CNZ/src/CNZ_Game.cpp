@@ -26,8 +26,13 @@ void cnz::CNZ_Game::LoadContent()
 
 	Game::LoadContent(); // calls the load content
 	
-	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map2.csv", "map1" };
-						 
+	// Levels
+	LevelLoadInfo map1Info{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
+	LevelLoadInfo map2Info{ "res/loader/legend.csv", "res/loader/map2.csv", "map2" };
+			
+	// generates the source objects.
+	Level::GenerateSources();
+
 	// Title Scene
 	if(loadMenu)
 	{
@@ -44,13 +49,14 @@ void cnz::CNZ_Game::LoadContent()
 	else
 	{
 		// loads in the first map
-		CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
+		// map 1
+		CNZ_GameplayScene* mapScene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
 
-		RegisterScene(map1Scene, true);
+		// map 2
+		// CNZ_GameplayScene* mapScene = new CNZ_GameplayScene(map2Info.legendPath, map2Info.levelPath, map2Info.sceneName);
+
+		RegisterScene(mapScene, true);
 	}
-
-	// generates source objects.
-	Level::GenerateSources();
 }
 
 // Update function

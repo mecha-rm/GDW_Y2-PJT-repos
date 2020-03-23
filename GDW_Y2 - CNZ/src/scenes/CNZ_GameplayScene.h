@@ -191,7 +191,7 @@ namespace cnz
 		bool showPBs = false;
 
 		// set to 'true' if post processing should be used.
-		bool postProcess = true;
+		bool postProcess = false;
 
 		// edge detection object
 		cherry::Kernel3Layer edgeDetect;

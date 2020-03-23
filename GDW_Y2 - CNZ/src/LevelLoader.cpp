@@ -3,7 +3,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include <toolkit/Logging.h>
 
-// sources
+// sources TODO: remove nullptr initialiation?
 cnz::Player* cnz::Level::sourcePlayer = nullptr;
 cnz::Sentry* cnz::Level::sourceSentry = nullptr;
 cnz::Oracle* cnz::Level::sourceOracle = nullptr;
@@ -1444,6 +1444,16 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 // generates the soruce objects.
 void cnz::Level::GenerateSources()
 {
+	// becomes 'true' when the sources are loaded.
+	static bool initSources = false;
+
+	// this function should only be called once.
+	if (initSources)
+	{
+		LOG_WARN("This function has already been called once, and cannot be called again.");
+		return;
+	}
+
 	// scene name
 	std::string sceneName = "rand_";
 
@@ -1489,6 +1499,9 @@ void cnz::Level::GenerateSources()
 
 	// creating the enemy groups
 	CNZ_GameplayScene::LoadEnemyGroups();
+
+	// sources have been initialized.
+	initSources = true;
 }
 
 // gets the objects; will be empty if it doesn't exist yet.

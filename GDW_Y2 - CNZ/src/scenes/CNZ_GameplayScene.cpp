@@ -82,7 +82,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		scoreText->SetWindowChild(true);
 		scoreText->SetPostProcess(false);
 		scoreText->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
-		scoreText->SetVisible(true);
+		scoreText->SetVisible(false);
 
 		objectList->AddObject(scoreText);
 	}
