@@ -193,7 +193,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				if (sourcePlayer == nullptr)
 					GenerateSources();
 
-				playerObj = new Player(sourcePlayer, sceneName);
+				// player object hasn't been made yet.
+				if(playerObj == nullptr)
+					playerObj = new Player(sourcePlayer, sceneName);
 
 				// original
 				// playerObj = cnz::Player::GenerateDefault(sceneName);
@@ -1265,6 +1267,16 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 		}
 	}
 
+	// if the player object has not been made yet.
+	if (playerObj == nullptr)
+	{
+		// if the source player object is null, the sources need to be made.
+		if (sourcePlayer == nullptr)
+			GenerateSources();
+
+		playerObj = new Player(sourcePlayer, sceneName);
+	}
+
 	return objects;
 }
 
@@ -1514,7 +1526,10 @@ std::vector<cnz::Obstacle *> cnz::Level::GetObstacles() const { return obstacles
 bool cnz::Level::GetObjectsGenerated() const { return objectsGenerated; }
 
 // gets the player object
-cnz::Player* cnz::Level::GetPlayerObject() const { return playerObj; }
+cnz::Player* cnz::Level::GetPlayerObject() const 
+{ 
+	return playerObj; 
+}
 
 // gets the player's spawn position.
 const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const { return playerSpawn; }
