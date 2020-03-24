@@ -15,6 +15,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	cherry::MenuScene::OnOpen();
 
+	glm::ivec2 myWindowSize = Game::GetRunningGame()->GetWindowSize();
+
 	std::string sceneName = GetName();
 	std::string buttonImage = "res/images/button_beta_sml.png";
 	std::string textFnt = FONT_ARIAL;
@@ -148,6 +150,47 @@ void cnz::CNZ_TitleScene::OnOpen()
 		UpdateButton(map3Button);
 	}
 
+	// loading screen information
+	{
+		// text
+		loadingText = new Text("LOADING", GetName(), textFnt, Vec4(0.0F, 0.0F, 0.0F, 1.0F), 30.0F);
+		loadingText->SetWindowChild(true);
+		loadingText->SetPostProcess(false);
+		loadingText->SetPosition(0.0F, 0.0F, 10.0F);
+		loadingText->SetVisible(false);
+
+		objectList->AddObject(loadingText);
+
+		// effect
+		loadLayer = Kernel3Layer(KERNEL_GAUSSIAN_BLUR);
+
+		// post processing
+		// frame buffer
+		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+
+		// scene colour
+		RenderBufferDesc sceneColor = RenderBufferDesc();
+		sceneColor.ShaderReadable = true;
+		sceneColor.Attachment = RenderTargetAttachment::Color0;
+		sceneColor.Format = RenderTargetType::Color24; // loads with RGB
+
+		// scene depth
+		RenderBufferDesc sceneDepth = RenderBufferDesc();
+		sceneDepth.ShaderReadable = true;
+		sceneDepth.Attachment = RenderTargetAttachment::Depth;
+		sceneDepth.Format = RenderTargetType::Depth24;
+
+		// colour and depth attachments
+		fb->AddAttachment(sceneColor);
+		fb->AddAttachment(sceneDepth);
+
+		// fb->AddAttachment()
+		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
+
+		// enabling frame buffers
+		useFrameBuffers = true;
+	}
+
 	Level::GenerateSources();
 }
 
@@ -166,31 +209,65 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 
 	CNZ_Game* const game = (CNZ_Game*)Game::GetRunningGame();
 
-	// a button has been entered and the mouse has been pressed.
-	if (enteredButton != nullptr && mousePressed)
+	// if the load effect isn't enabled, or if the load effect is enabled and the loading screen isn't active. 
+	if (!enableLoadEffect || (enableLoadEffect && loading == false))
 	{
-		if (enteredButton == entryButton) // TODO: change the entry button to something else.
+		// a button has been entered and the mouse has been pressed.
+		if (enteredButton != nullptr && mousePressed)
 		{
-			game->SetCurrentScene(game->map1Info.sceneName, true);
-		}
-		else if (enteredButton == rankButton) // ranking list
-		{
-			game->SetCurrentScene(game->rankingSceneName, true);
-		}
-		else if (enteredButton == map1Button) // enters map 1
-		{
-			game->SetCurrentScene(game->map1Info.sceneName, true);
-		}
-		else if (enteredButton == map2Button) // enters map 2
-		{
-			game->SetCurrentScene(game->map2Info.sceneName, true);
-		}
-		else if (enteredButton == map3Button) // enters map 3
-		{
-			game->SetCurrentScene(game->map3Info.sceneName, true);
+			if (enteredButton == entryButton) // TODO: change the entry button to something else.
+			{
+				if (enableLoadEffect)
+					nextScene = game->map1Info.sceneName;
+				else
+					game->SetCurrentScene(game->map1Info.sceneName, true);
+				
+					
+			}
+			else if (enteredButton == rankButton) // ranking list
+			{
+				if (enableLoadEffect)
+					nextScene = game->rankingSceneName;
+				else
+					game->SetCurrentScene(game->rankingSceneName, true);
+			}
+			else if (enteredButton == map1Button) // enters map 1
+			{
+				if (enableLoadEffect)
+					nextScene = game->map1Info.sceneName;
+				else
+					game->SetCurrentScene(game->map1Info.sceneName, true);
+			}
+			else if (enteredButton == map2Button) // enters map 2
+			{
+				if (enableLoadEffect)
+					nextScene = game->map2Info.sceneName;
+				else
+					game->SetCurrentScene(game->map2Info.sceneName, true);
+			}
+			else if (enteredButton == map3Button) // enters map 3
+			{
+				if (enableLoadEffect)
+					nextScene = game->map3Info.sceneName;
+				else
+					game->SetCurrentScene(game->map3Info.sceneName, true);
+			}
+
+			// loading screen should be shown.
+			if (enableLoadEffect && nextScene != "")
+			{
+				loading = true;
+				loadingText->SetVisible(true);
+
+				layers.push_back(loadLayer.GetPostLayer());
+			}
 		}
 	}
-
+	else if(enableLoadEffect && loading == true && nextScene != "")
+	{
+		// switching scenes
+		game->SetCurrentScene(nextScene, true);
+	}
 	// button has been hit
 	// if (enteredButton == entryButton && mousePressed)
 	// {

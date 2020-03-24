@@ -173,6 +173,11 @@ namespace cnz
 		bool paused = false;
 		bool restart = false;
 
+		// becomes 'true' when the player is invincible.
+		bool isInvincible = false;
+		float invincibleCountdown = 0.0F;
+		static const float INVINCIBLE_TIME_MAX;
+
 		int kills = 0;
 		int lives = 3;
 		int curGroup = -1;
@@ -185,7 +190,7 @@ namespace cnz
 
 		// score text.
 		cherry::Text* scoreText = nullptr;
-
+		bool showScore = true;
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
@@ -194,7 +199,7 @@ namespace cnz
 		bool showPBs = false;
 
 		// set to 'true' if post processing should be used.
-		bool postProcess = false;
+		bool postProcess = true;
 
 		// edge detection object
 		cherry::Kernel3Layer edgeDetect;

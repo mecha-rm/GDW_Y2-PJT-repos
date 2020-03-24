@@ -2,6 +2,7 @@
 
 #include "..\cherry/scenes/SceneManager.h"
 #include "..\cherry/scenes/MenuScene.h"
+#include "..\cherry/post/KernelLayer.h"
 #include <string>
 
 namespace cnz
@@ -29,6 +30,18 @@ namespace cnz
 		cherry::Button* map1Button = nullptr;
 		cherry::Button* map2Button = nullptr;
 		cherry::Button* map3Button = nullptr;
+
+		// text for the loading screen, and blur for the layer
+		cherry::Text* loadingText = nullptr;
+		cherry::Kernel3Layer loadLayer;
+
+		// if 'load effect is false', then the loading effect isn't used.
+		const bool enableLoadEffect = true;
+		// if 'true', then the scene is loading.
+		bool loading = false;
+		// gets the string for the next scene.
+		// this is only used if the loading screen is active.
+		std::string nextScene = "";
 
 	protected:
 	};

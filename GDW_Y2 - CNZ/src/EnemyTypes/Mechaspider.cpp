@@ -3,7 +3,7 @@
 // emissive properties
 // const glm::vec3 cnz::Mechaspider::EMISSIVE_COLOR = glm::vec3(0.41F, 0.431F, 0.9F);
 const glm::vec3 cnz::Mechaspider::EMISSIVE_COLOR = glm::vec3(0.835294118F, 0.560784314F, 0.992156863F);
-const float cnz::Mechaspider::EMISSIVE_POWER = 1.8F;
+const float cnz::Mechaspider::EMISSIVE_POWER = 1.0F;
 
 // constructor
 cnz::Mechaspider::Mechaspider(std::string scene)

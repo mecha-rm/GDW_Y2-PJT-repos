@@ -5,6 +5,8 @@
 // static variables
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
+
+const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of time the player is invincible for.
 const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
@@ -90,7 +92,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		scoreText->SetWindowChild(true);
 		scoreText->SetPostProcess(false);
 		scoreText->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
-		scoreText->SetVisible(false);
+		scoreText->SetVisible(showScore);
 
 		objectList->AddObject(scoreText);
 	}
@@ -850,58 +852,77 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 
 			// find all enemies the player is colliding with
-			for (int i = 0; i < enemyList.size(); i++) 
+			// if the player is invincible, no collision check with enemiesh appens
+			if (!isInvincible) // is not invincible
 			{
-				// gets the enemy bodies
-				vector<cherry::PhysicsBody*> eBodies = enemyList[i]->GetPhysicsBodies();
-
-				for (cherry::PhysicsBody* eBody : eBodies)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
-					// collision check
-					bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
-					
-					if (collision) {
-						//Player takes damage
-						lives--;
-						playerObj->SetPosition(playerSpawn);
-						
-						// resetting variables
-						// this is to fix a glitch where the player's attakc would stop working on respawn.
-						w = false;
-						a = false;
-						s = false;
-						d = false;
-						f = false;
-						ls = false;
+					// gets the enemy bodies
+					vector<cherry::PhysicsBody*> eBodies = enemyList[i]->GetPhysicsBodies();
 
-						mbLP = false;
-						mbLR = false;
-						spaceP = false;
-						spaceR = false;
+					for (cherry::PhysicsBody* eBody : eBodies)
+					{
+						// collision check
+						bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
 
-						// stops the player from moving through solid objects.
-						cw = false;
-						ca = false;
-						cs = false;
-						cd = false;
+						if (collision) {
+							//Player takes damage
+							lives--;
+							playerObj->SetPosition(playerSpawn);
+
+							// resetting variables
+							// this is to fix a glitch where the player's attakc would stop working on respawn.
+							w = false;
+							a = false;
+							s = false;
+							d = false;
+							f = false;
+							ls = false;
+
+							mbLP = false;
+							mbLR = false;
+							spaceP = false;
+							spaceR = false;
+
+							// stops the player from moving through solid objects.
+							// taken out because the player kept getting stuck.
+							// cw = false;
+							// ca = false;
+							// cs = false;
+							// cd = false;
+
+							// invincibility period
+							isInvincible = true;
+							invincibleCountdown = INVINCIBLE_TIME_MAX;
+						}
 					}
-				}
 
-				// there shouldn't be nullptr bodies anyway, since they should just be removed along with the enemy.
-				// if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
-				// 	// if (showPBs) { // shows enemy pbs if showPBs
-				// 	// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-				// 	// }
-				// 	bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
-				// 	if (collision) {
-				// 		//Player takes damage
-				// 		lives--;
-				// 		playerObj->SetPosition(playerSpawn);
-				// 	}
-				// }
-				// else {
-				// 	// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
-				// }
+					// there shouldn't be nullptr bodies anyway, since they should just be removed along with the enemy.
+					// if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
+					// 	// if (showPBs) { // shows enemy pbs if showPBs
+					// 	// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+					// 	// }
+					// 	bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
+					// 	if (collision) {
+					// 		//Player takes damage
+					// 		lives--;
+					// 		playerObj->SetPosition(playerSpawn);
+					// 	}
+					// }
+					// else {
+					// 	// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
+					// }
+				}
+			}
+			else // is invincible
+			{
+				invincibleCountdown -= deltaTime;
+
+				if (invincibleCountdown <= 0.0F) // invincibiltiy over
+				{
+					invincibleCountdown = 0.0F;
+					isInvincible = false;
+				}
 			}
 		}
 

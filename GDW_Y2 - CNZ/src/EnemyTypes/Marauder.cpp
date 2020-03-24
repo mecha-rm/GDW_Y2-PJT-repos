@@ -4,7 +4,7 @@
 // const glm::vec3 cnz::Marauder::EMISSIVE_COLOR = glm::vec3(0.9F, 0.1231F, 0.5F);
 const glm::vec3 cnz::Marauder::EMISSIVE_COLOR = glm::vec3(0.105882353F, 0.164705882F, 1.0F);
 
-const float cnz::Marauder::EMISSIVE_POWER = 1.8F;
+const float cnz::Marauder::EMISSIVE_POWER = 1.0F;
 
 // constructor
 cnz::Marauder::Marauder(std::string scene) 
