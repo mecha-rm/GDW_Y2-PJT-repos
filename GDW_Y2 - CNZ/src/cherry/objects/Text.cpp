@@ -96,6 +96,8 @@ void cherry::Text::SetText(const std::string newText)
 
 	text = newText;
 
+	// float alpha = GetAlpha();
+
 	// creating the new characters
 	for (int i = 0; i < text.size(); i++)
 	{
@@ -117,9 +119,9 @@ void cherry::Text::SetText(const std::string newText)
 		// this turns it back on.
 		charCopy->GetMaterial()->HasTransparency = true;
 		charCopy->GetMesh()->SetWindowChild(windowChild);
+		// charCopy->SetAlpha(alpha);
 
-		// TODO: add in alpha change for letters.
-
+		charCopy->SetRotationZDegrees(180.0F);
 		textChars.push_back(charCopy);
 	}
 

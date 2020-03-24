@@ -4,7 +4,7 @@
 // GAME CLASS (HEADER)
 #define WINDOW_TITLE_CHAR_MAX 50
 // there's an error with the U.I. camera that has the x-directions reversed (- is right, positive is left).
-// #define WINDOW_X_DIR_REVERSED 1
+#define WINDOW_X_DIR_REVERSED true
 
 // External Library Includes
 #include <glad/glad.h>

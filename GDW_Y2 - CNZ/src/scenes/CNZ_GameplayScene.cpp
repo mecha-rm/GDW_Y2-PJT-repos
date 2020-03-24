@@ -23,6 +23,14 @@ cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string le
 	map = Level(legendPath, levelPath, sceneName);
 }
 
+// constructor - takes information from info provided.
+cnz::CNZ_GameplayScene::CNZ_GameplayScene(const LevelLoadInfo& info)
+	: cherry::GameplayScene(info.sceneName)
+{
+	// creating the map.
+	map = Level(info.legendPath, info.levelPath, info.sceneName);
+}
+
 // LoadContent for the scene
 void cnz::CNZ_GameplayScene::OnOpen()
 {

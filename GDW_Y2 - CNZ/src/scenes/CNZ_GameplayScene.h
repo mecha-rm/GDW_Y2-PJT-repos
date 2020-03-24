@@ -32,6 +32,9 @@ namespace cnz
 		// constructor
 		CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName);
 
+		// constructor - takes information from info provided.
+		CNZ_GameplayScene(const LevelLoadInfo& info);
+
 		// called when the scene is being opened (equivalent to Game::LoadContent).
 		// this is only called when the game is set to use this scene.
 		void OnOpen() override;

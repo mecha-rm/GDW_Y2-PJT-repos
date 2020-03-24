@@ -894,7 +894,8 @@ void cherry::Game::LoadContent()
 	myCameraX = std::make_shared<Camera>();
 	myCameraX->clearColor = myClearColor;
 	myCameraX->SetPosition(0, 0.001F, 1.0F); // try adjusting the position of the perspecitve cam and orthographic cam
-	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
+	// myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(180.0f)));
+	myCameraX->Rotate(glm::vec3(0.0F, 0.0F, glm::radians(0.0f)));
 	myCameraX->LookAt(glm::vec3(0));
 
 	// this camera is used for UI elements

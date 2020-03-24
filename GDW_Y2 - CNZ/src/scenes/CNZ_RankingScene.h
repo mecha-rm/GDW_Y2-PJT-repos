@@ -1,3 +1,4 @@
+// scene for character rankings.
 #pragma once
 
 #include "..\cherry/scenes/SceneManager.h"
@@ -6,11 +7,11 @@
 
 namespace cnz
 {
-	class CNZ_TitleScene : public cherry::MenuScene
+	class CNZ_RankingScene : public cherry::MenuScene
 	{
 	public:
 		// constructor
-		CNZ_TitleScene(std::string sceneName);
+		CNZ_RankingScene(std::string sceneName);
 
 		// loading the scene
 		void OnOpen() override;
@@ -22,13 +23,10 @@ namespace cnz
 		void Update(float deltaTime) override;
 
 	private:
-		cherry::Button* entryButton = nullptr;
-		cherry::Button* rankButton = nullptr;
+		cherry::Button* exitButton = nullptr;
 
-		// buttons 
-		cherry::Button* map1Button = nullptr;
-		cherry::Button* map2Button = nullptr;
-		cherry::Button* map3Button = nullptr;
+		// name of the file that will be used.
+		std::string fileName;
 
 	protected:
 	};

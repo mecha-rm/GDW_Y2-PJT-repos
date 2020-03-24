@@ -31,6 +31,17 @@ namespace cnz
 		// overwritten from the game class's data.
 		virtual void Update(float deltaTime) override;
 
+		// name of the title scene.
+		std::string titleSceneName = "";
+
+		// name of the score scene.
+		std::string rankingSceneName = "";
+
+		// maps; do not make changes.
+		LevelLoadInfo map1Info;
+		LevelLoadInfo map2Info;
+		LevelLoadInfo map3Info;
+
 	protected:
 
 
