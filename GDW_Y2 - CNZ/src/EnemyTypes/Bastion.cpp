@@ -3,7 +3,7 @@
 // emissive properties
 // const glm::vec3 cnz::Bastion::EMISSIVE_COLOR = glm::vec3(0.1F, 0.8F, 0.1F);
 const glm::vec3 cnz::Bastion::EMISSIVE_COLOR = glm::vec3(0.415686275F, 0.949019608F, 0.443137255F);
-const float cnz::Bastion::EMISSIVE_POWER = 1.8F;
+const float cnz::Bastion::EMISSIVE_POWER = 1.0F;
 
 // TODO: replace with proper file path.
 // constructor

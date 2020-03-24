@@ -6,6 +6,9 @@
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
 
+const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of time the player is invincible for.
+const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
+
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
 float GetDistance(cherry::Vec3, cherry::Vec3);
@@ -20,6 +23,14 @@ cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string le
 {
 	// creating the map
 	map = Level(legendPath, levelPath, sceneName);
+}
+
+// constructor - takes information from info provided.
+cnz::CNZ_GameplayScene::CNZ_GameplayScene(const LevelLoadInfo& info)
+	: cherry::GameplayScene(info.sceneName)
+{
+	// creating the map.
+	map = Level(info.legendPath, info.levelPath, info.sceneName);
 }
 
 // LoadContent for the scene
@@ -72,6 +83,20 @@ void cnz::CNZ_GameplayScene::OnOpen()
 			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 8000.0F));
 	}
 
+	// score
+	{
+		std::string tempStr = "";
+		tempStr.resize(DIGITS_MAX, '0');
+
+		scoreText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		scoreText->SetWindowChild(true);
+		scoreText->SetPostProcess(false);
+		scoreText->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
+		scoreText->SetVisible(showScore);
+
+		objectList->AddObject(scoreText);
+	}
+	
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
@@ -750,9 +775,33 @@ void cnz::CNZ_GameplayScene::SetVisiblePhysicsBodies(bool visible)
 	showPBs = visible;
 }
 
+// updates the score string
+void cnz::CNZ_GameplayScene::UpdateScore()
+{
+	// maximum score
+	std::string maxScoreStr = std::string(DIGITS_MAX, '9');
+	int maxScore = util::convertString<int>(maxScoreStr);
+
+	std::string zeroFilled = util::zeroFill(score, DIGITS_MAX);
+
+	// because window object positions are reversed, the string must be too.
+	// std::reverse(zeroFilled.begin(), zeroFilled.end());
+
+	// clamping the score.
+	score = glm::clamp(score, 0, maxScore);
+
+
+	// setting the text.
+	scoreText->SetText(zeroFilled);
+	// scoreText->SetPositionByWindowSize(cherry::Vec2(0.95F, 0.05F), cherry::Game::GetRunningGame()->GetWindowSize());
+}
+
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
+	// if 'true', the score text gets updated.
+	bool updateScore = false;
+
 	if (paused == false) {
 		pauseMenu->SetVisible(false);
 		CNZ_Game* game = (CNZ_Game*)cherry::Game::GetRunningGame();
@@ -803,58 +852,77 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 
 			// find all enemies the player is colliding with
-			for (int i = 0; i < enemyList.size(); i++) 
+			// if the player is invincible, no collision check with enemiesh appens
+			if (!isInvincible) // is not invincible
 			{
-				// gets the enemy bodies
-				vector<cherry::PhysicsBody*> eBodies = enemyList[i]->GetPhysicsBodies();
-
-				for (cherry::PhysicsBody* eBody : eBodies)
+				for (int i = 0; i < enemyList.size(); i++)
 				{
-					// collision check
-					bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
-					
-					if (collision) {
-						//Player takes damage
-						lives--;
-						playerObj->SetPosition(playerSpawn);
-						
-						// resetting variables
-						// this is to fix a glitch where the player's attakc would stop working on respawn.
-						w = false;
-						a = false;
-						s = false;
-						d = false;
-						f = false;
-						ls = false;
+					// gets the enemy bodies
+					vector<cherry::PhysicsBody*> eBodies = enemyList[i]->GetPhysicsBodies();
 
-						mbLP = false;
-						mbLR = false;
-						spaceP = false;
-						spaceR = false;
+					for (cherry::PhysicsBody* eBody : eBodies)
+					{
+						// collision check
+						bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
 
-						// stops the player from moving through solid objects.
-						cw = false;
-						ca = false;
-						cs = false;
-						cd = false;
+						if (collision) {
+							//Player takes damage
+							lives--;
+							playerObj->SetPosition(playerSpawn);
+
+							// resetting variables
+							// this is to fix a glitch where the player's attakc would stop working on respawn.
+							w = false;
+							a = false;
+							s = false;
+							d = false;
+							f = false;
+							ls = false;
+
+							mbLP = false;
+							mbLR = false;
+							spaceP = false;
+							spaceR = false;
+
+							// stops the player from moving through solid objects.
+							// taken out because the player kept getting stuck.
+							// cw = false;
+							// ca = false;
+							// cs = false;
+							// cd = false;
+
+							// invincibility period
+							isInvincible = true;
+							invincibleCountdown = INVINCIBLE_TIME_MAX;
+						}
 					}
-				}
 
-				// there shouldn't be nullptr bodies anyway, since they should just be removed along with the enemy.
-				// if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
-				// 	// if (showPBs) { // shows enemy pbs if showPBs
-				// 	// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
-				// 	// }
-				// 	bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
-				// 	if (collision) {
-				// 		//Player takes damage
-				// 		lives--;
-				// 		playerObj->SetPosition(playerSpawn);
-				// 	}
-				// }
-				// else {
-				// 	// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
-				// }
+					// there shouldn't be nullptr bodies anyway, since they should just be removed along with the enemy.
+					// if (enemyList[i]->GetPhysicsBodies()[0] == nullptr || playerObj->GetPhysicsBodies()[0] == nullptr) {
+					// 	// if (showPBs) { // shows enemy pbs if showPBs
+					// 	// 	enemyList[i]->GetPhysicsBodies()[0]->SetVisible(true);
+					// 	// }
+					// 	bool collision = cherry::PhysicsBody::Collision(playerObj->GetPhysicsBodies()[0], enemyList[i]->GetPhysicsBodies()[0]);
+					// 	if (collision) {
+					// 		//Player takes damage
+					// 		lives--;
+					// 		playerObj->SetPosition(playerSpawn);
+					// 	}
+					// }
+					// else {
+					// 	// cout << "Enemy at " << i << " or player physics body could not be found!" << endl;
+					// }
+				}
+			}
+			else // is invincible
+			{
+				invincibleCountdown -= deltaTime;
+
+				if (invincibleCountdown <= 0.0F) // invincibiltiy over
+				{
+					invincibleCountdown = 0.0F;
+					isInvincible = false;
+				}
 			}
 		}
 
@@ -873,10 +941,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			cherry::Vec3 plyrPos = playerObj->GetPosition();
 
 			for (int i = 0; i < playerObstacleCollisions.size(); i++) {
-				cherry::Vec3 dP = playerObstacleCollisions[i]->GetWorldPosition() - playerObj->GetPosition();
-
 				// gets the world position of the obstacle
 				cherry::Vec3 obstPos = playerObstacleCollisions[i]->GetWorldPosition();
+				//cherry::Vec3 dP = obstPos - plyrPos;
 
 				if ((obstPos.GetY() - plyrPos.GetY()) >= 0) { // above the object
 					cs = false;
@@ -1035,7 +1102,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							enemyList[i]->GetCurrentAnimation()->Stop();
 						}
 					}
-					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 10.0f) {
+					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 						//Move towards player				
 						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
@@ -1225,6 +1292,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				for (int i = 0; i < enemyList.size(); i++) {
 					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
 						enemyList[i]->alive = false;
+						score += enemyList[i]->GetPoints();
+						updateScore = true;
 					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
@@ -1505,6 +1574,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			kills = 0;
 			curGroup = -1;
 			curWave = 0;
+			score = 0;
+
+			// score needs to be updated.
+			updateScore = true;
 
 			//Enemies
 			for (int i = 0; i < enemyList.size(); i++) {
@@ -1530,6 +1603,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		pauseMenu->SetVisible(true);
 	}
+
+	// updates the score if it has been changed.
+	if (updateScore)
+		UpdateScore();
 
 	// calls the main game Update function to go through every object.
 	cherry::GameplayScene::Update(deltaTime);

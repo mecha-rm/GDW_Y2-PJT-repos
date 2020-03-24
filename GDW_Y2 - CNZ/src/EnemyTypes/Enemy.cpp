@@ -157,3 +157,6 @@ int cnz::Enemy::GetState() const {
 void cnz::Enemy::SetState(int newState) {
 	this->state = newState;
 }
+
+// gets the amount of points for killing the enemy.
+int cnz::Enemy::GetPoints() const { return points; }

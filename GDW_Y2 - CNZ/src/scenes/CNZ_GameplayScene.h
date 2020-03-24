@@ -15,6 +15,7 @@
 
 //Enemy Sub-classes
 #include "..\EnemyTypes/Enemies.h"
+#include <cherry\objects\Text.h>
 
 namespace cnz
 {
@@ -30,6 +31,9 @@ namespace cnz
 	public:
 		// constructor
 		CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName);
+
+		// constructor - takes information from info provided.
+		CNZ_GameplayScene(const LevelLoadInfo& info);
 
 		// called when the scene is being opened (equivalent to Game::LoadContent).
 		// this is only called when the game is set to use this scene.
@@ -84,6 +88,9 @@ namespace cnz
 
 		// sets whether the bodies should be visible or not.
 		void SetVisiblePhysicsBodies(bool visible);
+
+		// updates the player's score string
+		void UpdateScore();
 
 		// update loop
 		void Update(float deltaTime) override;
@@ -166,9 +173,24 @@ namespace cnz
 		bool paused = false;
 		bool restart = false;
 
+		// becomes 'true' when the player is invincible.
+		bool isInvincible = false;
+		float invincibleCountdown = 0.0F;
+		static const float INVINCIBLE_TIME_MAX;
+
 		int kills = 0;
 		int lives = 3;
 		int curGroup = -1;
+
+		// score
+		int score = 0;
+
+		// the maximum amount of digits
+		static const int DIGITS_MAX;
+
+		// score text.
+		cherry::Text* scoreText = nullptr;
+		bool showScore = true;
 
 		// camera
 		bool debugMode = true; // allows for debug mode.
@@ -177,7 +199,7 @@ namespace cnz
 		bool showPBs = false;
 
 		// set to 'true' if post processing should be used.
-		bool postProcess = false;
+		bool postProcess = true;
 
 		// edge detection object
 		cherry::Kernel3Layer edgeDetect;

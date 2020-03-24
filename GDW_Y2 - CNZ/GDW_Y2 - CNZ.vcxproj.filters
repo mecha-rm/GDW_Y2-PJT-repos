@@ -90,6 +90,7 @@
     <ClCompile Include="src\cherry\scenes\MenuScene.cpp" />
     <ClCompile Include="src\scenes\CNZ_TitleScene.cpp" />
     <ClCompile Include="src\AnimationLoader.cpp" />
+    <ClCompile Include="src\scenes\CNZ_RankingScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -406,6 +407,7 @@
     <ClInclude Include="src\cherry\scenes\MenuScene.h" />
     <ClInclude Include="src\scenes\CNZ_TitleScene.h" />
     <ClInclude Include="src\AnimationLoader.h" />
+    <ClInclude Include="src\scenes\CNZ_RankingScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
@@ -564,5 +566,6 @@
     <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\post\toon-cel.fs.glsl" />
+    <None Include="res\shaders\post\lut.fs.glsl" />
   </ItemGroup>
 </Project>

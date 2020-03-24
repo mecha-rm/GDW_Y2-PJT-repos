@@ -86,6 +86,9 @@ namespace cnz
 		int GetState() const;
 		void SetState(int newState);
 
+		// gets the amount of points for killing the enemy.
+		int GetPoints() const;
+
 		std::string description = "Enemy";
 		bool attacking = false;
 		cherry::Object* arrow = nullptr;
@@ -114,5 +117,8 @@ namespace cnz
 		// becomes 'true' if the animations have been loaded.
 		// TODO: add this
 		// bool animsLoaded = false;
+
+		// the points recieved for killing the enemy
+		int points = 1;
 	};
 }

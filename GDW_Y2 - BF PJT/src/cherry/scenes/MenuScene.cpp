@@ -320,6 +320,9 @@ void cherry::MenuScene::Update(float deltaTime)
 	// cursor position (screen space)
 	glm::dvec2 cursorPos = game->GetCursorViewPositionGLM();
 
+	// checks to see if the cursor has been flipped on the x-axis.
+	bool xFlip = false;
+
 	// cursor world space position
 	// the button positions are based on world space, but use an orthographic camera.
 	// the camera is looking at the origin of the game world, so the centre of the screen is (0, 0).
@@ -330,8 +333,9 @@ void cherry::MenuScene::Update(float deltaTime)
 	// std::cout << "C2: " << Vec3(cursor_wpos).ToString() << std::endl;
 	// std::cout << "" << std::endl;
 
+
 	// sets the position of the mouse box so that it's aligned with the mouse position.
-	// cursorObject->SetPosition(cursorPos.x, cursorPos.y, 0.0F);
+	// if the window direction is still reversed, this reverses the cursor position for the hitbox.
 	cursorBox->SetLocalPosition(cursorPos.x, cursorPos.y, 0.0F);
 	// cursorObject->Update(deltaTime); // update object representing mouse
 
@@ -341,6 +345,24 @@ void cherry::MenuScene::Update(float deltaTime)
 	// button collision check
 	for (Button* button : buttons)
 	{
+		if (WINDOW_X_DIR_REVERSED)
+		{
+			// if the button is a window child, but the x-position has not been flipped for the cursor hitbox, it gets flipped.
+			if (button->object->IsWindowChild() && xFlip == false)
+			{
+				// reverses position
+				cursorBox->SetLocalPosition(-cursorPos.x, cursorPos.y, 0.0F);
+				xFlip = true;
+			}
+			// if the button isn't a window child, but the x-position of the cursor has been flipped, it flips it back.
+			else if (!button->object->IsWindowChild() && xFlip == true)
+			{
+				// back to normal position
+				cursorBox->SetLocalPosition(cursorPos.x, cursorPos.y, 0.0F);
+				xFlip = false;
+			}
+		}
+
 		// all physics bodies
 		std::vector<PhysicsBody*> bodies = button->object->GetPhysicsBodies();
 		

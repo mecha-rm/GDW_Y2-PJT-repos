@@ -3,7 +3,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include <toolkit/Logging.h>
 
-// sources
+// sources TODO: remove nullptr initialiation?
 cnz::Player* cnz::Level::sourcePlayer = nullptr;
 cnz::Sentry* cnz::Level::sourceSentry = nullptr;
 cnz::Oracle* cnz::Level::sourceOracle = nullptr;
@@ -193,7 +193,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				if (sourcePlayer == nullptr)
 					GenerateSources();
 
-				playerObj = new Player(sourcePlayer, sceneName);
+				// player object hasn't been made yet.
+				if(playerObj == nullptr)
+					playerObj = new Player(sourcePlayer, sceneName);
 
 				// original
 				// playerObj = cnz::Player::GenerateDefault(sceneName);
@@ -782,7 +784,497 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				objects.push_back(obj);
 				obstacles.push_back(obj);
 			}
+			else if (legend[curObj] == "Building") { // building
+				if (useCopy && building != nullptr) {
+					obj = new Obstacle(building, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					building = new Obstacle("res/objects/building.obj", this->sceneName, true);
+					obj = building;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Concrete") { // concrete
+				if (useCopy && concrete != nullptr) {
+					obj = new Obstacle(concrete, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					concrete = new Obstacle("res/objects/floor.obj", this->sceneName, true);
+					obj = concrete;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Metal Box") { // metal box
+				if (useCopy && metalBox != nullptr) {
+					obj = new Obstacle(metalBox, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					metalBox = new Obstacle("res/objects/metalbox.obj", this->sceneName, true);
+					obj = metalBox;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Wooden Box") { // wooden box
+				if (useCopy && woodenBox != nullptr) {
+					obj = new Obstacle(woodenBox, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					woodenBox = new Obstacle("res/objects/woodenbox.obj", this->sceneName, true);
+					obj = woodenBox;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Flood light") { // flood light
+				if (useCopy && floodLight != nullptr) {
+					obj = new Obstacle(floodLight, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					floodLight = new Obstacle("res/objects/lamp.obj", this->sceneName, true);
+					obj = floodLight;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Concrete pillar") { // concrete pillar
+				if (useCopy && concretePillar != nullptr) {
+					obj = new Obstacle(concretePillar, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					concretePillar = new Obstacle("res/objects/piller.obj", this->sceneName, true);
+					obj = concretePillar;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Shelves") { // shelves
+				if (useCopy && shelves != nullptr) {
+					obj = new Obstacle(shelves, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					shelves = new Obstacle("res/objects/shelves.obj", this->sceneName, true);
+					obj = shelves;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Edge ground") { // edge ground
+				if (useCopy && edgeGround != nullptr) {
+					obj = new Obstacle(edgeGround, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					edgeGround = new Obstacle("res/objects/edge.obj", this->sceneName, true);
+					obj = edgeGround;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Bench") { // bench
+				if (useCopy && bench != nullptr) {
+					obj = new Obstacle(bench, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					bench = new Obstacle("res/objects/bench.obj", this->sceneName, true);
+					obj = bench;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
+			else if (legend[curObj] == "Tent") { // tent
+				if (useCopy && tent != nullptr) {
+					obj = new Obstacle(tent, sceneName);
+					// resetting values
+					obj->SetPosition(cherry::Vec3(0, 0, 0));
+					obj->SetRotationDegrees(cherry::Vec3(0, 0, 0));
+					obj->SetScale(cherry::Vec3(1, 1, 1));
+
+					obj->DeleteAllPhysicsBodies();
+				}
+				else {
+					tent = new Obstacle("res/objects/tent.obj", this->sceneName, true);
+					obj = tent;
+				}
+
+
+				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
+				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
+				obj->AddPhysicsBody(body);
+
+				std::vector<float> properties = GetObjectProps(y, x);
+				cherry::Vec3 posOffset, rot;
+				if (properties.size() == 0) { // no modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 1) { // rotation modifier
+					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				else if (properties.size() == 3) { // position modifier
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
+				}
+				else if (properties.size() == 4) { // rotation and position modifiers
+					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
+					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
+				}
+				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
+				body->SetVisible(false);
+
+				// adding to the lists
+				objectList->AddObject(obj);
+				objects.push_back(obj);
+				obstacles.push_back(obj);
+			}
 		}
+	}
+
+	// if the player object has not been made yet.
+	if (playerObj == nullptr)
+	{
+		// if the source player object is null, the sources need to be made.
+		if (sourcePlayer == nullptr)
+			GenerateSources();
+
+		playerObj = new Player(sourcePlayer, sceneName);
 	}
 
 	return objects;
@@ -964,6 +1456,16 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 // generates the soruce objects.
 void cnz::Level::GenerateSources()
 {
+	// becomes 'true' when the sources are loaded.
+	static bool initSources = false;
+
+	// this function should only be called once.
+	if (initSources)
+	{
+		LOG_WARN("This function has already been called once, and cannot be called again.");
+		return;
+	}
+
 	// scene name
 	std::string sceneName = "rand_";
 
@@ -1009,6 +1511,9 @@ void cnz::Level::GenerateSources()
 
 	// creating the enemy groups
 	CNZ_GameplayScene::LoadEnemyGroups();
+
+	// sources have been initialized.
+	initSources = true;
 }
 
 // gets the objects; will be empty if it doesn't exist yet.
@@ -1021,7 +1526,10 @@ std::vector<cnz::Obstacle *> cnz::Level::GetObstacles() const { return obstacles
 bool cnz::Level::GetObjectsGenerated() const { return objectsGenerated; }
 
 // gets the player object
-cnz::Player* cnz::Level::GetPlayerObject() const { return playerObj; }
+cnz::Player* cnz::Level::GetPlayerObject() const 
+{ 
+	return playerObj; 
+}
 
 // gets the player's spawn position.
 const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const { return playerSpawn; }

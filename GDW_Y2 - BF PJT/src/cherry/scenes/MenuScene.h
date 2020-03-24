@@ -84,7 +84,8 @@ namespace cherry
 		// the object and text are both added to the object list. This adds the physics body to the object as well.
 		cherry::Button* AddButton(cherry::Object * object, cherry::PhysicsBody * body = nullptr, cherry::Text * text = nullptr);
 
-		// adds a button to the list. If 'addedToList' is equal to false, it adds the buttons to the list.
+		// adds a button to the applicable lists. 
+		// If 'addedToList' is equal to false, it adds the button and its text are both added to the object list.
 		void AddButton(Button* button, bool addedToList = false);
 
 		// removes a button and its components from the lists, and returns the button that was removed.
