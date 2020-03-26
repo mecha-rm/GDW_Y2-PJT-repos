@@ -249,6 +249,9 @@
     <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\cherry\post\Bloom.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\KHR\khrplatform.h">
@@ -1304,6 +1307,9 @@
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\cherry\post\Bloom.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glfw3.lib" />
@@ -1709,6 +1715,8 @@
     <None Include="res\shaders\post\lut.fs.glsl" />
     <None Include="res\shaders\post\depth_of_field.fs.glsl" />
     <None Include="res\shaders\post\shadow_post.fs.glsl" />
+    <None Include="res\shaders\post\bloom_highlight.fs.glsl" />
+    <None Include="res\shaders\post\radial_blur.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

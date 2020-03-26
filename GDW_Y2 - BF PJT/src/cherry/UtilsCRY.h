@@ -44,3 +44,4 @@
 #define POST_CEL_FS "res/shaders/post/toon-cel.fs.glsl"
 #define POST_LUT_FS "res/shaders/post/lut.fs.glsl"
 #define POST_DOF_FS "res/shaders/post/depth_of_field.fs.glsl"
+#define POST_BLOOM_HIGHLIGHT_FS "res/shaders/post/bloom_highlight.fs.glsl"

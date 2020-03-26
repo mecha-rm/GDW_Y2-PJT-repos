@@ -35,16 +35,25 @@ namespace cherry
 		// colour and depth attachment are suggested for the frame buffer if it is the first pass.
 		void AddLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output);
 
+		// removes a layer from the post pass list. The shader and frame buffer must match for this to happen.
+		void RemoveLayer(Shader::Sptr& shader, FrameBuffer::Sptr& buffer);
+
 		virtual void OnWindowResize(uint32_t width, uint32_t height);
 
 		// renders the post layer
 		virtual void PostRender(const cherry::Camera::Sptr& camera);
 
+		// returns a pass shader based on the provided index. Nullptr is returned if the index is out of bounds.
+		const cherry::Shader::Sptr& GetShader(unsigned int index) const;
+
+		// returns a pass shader based on the provided index. Nullptr is returned if the index is out of bounds.
+		const cherry::FrameBuffer::Sptr& GetFrameBuffer(unsigned int index) const;
+
 		// gets the shader form the last pass.
-		const cherry::Shader::Sptr& GetLastPassShader();
+		const cherry::Shader::Sptr& GetLastPassShader() const;
 
 		// gets the last pas from the buffer.
-		const FrameBuffer::Sptr& GetLastPassBuffer();
+		const FrameBuffer::Sptr& GetLastPassBuffer() const;
 		 
 		// the initial frame buffer for this layer's passes
 		// if left as a nullptr, it is set to the scene registry's mainbuffer

@@ -80,10 +80,35 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 void cherry::PostLayer::AddLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
 {
 	if (shader == nullptr || output == nullptr)
-		std::runtime_error("Null layer is prohibited.");
+		throw std::runtime_error("Null layer is prohibited.");
 
 	// Add the pass to the post processing stack
 	myPasses.push_back({ shader, output });
+}
+
+// removes a layer from the post pass list.
+void cherry::PostLayer::RemoveLayer(Shader::Sptr& shader, FrameBuffer::Sptr& buffer)
+{
+	// shader or buffer don't exist.
+	if (shader == nullptr || buffer == nullptr)
+		return;
+
+	// index of layer
+	int index = -1;
+
+	// searches the list for the shader and buffer to be removed.
+	for (int i = 0; i < myPasses.size(); i++)
+	{
+		if (myPasses[i].Shader == shader || myPasses[i].Output == buffer)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	// if a value was found.
+	if(index >= 0)
+		myPasses.erase(myPasses.begin() + index);
 }
 
 // resizes the layers
@@ -210,8 +235,28 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 	// CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(lastPass);
 }
 
+// gets a shader from a pass.
+const cherry::Shader::Sptr& cherry::PostLayer::GetShader(unsigned int index) const
+{
+	// returns the shader
+	if (index >= myPasses.size())
+		return cherry::Shader::Sptr();
+	else
+		return myPasses[index].Shader;
+}
+
+// gets a frame buffer from a pass.
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetFrameBuffer(unsigned int index) const
+{
+	// returns the buffer
+	if (index >= myPasses.size())
+		return cherry::FrameBuffer::Sptr();
+	else
+		return myPasses[index].Output;
+}
+
 // returns the shader from the last pass
-const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader()
+const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader() const
 {
 	if (!myPasses.empty()) // there are layers
 	{
@@ -224,7 +269,7 @@ const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader()
 }
 
 // returns the frame buffer from the last pass
-const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetLastPassBuffer()
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetLastPassBuffer() const
 {
 	if (!myPasses.empty()) // there are layers
 	{
