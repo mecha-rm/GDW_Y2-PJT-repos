@@ -1547,9 +1547,9 @@ std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	// first dash, no second dash. Check if data has brackets or not. if brackets, collect three floats. if no brackets collect one float.
 	// both dashs. Collect three floats from within brackets after first dash. Collect one float from after second dash
 
-	// "P-(x,y,z)" (size = 9)
-	// "P-12.66" (size = 7)
-	// "P-(x,y,z)-12.66" (size = 15)
+	// "P_(x,y,z)" (size = 9)
+	// "P_12.66" (size = 7)
+	// "P_(x,y,z)_12.66" (size = 15)
 	// string.substr(inclusive, exclusive);
 
 	if (firstDash == std::string::npos) { // no position or rotation data, return empty properties list
