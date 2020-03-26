@@ -596,7 +596,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 		layer7 = std::make_shared<PostLayer>(celShader, cfb);
 
-		// table
+		// table 
 		table.LoadCubeFile("res/luts/ICG_2 - ASN01 - Warm Grading.CUBE"); 
 
 		// depth of field layer
@@ -605,6 +605,13 @@ void cherry::EngineGameplayScene::OnOpen()
 		dofLayer.SetLenseDistance(1.0F);
 		dofLayer.SetAperture(20.0F);
 
+		// blur layer 
+		{
+			bloomLayer = BloomLayer(0.6F);
+			Shader::Sptr sdr = BloomLayer::GenerateBoxBlur();
+			FrameBuffer::Sptr bfr = FrameBuffer::GenerateDefaultBuffer();
+			bloomLayer.AddPass(sdr, bfr);
+		}
 	}
 
 
@@ -790,12 +797,20 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_3:
 		layers.clear();
-		 
-		layers.push_back(dofLayer.GetPostLayer());
-		dofLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
-		
+
+		// inversion
 		// layers.push_back(layer2);
 		// layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// depth of field
+		// layers.push_back(dofLayer.GetPostLayer());
+		// dofLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// bloom
+		// layers.push_back(layer4);
+		layers.push_back(bloomLayer.GetPostLayer());
+		bloomLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
 		break;
 	case GLFW_KEY_4:
 		layers.clear();

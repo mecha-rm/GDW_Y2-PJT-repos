@@ -4,6 +4,7 @@
 #include "GameplayScene.h"
 #include "..\post/LookUpTable.h"
 #include "..\post/DepthOfFieldLayer.h"
+#include "..\post/BloomLayer.h"
 
 namespace cherry
 {
@@ -82,6 +83,9 @@ namespace cherry
 
 		// the lookup table.
 		LookUpTable table;
+		
+		// the bloom layer.
+		BloomLayer bloomLayer;
 
 		bool useLayers = true;
 

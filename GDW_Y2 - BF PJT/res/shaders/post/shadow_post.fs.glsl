@@ -1,5 +1,11 @@
 #version 440
 
+// TODO:
+// calculate the distance between the light and the pixel
+// cast the shadow until you reach the skybox
+// calculate the shadow's strength.
+
+
 layout (location = 0) in vec4 inColor;
 layout (location = 1) in vec3 inNormal;
 layout (location = 2) in vec2 inScreenCoords;

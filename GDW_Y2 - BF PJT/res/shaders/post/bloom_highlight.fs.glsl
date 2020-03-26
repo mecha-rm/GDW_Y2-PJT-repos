@@ -12,21 +12,24 @@ uniform float a_Threshold;
 
 vec3 ExtractHighlight(vec3 color, float threshold)
 {
-	// calculates the highlight and caps it
+	// // calculates the highlight and caps it
 	vec3 temp = (color - vec3(threshold)) / (1 - threshold);
 	temp = clamp(temp, 0.0F, 1.0F);
-
+	
 	return temp;
+
+	// Determine our luminance, based on percieved brightness of colors
+	// float luminance = dot(color, vec3(0.299, 0.587, 0.114)); 
+	// // step will return 0 if luminance < threshhold, and 1 if otherwise
+	// vec3 temp = color * step(a_Threshold, luminance); 
+	// return temp;
 }
 
 void main() {
 	vec4 color = texture(xImage, inUV);
-	float threshold = clamp(a_Threshold, 0, 1);
+	float threshold = clamp(a_Threshold, 0.0F, 1.0F);
 	
+	color.rgb = ExtractHighlight(color.rgb, threshold);
 
-	// checks to see that the threshold is positive.
-	if(threshold < 1.0F && threshold > 0.0F)
-		color.rgb = ExtractHighlight(color.rgb, threshold);
-
-	outColor = inColor;
+	outColor = color;
 }

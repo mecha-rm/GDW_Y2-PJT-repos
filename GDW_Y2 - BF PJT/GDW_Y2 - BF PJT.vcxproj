@@ -650,6 +650,9 @@
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_additive.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_average.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_mix.fs.glsl" />
     <None Include="res\shaders\post\bloom_highlight.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />

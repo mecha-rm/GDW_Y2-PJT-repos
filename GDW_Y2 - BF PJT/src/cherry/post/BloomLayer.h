@@ -35,7 +35,11 @@ namespace cherry
 		static cherry::Shader::Sptr GenerateGuassianBlur5();
 
 		// generates a radial blur
-		static cherry::Shader::Sptr GenerateRadialBlur();
+		// static cherry::Shader::Sptr GenerateRadialBlurCircular();
+
+		// static cherry::Shader::Sptr GenerateRadicalBlurLinear();
+
+		// static cherry::Shader::Sptr GenerateRadicalBlurZoom();
 
 		// adds a pass to the bloom object.
 		void AddPass(Shader::Sptr& shader, FrameBuffer::Sptr& buffer);
@@ -47,17 +51,20 @@ namespace cherry
 		cherry::PostLayer::Sptr GetPostLayer() const;
 
 	private:
+
 		// threshold
 		float threshold = 0;
 
-		// post processing layer
+		// post processing layer, shader, and buffer
 		PostLayer::Sptr layer;
 
-		// shader
-		Shader::Sptr shader;
+		Shader::Sptr mainShader;
+		FrameBuffer::Sptr mainBuffer;
 
-		// frame buffer
-		FrameBuffer::Sptr frameBuffer;
+
+		// accumulation layer, shader and buffer
+		Shader::Sptr accumShader;
+		FrameBuffer::Sptr accumBuffer;
 
 	protected:
 
