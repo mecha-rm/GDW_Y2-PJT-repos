@@ -96,7 +96,7 @@
     <ClCompile Include="src\cherry\Instrumentation.cpp" />
     <ClCompile Include="src\cherry\JsonProfiling.cpp" />
     <ClCompile Include="src\cherry\objects\Text.cpp" />
-    <ClCompile Include="src\cherry\post\Bloom.cpp" />
+    <ClCompile Include="src\cherry\post\BloomLayer.cpp" />
     <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\KernelLayer.cpp" />
@@ -443,7 +443,7 @@
     <ClInclude Include="src\cherry\Instrumentation.h" />
     <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\objects\Text.h" />
-    <ClInclude Include="src\cherry\post\Bloom.h" />
+    <ClInclude Include="src\cherry\post\BloomLayer.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\FrameBuffer.h" />
     <ClInclude Include="src\cherry\post\KernelLayer.h" />
@@ -653,8 +653,11 @@
     <None Include="res\shaders\post\bloom_highlight.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
+    <None Include="res\shaders\post\box_blur.fs.glsl" />
     <None Include="res\shaders\post\depth_of_field.fs.glsl" />
     <None Include="res\shaders\post\gamma_correction.fs.glsl" />
+    <None Include="res\shaders\post\gaussian_blur3.fs.glsl" />
+    <None Include="res\shaders\post\gaussian_blur5.fs.glsl" />
     <None Include="res\shaders\post\greenscale.fs.glsl" />
     <None Include="res\shaders\post\greyscale.fs.glsl" />
     <None Include="res\shaders\post\invert.fs.glsl" />
@@ -664,7 +667,9 @@
     <None Include="res\shaders\post\motion_blur.fs.glsl" />
     <None Include="res\shaders\post\post.fs.glsl" />
     <None Include="res\shaders\post\post.vs.glsl" />
-    <None Include="res\shaders\post\radial_blur.fs.glsl" />
+    <None Include="res\shaders\post\radial_blur_circular.fs.glsl" />
+    <None Include="res\shaders\post\radial_blur_linear.fs.glsl" />
+    <None Include="res\shaders\post\radial_blur_zoom.fs.glsl" />
     <None Include="res\shaders\post\redscale.fs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />
     <None Include="res\shaders\post\shadow_post.fs.glsl" />

@@ -44,6 +44,7 @@ cherry::PostLayer::PostLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
 	AddLayer(shader, output);
 }
 
+
 // post-processing layer
 void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 {
@@ -110,6 +111,36 @@ void cherry::PostLayer::RemoveLayer(Shader::Sptr& shader, FrameBuffer::Sptr& buf
 	if(index >= 0)
 		myPasses.erase(myPasses.begin() + index);
 }
+
+// removes the layer based on the provided index.
+void cherry::PostLayer::RemoveLayer(unsigned int index)
+{
+	// valid index test.
+	if (index >= myPasses.size())
+		return;
+	else
+		myPasses.erase(myPasses.begin() + index);
+}
+
+// returns the shader at the provided index.
+const cherry::Shader::Sptr& cherry::PostLayer::GetPassShader(unsigned int index)
+{
+	if (index >= myPasses.size())
+		return nullptr;
+	else
+		return myPasses[index].Shader;
+}
+
+// returns the buffer at the provided index.
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetPassBuffer(unsigned int index)
+{
+	if (index >= myPasses.size())
+		return nullptr;
+	else
+		return myPasses[index].Output;
+}
+
+
 
 // resizes the layers
 void cherry::PostLayer::OnWindowResize(uint32_t width, uint32_t height)
