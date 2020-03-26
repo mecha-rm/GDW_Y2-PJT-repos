@@ -64,11 +64,11 @@ void cherry::EngineMenuScene::OnOpen()
 		// pbb->SetVisible(true);
 		button->object = image;
 
-		button->text = new Text("Johnny Boy", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		button->text = new Text("__DEBUG", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		// button->text->ClearText();
 		button->text->SetText("DEBUG MENU");
 		// button->text->SetWindowChild(false);
-		// button->text->SetPosition(0.0F, 0.0F, 10.0F);
+		button->text->SetPosition(2.0F, 0.0F, 10.0F);
 		
 		
 		button->text->SetWindowChild(true);

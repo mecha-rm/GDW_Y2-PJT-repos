@@ -91,6 +91,11 @@
     <ClCompile Include="src\scenes\CNZ_TitleScene.cpp" />
     <ClCompile Include="src\AnimationLoader.cpp" />
     <ClCompile Include="src\scenes\CNZ_RankingScene.cpp" />
+    <ClCompile Include="src\cherry\post\LookUpTable.cpp" />
+    <ClCompile Include="src\cherry\textures\Texture3D.cpp" />
+    <ClCompile Include="src\cherry\Instrumentation.cpp" />
+    <ClCompile Include="src\cherry\JsonProfiling.cpp" />
+    <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -399,7 +404,6 @@
     <ClInclude Include="src\cherry\scenes\GameplayScene.h" />
     <ClInclude Include="src\cherry\textures\ITexture.h" />
     <ClInclude Include="src\cherry\textures\TextureEnums.h" />
-    <ClInclude Include="src\cherry\IGraphicsResource.h" />
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
     <ClInclude Include="src\cherry\scenes\EngineGamplayScene.h" />
     <ClInclude Include="src\cherry\scenes\EngineGameplayScene.h" />
@@ -408,6 +412,12 @@
     <ClInclude Include="src\scenes\CNZ_TitleScene.h" />
     <ClInclude Include="src\AnimationLoader.h" />
     <ClInclude Include="src\scenes\CNZ_RankingScene.h" />
+    <ClInclude Include="src\cherry\IGraphicsResource.h" />
+    <ClInclude Include="src\cherry\post\LookUpTable.h" />
+    <ClInclude Include="src\cherry\textures\Texture3D.h" />
+    <ClInclude Include="src\cherry\Instrumentation.h" />
+    <ClInclude Include="src\cherry\JsonProfiling.h" />
+    <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
@@ -567,5 +577,7 @@
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\post\toon-cel.fs.glsl" />
     <None Include="res\shaders\post\lut.fs.glsl" />
+    <None Include="res\shaders\post\depth_of_field.fs.glsl" />
+    <None Include="res\shaders\post\shadow_post.fs.glsl" />
   </ItemGroup>
 </Project>

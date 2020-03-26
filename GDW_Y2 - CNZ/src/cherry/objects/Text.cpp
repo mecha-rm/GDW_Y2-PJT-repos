@@ -13,7 +13,7 @@ cherry::Text::Text(std::string text, std::string scene, std::string font, cherry
 		glm::clamp(color.v.y, 0.0F, 1.0F),
 		glm::clamp(color.v.z, 0.0F, 1.0F),
 		glm::clamp(color.v.w, 0.0F, 1.0F)
-	);
+		);
 
 	SetPosition(position);
 
@@ -51,7 +51,7 @@ cherry::Text::Text(const cherry::Text& txt)
 	filePath = txt.filePath; // text path
 	fontMap = txt.fontMap; // font
 	color = txt.color; // colour
-	
+
 	windowChild = txt.windowChild;
 	sceneName = txt.sceneName;
 
@@ -92,7 +92,7 @@ std::string cherry::Text::GetText() const { return text; }
 void cherry::Text::SetText(const std::string newText)
 {
 	// clears out all the text.
-	ClearText(); 
+	ClearText();
 
 	text = newText;
 
@@ -121,7 +121,7 @@ void cherry::Text::SetText(const std::string newText)
 		charCopy->GetMesh()->SetWindowChild(windowChild);
 		// charCopy->SetAlpha(alpha);
 
-		charCopy->SetRotationZDegrees(180.0F);
+		// charCopy->SetRotationZDegrees(180.0F);
 		textChars.push_back(charCopy);
 	}
 
@@ -253,7 +253,7 @@ void cherry::Text::LoadText(const std::string scene)
 			cellSize = glm::vec2(
 				util::convertString<float>(splitLine[1]),
 				util::convertString<float>(splitLine[2])
-			);
+				);
 		}
 		else if (temp == "spc") // spacing
 		{

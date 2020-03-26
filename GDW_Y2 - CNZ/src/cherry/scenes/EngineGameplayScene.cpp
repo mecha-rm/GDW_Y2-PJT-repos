@@ -356,7 +356,7 @@ void cherry::EngineGameplayScene::OnOpen()
 			// text
 			// TODO: find out why items are layeirng on top of one another.
 			Text* text = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
-			text->SetPosition(1.0F, 1.0F, 3.0F);
+			text->SetPosition(1.0F, 50.0F, 3.0F);
 			objectList->AddObject(text); 
 		}
 
@@ -595,16 +595,26 @@ void cherry::EngineGameplayScene::OnOpen()
 		cfb->AddAttachment(sceneDepth);
 
 		layer7 = std::make_shared<PostLayer>(celShader, cfb);
+
+		// table
+		table.LoadCubeFile("res/luts/ICG_2 - ASN01 - Warm Grading.CUBE"); 
+
+		// depth of field layer
+		dofLayer = DepthOfFieldLayer();
+		dofLayer.SetFocalDepth(3.0F);
+		dofLayer.SetLenseDistance(1.0F);
+		dofLayer.SetAperture(20.0F);
+
 	}
 
 
 	useFrameBuffers = true;
 
 	// the audio engine
-	AudioEngine& audioEngine = game->audioEngine;
+	AudioEngine& audioEngine = AudioEngine::GetInstance();
 
 	// TODO: streamline audio inclusion
-	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL)
+	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL) 
 	// TODO: put in dedicated folder with ID on it?
 	audioEngine.LoadBank("res/audio/Master");
 
@@ -613,7 +623,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	audioEngine.LoadEvent("Music");
 	// Play the event
 	audioEngine.PlayEvent("Music");
-	audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
+	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
 }
@@ -780,8 +790,12 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_3:
 		layers.clear();
-		layers.push_back(layer2);
-		layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		 
+		layers.push_back(dofLayer.GetPostLayer());
+		dofLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		
+		// layers.push_back(layer2);
+		// layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_4:
 		layers.clear();
@@ -806,6 +820,11 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_8:
 		layers.clear();
 		layers.push_back(layer7);
+		layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		break;
+	case GLFW_KEY_9:
+		layers.clear();
+		layers.push_back(table.GetPostLayer());
 		layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	}

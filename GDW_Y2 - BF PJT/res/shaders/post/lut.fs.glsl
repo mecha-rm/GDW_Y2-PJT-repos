@@ -9,11 +9,13 @@ layout (location = 0) out vec4 outColor;
 
 uniform sampler2D xImage; // image
 
-uniform sampler3D a_Lut; // lookup table
+uniform samplerCube a_Lut; // lookup table
+// uniform sampler3D a_Lut; // lookup table; this should be the one that gets used, but it didn't work.
 
 void main() {
 	vec4 color = texture(xImage, inUV);
-	vec4 newColor = texture(a_Lut, vec3(color.g, color.r, color.b)); // getting the colour value from the lookup table.
+	vec4 newColor = texture(a_Lut, vec3(color.r, color.b, color.b)); // getting the colour value from the lookup table.
+	// vec4 newColor = texture3D(a_Lut, vec3(color.r, color.b, color.b)); // getting the colour value from the lookup table.
 
 	outColor = vec4(newColor.rgb, color.a);
 }

@@ -94,6 +94,8 @@ void cnz::CNZ_Game::LoadContent()
 	// 
 	// 	RegisterScene(mapScene, true);
 	// }
+
+	
 }
 
 // Update function

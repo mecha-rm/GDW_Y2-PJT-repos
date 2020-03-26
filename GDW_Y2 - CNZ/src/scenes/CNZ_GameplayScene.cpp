@@ -549,6 +549,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 		enemyList[index]->alive = true;
 		enemyList[index]->SetRotationXDegrees(90);
 
+		// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
 		// phyiscs body
 		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
 		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));

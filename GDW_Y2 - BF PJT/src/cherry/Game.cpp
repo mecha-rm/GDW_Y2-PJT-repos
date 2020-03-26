@@ -859,7 +859,7 @@ void cherry::Game::Initialize() {
 	srand(time(0));
 
 	// initalizies the audio engine
-	audioEngine.Init();
+	AudioEngine::GetInstance().Init();
 }
 
 // called when the game is shutting down
@@ -936,7 +936,7 @@ void cherry::Game::LoadContent()
 }
 
 void cherry::Game::UnloadContent() {
-	audioEngine.Shutdown(); // shutdown the audio component.
+	AudioEngine::GetInstance().Shutdown(); // shutdown the audio component.
 	SceneManager::DestroyScenes(); // destroys all the scenes.
 
 	ObjectManager::DestroyAllSceneObjectLists();
@@ -973,7 +973,7 @@ void cherry::Game::Update(float deltaTime) {
 
 	// TODO: determine why this crashes.
 	// updates the audio engine 
-	audioEngine.Update();
+	AudioEngine::GetInstance().Update();
 }
 
 void cherry::Game::InitImGui() {

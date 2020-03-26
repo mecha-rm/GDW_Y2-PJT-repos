@@ -1,8 +1,2 @@
-{0a5d8280-9380-4462-97ea-13b3f41ec4a5} bank:/Master
-{9240a254-e2fb-0820-11a3-994d05edc23d} bank:/Master.strings
-{5b07302c-e2eb-4583-a95f-e78832f4bf66} bus:/
-{c95f6067-07e5-4e3c-b79c-ded00495092a} bus:/Reverb
-{845f60d8-6edb-4810-9164-367edb9b25fe} event:/Dash
-{5bb29cdf-f5b9-462a-8ac3-75cb2c5a9a4d} event:/Footstep
-{054008f4-5c1d-4264-825d-a75ea99b6748} event:/menu accept
-{bf445502-073f-4dac-a720-1088a0575fd6} event:/menu click
+Master {13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}
+	- Menu_Song_1.0.mp3 

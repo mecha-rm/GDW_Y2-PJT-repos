@@ -121,7 +121,7 @@ void cherry::Text::SetText(const std::string newText)
 		charCopy->GetMesh()->SetWindowChild(windowChild);
 		// charCopy->SetAlpha(alpha);
 
-		charCopy->SetRotationZDegrees(180.0F);
+		// charCopy->SetRotationZDegrees(180.0F);
 		textChars.push_back(charCopy);
 	}
 

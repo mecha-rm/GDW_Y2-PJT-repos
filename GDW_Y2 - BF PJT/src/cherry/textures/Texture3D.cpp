@@ -8,11 +8,12 @@
 // 3D Textures
 #include "Texture3D.h"
 
-// #include "florp/graphics/Texture2D.h"
 #include <toolkit/Logging.h>
 #include <GLM/gtc/type_ptr.hpp>
 #include <filesystem>
 #include <stbs/stb_image.h>
+#include "..\post/LookUpTable.h"
+
 
 uint32_t cherry::Texture3D::MaxTextureSize = 0;
 uint32_t cherry::Texture3D::MaxNumSamples = 1;
@@ -62,11 +63,12 @@ cherry::Texture3D::Sptr cherry::Texture3D::LoadFromFile(const std::string& fileP
 // loads from a lookup table object.
 cherry::Texture3D::Sptr cherry::Texture3D::LoadFromLookUpTable(LookUpTable & lut, bool loadAlpha)
 {
-	std::string filePath = lut.GetName();
+	std::string name = lut.GetName();
+	std::string filePath = lut.GetFilePath();
 
-	// Load the image data from the file
+	// Load the image data from the file 
 	int width, height, depth, numChannels;
-	// void* data = stbi_load(filePath.c_str(), &width, &height, &numChannels, 0);
+	// void* data = stbi_load(filePath.c_str(), &width, &height, &numChannels, 0); 
 	void* data = lut.GetDataPoints();
 
 	// the LookUp Table 3D size (in pixels)
@@ -74,7 +76,10 @@ cherry::Texture3D::Sptr cherry::Texture3D::LoadFromLookUpTable(LookUpTable & lut
 	height = lut.GetLut3DSize();
 	depth = lut.GetLut3DSize();
 
-	numChannels = 3; // RGB (no alpha)
+	if (loadAlpha)
+		numChannels = 4; // RGBA8
+	else
+		numChannels = 3; // RGB8 (no alpha)
 
 	// We have data!
 	InternalFormat internal_format;
@@ -99,7 +104,7 @@ cherry::Texture3D::Sptr cherry::Texture3D::LoadFromLookUpTable(LookUpTable & lut
 		break;
 
 	default:
-		LOG_WARN("Unsupported texture format. Texture may look strange. ({})", filePath);
+		LOG_WARN("Unsupported texture format. Texture may look strange. ({})", name);
 		internal_format = InternalFormat::RGBA8;
 		image_format = PixelFormat::Rgba;
 		break;
@@ -129,7 +134,7 @@ cherry::Texture3D::Sptr cherry::Texture3D::LoadFromLookUpTable(LookUpTable & lut
 		Sptr result = std::make_shared<Texture3D>(desc);
 		result->SetData(texData);
 		// result->SetDebugName(std::filesystem::path(filePath).filename().string());
-		result->SetDebugName(filePath);
+		result->SetDebugName(name);
 
 		// Free the underlying image data and return the image
 		// stbi_image_free(texData.Data); // not needed?
@@ -138,11 +143,17 @@ cherry::Texture3D::Sptr cherry::Texture3D::LoadFromLookUpTable(LookUpTable & lut
 	else {
 		// Free the data just, to be safe
 		// stbi_image_free(data); // not needed?
-		LOG_WARN("Failed to load image from \"{}\"", filePath);
+		LOG_WARN("Failed to load image from \"{}\"", name);
 		return nullptr;
 	}
 
-	return cherry::Texture3D::Sptr();
+	return nullptr;
+}
+
+void cherry::Texture3D::LoadData(uint32_t width, uint32_t height, PixelFormat format, PixelType type, void* data)
+{
+	glTextureSubImage3D(myRendererID, 0, 0, 0, 0, myDescription.Width, myDescription.Height, myDescription.Height
+		, (GLenum)format, (GLenum)type, data);
 }
 
 void cherry::Texture3D::SetData(const Texture3dData& data) {
@@ -156,7 +167,7 @@ void cherry::Texture3D::SetData(const Texture3dData& data) {
 
 	// Load the data into the texture
 	glTextureSubImage3D(myRendererID, 0, 0, 0, 0, myDescription.Width, myDescription.Height, myDescription.Depth, (GLenum)data.Format, (GLenum)data.Type, data.Data);
-
+	// glTexImage3D(myRendererID, 0, GL_RGB, myDescription.Width, myDescription.Height, myDescription.Depth, 0, GL_RGB, GL_FLOAT, &data.Data);
 	// This is an older version
 	// glTexImage3D(GL_TEXTURE_3D, 0, GL_RGB, LUTsize, LUTsize, LUTsize, 0, GL_RGB, GL_FLOAT, &LUT[0]);
 

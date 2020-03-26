@@ -296,11 +296,6 @@ namespace cherry
 		// extra cameras.
 		std::vector<Camera::Sptr> exCameras;
 
-		// TODO: make private?
-		// audio component for the scene
-		// cherry::AudioComponent audioEngine = cherry::AudioComponent();
-		cherry::AudioEngine& audioEngine = cherry::AudioEngine::GetInstance();
-
 
 		// stores the main clear color of the game's window
 		// each camera has its own clear colour, which can be set to this value if it should remain the same for all cameras.

@@ -2,6 +2,8 @@
 #pragma once
 
 #include "GameplayScene.h"
+#include "..\post/LookUpTable.h"
+#include "..\post/DepthOfFieldLayer.h"
 
 namespace cherry
 {
@@ -74,6 +76,13 @@ namespace cherry
 		PostLayer::Sptr layer5 = nullptr;
 		PostLayer::Sptr layer6 = nullptr;
 		PostLayer::Sptr layer7 = nullptr;
+
+		// the depth of field layer
+		DepthOfFieldLayer dofLayer;
+
+		// the lookup table.
+		LookUpTable table;
+
 		bool useLayers = true;
 
 	protected:

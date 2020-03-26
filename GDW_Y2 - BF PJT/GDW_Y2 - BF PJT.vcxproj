@@ -93,7 +93,10 @@
     <ClCompile Include="src\cherry\animate\Path.cpp" />
     <ClCompile Include="src\cherry\audio\AudioComponent.cpp" />
     <ClCompile Include="src\cherry\audio\AudioEngine.cpp" />
+    <ClCompile Include="src\cherry\Instrumentation.cpp" />
+    <ClCompile Include="src\cherry\JsonProfiling.cpp" />
     <ClCompile Include="src\cherry\objects\Text.cpp" />
+    <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\KernelLayer.cpp" />
     <ClCompile Include="src\cherry\post\PostLayer.cpp" />
@@ -131,7 +134,7 @@
     <ClCompile Include="src\cherry\Skybox.cpp" />
     <ClCompile Include="src\cherry\stb_image.cpp" />
     <ClCompile Include="src\cherry\Target.cpp" />
-    <ClCompile Include="src\cherry\textures\LookUpTable.cpp" />
+    <ClCompile Include="src\cherry\post\LookUpTable.cpp" />
     <ClCompile Include="src\cherry\textures\Texture2D.cpp" />
     <ClCompile Include="src\cherry\textures\Texture3D.cpp" />
     <ClCompile Include="src\cherry\textures\TextureCube.cpp" />
@@ -436,7 +439,10 @@
     <ClInclude Include="src\cherry\animate\MorphAnimation.h" />
     <ClInclude Include="src\cherry\audio\AudioComponent.h" />
     <ClInclude Include="src\cherry\audio\AudioEngine.h" />
+    <ClInclude Include="src\cherry\Instrumentation.h" />
+    <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\objects\Text.h" />
+    <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\FrameBuffer.h" />
     <ClInclude Include="src\cherry\post\KernelLayer.h" />
     <ClInclude Include="src\cherry\post\PostLayer.h" />
@@ -476,7 +482,7 @@
     <ClInclude Include="src\cherry\Skybox.h" />
     <ClInclude Include="src\cherry\stb_image.h" />
     <ClInclude Include="src\cherry\Target.h" />
-    <ClInclude Include="src\cherry\textures\LookUpTable.h" />
+    <ClInclude Include="src\cherry\post\LookUpTable.h" />
     <ClInclude Include="src\cherry\textures\Texture2D.h" />
     <ClInclude Include="src\cherry\textures\Texture3D.h" />
     <ClInclude Include="src\cherry\textures\TextureCube.h" />
@@ -644,6 +650,7 @@
     <None Include="res\shaders\normalView.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
+    <None Include="res\shaders\post\depth_of_field.fs.glsl" />
     <None Include="res\shaders\post\gamma_correction.fs.glsl" />
     <None Include="res\shaders\post\greenscale.fs.glsl" />
     <None Include="res\shaders\post\greyscale.fs.glsl" />
@@ -656,6 +663,7 @@
     <None Include="res\shaders\post\post.vs.glsl" />
     <None Include="res\shaders\post\redscale.fs.glsl" />
     <None Include="res\shaders\post\sepiatone.fs.glsl" />
+    <None Include="res\shaders\post\shadow_post.fs.glsl" />
     <None Include="res\shaders\post\toon-cel.fs.glsl" />
     <None Include="res\shaders\post\vibrance.fs.glsl" />
     <None Include="res\shaders\shader.fs.glsl" />

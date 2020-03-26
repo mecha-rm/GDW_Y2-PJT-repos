@@ -1,4 +1,5 @@
 #include "AudioEngine.h"
+#include <toolkit/Logging.h>
 
 //////// FMOD Implementation ////////
 
@@ -55,11 +56,20 @@ void cherry::AudioEngine::LoadGUIDs()
 {
 	// Open the file
 	std::ifstream guidFile;
-	guidFile.open("GUIDs.txt");
+	guidFile.open("res/audio/GUIDs.txt");
+
+	// checks the regular res folder instead if it wasn't in the audio folder.
+	if (!guidFile)
+	{
+		guidFile.close();
+		guidFile.open("res/GUIDs.txt");
+	}
 
 	// Loop for each line
 	if (guidFile.is_open())
 	{
+		LOG_TRACE("Audio Engine: GUIDS.txt found.");
+
 		std::string currentLine;
 		std::string guid;
 		std::string key;
@@ -82,7 +92,8 @@ void cherry::AudioEngine::LoadGUIDs()
 	}
 	else
 	{
-		std::cout << "Audio Engine: GUID.txt not found" << std::endl;
+		// std::cout << "Audio Engine: GUID.txt not found" << std::endl;
+		LOG_ERROR("Audio Engine: GUID.txt not found");
 	}
 }
 
@@ -100,7 +111,11 @@ int cherry::AudioEngine::ErrorCheck(FMOD_RESULT result)
 {
 	if (result != FMOD_OK)
 	{
-		std::cout << "FMOD ERROR: " << FMOD_ErrorString(result) << std::endl;
+		// std::cout << "FMOD ERROR: " << FMOD_ErrorString(result) << std::endl;
+		std::string str = "FMOD ERROR: ";
+		str += FMOD_ErrorString(result);
+		LOG_ERROR(str);
+
 		return 1;
 	}
 

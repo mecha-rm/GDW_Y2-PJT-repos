@@ -124,6 +124,24 @@ void cherry::Shader::SetUniform(const char* name, const int& value) {
 	}
 }
 
+// texture
+void cherry::Shader::SetUniform(const char* name, const cherry::ITexture::Sptr& value, 
+	const cherry::TextureSampler::Sptr& sampler)
+{
+	GLint loc = glGetUniformLocation(myShaderHandle, name);
+
+	if (loc != -1) {
+		
+		if (sampler != nullptr)
+			sampler->Bind(loc);
+		else
+			TextureSampler::Unbind(loc);
+
+		value->Bind(loc);
+		glBindTextureUnit(myShaderHandle, loc);
+	}
+}
+
 // uses glUseProgram to use the shader for drawing.
 void cherry::Shader::Bind()
 {

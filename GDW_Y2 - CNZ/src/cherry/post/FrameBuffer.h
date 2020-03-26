@@ -187,6 +187,9 @@ namespace cherry
 		 */
 		Sptr Clone() const;
 
+		// generates a default buffer with the default attachments.
+		static FrameBuffer::Sptr GenerateDefaultBuffer();
+
 		/*
 		 * Overrides SetDebug name, so that we can send the name into OpenGL
 		 * @param value The new debug name for this object

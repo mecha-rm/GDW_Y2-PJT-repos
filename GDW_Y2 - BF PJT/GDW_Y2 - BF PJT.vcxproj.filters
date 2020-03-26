@@ -234,10 +234,19 @@
     <ClCompile Include="src\cherry\scenes\EngineMenuScene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\textures\LookUpTable.cpp">
+    <ClCompile Include="src\cherry\textures\Texture3D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\textures\Texture3D.cpp">
+    <ClCompile Include="src\cherry\JsonProfiling.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\Instrumentation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\post\LookUpTable.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1091,9 +1100,6 @@
     <ClInclude Include="src\cherry\scenes\SceneManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\IGraphicsResource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\cherry\post\FrameBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1280,10 +1286,22 @@
     <ClInclude Include="src\cherry\scenes\EngineGameplayScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\textures\LookUpTable.h">
+    <ClInclude Include="src\cherry\textures\Texture3D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\cherry\textures\Texture3D.h">
+    <ClInclude Include="src\cherry\JsonProfiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\Instrumentation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\IGraphicsResource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\post\LookUpTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1689,6 +1707,8 @@
     <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\post\lut.fs.glsl" />
+    <None Include="res\shaders\post\depth_of_field.fs.glsl" />
+    <None Include="res\shaders\post\shadow_post.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

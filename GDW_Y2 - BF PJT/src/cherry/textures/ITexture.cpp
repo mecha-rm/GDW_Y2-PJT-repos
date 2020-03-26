@@ -8,7 +8,7 @@
 // }
 
 // binds the texture to a slot.
-// void cherry::ITexture::Bind(uint32_t slot)
-// {
-// 	glBindTextureUnit(slot, myRendererID);
-// }
+void cherry::ITexture::Bind(uint32_t slot)
+{
+	glBindTextureUnit(slot, myRendererID);
+}

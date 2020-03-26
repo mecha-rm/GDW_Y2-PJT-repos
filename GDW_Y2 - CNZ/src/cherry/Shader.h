@@ -5,6 +5,8 @@
 #include <memory>
 
 #include "UtilsCRY.h"
+#include "textures/ITexture.h"
+#include "textures/TextureSampler.h"
 
 namespace cherry
 {
@@ -45,6 +47,9 @@ namespace cherry
 		// int
 		// sending integers to our shader; you're setting a slot, rather than a texture ID.
 		void SetUniform(const char* name, const int& value);
+
+		// texture
+		void SetUniform(const char* name, const cherry::ITexture::Sptr& value, const cherry::TextureSampler::Sptr& sampler = nullptr);
 
 		void Bind();
 

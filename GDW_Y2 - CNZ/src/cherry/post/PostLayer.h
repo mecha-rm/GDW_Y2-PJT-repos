@@ -2,20 +2,12 @@
 // used for post-processing
 #pragma once
 
-#define POST_VS ("res/shaders/post/post.vs.glsl")
-
-#define POST_FS ("res/shaders/post/post.fs.glsl")
-#define POST_LIGHTING_FS "res/shaders/post/blinn-phong_post.fs.glsl"
-#define POST_KERNEL3_FS  "res/shaders/post/kernel3.fs.glsl"
-#define POST_KERNEL5_FS  "res/shaders/post/kernel5.fs.glsl"
-#define POST_GAMMA_FS "res/shaders/post/gamma_correction.fs.glsl"
-#define POST_CEL_FS "res/shaders/post/toon-cel.fs.glsl"
-
 
 #include "FrameBuffer.h"
 #include "..\Shader.h"
 #include "..\Mesh.h"
 #include "..\Camera.h"
+#include "..\UtilsCRY.h"
 
 namespace cherry
 {

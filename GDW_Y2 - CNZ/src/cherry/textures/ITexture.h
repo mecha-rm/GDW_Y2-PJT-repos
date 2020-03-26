@@ -9,6 +9,8 @@ namespace cherry
 	class ITexture : public cherry::IGraphicsResource
 	{
 	public:
+		GraphicsClass(ITexture);
+
 		ITexture() = default;
 
 		~ITexture() = default;
@@ -21,13 +23,14 @@ namespace cherry
 		// cherry::InternalFormat GetInternalFormat() const;
 		// 
 		// 
-		// /*
-		// 	Binds this texture to the given texture slot. Different renderers will
-		// 	have different amounts of slots, in OpenGL this can be retrieved by
-		// 	querying GL_MAX_TEXTURE_IMAGE_UNITS
-		// 	@param slot The texture slot to bind this texture to
-		// */
-		// virtual void Bind(uint32_t slot);
+		
+		/*
+			Binds this texture to the given texture slot. Different renderers will
+			have different amounts of slots, in OpenGL this can be retrieved by
+			querying GL_MAX_TEXTURE_IMAGE_UNITS
+			@param slot The texture slot to bind this texture to
+		*/
+		virtual void Bind(uint32_t slot);
 
 	private:
 

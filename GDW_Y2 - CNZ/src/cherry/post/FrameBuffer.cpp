@@ -1,4 +1,5 @@
 #include "FrameBuffer.h"
+#include "..\Game.h"
 #include <toolkit/Logging.h>
 
 // constructor
@@ -228,6 +229,41 @@ cherry::FrameBuffer::Sptr cherry::FrameBuffer::Clone() const {
 	}
 	result->Validate();
 	return result;
+}
+
+// generates a default frame buffer with the default attachments.
+cherry::FrameBuffer::Sptr cherry::FrameBuffer::GenerateDefaultBuffer()
+{
+	// gets the window size
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize();
+
+	// frame buffer
+	FrameBuffer::Sptr frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
+
+	// buffer color
+	RenderBufferDesc bufferColor = RenderBufferDesc();
+	bufferColor.ShaderReadable = true;
+	bufferColor.Attachment = RenderTargetAttachment::Color0;
+	bufferColor.Format = RenderTargetType::Color24; // loads with RGB
+
+	// buffer depth
+	RenderBufferDesc bufferDepth = RenderBufferDesc();
+	bufferDepth.ShaderReadable = true;
+	bufferDepth.Attachment = RenderTargetAttachment::Depth;
+	bufferDepth.Format = RenderTargetType::Depth24;
+
+	// buffer stencil
+	RenderBufferDesc bufferStencil = RenderBufferDesc();
+	bufferStencil.ShaderReadable = true;
+	bufferStencil.Attachment = RenderTargetAttachment::Stencil;
+	bufferStencil.Format = RenderTargetType::Stencil16;
+
+	// frame buffer
+	frameBuffer->AddAttachment(bufferColor);
+	frameBuffer->AddAttachment(bufferDepth);
+	frameBuffer->AddAttachment(bufferStencil);
+
+	return frameBuffer;
 }
 
 void cherry::FrameBuffer::SetDebugName(const std::string& value) {

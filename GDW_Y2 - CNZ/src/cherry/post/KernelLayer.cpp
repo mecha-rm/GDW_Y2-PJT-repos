@@ -14,23 +14,24 @@ cherry::KernelLayer::KernelLayer()
 	shader->Load(POST_VS, POST_FS);
 
 	// frame buffer
-	frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
-
-	// buffer color
-	RenderBufferDesc bufferColor = RenderBufferDesc();
-	bufferColor.ShaderReadable = true;
-	bufferColor.Attachment = RenderTargetAttachment::Color0;
-	bufferColor.Format = RenderTargetType::Color24; // loads with RGB
-
-	// buffer depth
-	RenderBufferDesc bufferDepth = RenderBufferDesc();
-	bufferDepth.ShaderReadable = true;
-	bufferDepth.Attachment = RenderTargetAttachment::Depth;
-	bufferDepth.Format = RenderTargetType::Depth24;
-
-	// frame buffer
-	frameBuffer->AddAttachment(bufferColor);
-	frameBuffer->AddAttachment(bufferDepth);
+	frameBuffer = FrameBuffer::GenerateDefaultBuffer();
+	// frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
+	// 
+	// // buffer color
+	// RenderBufferDesc bufferColor = RenderBufferDesc();
+	// bufferColor.ShaderReadable = true;
+	// bufferColor.Attachment = RenderTargetAttachment::Color0;
+	// bufferColor.Format = RenderTargetType::Color24; // loads with RGB
+	// 
+	// // buffer depth
+	// RenderBufferDesc bufferDepth = RenderBufferDesc();
+	// bufferDepth.ShaderReadable = true;
+	// bufferDepth.Attachment = RenderTargetAttachment::Depth;
+	// bufferDepth.Format = RenderTargetType::Depth24;
+	// 
+	// // frame buffer
+	// frameBuffer->AddAttachment(bufferColor);
+	// frameBuffer->AddAttachment(bufferDepth);
 
 	// makes the layer
 	layer = std::make_shared<PostLayer>(shader, frameBuffer);

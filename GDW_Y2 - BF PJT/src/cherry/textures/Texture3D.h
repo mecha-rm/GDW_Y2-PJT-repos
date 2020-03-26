@@ -13,13 +13,16 @@
 #pragma once
 #include "ITexture.h"
 #include <GLM/detail/type_vec4.hpp>
-#include "LookUpTable.h"
+// #include "LookUpTable.h"
 
 /*
  * Represents the data that will be transferred from the CPU to the GPU when uploading 3D texture data
  */
 namespace cherry
 {
+	// forward declare
+	class LookUpTable;
+
 	struct Texture3dData {
 		uint32_t    Width, Height, Depth;
 		PixelFormat Format;
@@ -118,7 +121,10 @@ namespace cherry
 		static Texture3D::Sptr LoadFromFile(const std::string& filePath, bool loadAlpha = true);
 
 		// loads the vertices from an array of pixels.
-		static Texture3D::Sptr LoadFromLookUpTable(LookUpTable& lut, bool loadAlpha = true);
+		static Texture3D::Sptr LoadFromLookUpTable(LookUpTable& lut, bool loadAlpha = false);
+
+		// loads data
+		void LoadData(uint32_t width, uint32_t height, PixelFormat format, PixelType type, void* data);
 
 		// Mutators
 	public:
