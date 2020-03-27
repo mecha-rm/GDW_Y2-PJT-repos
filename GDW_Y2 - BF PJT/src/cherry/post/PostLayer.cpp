@@ -202,10 +202,13 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		
 		lastPass->GetAttachment(RenderTargetAttachment::Color0)->Bind(0);
 		pass.Shader->SetUniform("xImage", 0);
+		// pass.Shader->SetUniform("xImageDepth", pass.Output->GetAttachment(RenderTargetAttachment::Depth));
 
 		// initial image
 		pass.Shader->SetUniform("xImageOrig", mainBuffer->GetAttachment(RenderTargetAttachment::Color0));
 		pass.Shader->SetUniform("xImageLast", lastPass->GetAttachment(RenderTargetAttachment::Color0));
+
+		pass.Shader->SetUniform("xImageDepthOrig", mainBuffer->GetAttachment(RenderTargetAttachment::Depth));
 
 		// camera components for the shaders.
 		pass.Shader->SetUniform("a_View", camera->GetView());

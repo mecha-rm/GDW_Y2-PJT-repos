@@ -29,20 +29,31 @@ uniform int a_Samples;
 // positive is clockwise, negative is counter clockwise
 uniform int a_Direction;
 
+// rotates the vector
+vec2 Rotate(vec2 vec, float angle)
+{
+	return vec2(
+		vec.x * (cos(angle)) - vec.y * (sin(angle)), 
+		vec.x * (sin(angle)) + vec.y * (cos(angle))
+	);
+}
+
+
 // applies a blur
 // the pixel colour, its uv, the centre of the blur, angle, its direction (cw vs. counter-cw)
 vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples)
 {
+	// the end result
 	vec4 result = pixel;
 
 	// gets the pixel position and the distance to the pixel
-	vec2 pixelPos = inScreenCoords;
+	vec2 pixelPos = inUV * inScreenRes;
 	float dist = length(inUV - center); // radius
 	
 	// gets the rotation factor
 	float rotFactor = theta / samples;
 	float direc = (clockWise) ? 1.0F : -1.0F;
-	int vals = 0; // the amount of colour values mixed in.
+	int vals = 1; // the amount of colour values mixed in.
 
 	// applies all samples
 	for(int i = 1; i <= samples; i++)
@@ -50,10 +61,12 @@ vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples
 		float angle = rotFactor * i * direc;
 
 		// gets the position of the pixel being mixed in.
-		vec2 mixPixelPos = vec2(
-			pixelPos.x * (cos(angle)) - pixelPos.y * (sin(angle)), 
-			pixelPos.x * (sin(angle)) + pixelPos.y * (cos(angle))
-		);
+		vec2 mixPixelPos = Rotate(pixelPos, angle);
+
+		// vec2 mixPixelPos = vec2(
+		// 	pixelPos.x * (cos(angle)) - pixelPos.y * (sin(angle)), 
+		// 	pixelPos.x * (sin(angle)) + pixelPos.y * (cos(angle))
+		// );
 
 		// the mix pixel uv
 		vec2 mixPixelUv = vec2(mixPixelPos.x / inScreenRes.x, mixPixelPos.y / inScreenRes.y);
@@ -75,24 +88,12 @@ vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples
 	}
 
 	// averages the results
-	if(vals > 0)
-		result = result / vals;
+	result = result / vals;
 
 	return result;
 }
 
 void main() {
-
-// the centre of the blur (screen space)
-vec2 a_Center;
-
-// the angle (in radians) of the blur.
-// the samples are taken based on this angle
-float a_Angle;
-
-// the amount of samples for the blur
-int a_Samples;
-
 	// getting the image
 	vec4 pixel = texture(xImage, inUV);
 

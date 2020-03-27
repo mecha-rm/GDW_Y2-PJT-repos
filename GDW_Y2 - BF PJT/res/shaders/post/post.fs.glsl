@@ -8,12 +8,6 @@ layout (location = 4) in vec2 inScreenRes;
 
 layout (location = 0) out vec4 outColor;
 
-// uniform float a_Alpha; // alpha value
-
-uniform vec3 a_CameraPos; // camera position
-
-// uniform sampler2D s_Albedo
-
 // rendered image
 uniform sampler2D xImage;
 

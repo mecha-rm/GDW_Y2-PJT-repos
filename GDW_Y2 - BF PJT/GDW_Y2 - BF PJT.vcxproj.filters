@@ -1725,6 +1725,8 @@
     <None Include="res\shaders\post\accumulate_additive.fs.glsl" />
     <None Include="res\shaders\post\accumulate_mix.fs.glsl" />
     <None Include="res\shaders\post\accumulate_average.fs.glsl" />
+    <None Include="res\shaders\post\point_shadow_post.fs.glsl" />
+    <None Include="res\shaders\post\blinn-phong_shadow_post.fs.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="x64\Debug\GDW_Y2 - BF PJT.log" />

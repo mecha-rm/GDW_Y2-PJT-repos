@@ -13,7 +13,7 @@ cherry::BloomLayer::BloomLayer()
 
 	// accumulation
 	accumShader = std::make_shared<Shader>();
-	accumShader->Load(POST_VS, POST_ACCUMULATE_MIX);
+	accumShader->Load(POST_VS, POST_ACCUMULATE_MIX_FS);
 	accumShader->SetUniform("a_Factor", 0.5F);
 	accumBuffer = FrameBuffer::GenerateDefaultBuffer();
 

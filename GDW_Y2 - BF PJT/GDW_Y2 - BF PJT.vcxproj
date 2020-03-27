@@ -653,6 +653,7 @@
     <None Include="res\shaders\post\accumulate_additive.fs.glsl" />
     <None Include="res\shaders\post\accumulate_average.fs.glsl" />
     <None Include="res\shaders\post\accumulate_mix.fs.glsl" />
+    <None Include="res\shaders\post\blinn-phong_shadow_post.fs.glsl" />
     <None Include="res\shaders\post\bloom_highlight.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
@@ -668,6 +669,7 @@
     <None Include="res\shaders\post\kernel5.fs.glsl" />
     <None Include="res\shaders\post\lut.fs.glsl" />
     <None Include="res\shaders\post\motion_blur.fs.glsl" />
+    <None Include="res\shaders\post\point_shadow_post.fs.glsl" />
     <None Include="res\shaders\post\post.fs.glsl" />
     <None Include="res\shaders\post\post.vs.glsl" />
     <None Include="res\shaders\post\radial_blur_circular.fs.glsl" />

@@ -168,17 +168,23 @@ void cherry::EngineGameplayScene::OnOpen()
 	objectList = ObjectManager::GetSceneObjectListByName(game->GetCurrentSceneName()); // getting the object list.
 
 	// TODO: add sampler for light list?
-	LightManager::CreateSceneLightList(game->GetCurrentSceneName());
-	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
-
-	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 1.0F / 1200.0F));
-
-	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F),
-		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 1.0F / 800.0F));
-
-	game->AddLightToScene(new Light(game->GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
-		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 1.0F/1000.0F));
+	LightManager::CreateSceneLightList(game->GetCurrentSceneName()); 
+	// lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
+	//  
+	// lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+	// 	Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 1.0F / 1200.0F));
+	// 
+	// lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F), 
+	// 	Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 1.0F / 800.0F));
+	// 
+	// game->AddLightToScene(new Light(game->GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+	// 	Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 1.0F/1000.0F));  
+	 
+	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(4.0F, 1.0F, 2.5F), Vec3(0.825F, 0.342F, 0.623F),
+		Vec3(0.1F, 0.1F, 0.1F), 1.0F, 10.0F, 90.0F, 1.0F / 50000.0F));
+	 
+	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(6.0F, -2.0F, 1.0F), Vec3(0.25F, 0.942F, 0.523F),
+		Vec3(0.1F, 0.1F, 0.1F), 5.0F, 10.0F, 180.0F, 1.0F / 100000.0F));
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
@@ -265,7 +271,7 @@ void cherry::EngineGameplayScene::OnOpen()
 			terrain->SetTexture(2, "res/images/blue.png");
 			terrain->SetMinimumHeight(-5.0F);
 			terrain->SetMaximumHeight(10.0F);
-			terrain->SetPosition(0.0F, 0.0F, -15.0F);
+			terrain->SetPosition(0.0F, 0.0F, 0.0F);
 			terrain->SetVisible(true);
 			game->AddObjectToScene(terrain);
 		}
@@ -357,6 +363,7 @@ void cherry::EngineGameplayScene::OnOpen()
 			// TODO: find out why items are layeirng on top of one another.
 			Text* text = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
 			text->SetPosition(1.0F, 50.0F, 3.0F);
+			text->SetVisible(false);
 			objectList->AddObject(text); 
 		}
 
@@ -549,16 +556,19 @@ void cherry::EngineGameplayScene::OnOpen()
 			-1, -1, -1
 		));
 		 
-		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
-		fBuffer->AddAttachment(sceneColor);
+		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y); 
+		fBuffer->AddAttachment(sceneColor); 
 		fBuffer->AddAttachment(sceneDepth);
 
 		layer3 = std::make_shared<PostLayer>(shader, fBuffer);
 
-		// light list
+		// light list 
+		// TODO: either combine the shadows into one layer, or make htem two seperate passes.
 		lightList->SetIgnoreBackground(false);
 		lightList->UpdatePostLayer();
-		layer4 = lightList->GetPostLayer();
+		lightList->SetShadowsEnabled(true); 
+		layer4 = lightList->GetPostLayer(); 
+		// layer4 = std::make_shared<PostLayer>(lightList->shadowShader, lightList->shadowBuffer); 
 
 		// layer 5
 		// Shader::Sptr l5shader = std::make_shared<Shader>();
@@ -820,6 +830,7 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_5:
 		layers.clear();
 		layers.push_back(layer4);
+		// layers.push_back(lightList->GetShadowLayer()); // shadow layer
 		layer4->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_6:
