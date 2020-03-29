@@ -1029,7 +1029,7 @@ void cherry::Game::ImGuiEndFrame() {
 	// Render all of our ImGui elements
 	ImGui::Render();
 	ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-	// If we have multiple viewports enabled (can drag into a new window)
+	// If we have multiple viewports enabled (can drag into a new window) 
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
 		// Update the windows that ImGui is using
 		ImGui::UpdatePlatformWindows();

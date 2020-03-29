@@ -191,6 +191,18 @@
          // gets the local position
          glm::vec3 GetLocalPositionGLM() const;
 
+         // sets the local position.
+         void SetLocalPosition(Vec3 newPos);
+
+         // sets the local position.
+         void SetLocalPosition(glm::vec3 newPos);
+
+         // gets the world position.
+         cherry::Vec3 GetWorldPosition() const;
+
+         // gets the world positon (glm). 
+         glm::vec3 GetWorldPositionGLM() const;
+
          // update
          void Update(float deltaTime) override;
 

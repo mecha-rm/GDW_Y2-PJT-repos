@@ -10,10 +10,11 @@ layout (location = 3) in vec2 inUV;
 
 layout(location = 0) out vec4 outColor;
 
-// Our color buffer to sample from
-layout(binding = 0) uniform sampler2D a_Sampler;
 // The depth buffer to use (non-linearized)
 layout(binding = 1) uniform sampler2D a_Depth;
+
+// image for the frame
+uniform sampler2D xImage;
 
 // The current focal depth (linear)
 uniform float a_FocalDepth;
@@ -70,7 +71,7 @@ vec3 depthOfField(vec2 texCoord, float focusPoint, float focusLength) {
     float centerCOC = getBlurSize(centerDepth, focusPoint, focusLength);
 
     // Initialize out color and total number of samples
-    vec3 color = texture(a_Sampler, texCoord).rgb;
+    vec3 color = texture(xImage, texCoord).rgb;
     float tot = 1.0;
 
     // We'll blur our fragment outward in a circle
@@ -81,7 +82,7 @@ vec3 depthOfField(vec2 texCoord, float focusPoint, float focusLength) {
         vec2 tc = texCoord + vec2(cos(ang), sin(ang)) * texelSize * radius;
 
         // Collect the color, depth, circle of confusion for that sample
-        vec3 sampleColor = texture(a_Sampler, tc).rgb;
+        vec3 sampleColor = texture(xImage, tc).rgb;
         float sampleDepth = DepthToDist(tc, texture(a_Depth, tc).r);
         float sampleCOC = getBlurSize(sampleDepth, focusPoint, focusLength);
 

@@ -107,6 +107,9 @@ namespace cherry
 		// use the .get() function to get a regular pointer form this shared pointer.
 		cherry::PostLayer::Sptr GetPostLayer() const;
 
+		// gets the shadow layer for the light.
+		cherry::PostLayer::Sptr GetShadowLayer() const;
+
 		// applies all the lights in the list.
 		void ApplyLights(cherry::Material::Sptr& material);
 
@@ -138,6 +141,13 @@ namespace cherry
 		// sets whether the background should be effected by the lighting or not.
 		// this is only relevant if using the post processing layer
 		void SetIgnoreBackground(bool ignore);
+		
+		// returns 'true' if shadows are enabled. False otherwise.
+		// shadows are disabled by default.
+		bool GetShadowsEnabled() const;
+
+		// sets whether shadows should be visible or not.
+		void SetShadowsEnabled(bool enable);
 
 		// updates the materials of all objects
 		// it's recommended that this is called only when a light has definitely been changed.
@@ -166,6 +176,14 @@ namespace cherry
 		// shader and frame buffer components
 		Shader::Sptr shader;
 		FrameBuffer::Sptr frameBuffer;
+
+		// the shadow shader and shadow buffer.
+		PostLayer::Sptr shadowLayer;
+		Shader::Sptr shadowShader;
+		FrameBuffer::Sptr shadowBuffer;
+
+		// if 'true', then shadows have been added in as a pass. 
+		bool shadows = false;
 
 	protected:
 	};

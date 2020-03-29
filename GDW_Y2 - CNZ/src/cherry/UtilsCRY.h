@@ -38,9 +38,25 @@
 
 #define POST_FS ("res/shaders/post/post.fs.glsl")
 #define POST_LIGHTING_FS "res/shaders/post/blinn-phong_post.fs.glsl"
+
 #define POST_KERNEL3_FS  "res/shaders/post/kernel3.fs.glsl"
 #define POST_KERNEL5_FS  "res/shaders/post/kernel5.fs.glsl"
 #define POST_GAMMA_FS "res/shaders/post/gamma_correction.fs.glsl"
 #define POST_CEL_FS "res/shaders/post/toon-cel.fs.glsl"
 #define POST_LUT_FS "res/shaders/post/lut.fs.glsl"
 #define POST_DOF_FS "res/shaders/post/depth_of_field.fs.glsl"
+
+#define POST_BLOOM_HIGHLIGHT_FS "res/shaders/post/bloom_highlight.fs.glsl"
+#define POST_BOX_BLUR_FS "res/shaders/post/box_blur.fs.glsl"
+#define POST_GAUSSIAN_BLUR3_FS "res/shaders/post/gaussian_blur3.fs.glsl"
+#define POST_GAUSSIAN_BLUR5_FS "res/shaders/post/gaussian_blur5.fs.glsl"
+
+#define POST_RADIAL_BLUR_CIRCULAR_FS "res/shaders/post/radial_blur_circular.fs.glsl"
+#define POST_RADIAL_BLUR_LINEAR_FS "res/shaders/post/radial_blur_linear.fs.glsl"
+#define POST_RADIAL_BLUR_ZOOM_FS "res/shaders/post/radial_blur_zoom.fs.glsl"
+
+#define POST_ACCUMULATE_ADD_FS "res/shaders/post/accumulate_additive.fs.glsl"
+#define POST_ACCUMULATE_MIX_FS "res/shaders/post/accumulate_mix.fs.glsl"
+#define POST_ACCUMULATE_AVE_FS "res/shaders/post/accumulate_average.fs.glsl"
+
+#define POST_POINT_SHADOW_FS "res/shaders/post/point_shadow_post.fs.glsl"

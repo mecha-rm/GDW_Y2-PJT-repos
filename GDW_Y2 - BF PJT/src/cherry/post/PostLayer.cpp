@@ -193,6 +193,7 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 
 		// We'll bind our post-processing output as the current render target and clear it
 		pass.Output->Bind(RenderTargetBinding::Draw);
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // the original version only clears the colour buffer
 		// Set the viewport to be the entire size of the passes output
 		glViewport(0, 0, pass.Output->GetWidth(), pass.Output->GetHeight());

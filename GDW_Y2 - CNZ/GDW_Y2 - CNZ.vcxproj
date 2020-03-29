@@ -105,6 +105,7 @@
     <ClCompile Include="src\cherry\objects\Terrain.cpp" />
     <ClCompile Include="src\cherry\objects\Text.cpp" />
     <ClCompile Include="src\cherry\physics\Physics.cpp" />
+    <ClCompile Include="src\cherry\post\BloomLayer.cpp" />
     <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
     <ClCompile Include="src\cherry\post\FrameBuffer.cpp" />
     <ClCompile Include="src\cherry\post\KernelLayer.cpp" />
@@ -421,6 +422,7 @@
     <ClInclude Include="src\cherry\objects\Terrain.h" />
     <ClInclude Include="src\cherry\objects\Text.h" />
     <ClInclude Include="src\cherry\physics\Physics.h" />
+    <ClInclude Include="src\cherry\post\BloomLayer.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\FrameBuffer.h" />
     <ClInclude Include="src\cherry\post\KernelLayer.h" />

@@ -212,53 +212,48 @@ void cherry::MenuScene::UpdateButton(Button* button)
 	if (button->object == nullptr || button->text == nullptr)
 		return;
 
-	// updating text scale
-	{
-		// the scale of the text.
-		glm::vec3 parentScale = button->object->GetScaleGLM();
-		glm::vec3 childScale = button->localTextScale;
+	// gets the new rotation
+	Vec3 newRot = button->object->GetRotationDegrees() + button->localTextRotationDeg;
+	button->text->SetRotationDegrees(newRot);
 
-		button->text->SetScale(parentScale * childScale);
-	}
+	// gets the new scale
+	Vec3 newScl = button->object->GetScale() + button->localTextScale;
+	button->text->SetScale(newScl);
 
-	// updating rotation
-	{
-		button->text->SetRotationDegrees(button->object->GetRotationDegreesGLM() + button->localTextRot);
-	}
-
+	
 	// updating position if any of the values have been changed.
 	{
 		// the text box is the parent.
 		glm::mat4 parent = glm::mat4(1.0F);
-
+	
 		// the resulting matrix.
 		glm::mat4 result = glm::mat4(1.0F);
-
+	
 		// rotation and scale
 		util::math::Mat3 rotScale{
 			1.0F, 0.0F, 0.0F,
 			0.0F, 1.0F, 0.0F,
 			0.0F, 0.0F, 1.0F
 		};
-
+	
 		// scale
 		util::math::Mat3 scale = rotScale;
-
+	
 		// rotations
 		util::math::Mat3 rotX = rotScale;
 		util::math::Mat3 rotY = rotScale;
 		util::math::Mat3 rotZ = rotScale;
-
+	
 		// parent translation (from world origin)
 		{
 			glm::vec3 parentPos = button->object->GetPositionGLM();
-
+	
 			parent[0][3] = parentPos.x;
 			parent[1][3] = parentPos.y;
 			parent[2][3] = parentPos.z;
 			parent[3][3] = 1.0F;
 		}
-
+	
 		// parent rotation
 		{
 			glm::vec3 parentRot = button->object->GetRotationDegreesGLM();
@@ -267,44 +262,44 @@ void cherry::MenuScene::UpdateButton(Button* button)
 			rotY = util::math::getRotationMatrixY(parentRot.y, true);
 			rotZ = util::math::getRotationMatrixZ(parentRot.z, true);
 		}
-
+	
 		// parent scale
 		{
 			glm::vec3 parentScale = button->object->GetScaleGLM();
-
+	
 			scale[0][0] = parentScale.x;
 			scale[1][1] = parentScale.y;
 			scale[2][2] = parentScale.z;
 		}
-
+	
 		// rotation and scale.
 		rotScale = scale * (rotZ * rotX * rotY);
-
-		// saving the rotation and scale transformations.
-		parent[0][0] = rotScale[0][0];
-		parent[0][1] = rotScale[0][1];
-		parent[0][2] = rotScale[0][2];
-
-		parent[1][0] = rotScale[1][0];
-		parent[1][1] = rotScale[1][1];
-		parent[1][2] = rotScale[1][2];
-
-		parent[2][0] = rotScale[2][0];
-		parent[2][1] = rotScale[2][1];
-		parent[2][2] = rotScale[2][2];
-
-		// text transformation matrix
-		glm::mat4 child
+		
 		{
-			button->localTextPos.x, 0, 0, 0,
-			button->localTextPos.y, 0, 0, 0,
-			button->localTextPos.z, 0, 0, 0,
-			0, 0, 0, 0
-		};
+			// saving the rotation and scale transformations.
+			parent[0][0] = rotScale[0][0];
+			parent[0][1] = rotScale[0][1];
+			parent[0][2] = rotScale[0][2];
 
-		result = parent * child;
+			parent[1][0] = rotScale[1][0];
+			parent[1][1] = rotScale[1][1];
+			parent[1][2] = rotScale[1][2];
 
-		button->text->SetPosition(result[0][3], result[1][3], result[2][3]);
+			parent[2][0] = rotScale[2][0];
+			parent[2][1] = rotScale[2][1];
+			parent[2][2] = rotScale[2][2];
+
+			// text transformation matrix
+			glm::mat4 child;
+
+			child[0][3] = button->localTextPos.x;
+			child[1][3] = button->localTextPos.y;
+			child[2][3] = button->localTextPos.z;
+
+			result = parent * child;
+
+			button->text->SetPosition(result[0][3], result[1][3], result[2][3]);
+		}
 	}
 }
 

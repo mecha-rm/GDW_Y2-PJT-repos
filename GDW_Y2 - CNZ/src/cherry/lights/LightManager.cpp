@@ -206,26 +206,38 @@ cherry::LightList::LightList(std::string scene) : scene(scene)
 	shader->Load(POST_VS, POST_LIGHTING_FS);
 
 	// frame buffer
-	frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
+	frameBuffer = FrameBuffer::GenerateDefaultBuffer();
 
-	// buffer color
-	RenderBufferDesc bufferColor = RenderBufferDesc();
-	bufferColor.ShaderReadable = true;
-	bufferColor.Attachment = RenderTargetAttachment::Color0;
-	bufferColor.Format = RenderTargetType::Color24; // loads with RGB
-
-	// buffer depth
-	RenderBufferDesc bufferDepth = RenderBufferDesc();
-	bufferDepth.ShaderReadable = true;
-	bufferDepth.Attachment = RenderTargetAttachment::Depth;
-	bufferDepth.Format = RenderTargetType::Depth24;
-
-	// frame buffer
-	frameBuffer->AddAttachment(bufferColor);
-	frameBuffer->AddAttachment(bufferDepth);
+	// frameBuffer = std::make_shared<FrameBuffer>(windowSize.x, windowSize.y);
+	// 
+	// // buffer color
+	// RenderBufferDesc bufferColor = RenderBufferDesc();
+	// bufferColor.ShaderReadable = true;
+	// bufferColor.Attachment = RenderTargetAttachment::Color0;
+	// bufferColor.Format = RenderTargetType::Color24; // loads with RGB
+	// 
+	// // buffer depth
+	// RenderBufferDesc bufferDepth = RenderBufferDesc();
+	// bufferDepth.ShaderReadable = true;
+	// bufferDepth.Attachment = RenderTargetAttachment::Depth;
+	// bufferDepth.Format = RenderTargetType::Depth24;
+	// 
+	// // frame buffer
+	// frameBuffer->AddAttachment(bufferColor);
+	// frameBuffer->AddAttachment(bufferDepth);
 
 	// makes the layer
 	layer = std::make_shared<PostLayer>(shader, frameBuffer);
+
+	// gets the shadow shader
+	shadowShader = std::make_shared<Shader>();
+	shadowShader->Load(POST_VS, POST_POINT_SHADOW_FS);
+	
+	// gets the shadow buffer
+	shadowBuffer = FrameBuffer::GenerateDefaultBuffer();
+	
+	// creates a shadow layer.
+	shadowLayer = std::make_shared<PostLayer>(shadowShader, shadowBuffer);
 }
 
 // gets the name of the scene the light list is for.
@@ -318,7 +330,6 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 	int lightCount = 0; // total amount of lights
 
 	// Must align with the macro MAX_LIGHTS, which is defined in the light manager and the shaders.
-	// TODO: add const to cap lights instead
 	lightCount = (lights.size() > MAX_LIGHTS) ? MAX_LIGHTS : lights.size();
 
 	// used to make the albedo // TODO: fix shaders
@@ -368,6 +379,9 @@ cherry::Material::Sptr cherry::LightList::GenerateMaterial(std::string vs, std::
 
 // gets the post layer for this light list.
 cherry::PostLayer::Sptr cherry::LightList::GetPostLayer() const { return layer; }
+
+// gets the shadow layer
+cherry::PostLayer::Sptr cherry::LightList::GetShadowLayer() const { return shadowLayer; }
 
 // applies all the lights in the list.
 void cherry::LightList::ApplyLights(cherry::Material::Sptr& material) { ApplyLights(material,lights.size()); }
@@ -476,6 +490,27 @@ void cherry::LightList::SetIgnoreBackground(bool ignore)
 {
 	ignoreBackground = ignore;
 	shader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
+	shadowShader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
+}
+
+// checks to see if shadows are enabled
+bool cherry::LightList::GetShadowsEnabled() const { return shadows; }
+
+// sets whether shadows are enabled or not.
+void cherry::LightList::SetShadowsEnabled(bool enable)
+{
+	switch (enable)
+	{
+	case true:
+		layer->AddLayer(shadowShader, shadowBuffer);
+		break;
+
+	case false:
+		layer->RemoveLayer(shadowShader, shadowBuffer);
+		break;
+	}
+	
+	shadows = enable;
 }
 
 // updates the materials of the objects
@@ -503,11 +538,15 @@ void cherry::LightList::UpdatePostLayer()
 
 	// setting the light count.
 	shader->SetUniform("a_EnabledLights", enabledLights);
+	shadowShader->SetUniform("a_EnabledLights", enabledLights);
+
 	shader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
+	shadowShader->SetUniform("a_IgnoreBackground", (int)ignoreBackground);
 
 	// goes through each light, getting the values.
 	for (int i = 0; i < enabledLights; i++)
 	{
+		// blinn-phong shader
 		temp = lights.at(i)->GetAmbientColorGLM();
 		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].ambientColor").c_str(), { temp[0], temp[1], temp[2] }); // ambient colour
 
@@ -522,6 +561,22 @@ void cherry::LightList::UpdatePostLayer()
 
 		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].shininess").c_str(), lights.at(i)->GetLightShininess()); // shininess
 		shader->SetUniform(("a_Lights[" + std::to_string(i) + "].attenuation").c_str(), lights.at(i)->GetLightAttenuation()); // attenuation
+	
+		// shadow shader
+		temp = lights.at(i)->GetAmbientColorGLM();
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].ambientColor").c_str(), { temp[0], temp[1], temp[2] }); // ambient colour
+
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].ambientPower").c_str(), lights.at(i)->GetAmbientPower()); // ambient power
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].specularPower").c_str(), lights.at(i)->GetLightSpecularPower()); // specular power
+
+		temp = lights.at(i)->GetLightPositionGLM();
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].position").c_str(), { temp[0], temp[1], temp[2] }); // position
+
+		temp = lights.at(i)->GetLightColorGLM();
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].color").c_str(), { temp[0], temp[1], temp[2] }); // light colour
+
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].shininess").c_str(), lights.at(i)->GetLightShininess()); // shininess
+		shadowShader->SetUniform(("a_Lights[" + std::to_string(i) + "].attenuation").c_str(), lights.at(i)->GetLightAttenuation()); // attenuation
 	}
 }
 

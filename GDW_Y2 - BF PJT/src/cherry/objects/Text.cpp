@@ -215,7 +215,7 @@ void cherry::Text::LoadText(const std::string scene)
 	noCharMaterial->HasTransparency = true;
 
 
-	// TODO: file safety check.
+	// TODO: file safety check and default font.
 	file.open(filePath, std::ios::in);
 
 	// getting all the lines
@@ -348,7 +348,7 @@ void cherry::Text::LoadText(const std::string scene)
 	mesh->SetVisible(false); // either use the parent's function, or call the mesh directly.
 
 	// default orientation
-	SetRotationDegrees(GetRotationDegrees() + Vec3(0.0F, 0.0F, 180.0F));
+	// SetRotationDegrees(GetRotationDegrees() + Vec3(0.0F, 0.0F, 180.0F));
 
 	worldPos = position + Vec3(1, 1, 1);
 	worldScale = scale;
@@ -388,8 +388,9 @@ void cherry::Text::CalculateTextRotation()
 
 	// rotation
 	for (Character* chr : textChars)
+	{
 		chr->SetRotationDegrees(currRotDeg + chr->GetRotationDegrees());
-
+	}
 	// saving rotation
 	worldRotDeg = currRotDeg;
 }
@@ -397,76 +398,109 @@ void cherry::Text::CalculateTextRotation()
 // calculates text position
 void cherry::Text::CalculateTextPosition()
 {
-	// the text box is the parent.
-	glm::mat4 parent = glm::mat4(1.0F);
+	// // the text box is the parent.
+	// glm::mat4 parent = glm::mat4(1.0F);
+	// 
+	// // the resulting matrix.
+	// glm::mat4 result = glm::mat4(1.0F);
+	// 
+	// // rotation and scale
+	// util::math::Mat3 rotScale{
+	// 	1.0F, 0.0F, 0.0F,
+	// 	0.0F, 1.0F, 0.0F,
+	// 	0.0F, 0.0F, 1.0F
+	// };
+	// 
+	// // scale
+	// util::math::Mat3 scale = rotScale;
+	// 
+	// // rotations
+	// util::math::Mat3 rotX = rotScale;
+	// util::math::Mat3 rotY = rotScale;
+	// util::math::Mat3 rotZ = rotScale;
+	// 
+	// // translation
+	// parent[0][3] = position.v.x;
+	// parent[1][3] = position.v.y;
+	// parent[2][3] = position.v.z;
+	// parent[3][3] = 1.0F;
+	// 
+	// // rotation
+	// rotX = util::math::getRotationMatrixX(GetRotationXDegrees(), true);
+	// rotY = util::math::getRotationMatrixY(GetRotationYDegrees(), true);
+	// rotZ = util::math::getRotationMatrixZ(GetRotationZDegrees(), true);
+	// 
+	// // scale
+	// scale[0][0] = Object::scale.v.x;
+	// scale[1][1] = Object::scale.v.y;
+	// scale[2][2] = Object::scale.v.z;
+	// 
+	// // rotation and scale.
+	// rotScale = scale * (rotZ * rotX * rotY);
+	// 
+	// // saving the rotation and scale transformations.
+	// parent[0][0] = rotScale[0][0];
+	// parent[0][1] = rotScale[0][1];
+	// parent[0][2] = rotScale[0][2];
+	// 
+	// parent[1][0] = rotScale[1][0];
+	// parent[1][1] = rotScale[1][1];
+	// parent[1][2] = rotScale[1][2];
+	// 
+	// parent[2][0] = rotScale[2][0];
+	// parent[2][1] = rotScale[2][1];
+	// parent[2][2] = rotScale[2][2];
+	// 
+	// // updates all characters.
+	// for (Character* chr : textChars)
+	// {
+	// 	Vec3 chrPos = chr->GetLocalPosition();
+	// 
+	// 	// gets the position of the character.
+	// 	// glm::mat4 child
+	// 	// {
+	// 	// 	chrPos.v.x, 0, 0, 0,
+	// 	// 	chrPos.v.y, 0, 0, 0,
+	// 	// 	chrPos.v.z, 0, 0, 0,
+	// 	// 	0, 0, 0, 0
+	// 	// };
+	// 	// 
+	// 	// result = parent * child;
+	// 	// 
+	// 	// chr->SetPosition(result[0][0], result[1][0], result[2][0]);
+	// 	// gets the position of the character.
+	// 
+	// 	// child matrix
+	// 	glm::mat4 child;
+	// 	child[0][3] = chrPos.v.x;
+	// 	child[1][3] = chrPos.v.y;
+	// 	child[2][3] = chrPos.v.z;
+	// 
+	// 	result = parent * child;
+	// 
+	// 	chr->SetPosition(result[0][3], result[1][3], result[2][3]);
+	// 	Vec3 temp = chr->GetPosition();
+	// 	temp.GetLength();
+	// }
 
-	// the resulting matrix.
-	glm::mat4 result = glm::mat4(1.0F);
+	// gets the rotation in radians
+	cherry::Vec3 rotRad = GetRotationRadians();
 
-	// rotation and scale
-	util::math::Mat3 rotScale{
-		1.0F, 0.0F, 0.0F,
-		0.0F, 1.0F, 0.0F,
-		0.0F, 0.0F, 1.0F
-	};
-
-	// scale
-	util::math::Mat3 scale = rotScale;
-
-	// rotations
-	util::math::Mat3 rotX = rotScale;
-	util::math::Mat3 rotY = rotScale;
-	util::math::Mat3 rotZ = rotScale;
-
-	// translation
-	parent[0][3] = position.v.x;
-	parent[1][3] = position.v.y;
-	parent[2][3] = position.v.z;
-	parent[3][3] = 1.0F;
-
-	// rotation
-	rotX = util::math::getRotationMatrixX(GetRotationXDegrees(), true);
-	rotY = util::math::getRotationMatrixY(GetRotationYDegrees(), true);
-	rotZ = util::math::getRotationMatrixZ(GetRotationZDegrees(), true);
-
-	// scale
-	scale[0][0] = Object::scale.v.x;
-	scale[1][1] = Object::scale.v.y;
-	scale[2][2] = Object::scale.v.z;
-
-	// rotation and scale.
-	rotScale = scale * (rotZ * rotX * rotY);
-
-	// saving the rotation and scale transformations.
-	parent[0][0] = rotScale[0][0];
-	parent[0][1] = rotScale[0][1];
-	parent[0][2] = rotScale[0][2];
-
-	parent[1][0] = rotScale[1][0];
-	parent[1][1] = rotScale[1][1];
-	parent[1][2] = rotScale[1][2];
-
-	parent[2][0] = rotScale[2][0];
-	parent[2][1] = rotScale[2][1];
-	parent[2][2] = rotScale[2][2];
-
-	// updates all characters.
-	for (Character* chr : textChars)
+	// updates text positions
+	for (int i = 0; i < textChars.size(); i++)
 	{
-		Vec3 chrPos = chr->GetLocalPosition();
+		// glm::vec3 offset{ spacing * fontSize * i, 0, 0 };
+		cherry::Vec3 offset{ spacing * fontSize * scale.v.x * i, 0, 0 };
+		cherry::Vec3 rOffset = offset; // rotated offset
+		cherry::Vec3 wRad = rotRad + textChars[i]->GetRotationRadians();
 
-		// gets the position of the character.
-		glm::mat4 child
-		{
-			chrPos.v.x, 0, 0, 0,
-			chrPos.v.y, 0, 0, 0,
-			chrPos.v.z, 0, 0, 0,
-			0, 0, 0, 0
-		};
+		// gets offset rotated.
+		rOffset = util::math::rotateZ(rOffset.v, wRad.v.z, false);
+		rOffset = util::math::rotateX(rOffset.v, wRad.v.x, false);
+		rOffset = util::math::rotateY(rOffset.v, wRad.v.y, false);
 
-		result = parent * child;
-
-		chr->SetPosition(result[0][0], result[1][0], result[2][0]);
+		// text position
+		textChars[i]->SetPosition(position + rOffset);
 	}
 
 	worldPos = position;
@@ -611,6 +645,8 @@ void cherry::Text::Update(float deltaTime)
 
 		for (Character* chr : textChars)
 			chr->GetMesh()->SetWindowChild(windowChild);
+
+		CalculateTextTransform();
 	}
 
 	// checks to see what values need to be updated.
@@ -683,6 +719,7 @@ cherry::Character::Character(const Character& cpy)
 	// copies the character.
 	localPosition = cpy.GetLocalPositionGLM();
 	uvs = cpy.uvs;
+	SetRotationDegrees(cpy.GetRotationDegrees());
 }
 
 // gets the local position
@@ -695,6 +732,30 @@ cherry::Vec3 cherry::Character::GetLocalPosition() const
 glm::vec3 cherry::Character::GetLocalPositionGLM() const
 {
 	return glm::vec3(localPosition.v.x, localPosition.v.y, localPosition.v.z);
+}
+
+// sets the local position.
+void cherry::Character::SetLocalPosition(Vec3 newPos)
+{
+	localPosition = newPos;
+}
+
+// sets the local position.
+void cherry::Character::SetLocalPosition(glm::vec3 newPos)
+{
+	localPosition = Vec3(newPos);
+}
+
+// gets the world position.
+cherry::Vec3 cherry::Character::GetWorldPosition() const
+{
+	return GetPosition();
+}
+
+// gets the world position.
+glm::vec3 cherry::Character::GetWorldPositionGLM() const
+{
+	return GetPositionGLM();
 }
 
 // update

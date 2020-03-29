@@ -44,6 +44,7 @@ cherry::PostLayer::PostLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
 	AddLayer(shader, output);
 }
 
+
 // post-processing layer
 void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 {
@@ -80,11 +81,66 @@ void cherry::PostLayer::AddLayer(const std::string vs, const std::string fs)
 void cherry::PostLayer::AddLayer(Shader::Sptr& shader, FrameBuffer::Sptr& output)
 {
 	if (shader == nullptr || output == nullptr)
-		std::runtime_error("Null layer is prohibited.");
+		throw std::runtime_error("Null layer is prohibited.");
 
 	// Add the pass to the post processing stack
 	myPasses.push_back({ shader, output });
 }
+
+// removes a layer from the post pass list.
+void cherry::PostLayer::RemoveLayer(Shader::Sptr& shader, FrameBuffer::Sptr& buffer)
+{
+	// shader or buffer don't exist.
+	if (shader == nullptr || buffer == nullptr)
+		return;
+
+	// index of layer
+	int index = -1;
+
+	// searches the list for the shader and buffer to be removed.
+	for (int i = 0; i < myPasses.size(); i++)
+	{
+		if (myPasses[i].Shader == shader || myPasses[i].Output == buffer)
+		{
+			index = i;
+			break;
+		}
+	}
+
+	// if a value was found.
+	if(index >= 0)
+		myPasses.erase(myPasses.begin() + index);
+}
+
+// removes the layer based on the provided index.
+void cherry::PostLayer::RemoveLayer(unsigned int index)
+{
+	// valid index test.
+	if (index >= myPasses.size())
+		return;
+	else
+		myPasses.erase(myPasses.begin() + index);
+}
+
+// returns the shader at the provided index.
+const cherry::Shader::Sptr& cherry::PostLayer::GetPassShader(unsigned int index)
+{
+	if (index >= myPasses.size())
+		return nullptr;
+	else
+		return myPasses[index].Shader;
+}
+
+// returns the buffer at the provided index.
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetPassBuffer(unsigned int index)
+{
+	if (index >= myPasses.size())
+		return nullptr;
+	else
+		return myPasses[index].Output;
+}
+
+
 
 // resizes the layers
 void cherry::PostLayer::OnWindowResize(uint32_t width, uint32_t height)
@@ -120,6 +176,10 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 	// getting the near and far planes.
 	float nearPlane = camera->IsPerspectiveCamera() ? camera->GetNearPerspective() : camera->GetNearOrthographic();
 	float farPlane = camera->IsPerspectiveCamera() ? camera->GetFarPerspective() : camera->GetFarOrthographic();
+	
+	// gets the initial image
+	// Texture2D::Sptr initImage = mainBuffer->GetAttachment(RenderTargetAttachment::Color0);
+	// memcpy(&initImage, &mainBuffer->GetAttachment(RenderTargetAttachment::Color0), sizeof(Texture2D));
 
 	glDisable(GL_DEPTH_TEST);
 	//glDepthMask(GL_FALSE);
@@ -133,6 +193,7 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 
 		// We'll bind our post-processing output as the current render target and clear it
 		pass.Output->Bind(RenderTargetBinding::Draw);
+		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // the original version only clears the colour buffer
 		// Set the viewport to be the entire size of the passes output
 		glViewport(0, 0, pass.Output->GetWidth(), pass.Output->GetHeight());
@@ -142,7 +203,13 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		
 		lastPass->GetAttachment(RenderTargetAttachment::Color0)->Bind(0);
 		pass.Shader->SetUniform("xImage", 0);
+		// pass.Shader->SetUniform("xImageDepth", pass.Output->GetAttachment(RenderTargetAttachment::Depth));
 
+		// initial image
+		pass.Shader->SetUniform("xImageOrig", mainBuffer->GetAttachment(RenderTargetAttachment::Color0));
+		pass.Shader->SetUniform("xImageLast", lastPass->GetAttachment(RenderTargetAttachment::Color0));
+
+		pass.Shader->SetUniform("xImageDepthOrig", mainBuffer->GetAttachment(RenderTargetAttachment::Depth));
 
 		// camera components for the shaders.
 		pass.Shader->SetUniform("a_View", camera->GetView());
@@ -210,8 +277,28 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 	// CurrentRegistry().ctx_or_set<FrameBuffer::Sptr>(lastPass);
 }
 
+// gets a shader from a pass.
+const cherry::Shader::Sptr& cherry::PostLayer::GetShader(unsigned int index) const
+{
+	// returns the shader
+	if (index >= myPasses.size())
+		return cherry::Shader::Sptr();
+	else
+		return myPasses[index].Shader;
+}
+
+// gets a frame buffer from a pass.
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetFrameBuffer(unsigned int index) const
+{
+	// returns the buffer
+	if (index >= myPasses.size())
+		return cherry::FrameBuffer::Sptr();
+	else
+		return myPasses[index].Output;
+}
+
 // returns the shader from the last pass
-const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader()
+const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader() const
 {
 	if (!myPasses.empty()) // there are layers
 	{
@@ -224,7 +311,7 @@ const cherry::Shader::Sptr& cherry::PostLayer::GetLastPassShader()
 }
 
 // returns the frame buffer from the last pass
-const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetLastPassBuffer()
+const cherry::FrameBuffer::Sptr& cherry::PostLayer::GetLastPassBuffer() const
 {
 	if (!myPasses.empty()) // there are layers
 	{

@@ -96,6 +96,7 @@
     <ClCompile Include="src\cherry\Instrumentation.cpp" />
     <ClCompile Include="src\cherry\JsonProfiling.cpp" />
     <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
+    <ClCompile Include="src\cherry\post\BloomLayer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -418,6 +419,7 @@
     <ClInclude Include="src\cherry\Instrumentation.h" />
     <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
+    <ClInclude Include="src\cherry\post\BloomLayer.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />

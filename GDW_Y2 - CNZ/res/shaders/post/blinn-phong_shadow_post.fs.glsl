@@ -1,10 +1,5 @@
-// calculates a point shadow
-// TODO:
-// calculate the distance between the light and the pixel
-// cast the shadow until you reach the skybox
-// calculate the shadow's strength.
-// TODO: you need the depth of the original image.
-
+// blinn-phong post processing
+// TODO: you should do a better job of merging them.
 #version 440
 
 layout (location = 0) in vec4 inColor;
@@ -15,24 +10,18 @@ layout (location = 4) in vec2 inScreenRes;
 
 layout (location = 0) out vec4 outColor;
 
-layout(binding = 1) uniform sampler2D s_CameraDepth;
+layout(binding = 1) uniform sampler2D s_CameraDepth; // Camera's depth buffer
+layout(binding = 2) uniform sampler2D s_GNormal;     // The normal buffer
 
-// rendered image; this one may not have the depth
 uniform sampler2D xImage;
-
-// starting image; this one definitely has the depth.
-uniform sampler2D xImageOrig;
-
-// the depth of the original image
-uniform sampler2D xImageDepthOrig;
-
-#define MAX_LIGHTS 20
 
 // The inverse of the camera's view-project matrix (clip->world)
 uniform mat4 a_ViewProjectionInv;
 
 // The position of the camera, in world space
 uniform vec3 a_CameraPos;
+
+#define MAX_LIGHTS 20
 
 // struct for lights
 struct Light
@@ -57,8 +46,30 @@ uniform Light a_Lights[MAX_LIGHTS];
 // if 'true', then background lighting is ignored.
 uniform int a_IgnoreBackground;
 
+// used for unpacking the normal
+const vec3 HALF = vec3(0.5);
+const vec3 DOUBLE = vec3(2.0);
+
 // unpacks a normal from the [0,1] range to the [-1, 1] range
-vec3 UnpackNormal(vec3 rawNormal) { return (rawNormal - 0.5F) * 2.0F; }
+vec3 UnpackNormal(vec3 rawNormal) { return (rawNormal - HALF) * DOUBLE; }
+
+// TODO: add depth component.
+// calculates a world position from the main camera's depth buffer
+vec4 GetWorldPosition(vec2 uv) {
+	// Get the depth buffer value at this pixel.    
+	float zOverW = texture(s_CameraDepth, uv).r * 2 - 1; 
+
+	// H is the viewport position at this pixel in the range -1 to 1.    
+	vec4 currentPos = vec4(uv.xy * 2 - 1, zOverW, 1); 
+	
+    // Transform by the view-projection inverse.    
+	vec4 D = a_ViewProjectionInv * currentPos; 
+
+	// Divide by w to get the world position.    
+	vec4 worldPos = D / D.w;
+
+	return worldPos;
+}
 
 // calculates a world position from the main camera's depth buffer
 vec4 GetWorldPosition(sampler2D depth, vec2 uv) {
@@ -89,6 +100,50 @@ float GetDepth(sampler2D depth, vec2 uv)
 	return texture(depth, uv).r * 2 - 1;
 }
 
+
+// computes hte blinn-phong equation.
+vec3 ComputeBlinnPhong(Light light, vec4 worldPosition, vec3 normal) {    
+
+    // Determine the direction from the position to the light
+    vec3 toLight = light.position - worldPosition.xyz;
+    
+    // Determine the distance to the light (used for attenuation later)
+    float distToLight = length(toLight);
+    
+    // Normalize our toLight vector
+    toLight = normalize(toLight);
+
+    // Determine the direction between the camera and the pixel
+    vec3 viewDir = normalize(a_CameraPos - worldPosition.xyz);
+
+    // Calculate the halfway vector between the direction to the light and the direction to the eye
+    vec3 halfDir = normalize(toLight + viewDir);
+
+    // Our specular power is the angle between the the normal and the half vector, raised
+    // to the power of the light's shininess
+    float specPower = pow(max(dot(normal, halfDir), 0.0), light.shininess);
+
+    // Finally, we can calculate the actual specular factor
+    vec3 specOut = specPower * light.color;
+
+    // Calculate our diffuse factor, this is essentially the angle between
+    // the surface and the light
+    float diffuseFactor = max(dot(normal, toLight), 0);
+
+    // Calculate our diffuse output
+    vec3 diffuseOut = diffuseFactor * light.color;
+
+    // Our ambient is simply the color times the ambient power
+    vec3 ambientOut = light.ambientColor * light.ambientPower;
+
+    // We will use a modified form of distance squared attenuation, which will avoid divide
+    // by zero errors and allow us to control the light's attenuation via a uniform
+    float attenuation = 1.0 / (1.0 + light.attenuation* pow(distToLight, 2));
+	
+	// Our result is our lighting multiplied by our object's color
+	return vec3(ambientOut + attenuation * (diffuseOut + specOut)) * inColor.xyz;
+}
+
 // calculates the shadows
 vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 {
@@ -98,8 +153,7 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 	vec2 pixelScreenPos = GetScreenPosition(uv);
 
 	// pixel world position
-	// vec4 pixelWorldPos = GetWorldPosition(s_CameraDepth, uv);
-	vec4 pixelWorldPos = GetWorldPosition(xImageDepthOrig, uv);
+	vec4 pixelWorldPos = GetWorldPosition(uv);
 
 	// gets the pixel depth.
 	// float pixelDepth = GetDepth(xImageDepthOrig, uv);
@@ -150,20 +204,17 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 		}
 
 		// gets the world position of the next pixel
-		// vec4 nextPixelWpos = GetWorldPosition(s_CameraDepth, nextPixelUV);
-		vec4 nextPixelWpos = GetWorldPosition(xImageDepthOrig, nextPixelUV);
+		vec4 nextPixelWpos = GetWorldPosition(nextPixelUV);
 
 		// gets the depth of the pixel
-		// float nextPixelDepth = GetDepth(s_CameraDepth, nextPixelUV);
-		float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
+		// float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
+		float nextPixelDepth = GetDepth(s_CameraDepth, nextPixelUV);
 
 		// if the depth is greater than that of the current pixel, it is farther away from the light source.
 		// if it is farther from the light source, it cannot cast a shadow on the current pixel.
 		
-		// maybe check to see if the distance from the current pixel to the next one is less than toLight?
-		// if(nextPixelDepth < pixelDepth)
+		if(nextPixelDepth < pixelDepth)
 		// if(length(light.position - nextPixelWpos.xyz) < distToLight)
-		if(nextPixelDepth < pixelDepth && length(light.position - nextPixelWpos.xyz) < distToLight)
 		{
 			result.rgb = light.ambientColor * light.ambientPower;
 			axisCheck = false; // done checking the axes
@@ -183,8 +234,7 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 			axisCheck = false;
 
 		// world position of next pixel
-		// vec4 temp_wpos = GetWorldPosition(s_CameraDepth, temp_uv);
-		vec4 temp_wpos = GetWorldPosition(xImageDepthOrig, temp_uv);
+		vec4 temp_wpos = GetWorldPosition(temp_uv);
 
 		// if the next pixel is past the light source, and thus can't cast a shadow on the current pixel.
 		if(abs(pixelWorldPos.x - temp_wpos.x) > abs(toLight.x)) 
@@ -213,8 +263,7 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 		}
 
 		// gets the world position of the next pixel
-		// vec4 nextPixelWpos = GetWorldPosition(s_CameraDepth, nextPixelUV);
-		vec4 nextPixelWpos = GetWorldPosition(xImageDepthOrig, nextPixelUV);
+		vec4 nextPixelWpos = GetWorldPosition(nextPixelUV);
 
 		// gets the depth of the pixel
 		// float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
@@ -223,9 +272,8 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 		// if the depth is greater than that of the current pixel, it is farther away from the light source.
 		// if it is farther from the light source, it cannot cast a shadow on teh current pixel.
 		
-		// if(nextPixelDepth < pixelDepth)
+		if(nextPixelDepth < pixelDepth)
 		// if(length(light.position - nextPixelWpos.xyz) < distToLight)
-		if(nextPixelDepth < pixelDepth && length(light.position - nextPixelWpos.xyz) < distToLight)
 		{
 			result.rgb = light.ambientColor * light.ambientPower;
 			axisCheck = false; // done checking the axes
@@ -245,8 +293,7 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 			axisCheck = false;
 
 		// world position of next pixel
-		// vec4 temp_wpos = GetWorldPosition(s_CameraDepth, temp_uv);
-		vec4 temp_wpos = GetWorldPosition(xImageDepthOrig, temp_uv);
+		vec4 temp_wpos = GetWorldPosition(temp_uv);
 
 		// if the next pixel is past the light source, and thus can't cast a shadow on the current pixel.
 		if(abs(pixelWorldPos.y - temp_wpos.y) > abs(toLight.y)) 
@@ -260,54 +307,51 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 	return result;
 }
 
-// main function
+
 void main() {
-	// getting the image
-	vec4 pixel = texture(xImage, inUV);
+	vec4 imgPx = texture(xImage, inUV);
 	
-	// checks to see if it's not a background pixel. If it isn't a background pixel, then a shadow could be casted.
-	// if(GetDepth(xImageDepthOrig, inUV) < 1.0F)
-	if(GetDepth(s_CameraDepth, inUV) < 1.0F)
+    // extract the world position from the depth buffer
+	vec4 worldPosition = GetWorldPosition(inUV);  
+
+	// Extract our normal from the G Buffer
+	vec3 worldNormal = UnpackNormal(texture(s_GNormal, inUV).rgb);
+
+    // getting the enabled lights
+    int enabledLights = clamp(a_EnabledLights, 0, MAX_LIGHTS); // clamping for minimum and maximum
+	
+    vec4 finalResult = vec4(0, 0, 0, 1);
+
+    // background should use clear color
+    if(a_IgnoreBackground > 0 && texture(s_CameraDepth, inUV).r * 2 - 1 == 1.0F)
 	{
-		vec4 finalResult = vec4(0.0F);
+		finalResult.rgb = vec3(1, 1, 1); // no changes
+	}
+    else
+    {
+        for(int i = 0; i < enabledLights; i++)
+        {
+            finalResult.rgb += vec3(ComputeBlinnPhong(a_Lights[i], worldPosition, worldNormal));
+        }
 
-		// getting the enabled lights
-		int enabledLights = clamp(a_EnabledLights, 0, MAX_LIGHTS); // clamping for minimum and maximum
-		
-		// amount of values summed
-		int vals = 0;
+        // averaging the final result.
+        finalResult.x /= enabledLights;
+        finalResult.y /= enabledLights;
+        finalResult.z /= enabledLights;
+        finalResult.w = 1.0F;
 
-		// goes through each light
+		// applying shadows
 		for(int i = 0; i < enabledLights; i++)
-		{
-			vec4 result = pixel;
-			result = ComputeShadow(a_Lights[i], pixel, inUV);
+        {
+            finalResult.rgb += vec3(ComputeShadow(a_Lights[i], imgPx, inUV));
+        }
 
-			// shadow casted.
-			if(result != pixel)
-			{
-				finalResult += result; // sums results
-				vals++;
-			}
-		}
+		 // averaging the final result again.
+        finalResult.x /= enabledLights;
+        finalResult.y /= enabledLights;
+        finalResult.z /= enabledLights;
+        finalResult.w = 1.0F;
+    }
 
-		// if values were added, they are averaged.
-		// if values were not added, the finalResult is set to white so no changes occur.
-		if(vals > 0)
-		{
-			finalResult = finalResult / vals;
-		}
-		else
-		{
-			finalResult = vec4(1.0F);
-		}
-
-		outColor = pixel * finalResult;
-	}
-	else
-	{
-		// getting the out color
-		outColor = pixel;
-	}
-
+	outColor = vec4(finalResult.rgb * imgPx.rgb, inColor.a * imgPx.a);
 }

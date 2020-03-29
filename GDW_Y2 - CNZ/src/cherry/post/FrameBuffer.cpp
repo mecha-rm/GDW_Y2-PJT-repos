@@ -253,15 +253,15 @@ cherry::FrameBuffer::Sptr cherry::FrameBuffer::GenerateDefaultBuffer()
 	bufferDepth.Format = RenderTargetType::Depth24;
 
 	// buffer stencil
-	RenderBufferDesc bufferStencil = RenderBufferDesc();
-	bufferStencil.ShaderReadable = true;
-	bufferStencil.Attachment = RenderTargetAttachment::Stencil;
-	bufferStencil.Format = RenderTargetType::Stencil16;
+	// RenderBufferDesc bufferStencil = RenderBufferDesc();
+	// bufferStencil.ShaderReadable = true;
+	// bufferStencil.Attachment = RenderTargetAttachment::Stencil;
+	// bufferStencil.Format = RenderTargetType::Stencil16;
 
 	// frame buffer
 	frameBuffer->AddAttachment(bufferColor);
 	frameBuffer->AddAttachment(bufferDepth);
-	frameBuffer->AddAttachment(bufferStencil);
+	// frameBuffer->AddAttachment(bufferStencil);
 
 	return frameBuffer;
 }
