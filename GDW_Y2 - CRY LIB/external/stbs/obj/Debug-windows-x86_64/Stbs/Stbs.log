@@ -1,0 +1,40 @@
+﻿  stb_impl.cpp
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(56,1): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\stdio.h(208): message : see declaration of 'fopen'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(133,85): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(133,77): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(139,79): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(139,71): warning C4244: 'argument': conversion from '__int64' to 'int', possible loss of data
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(193,1): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(133): message : see declaration of 'strcpy'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(195,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(199,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(203,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(204,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(206,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(215,1): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(133): message : see declaration of 'strcpy'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(216,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(217,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(228,1): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(133): message : see declaration of 'strcpy'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(230,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(234,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(257,1): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(133): message : see declaration of 'strcpy'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(271,1): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(133): message : see declaration of 'strcpy'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(272,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\stb_include.h(273,1): warning C4996: 'strcat': This function or variable may be unsafe. Consider using strcat_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.18362.0\ucrt\string.h(90): message : see declaration of 'strcat'
+  Stbs.vcxproj -> C:\Users\roder\source\year 2 repos\infr-1350u-framework-public\external\stbs\bin\Debug-windows-x86_64\Stbs\Stbs.lib

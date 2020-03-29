@@ -206,6 +206,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		objectList->objects.push_back(new PrimitiveCapsule());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
 		
 		objectList->objects.push_back(new PrimitiveCircle());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
@@ -214,31 +215,37 @@ void cherry::EngineGameplayScene::OnOpen()
 		objectList->objects.push_back(new PrimitiveCone());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-		 
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+
 		objectList->objects.push_back(new PrimitiveCube());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
-		
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+
 		objectList->objects.push_back(new PrimitiveCylinder());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
-		
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+
 		objectList->objects.push_back(new PrimitiveDiamond());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
-		
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+
 		objectList->objects.push_back(new PrimitiveUVSphere());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
-		
-		objectList->objects.push_back(new PrimitivePlane());
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false); 
+
+		objectList->objects.push_back(new PrimitivePlane()); 
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);  
 
-		// testing the copy constructor.
+		// testing the copy constructor. 
 		// objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
 		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
-		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F);
+		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F); 
 
 	   // liquid
 		{
@@ -363,7 +370,7 @@ void cherry::EngineGameplayScene::OnOpen()
 			// TODO: find out why items are layeirng on top of one another.
 			Text* text = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
 			text->SetPosition(1.0F, 50.0F, 3.0F);
-			text->SetVisible(false);
+			text->SetVisible(true);
 			objectList->AddObject(text); 
 		}
 

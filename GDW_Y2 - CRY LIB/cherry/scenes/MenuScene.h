@@ -22,7 +22,7 @@ namespace cherry
 		glm::vec3 localTextPos;
 
 		// text rotation (degrees)
-		glm::vec3 localTextRot;
+		glm::vec3 localTextRotationDeg;
 
 		// text scale
 		glm::vec3 localTextScale = glm::vec3(1.0F);

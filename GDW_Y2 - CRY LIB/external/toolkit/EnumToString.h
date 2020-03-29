@@ -28,6 +28,33 @@ inline std::vector<std::string> splitString(const std::string& str, char sep = '
 	return vecString;
 }
 
+#define ENUM_OPS(EnumType) \
+	inline EnumType operator   |(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); } \
+	inline EnumType& operator |=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); return a; } \
+	inline EnumType operator   &(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); } \
+	inline EnumType& operator &=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); return a; } \
+	inline EnumType operator   ^(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); } \
+	inline EnumType& operator ^=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); return a; } \
+	inline EnumType operator   |(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); } \
+	inline EnumType& operator |=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); return a; } \
+	inline EnumType operator   &(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & b); } \
+	inline EnumType& operator &=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a)    & b); return a; } \
+	inline EnumType operator   ^(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); } \
+	inline EnumType& operator ^=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); return a; }
+
+#define ENUM_OPS_SUBCLASS(EnumType) \
+	inline friend EnumType operator   |(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); } \
+	inline friend EnumType& operator |=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); return a; } \
+	inline friend EnumType operator   &(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); } \
+	inline friend EnumType& operator &=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); return a; } \
+	inline friend EnumType operator   ^(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); } \
+	inline friend EnumType& operator ^=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); return a; } \
+	inline friend EnumType operator   |(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); } \
+	inline friend EnumType& operator |=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); return a; } \
+	inline friend EnumType operator   &(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & b); } \
+	inline friend EnumType& operator &=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a)    & b); return a; } \
+	inline friend EnumType operator   ^(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); } \
+	inline friend EnumType& operator ^=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); return a; }
 
 /*
  * Declare an enum value with string conversion support, using a specified base type
@@ -44,7 +71,7 @@ inline std::vector<std::string> splitString(const std::string& str, char sep = '
 	/* Returns the underlying value of this enum */                                                                               \
     inline T operator*(E enumTmp) { return static_cast<T>(enumTmp); }                                                             \
 	/* Converts an enum into its string name */                                                                                   \
-	inline std::string operator~(E enumTmp) { return impl::E##MapName[static_cast<T>(enumTmp)]; }                                 \
+	inline const std::string& operator~(E enumTmp) { return impl::E##MapName[static_cast<T>(enumTmp)]; }                          \
 	/* Appends an enum's name to the end of a string */                                                                           \
     inline std::string operator+(std::string &&str, E enumTmp) { return str + impl::E##MapName[static_cast<T>(enumTmp)]; }        \
 	/* Appends a string to an enum's name, and returns it */                                                                      \
@@ -59,12 +86,19 @@ inline std::vector<std::string> splitString(const std::string& str, char sep = '
         enumTmp = static_cast<E>(iter->first);                                                                                    \
         return enumTmp;                                                                                                           \
     }                                                                                                                             \
+    /* Advances an enum to it's next possible value */                                                                            \
+    inline E operator++(E &enumTmp, int) {                                                                                        \
+        E temp = enumTmp;                                                                                                         \
+        ++enumTmp;                                                                                                                \
+        return temp;                                                                                                              \
+    }                                                                                                                             \
     /* Determines if a given value is valid for an enum */                                                                        \
     inline bool IsValid##E(T value) { return (impl::E##MapName.find(value) != impl::E##MapName.end()); }		                  \
 	/* Determines if a given value is valid for an enum */                                                                        \
 	inline size_t CountOf##E(E value) { (void)value; return impl::E##MapName.size(); }
 
 #define ENUM(E, T, ...) ENUM_(E, T, __VA_ARGS__)
+#define ENUM_FLAGS(E, T, ...) ENUM_(E, T, __VA_ARGS__); ENUM_OPS(E);
 
 /*
  * Declare an enum value with string support, using the int32_t base type
@@ -72,9 +106,6 @@ inline std::vector<std::string> splitString(const std::string& str, char sep = '
  */
 #define DECLARE_ENUM(E, ...) ENUM_(E, int32_t, __VA_ARGS__)
 
-/*
- * Converts a string into
- */
 inline std::string GetVals(const std::string& text, int& base) {
 	base = 10;
 	int ix = 0;
@@ -95,6 +126,11 @@ inline std::string GetVals(const std::string& text, int& base) {
 		if (std::isdigit(text[ix])) {
 			if (!(text[ix] == '0' && number.empty())) {
 				number.push_back(text[ix]);
+			}
+		} else if (base == 16) {
+			char l = std::tolower(text[ix]);
+			if (l >= 'a' && l <= 'e') {
+				number.push_back(l);
 			}
 		}
 		ix++;
@@ -144,31 +180,3 @@ inline std::map<T, std::string> generateEnumMap(std::string strMap)
 }
 
 #define bt(x) std::underlying_type<x>::type
-
-#define ENUM_OPS(EnumType) \
-	inline EnumType operator   |(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); } \
-	inline EnumType& operator |=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); return a; } \
-	inline EnumType operator   &(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); } \
-	inline EnumType& operator &=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); return a; } \
-	inline EnumType operator   ^(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); } \
-	inline EnumType& operator ^=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); return a; } \
-	inline EnumType operator   |(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); } \
-	inline EnumType& operator |=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); return a; } \
-	inline EnumType operator   &(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & b); } \
-	inline EnumType& operator &=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a)    & b); return a; } \
-	inline EnumType operator   ^(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); } \
-	inline EnumType& operator ^=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); return a; }
-
-#define ENUM_OPS_SUBCLASS(EnumType) \
-	inline friend EnumType operator   |(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); } \
-	inline friend EnumType& operator |=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | static_cast<bt(EnumType)>(b)); return a; } \
-	inline friend EnumType operator   &(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); } \
-	inline friend EnumType& operator &=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) & static_cast<bt(EnumType)>(b)); return a; } \
-	inline friend EnumType operator   ^(EnumType a,  EnumType b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); } \
-	inline friend EnumType& operator ^=(EnumType& a, EnumType b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ static_cast<bt(EnumType)>(b)); return a; } \
-	inline friend EnumType operator   |(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); } \
-	inline friend EnumType& operator |=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) | b); return a; } \
-	inline friend EnumType operator   &(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) & b); } \
-	inline friend EnumType& operator &=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a)    & b); return a; } \
-	inline friend EnumType operator   ^(EnumType a,  bt(EnumType) b) { return static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); } \
-	inline friend EnumType& operator ^=(EnumType& a, bt(EnumType) b) { a =    static_cast<EnumType>(static_cast<bt(EnumType)>(a) ^ b); return a; }
