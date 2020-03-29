@@ -1,15 +1,17 @@
+// PrimitiveCapsule
 #include "PrimitiveCapsule.h"
 #include "..\VectorCRY.h"
 #include "..\utils\math\Rotation.h"
 
-cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments)
+cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned int cylSegments, unsigned int capSegments, cherry::Vec4 color)
 	: radius(abs(radius)), height(abs(height))
 {
 	radius = abs(radius);
+
 	height = abs(height);
 
 	// todo: account for height
-	// PrimitiveSphere tempSphere(cylRadius, (capSegments + 1) * 2, cylSegments);
+	// PrimitiveUVSphere tempSphere(cylRadius, (capSegments + 1) * 2, cylSegments);
 
 		// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (cylSegments < 3) // columns
@@ -19,6 +21,14 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	
 	// accounts for half-circle and middle
 	capSegments = (capSegments * 2 + 1);
+
+	// bounds checking for the colour
+	color.v.x = (color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x;
+	color.v.y = (color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y;
+	color.v.z = (color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z;
+	color.v.w = (color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w;
+	
+	this->color = color; // saving the colour.
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
@@ -93,6 +103,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	//  --------------------------
 	//	21 (fill)
 
+	// ALSO DOES NOT WORK
 	// Ver. 2 (Right -> Down + Left -> Right) ~ just increases linerarly after
 	// For this version, row 0 is increased by 1
 	//	0 (fill)
@@ -112,7 +123,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -139,7 +150,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			// radius * 2 to account for the top and bottom cap
 			posVec.z += (row < round(capSegments / 2.0F)) ? (height - radius * 2) / 2.0F : -(height - radius * 2)/ 2.0F;
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -149,7 +160,7 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 
 	// starting values for the indice drawing.
 
@@ -201,7 +212,11 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 				// top left -> bottom point -> top right
 				indices[index] = ind1 - cylSegments;
 				indices[++index] = ind0;
-				indices[++index] = ind2 - cylSegments;
+
+				if (col == cylSegments - 1) // if on the final column of the final row
+					indices[++index] = ind2 - cylSegments * 2;
+				else
+					indices[++index] = ind2 - cylSegments;
 
 				ind1++;
 				ind2++;
@@ -209,15 +224,31 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 			}
 			else // other rows
 			{
-				// triangle 1 (top left -> top right -> bottom left)
-				indices[index] = ind1 - cylSegments;
-				indices[++index] = ind2 - cylSegments;
-				indices[++index] = ind1;
+				if (col == cylSegments - 1)
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - cylSegments; // ind1 - cylSegments;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments * 2; // ind1;
 
-				// triangle 2 bottom left -> top right -> bottom right)
-				indices[++index] = ind1;
-				indices[++index] = ind2 - cylSegments;
-				indices[++index] = ind2;
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind2 - cylSegments * 2; // ind1;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind2;
+				}
+				else
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - cylSegments; // ind1 - cylSegments;
+					indices[++index] = ind1; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind1;
+
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind1; // ind1;
+					indices[++index] = ind2; // ind2 - cylSegments;
+					indices[++index] = ind2 - cylSegments; // ind2;
+				}
+				
 
 				ind1++;
 				ind2++;
@@ -230,7 +261,10 @@ cherry::PrimitiveCapsule::PrimitiveCapsule(float radius, float height, unsigned 
 	}
 
 	// calculating the normals
-	calculateNormals();
+	CalculateNormals();
+	InvertNormals();
+
+	CalculateMeshBody(); // calculates the limits of the mesh body.
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

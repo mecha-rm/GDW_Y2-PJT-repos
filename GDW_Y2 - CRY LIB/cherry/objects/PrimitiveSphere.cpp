@@ -1,10 +1,11 @@
+// PrimitiveSphere
 #include "PrimitiveSphere.h"
 #include "..\utils\math\Rotation.h"
-#include "..\PhysicsBody.h"
+#include "..\physics/PhysicsBody.h"
 
 #include <iostream>
 
-cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, unsigned int segCols) : Primitive(), radius(abs(radius))
+cherry::PrimitiveUVSphere::PrimitiveUVSphere(float radius, unsigned int segRows, unsigned int segCols, Vec4 color) : Primitive(), radius(abs(radius))
 {
 	// making sure the minimum amount of values were given. This only works if the object is greater than t
 	if (segRows < 3)
@@ -14,6 +15,16 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 
 	// makes sure the radius has its absolute value.
 	radius = abs(radius);
+
+	// colour of the sphere
+	glm::vec4 clr = glm::vec4(
+		(color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x,
+		(color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y,
+		(color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z,
+		(color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w
+	);
+
+	color = clr; // saving the base colour
 
 	// Polygon Setup
 	// rings are verticle portions (i.e. rows)
@@ -87,7 +98,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	//	15|16 ||17 |18 ||19 |20 ||
 	//  --------------------------
 	//	21 (fill)
-
+	// ALSO DOESN'T WORK
 	// Ver. 2 (Right -> Down + Left -> Right) ~ just increases linerarly after
 	// For this version, row 0 is increased by 1
 	//	0 (fill)
@@ -107,7 +118,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 	// INDICES MUST START FROM 0 AND HAVE ALL VALUE
 
 	// top vertex
-	vertices[0] = { {0.0F, 0.0F, radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // top vertex
+	vertices[0] = { {0.0F, 0.0F, radius}, {clr}, {0.0F, 0.0F, 0.0F} }; // top vertex
 
 	index = 1;
 	rotateX += rxInc; // sets up first set of vertices
@@ -130,7 +141,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 			normVec = util::math::rotateX(normVec, rotateX, false);
 			normVec = util::math::rotateZ(normVec, rotateZ, false);
 
-			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.x, posVec.y, posVec.z}, {clr}, {0.0F, 0.0F, 0.0F} };
 
 			rotateZ += rzInc; // adding to the z-rotation
 			index++;
@@ -140,7 +151,7 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 		rotateX += rxInc;
 	}
 
-	vertices[index] = { {0.0F, 0.0F, -radius}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
+	vertices[index] = { {0.0F, 0.0F, -radius}, {clr}, {0.0F, 0.0F, 0.0F} }; // bottom vertex of the sphere
 	
 	// starting values for the indice drawing.
 	
@@ -192,7 +203,11 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 				// top left -> bottom point -> top right
 				indices[index] = ind1 - segCols;
 				indices[++index] = ind0;
-				indices[++index] = ind2 - segCols;
+
+				if (col == segCols - 1) // if on the final column of the final row
+					indices[++index] = ind2 - segCols * 2;
+				else
+					indices[++index] = ind2 - segCols;
 
 				ind1++;
 				ind2++;
@@ -200,15 +215,31 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 			}
 			else // other rows
 			{
-				// triangle 1 (top left -> top right -> bottom left)
-				indices[index] = ind1 - segCols;
-				indices[++index] = ind2 - segCols;
-				indices[++index] = ind1;
+				if (col == segCols - 1)
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segCols; // ind1 - segCols;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols * 2; // ind1;
 
-				// triangle 2 bottom left -> top right -> bottom right)
-				indices[++index] = ind1;
-				indices[++index] = ind2 - segCols;
-				indices[++index] = ind2;
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind2 - segCols * 2; // ind1;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind2;
+				}
+				else
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segCols; // ind1 - segCols;
+					indices[++index] = ind1; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind1;
+
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind1; // ind1;
+					indices[++index] = ind2; // ind2 - segCols;
+					indices[++index] = ind2 - segCols; // ind2;
+				}
+
 
 				ind1++;
 				ind2++;
@@ -220,12 +251,15 @@ cherry::PrimitiveSphere::PrimitiveSphere(float radius, unsigned int segRows, uns
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
+	InvertNormals();
+
+	CalculateMeshBody(); // calculates the limits of the mesh body.
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);
-	AddPhysicsBody(new cherry::PhysicsBodySphere(radius));
+	// AddPhysicsBody(new cherry::PhysicsBodySphere(radius));
 }
 
 // gets the radius
-float cherry::PrimitiveSphere::GetRadius() const { return radius; }
+float cherry::PrimitiveUVSphere::GetRadius() const { return radius; }

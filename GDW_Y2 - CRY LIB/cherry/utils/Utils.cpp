@@ -5,7 +5,8 @@
 #include <cmath>
 #include <math.h>
 #include <sstream>
-
+#include <fstream>
+#include <stack>
 
 /// STRING AND GENERAL FUNCTIONS //////////////////////////////////////////////////////
 std::string util::toLower(std::string str)
@@ -125,6 +126,50 @@ bool util::isNum(std::string str)
 		}
 	}
 	return true;
+}
+
+// fills in zeros for integers converted to strings.
+std::string util::zeroFill(int num, const unsigned int LENGTH)
+{
+	// empty string
+	if (LENGTH == 0)
+		return std::string("");
+
+	// converts the number to a string.
+	std::string numString = std::to_string(num);
+
+	// temporary string to get the zero fill value.
+	std::string temp = "";
+
+	// the string's requested length is less than that of the number's itself.
+	if (LENGTH < numString.length())
+	{
+		temp = numString.substr(numString.length() - LENGTH);
+	}
+	else
+	{
+		temp = numString;
+
+		// filling with zeroes.
+		while (temp.size() < LENGTH)
+			temp = "0" + temp;
+	}
+
+	return temp;
+}
+
+// returns 'true' if the file can be opened and read from.
+bool util::fileAccessible(const std::string& filePath)
+{
+	std::ifstream file(filePath, std::ios::in); // the file
+	bool found;
+
+	// if !file is true, then the file couldn't be opened. If it is false, then the file can be accessed.
+	found = !file;
+	file.close();
+
+	// returns the opposite as 'found' since it's showing if the file does exist.
+	return !found;
 }
 
 

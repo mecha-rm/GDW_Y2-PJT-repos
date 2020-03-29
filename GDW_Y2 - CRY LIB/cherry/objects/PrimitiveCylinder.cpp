@@ -1,8 +1,9 @@
+// PrimitiveCylinder
 #include "PrimitiveCylinder.h"
 #include "..\utils\math\Rotation.h"
 
 // creates a cylinder
-cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigned int segments)
+cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigned int segments, cherry::Vec4 color)
 	: radius(abs(radius)), height(abs(height))
 {
 	radius = abs(radius);
@@ -11,6 +12,14 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 	// minimum amount of segments
 	if (segments < 3)
 		segments = 3;
+
+	// bounds checking for the colour
+	color.v.x = (color.v.x < 0.0F) ? 0.0F : (color.v.x > 1.0F) ? 1.0F : color.v.x;
+	color.v.y = (color.v.y < 0.0F) ? 0.0F : (color.v.y > 1.0F) ? 1.0F : color.v.y;
+	color.v.z = (color.v.z < 0.0F) ? 0.0F : (color.v.z > 1.0F) ? 1.0F : color.v.z;
+	color.v.w = (color.v.w < 0.0F) ? 0.0F : (color.v.w > 1.0F) ? 1.0F : color.v.w;
+
+	this->color = color; // saving the colour.
 
 	float rFactor = 0; // the rotation factor
 	float rInc = glm::radians(360.0F / (float)segments); // increment for rotation
@@ -31,7 +40,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 	indices = new uint32_t[indicesTotal];
 
 	// centre starting vertex
-	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[0] = { {0.0F, 0.0F, height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	index = 1;
 
@@ -46,24 +55,24 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 
 			if (i <= 0) // top
 			{
-				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, height / 2.0F), rFactor);
+				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, height / 2.0F), rFactor, false);
 
 				// rotating the normal vector so that it's in the right place and angled properly.
-				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, 1.0F), rFactor, false);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F), false);
 
 
 			}
 			else if (i >= 1) // bottom
 			{
-				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor);
+				posVec = util::math::rotateZ(util::math::Vec3(radius, 0.0F, -height / 2.0F), rFactor, false);
 				
 				// rotating the normal vector so that it's in the right place and angled properly.
-				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor);
-				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.getZ()), glm::radians(45.0F));
+				normVec = util::math::rotateZ(util::math::Vec3(0.0F, 0.0F, -1.0F), rFactor, false);
+				normVec = util::math::rotateX(util::math::Vec3(normVec.GetX(), normVec.GetY(), normVec.GetZ()), glm::radians(45.0F), false);
 			}
 			
-			vertices[index] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+			vertices[index] = { {posVec.v.x, posVec.v.y, posVec.v.z}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 			
 			rFactor += rInc; // adds to the rotation factor.
 			index++; // increaes the index.
@@ -73,7 +82,7 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 	}
 
 	// final centre vertex
-	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {1.0F, 1.0F, 1.0F, 1.0F}, {0.0F, 0.0F, 0.0F} };
+	vertices[index] = { {0.0F, 0.0F, -height / 2.0F}, {color.v.x, color.v.y, color.v.z, color.v.w}, {0.0F, 0.0F, 0.0F} };
 
 	index = 0;
 	ind0 = 0;
@@ -110,7 +119,11 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 				// top left -> bottom point -> top right
 				indices[index] = ind1 - segments;
 				indices[++index] = ind0;
-				indices[++index] = ind2 - segments;
+				
+				if (j == segments - 1) // if on the final column of the final row
+					indices[++index] = ind2 - segments * 2;
+				else
+					indices[++index] = ind2 - segments;
 
 				ind1++;
 				ind2++;
@@ -118,15 +131,30 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 			}
 			else // other rows
 			{
-				// triangle 1 (top left -> top right -> bottom left)
-				indices[index] = ind1 - segments;
-				indices[++index] = ind2 - segments;
-				indices[++index] = ind1;
+				if (j == segments - 1)
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segments; // ind1 - segments;
+					indices[++index] = ind1; // ind2 - segments;
+					indices[++index] = ind2 - segments * 2; // ind1;
 
-				// triangle 2 bottom left -> top right -> bottom right)
-				indices[++index] = ind1;
-				indices[++index] = ind2 - segments;
-				indices[++index] = ind2;
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind2 - segments * 2; // ind1;
+					indices[++index] = ind1; // ind2 - segments;
+					indices[++index] = ind2 - segments; // ind2;
+				}
+				else
+				{
+					// triangle 1 (top left -> top right -> bottom left)
+					indices[index] = ind1 - segments; // ind1 - segments;
+					indices[++index] = ind1; // ind2 - segments;
+					indices[++index] = ind2 - segments; // ind1;
+
+					// triangle 2 bottom left -> top right -> bottom right)
+					indices[++index] = ind1; // ind1;
+					indices[++index] = ind2; // ind2 - segments;
+					indices[++index] = ind2 - segments; // ind2;
+				}
 
 				ind1++;
 				ind2++;
@@ -138,7 +166,10 @@ cherry::PrimitiveCylinder::PrimitiveCylinder(float radius, float height, unsigne
 		}
 	}
 
-	calculateNormals();
+	CalculateNormals();
+	InvertNormals();
+
+	CalculateMeshBody(); // calculates the limits of the mesh body.
 
 	// Create a new mesh from the data
 	mesh = std::make_shared<Mesh>(vertices, verticesTotal, indices, indicesTotal);

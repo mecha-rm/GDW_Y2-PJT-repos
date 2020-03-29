@@ -67,12 +67,14 @@ util::math::Mat3 util::math::getRotationMatrix(float angle, bool inDegrees, char
 		break;
 	}
 
-	// returns empty matrix by default.
-	return Mat3();
+	// returns identity matrix by default.
+	return Mat3(1.0F, 0.0F, 0.0F,
+				0.0F, 1.0F, 0.0F,
+				0.0F, 0.0F, 1.0F);
 }
 
 // gets rotation matrix on the z-axis
-util::math::Mat3 util::math::getRotationMatrixZ(float angle, bool inDegrees) { return Mat3(angle, inDegrees, 'z'); }
+util::math::Mat3 util::math::getRotationMatrixZ(float angle, bool inDegrees) { return util::math::getRotationMatrix(angle, inDegrees, 'z'); }
 
 // returns a rotation matrix for the x-axis
 util::math::Mat3 util::math::getRotationMatrixX(float angle, bool inDegrees) { return util::math::getRotationMatrix(angle, inDegrees, 'x'); }
@@ -151,6 +153,10 @@ util::math::Vec3 util::math::rotate(const Vec3& vec, float angle, char axis, boo
 						0.0F, 0.0F, 1.0F
 		};
 		break;
+
+	default: // returns the provided vector if invalid axis was given.
+		return vec;
+		break;
 	}
 
 	tempMatrix = rMatrix * pMatrix; // applying the rotation.
@@ -197,6 +203,10 @@ util::math::Vec3 util::math::rotateQuat(const Vec3& vec, float angle, char axisO
 	case 'Z':
 	case 'z':
 		axis = Vec3(0, 0, 1.0F);
+		break;
+
+	default:
+		return vec;
 		break;
 	}
 
