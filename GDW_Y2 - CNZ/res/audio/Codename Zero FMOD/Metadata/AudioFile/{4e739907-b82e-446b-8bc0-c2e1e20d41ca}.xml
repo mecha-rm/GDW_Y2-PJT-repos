@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{4e739907-b82e-446b-8bc0-c2e1e20d41ca}">
+		<property name="assetPath">
+			<value>crash roll.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>1.8285714285714285</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{abe5ef89-200a-40bc-ad86-dee9fe6257fe}</destination>
+		</relationship>
+	</object>
+</objects>
