@@ -25,12 +25,16 @@ void cnz::CNZ_TitleScene::OnOpen()
 	glm::vec2 startPos{ 0.9, 0.8F };
 	glm::vec2 offset{ -0.15F, 10.0F };
 
+	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
+
 	// title screen
 	{
 		Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
 		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(0.5F, 0.2F);
+
 		cherry::Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
-		image->SetScale(1.0F);
+		image->SetScale(0.8F);
 
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(Vec3(0, 0, 0), size);
 		pbb->SetVisible(true);
@@ -65,7 +69,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		rankButton->text = new Text("Ranking", sceneName, textFnt, textClr, 10.0F);
 		rankButton->text->SetWindowChild(true);
-		rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 2.0F);
 
 		AddButton(rankButton, false);
 		UpdateButton(rankButton);
@@ -92,10 +96,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map1Button->text = new Text("Map 1", sceneName, textFnt, textClr, 10.0F);
 		map1Button->text->SetWindowChild(true);
-		map1Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map1Button->localTextPos = textLocalPos;
+		map1Button->text->SetPosition(image->GetPosition() + textLocalPos);
 		
 		AddButton(map1Button, false);
-		UpdateButton(map1Button);
+		// UpdateButton(map1Button);
 	}
 
 	// button 2
@@ -118,10 +123,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map2Button->text = new Text("Map 2", sceneName, textFnt, textClr, 10.0F);
 		map2Button->text->SetWindowChild(true);
-		map2Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map2Button->localTextPos = textLocalPos;
+		map2Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map2Button, false);
-		UpdateButton(map2Button);
+		// UpdateButton(map2Button);
 	}
 
 	// button 3
@@ -144,10 +150,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map3Button->text = new Text("Map 3", sceneName, textFnt, textClr, 10.0F);
 		map3Button->text->SetWindowChild(true);
-		map3Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map3Button->localTextPos = textLocalPos;
+		map3Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map3Button, false);
-		UpdateButton(map3Button);
+		// UpdateButton(map3Button);
 	}
 
 	// loading screen information
@@ -162,7 +169,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 		objectList->AddObject(loadingText);
 
 		// effect
-		loadLayer = Kernel3Layer(KERNEL_GAUSSIAN_BLUR);
+		glm::mat3 k = KERNEL_EDGE_1;
+		loadLayer = Kernel3Layer(k);
 
 		// post processing
 		// frame buffer
@@ -260,14 +268,23 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 				loadingText->SetVisible(true);
 
 				layers.push_back(loadLayer.GetPostLayer());
+				countDown = 2; // the scene needs time to add in the psot processing effect.
+				useFrameBuffers = true;
 			}
 		}
 	}
-	else if(enableLoadEffect && loading == true && nextScene != "")
+	else if(enableLoadEffect && loading == true && nextScene != "" && countDown <= 0)
 	{
 		// switching scenes
 		game->SetCurrentScene(nextScene, true);
 	}
+	else
+	{
+		// countdown to next scene
+		if (countDown > 0)
+			countDown--;
+	}
+
 	// button has been hit
 	// if (enteredButton == entryButton && mousePressed)
 	// {

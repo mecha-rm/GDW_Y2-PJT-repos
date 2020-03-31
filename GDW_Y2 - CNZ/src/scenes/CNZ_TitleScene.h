@@ -38,10 +38,13 @@ namespace cnz
 		// if 'load effect is false', then the loading effect isn't used.
 		const bool enableLoadEffect = true;
 		// if 'true', then the scene is loading.
+		
 		bool loading = false;
 		// gets the string for the next scene.
 		// this is only used if the loading screen is active.
 		std::string nextScene = "";
+		int countDown = 0; // countdown for scene switch to allow for post processing
+
 
 	protected:
 	};
