@@ -420,6 +420,7 @@
     <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\BloomLayer.h" />
+    <ClInclude Include="src\ScoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
