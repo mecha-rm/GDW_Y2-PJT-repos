@@ -447,6 +447,9 @@ void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
 			currPos.z
 		);
 		windowChild->SetScale(windowChild->GetScale() * ((scale.x + scale.y) / 2.0F));
+
+		// called if the object has unique behaviour upon the window being resized.
+		windowChild->OnWindowResize(newWidth, newHeight);
 	}
 }
 

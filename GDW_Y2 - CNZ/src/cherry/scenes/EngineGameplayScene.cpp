@@ -206,7 +206,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		objectList->objects.push_back(new PrimitiveCapsule());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, -offset, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 		
 		objectList->objects.push_back(new PrimitiveCircle());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
@@ -215,32 +215,32 @@ void cherry::EngineGameplayScene::OnOpen()
 		objectList->objects.push_back(new PrimitiveCone());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(-offset, offset, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitiveCube());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, -offset, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitiveCylinder());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 0.0F, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitiveDiamond());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, offset, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitiveUVSphere());
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false); 
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitivePlane()); 
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, 0.0F, 0.0F);
-		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(false);  
+		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);  
 
 		// testing the copy constructor. 
 		// objectList->objects.push_back(new PrimitivePlane(*(PrimitivePlane *)objectList->objects.at(objectList->objects.size() - 1)));
@@ -421,7 +421,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 		// sceneLists.at(sceneLists.size() - 1)->CreateEntity(currentScene, objMat);
 		// sceneLists.at(sceneLists.size() - 1)->SetPosition(0.0F, 0.0F, -10.0F);
-		// sceneLists.at(sceneLists.size() - 1)->SetScale(2.0F);
+		// sceneLists.at(sceneLists.size() - 1)->SetScale(2.0F); 
 
 		//material->SetShader(shdr);
 		// VER 1
@@ -836,8 +836,8 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_5:
 		layers.clear();
-		// layers.push_back(layer4);
-		layers.push_back(lightList->GetShadowLayer()); // shadow layer
+		layers.push_back(layer4);
+		// layers.push_back(lightList->GetShadowLayer()); // shadow layer 
 		layer4->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_6:

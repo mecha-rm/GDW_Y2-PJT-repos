@@ -15,7 +15,8 @@ layout (location = 4) in vec2 inScreenRes;
 
 layout (location = 0) out vec4 outColor;
 
-layout(binding = 1) uniform sampler2D s_CameraDepth;
+layout(binding = 1) uniform sampler2D s_CameraDepth; // Camera's depth buffer
+layout(binding = 2) uniform sampler2D s_GNormal;     // The normal buffer
 
 // rendered image; this one may not have the depth
 uniform sampler2D xImage;
@@ -89,6 +90,11 @@ float GetDepth(sampler2D depth, vec2 uv)
 	return texture(depth, uv).r * 2 - 1;
 }
 
+float GetDepth(vec2 uv)
+{
+	return texture(s_CameraDepth, uv).r * 2 - 1;
+}
+
 // calculates the shadows
 vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 {
@@ -103,7 +109,8 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 
 	// gets the pixel depth.
 	// float pixelDepth = GetDepth(xImageDepthOrig, uv);
-	float pixelDepth = GetDepth(s_CameraDepth, uv);
+	// float pixelDepth = GetDepth(s_CameraDepth, uv);
+	float pixelDepth = GetDepth(uv);
 
 	// if the background should be ignored, and the pixel depth is 1.0F (i.e. it's a background pixel)
 	if(a_IgnoreBackground > 0 && pixelDepth == 1.0F)
@@ -155,7 +162,8 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 
 		// gets the depth of the pixel
 		// float nextPixelDepth = GetDepth(s_CameraDepth, nextPixelUV);
-		float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
+		// float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
+		float nextPixelDepth = GetDepth(nextPixelUV);
 
 		// if the depth is greater than that of the current pixel, it is farther away from the light source.
 		// if it is farther from the light source, it cannot cast a shadow on the current pixel.
@@ -218,7 +226,9 @@ vec4 ComputeShadow(Light light, vec4 pixel, vec2 uv)
 
 		// gets the depth of the pixel
 		// float nextPixelDepth = GetDepth(xImageDepthOrig, nextPixelUV);
-		float nextPixelDepth = GetDepth(s_CameraDepth, nextPixelUV);
+		// float nextPixelDepth = GetDepth(s_CameraDepth, nextPixelUV);
+		float nextPixelDepth = GetDepth(nextPixelUV);
+
 		// maybe change this to check distance to light?
 		// if the depth is greater than that of the current pixel, it is farther away from the light source.
 		// if it is farther from the light source, it cannot cast a shadow on teh current pixel.
@@ -267,7 +277,8 @@ void main() {
 	
 	// checks to see if it's not a background pixel. If it isn't a background pixel, then a shadow could be casted.
 	// if(GetDepth(xImageDepthOrig, inUV) < 1.0F)
-	if(GetDepth(s_CameraDepth, inUV) < 1.0F)
+	// if(GetDepth(s_CameraDepth, inUV) < 1.0F)
+	if(GetDepth(inUV) < 1.0F)
 	{
 		vec4 finalResult = vec4(0.0F);
 

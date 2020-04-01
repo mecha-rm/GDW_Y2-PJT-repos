@@ -23,7 +23,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 	Vec4 textClr = Vec4(1.0F, 1.0F, 1.0F, 1.0F);
 
 	glm::vec2 startPos{ 0.9, 0.8F };
-	glm::vec2 offset{ -0.15F, 10.0F };
+	glm::vec2 offset{ -0.18F, 10.0F };
 
 	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
 
@@ -49,11 +49,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// ranking button
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/ranking_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(0.5F, 0.915F));
-		image->SetScale(1.2F);
+		image->SetScale(0.3F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -77,10 +77,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 1
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map1_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(startPos));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -105,9 +106,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 2
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map2_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x, startPos.y));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -132,9 +134,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 3
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map3_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x * 2, startPos.y));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -160,17 +163,22 @@ void cnz::CNZ_TitleScene::OnOpen()
 	// loading screen information
 	{
 		// text
-		loadingText = new Text("LOADING", GetName(), textFnt, Vec4(0.0F, 0.0F, 0.0F, 1.0F), 30.0F);
+		loadingText = new Text("LOADING", GetName(), textFnt, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 45.0F);
 		loadingText->SetWindowChild(true);
+		loadingText->SetPositionByWindowSize(Vec2(0.85F, 0.5F));
 		loadingText->SetPostProcess(false);
-		loadingText->SetPosition(0.0F, 0.0F, 10.0F);
 		loadingText->SetVisible(false);
 
 		objectList->AddObject(loadingText);
 
 		// effect
-		glm::mat3 k = KERNEL_EDGE_1;
-		loadLayer = Kernel3Layer(k);
+		loadLayer = std::make_shared<PostLayer>(POST_VS, POST_GAUSSIAN_BLUR5_FS);
+		loadLayer->AddLayer(POST_VS, POST_GAUSSIAN_BLUR5_FS);
+		loadLayer->AddLayer(POST_VS, "res/shaders/post/bluescale.fs.glsl");
+		
+		loadLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		// loadLayer->GetLastPassShader()->SetUniform("a_Factor", 0.2F);
+
 
 		// post processing
 		// frame buffer
@@ -194,6 +202,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 		// fb->AddAttachment()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
+
+
+		// defaultLayer = std::make_shared<PostLayer>(POST_VS, POST_FS);
+		// layers.push_back(defaultLayer);
 
 		// enabling frame buffers
 		useFrameBuffers = true;
@@ -265,24 +277,25 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			if (enableLoadEffect && nextScene != "")
 			{
 				loading = true;
-				loadingText->SetVisible(true);
+				// loadingText->SetVisible(true);
+				// loadingText->SetText(loadingText->GetText());
 
-				layers.push_back(loadLayer.GetPostLayer());
-				countDown = 2; // the scene needs time to add in the psot processing effect.
+				// layers.push_back(loadLayer.GetPostLayer());
+				// PostLayer::Sptr layer = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
+				layers.push_back(loadLayer); // adds in the load layer 
 				useFrameBuffers = true;
+
+				loadingText->SetVisible(true);
 			}
 		}
 	}
-	else if(enableLoadEffect && loading == true && nextScene != "" && countDown <= 0)
+	else if(enableLoadEffect && loading == true && nextScene != "")
 	{
 		// switching scenes
 		game->SetCurrentScene(nextScene, true);
 	}
 	else
 	{
-		// countdown to next scene
-		if (countDown > 0)
-			countDown--;
 	}
 
 	// button has been hit
