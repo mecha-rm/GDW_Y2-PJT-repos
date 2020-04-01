@@ -80,7 +80,7 @@ cherry::Shader::Sptr cherry::BloomLayer::GenerateGuassianBlur5()
 }
 
 // generates a circular blur
-cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurCircular(glm::vec2 center, float angle, int samples, int direction)
+cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurCircular(glm::vec2 center, float angle, int samples, int direction, bool restrictUVs)
 {
 	Shader::Sptr shader = std::make_shared<Shader>();
 	shader->Load(POST_VS, POST_RADIAL_BLUR_CIRCULAR_FS);
@@ -89,12 +89,13 @@ cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurCircular(glm::vec2 ce
 	shader->SetUniform("a_Angle", angle);
 	shader->SetUniform("a_Samples", samples);
 	shader->SetUniform("a_Direction", direction);
+	shader->SetUniform("a_RestrictUVs", (int)restrictUVs);
 
 	return shader;
 }
 
 // linear blur linear
-cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurLinear(float length, float angle, int samples)
+cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurLinear(float length, float angle, int samples, bool restrictUVs)
 {
 	Shader::Sptr shader = std::make_shared<Shader>();
 	shader->Load(POST_VS, POST_RADIAL_BLUR_LINEAR_FS);
@@ -102,12 +103,13 @@ cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurLinear(float length, 
 	shader->SetUniform("a_Length", length);
 	shader->SetUniform("a_Angle", angle);
 	shader->SetUniform("a_Samples", samples);
+	shader->SetUniform("a_RestrictUVs", (int)restrictUVs);
 
 	return shader;
 }
 
 // radial blur zoom
-cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurZoom(glm::vec2 center, float intensity, int samples)
+cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurZoom(glm::vec2 center, float intensity, int samples, bool restrictUVs)
 {
 	Shader::Sptr shader = std::make_shared<Shader>();
 	shader->Load(POST_VS, POST_RADIAL_BLUR_ZOOM_FS);
@@ -115,6 +117,7 @@ cherry::Shader::Sptr cherry::BloomLayer::GenerateRadialBlurZoom(glm::vec2 center
 	shader->SetUniform("a_Center", center);
 	shader->SetUniform("a_Intensity", intensity);
 	shader->SetUniform("a_Samples", samples);
+	shader->SetUniform("a_RestrictUVs", (int)restrictUVs);
 
 	return shader;
 }
