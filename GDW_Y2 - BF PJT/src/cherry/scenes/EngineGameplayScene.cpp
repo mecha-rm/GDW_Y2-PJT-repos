@@ -625,7 +625,13 @@ void cherry::EngineGameplayScene::OnOpen()
 		// blur layer 
 		{
 			bloomLayer = BloomLayer(0.6F);
-			Shader::Sptr sdr = BloomLayer::GenerateBoxBlur();
+			Shader::Sptr sdr;
+			
+			// sdr = BloomLayer::GenerateBoxBlur(); 
+			// sdr = BloomLayer::GenerateRadialBlurCircular(glm::vec2(0.5F, 0.5F), 30.0F, 10, 1, false); 
+			sdr = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 1.0F, 10, false); 
+			// sdr = BloomLayer::GenerateRadialBlurLinear(10.0F, glm::radians(30.0F), 10, false);   
+
 			FrameBuffer::Sptr bfr = FrameBuffer::GenerateDefaultBuffer();
 			bloomLayer.AddPass(sdr, bfr);
 		}
