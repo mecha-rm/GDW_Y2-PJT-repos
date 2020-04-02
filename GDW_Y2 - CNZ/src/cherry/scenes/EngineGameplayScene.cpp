@@ -272,13 +272,13 @@ void cherry::EngineGameplayScene::OnOpen()
 		// Height Map
 		{
 			// Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/dp_test_01.jpg", 30.0f, 50, false);
-			Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 30.0f, 50, false);
+			Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 45.0f, 70, false);
 			terrain->SetTexture(0, "res/images/red.png");
 			terrain->SetTexture(1, "res/images/green.png");
 			terrain->SetTexture(2, "res/images/blue.png");
-			terrain->SetMinimumHeight(-5.0F);
-			terrain->SetMaximumHeight(10.0F);
-			terrain->SetPosition(0.0F, 0.0F, 0.0F);
+			terrain->SetMinimumHeight(-7.0F);
+			terrain->SetMaximumHeight(5.0F);
+			terrain->SetPosition(0.0F, 0.0F, -10.0F);
 			terrain->SetVisible(true);
 			game->AddObjectToScene(terrain);
 		}

@@ -12,7 +12,7 @@
  
  * Game: CODENAME: ZERO
  * Engine: CHERRY ENGINE
- * Date: 02/26/2020
+ * Date: 04/02/2020
  * Description: the project for the Game Development Workshop game engine. The game code is stored in a seperate project.
  * References: 
 	* Learn OpenGL (https://learnopengl.com/)
