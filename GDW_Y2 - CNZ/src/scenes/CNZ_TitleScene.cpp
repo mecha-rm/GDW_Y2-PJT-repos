@@ -22,8 +22,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 	std::string textFnt = FONT_ARIAL;
 	Vec4 textClr = Vec4(1.0F, 1.0F, 1.0F, 1.0F);
 
-	glm::vec2 startPos{ 0.9, 0.8F };
-	glm::vec2 offset{ -0.18F, 10.0F };
+	glm::vec2 startPos{ 0.9, 0.65F };
+	glm::vec2 offset{ -0.18F, 0.0F };
 
 	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
 
@@ -52,7 +52,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		Image* image = new Image("res/images/ranking_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
-		image->SetPositionByWindowSize(Vec2(0.5F, 0.915F));
+		image->SetPositionByWindowSize(Vec2(0.5F, 0.83F));
 		image->SetScale(0.3F);
 
 		// size
@@ -160,6 +160,46 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// UpdateButton(map3Button);
 	}
 
+	// bonus fruit logo
+	{
+		cherry::Image* image = new Image("res/images/bonus_fruit_logo_ss_sml.png", GetName(),
+			Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 395, 198), 5530, 198, false), true, false);
+
+		// adding to list.
+		objectList->objects.push_back(image);
+
+		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(0.05F, 0.95F);
+		image->SetScale(0.23F);
+		
+		// animation
+		cherry::ImageAnimation* imgAnime = new ImageAnimation();
+
+		// 14 frames
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 2.5F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 1, 0, 395 * 2, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 2, 0, 395 * 3, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 3, 0, 395 * 4, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 4, 0, 395 * 5, 198), 5530, 198, false), 0.0F));
+
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 5, 0, 395 * 6, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 6, 0, 395 * 7, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 7, 0, 395 * 8, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 8, 0, 395 * 9, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 9, 0, 395 * 10, 198), 5530, 198, false), 0.0F));
+
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 10, 0, 395 * 11, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 11, 0, 395 * 12, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 12, 0, 395 * 13, 198), 5530, 198, false), 0.0F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 13, 0, 395 * 14, 198), 5530, 198, false), 0.0F));
+
+
+		imgAnime->SetInfiniteLoop(true);
+		imgAnime->Play();
+		image->AddAnimation(imgAnime, false);
+		image->SetVisible(true);
+	}
+
 	// loading screen information
 	{
 		// text
@@ -244,10 +284,11 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 		{
 			if (enteredButton == entryButton) // TODO: change the entry button to something else.
 			{
-				if (enableLoadEffect)
-					nextScene = game->map1Info.sceneName;
-				else
-					game->SetCurrentScene(game->map1Info.sceneName, true);
+				// taking out transition with logo press.
+				// if (enableLoadEffect)
+				// 	nextScene = game->map1Info.sceneName;
+				// else
+				// 	game->SetCurrentScene(game->map1Info.sceneName, true);
 				
 					
 			}
