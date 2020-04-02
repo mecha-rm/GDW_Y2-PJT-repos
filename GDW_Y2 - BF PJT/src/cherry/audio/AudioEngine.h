@@ -85,6 +85,7 @@ namespace cherry
 		// Events
 		void LoadEvent(const std::string& strEventName);
 		void PlayEvent(const std::string& strEventName);
+		// void LoadAndPlay()
 		void StopEvent(const std::string& strEventName, bool bImmediate = false);
 
 		void SetEventPosition(const std::string& strEventName, const glm::vec3 vPosition);

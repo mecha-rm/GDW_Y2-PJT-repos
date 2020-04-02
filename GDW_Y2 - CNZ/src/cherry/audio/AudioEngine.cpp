@@ -132,8 +132,9 @@ void cherry::AudioEngine::LoadBank(const std::string& strBankName)
 	if (tFoundIt != implementation->mBanks.end())
 		return;
 
+	// TODO: this really shouldn't be a hardcoded path, but it is.
 	FMOD::Studio::Bank* pBank;
-	cherry::AudioEngine::ErrorCheck(implementation->mpStudioSystem->loadBankFile(("Desktop/" + strBankName + ".bank").c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &pBank));
+	cherry::AudioEngine::ErrorCheck(implementation->mpStudioSystem->loadBankFile(("res/audio/Desktop/" + strBankName + ".bank").c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &pBank));
 
 	if (pBank)
 	{

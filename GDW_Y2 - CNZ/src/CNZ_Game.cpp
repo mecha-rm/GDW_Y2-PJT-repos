@@ -59,9 +59,6 @@ void cnz::CNZ_Game::LoadContent()
 	RegisterScene(map3Scene, false);
 
 
-	// Sound 
-	//audioEngine = cherry::AudioEngine::GetInstance();
-
 	// generates the source objects.
 	Level::GenerateSources();
 
@@ -73,6 +70,13 @@ void cnz::CNZ_Game::LoadContent()
 	{
 		SetCurrentScene(map1Scene->GetName(), false);
 	}
+
+	// Sound 
+	cherry::AudioEngine& audio = cherry::AudioEngine::GetInstance();
+	audio.LoadBank("Master");
+	audio.LoadEvent("Music");
+	audio.PlayEvent("Music");
+	// audio
 
 
 	// Title Scene
