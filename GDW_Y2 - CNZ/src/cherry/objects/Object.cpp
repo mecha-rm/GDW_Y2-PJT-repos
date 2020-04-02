@@ -368,6 +368,12 @@ void cherry::Object::SetWindowChild(bool windowChild)
 	ObjectManager::UpdateWindowChild(this);
 }
 
+// called when the window is being resized.
+// this is mainly for text resizing
+void cherry::Object::OnWindowResize(int newWidth, int newHeight)
+{
+}
+
 // returns 'true' if the object gets post processed.
 bool cherry::Object::GetPostProcess() const { return (mesh != nullptr) ? mesh->postProcess : false; }
 

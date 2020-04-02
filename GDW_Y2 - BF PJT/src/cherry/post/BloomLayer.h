@@ -34,12 +34,23 @@ namespace cherry
 		// generates a guassian blur 5 shader
 		static cherry::Shader::Sptr GenerateGuassianBlur5();
 
-		// generates a radial blur
-		// static cherry::Shader::Sptr GenerateRadialBlurCircular();
+		/*
+		 * generates a circular radial blur
+		 * Variables:
+			* center: source of blur (in screen space) [0, 1]
+			* angle (in radians): the angle of the blur
+			* samples: the amount of samples to take for the blur. The higher the value the more accurate the effect.
+			* direction: the direction of the blur. A positive value is clockwise, negative is counter clockwise, and 0 is both.
+			* restrictUvs: if true, then results that have uvs fall outside of the [0, 1] range will be ignored.
+				* if false, uvs outside of the [0, 1] range are allowed. What happens when doing so is up to the OpenGL mode.
+		*/
+		static cherry::Shader::Sptr GenerateRadialBlurCircular(glm::vec2 center, float angle, int samples, int direction, bool restrictUVs = false);
 
-		// static cherry::Shader::Sptr GenerateRadicalBlurLinear();
+		// linear radial blur
+		static cherry::Shader::Sptr GenerateRadialBlurLinear(float length, float angle, int samples, bool restrictUVs = false);
 
-		// static cherry::Shader::Sptr GenerateRadicalBlurZoom();
+		// zoom radial blur
+		static cherry::Shader::Sptr GenerateRadialBlurZoom(glm::vec2 center, float intensity, int samples, bool restrictUVs = false);
 
 		// adds a pass to the bloom object.
 		void AddPass(Shader::Sptr& shader, FrameBuffer::Sptr& buffer);

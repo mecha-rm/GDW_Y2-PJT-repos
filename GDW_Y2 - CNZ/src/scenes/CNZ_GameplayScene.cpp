@@ -91,8 +91,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		scoreText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		scoreText->SetWindowChild(true);
 		scoreText->SetPostProcess(false);
-		scoreText->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
+		scoreText->SetPositionByWindowSize(Vec2(0.20F, 0.05F));
 		scoreText->SetVisible(showScore);
+		scoreText->SetScale(0.8F);
 
 		objectList->AddObject(scoreText);
 	}
@@ -236,6 +237,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// layers.push_back(new PostLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl"));
 		lightList->SetIgnoreBackground(true);
 		layers.push_back(lightList->GetPostLayer());
+
+
 
 		glm::mat3 postMat3 = KERNEL_EDGE_3;
 		// glm::mat3 postMat3 = KERNEL_BOX_BLUR;

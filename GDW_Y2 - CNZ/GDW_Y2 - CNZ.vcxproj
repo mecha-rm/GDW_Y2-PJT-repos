@@ -497,6 +497,7 @@
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
     <ClInclude Include="src\scenes\CNZ_RankingScene.h" />
     <ClInclude Include="src\scenes\CNZ_TitleScene.h" />
+    <ClInclude Include="src\ScoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\GLM\detail\func_common.inl" />
@@ -624,6 +625,9 @@
     <None Include="res\shaders\model.fs.glsl" />
     <None Include="res\shaders\model.vs.glsl" />
     <None Include="res\shaders\normalView.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_additive.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_average.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_mix.fs.glsl" />
     <None Include="res\shaders\post\blinn-phong_post.fs.glsl" />
     <None Include="res\shaders\post\bluescale.fs.glsl" />
     <None Include="res\shaders\post\depth_of_field.fs.glsl" />

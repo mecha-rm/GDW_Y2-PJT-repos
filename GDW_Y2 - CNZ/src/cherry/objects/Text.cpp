@@ -1,6 +1,7 @@
 #include "Text.h"
 #include "..\utils/Utils.h"
 #include "..\utils/math/Rotation.h"
+#include "..\Game.h"
 
 const int cherry::Text::CHAR_COUNT = 256;
 
@@ -118,7 +119,11 @@ void cherry::Text::SetText(const std::string newText)
 		// for some reason, the material's transparency is turned off at some point.
 		// this turns it back on.
 		charCopy->GetMaterial()->HasTransparency = true;
-		charCopy->GetMesh()->SetWindowChild(windowChild);
+
+		Mesh::Sptr& charMesh = charCopy->GetMesh();
+		charMesh->SetWindowChild(windowChild);
+		charMesh->postProcess = postProcess;
+
 		// charCopy->SetAlpha(alpha);
 
 		// charCopy->SetRotationZDegrees(180.0F);
@@ -174,6 +179,40 @@ int cherry::Text::GetFontSize() const { return fontSize; }
 
 // gets the font spacing.
 float cherry::Text::GetSpacing() const { return spacing; }
+
+// recalculates text scale and position.
+void cherry::Text::OnWindowResize(int newWidth, int newHeight)
+{
+	// window size and window scale.
+	glm::ivec2 windowSize = Game::GetRunningGame()->GetWindowSize(); // the window size hasn't been changed yet
+	glm::vec2 windowScale{ (float)newWidth / (float)windowSize.x, (float)newHeight / (float)windowSize.y }; // new scale
+
+	// gets the rotation in radians
+	cherry::Vec3 rotRad = GetRotationRadians();
+
+	// base offset for text characters
+	cherry::Vec3 offsetBase{ spacing * fontSize * scale.v.x, 0, 0 };
+
+	// updates text positions by resizing all the characters.
+	for (int i = 0; i < textChars.size(); i++)
+	{
+		cherry::Vec3 rOffset{ offsetBase.v.x * i, offsetBase.v.y, offsetBase.v.z }; // rotated offset
+		cherry::Vec3 wRad = rotRad + textChars[i]->GetRotationRadians();
+
+		// gets offset rotated.
+		rOffset = util::math::rotateZ(rOffset.v, wRad.v.z, false);
+		rOffset = util::math::rotateX(rOffset.v, wRad.v.x, false);
+		rOffset = util::math::rotateY(rOffset.v, wRad.v.y, false);
+
+		// text position
+		textChars[i]->SetPosition(position + rOffset);
+		textChars[i]->SetScale(textChars[i]->GetScale()  * ((windowScale.x + windowScale.y) / 2.0F));
+	}
+
+	worldPos = position;
+	worldScale = GetScale();
+}
+
 
 // load text
 void cherry::Text::LoadText(const std::string scene)
@@ -647,6 +686,17 @@ void cherry::Text::Update(float deltaTime)
 			chr->GetMesh()->SetWindowChild(windowChild);
 
 		CalculateTextTransform();
+	}
+
+	// post processing has changed.
+	if (GetPostProcess() != postProcess)
+	{
+		postProcess = GetPostProcess();
+
+		// changes post processing for characters.
+		for (Character* chr : textChars)
+			chr->GetMesh()->postProcess = postProcess;
+
 	}
 
 	// checks to see what values need to be updated.

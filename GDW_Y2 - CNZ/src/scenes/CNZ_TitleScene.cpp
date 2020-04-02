@@ -23,14 +23,18 @@ void cnz::CNZ_TitleScene::OnOpen()
 	Vec4 textClr = Vec4(1.0F, 1.0F, 1.0F, 1.0F);
 
 	glm::vec2 startPos{ 0.9, 0.8F };
-	glm::vec2 offset{ -0.15F, 10.0F };
+	glm::vec2 offset{ -0.18F, 10.0F };
+
+	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
 
 	// title screen
 	{
 		Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
 		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(0.5F, 0.2F);
+
 		cherry::Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
-		image->SetScale(1.0F);
+		image->SetScale(0.8F);
 
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(Vec3(0, 0, 0), size);
 		pbb->SetVisible(true);
@@ -45,11 +49,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// ranking button
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/ranking_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(0.5F, 0.915F));
-		image->SetScale(1.2F);
+		image->SetScale(0.3F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -65,7 +69,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		rankButton->text = new Text("Ranking", sceneName, textFnt, textClr, 10.0F);
 		rankButton->text->SetWindowChild(true);
-		rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 2.0F);
 
 		AddButton(rankButton, false);
 		UpdateButton(rankButton);
@@ -73,10 +77,11 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 1
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map1_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(startPos));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -92,17 +97,19 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map1Button->text = new Text("Map 1", sceneName, textFnt, textClr, 10.0F);
 		map1Button->text->SetWindowChild(true);
-		map1Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map1Button->localTextPos = textLocalPos;
+		map1Button->text->SetPosition(image->GetPosition() + textLocalPos);
 		
 		AddButton(map1Button, false);
-		UpdateButton(map1Button);
+		// UpdateButton(map1Button);
 	}
 
 	// button 2
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map2_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x, startPos.y));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -118,17 +125,19 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map2Button->text = new Text("Map 2", sceneName, textFnt, textClr, 10.0F);
 		map2Button->text->SetWindowChild(true);
-		map2Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map2Button->localTextPos = textLocalPos;
+		map2Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map2Button, false);
-		UpdateButton(map2Button);
+		// UpdateButton(map2Button);
 	}
 
 	// button 3
 	{
-		Image* image = new Image(buttonImage, sceneName, false, false);
+		Image* image = new Image("res/images/map3_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x * 2, startPos.y));
+		image->SetScale(0.2F);
 
 		// size
 		Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
@@ -144,25 +153,32 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// creating the text.
 		map3Button->text = new Text("Map 3", sceneName, textFnt, textClr, 10.0F);
 		map3Button->text->SetWindowChild(true);
-		map3Button->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		map3Button->localTextPos = textLocalPos;
+		map3Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map3Button, false);
-		UpdateButton(map3Button);
+		// UpdateButton(map3Button);
 	}
 
 	// loading screen information
 	{
 		// text
-		loadingText = new Text("LOADING", GetName(), textFnt, Vec4(0.0F, 0.0F, 0.0F, 1.0F), 30.0F);
+		loadingText = new Text("LOADING", GetName(), textFnt, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 45.0F);
 		loadingText->SetWindowChild(true);
+		loadingText->SetPositionByWindowSize(Vec2(0.85F, 0.5F));
 		loadingText->SetPostProcess(false);
-		loadingText->SetPosition(0.0F, 0.0F, 10.0F);
 		loadingText->SetVisible(false);
 
 		objectList->AddObject(loadingText);
 
 		// effect
-		loadLayer = Kernel3Layer(KERNEL_GAUSSIAN_BLUR);
+		loadLayer = std::make_shared<PostLayer>(POST_VS, POST_GAUSSIAN_BLUR5_FS);
+		loadLayer->AddLayer(POST_VS, POST_GAUSSIAN_BLUR5_FS);
+		loadLayer->AddLayer(POST_VS, "res/shaders/post/bluescale.fs.glsl");
+		
+		loadLayer->AddLayer(POST_VS, "res/shaders/post/vibrance.fs.glsl");
+		// loadLayer->GetLastPassShader()->SetUniform("a_Factor", 0.2F);
+
 
 		// post processing
 		// frame buffer
@@ -186,6 +202,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 		// fb->AddAttachment()
 		Registry().ctx_or_set<FrameBuffer::Sptr>(fb);
+
+
+		// defaultLayer = std::make_shared<PostLayer>(POST_VS, POST_FS);
+		// layers.push_back(defaultLayer);
 
 		// enabling frame buffers
 		useFrameBuffers = true;
@@ -257,9 +277,15 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			if (enableLoadEffect && nextScene != "")
 			{
 				loading = true;
-				loadingText->SetVisible(true);
+				// loadingText->SetVisible(true);
+				// loadingText->SetText(loadingText->GetText());
 
-				layers.push_back(loadLayer.GetPostLayer());
+				// layers.push_back(loadLayer.GetPostLayer());
+				// PostLayer::Sptr layer = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
+				layers.push_back(loadLayer); // adds in the load layer 
+				useFrameBuffers = true;
+
+				loadingText->SetVisible(true);
 			}
 		}
 	}
@@ -268,6 +294,10 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 		// switching scenes
 		game->SetCurrentScene(nextScene, true);
 	}
+	else
+	{
+	}
+
 	// button has been hit
 	// if (enteredButton == entryButton && mousePressed)
 	// {

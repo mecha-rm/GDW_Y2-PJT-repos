@@ -4,6 +4,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include "scenes/CNZ_TitleScene.h"
 #include "scenes/CNZ_RankingScene.h"
+#include "cherry/audio/AudioEngine.h"
 
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
@@ -56,6 +57,10 @@ void cnz::CNZ_Game::LoadContent()
 
 	CNZ_GameplayScene* map3Scene = new CNZ_GameplayScene(map3Info);
 	RegisterScene(map3Scene, false);
+
+
+	// Sound 
+	cherry::AudioEngine& audioEngine = cherry::AudioEngine::GetInstance();
 
 	// generates the source objects.
 	Level::GenerateSources();

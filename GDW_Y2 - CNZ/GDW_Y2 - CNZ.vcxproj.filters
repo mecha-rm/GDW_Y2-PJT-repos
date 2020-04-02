@@ -420,6 +420,7 @@
     <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\BloomLayer.h" />
+    <ClInclude Include="src\ScoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
@@ -581,5 +582,8 @@
     <None Include="res\shaders\post\lut.fs.glsl" />
     <None Include="res\shaders\post\depth_of_field.fs.glsl" />
     <None Include="res\shaders\post\shadow_post.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_additive.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_average.fs.glsl" />
+    <None Include="res\shaders\post\accumulate_mix.fs.glsl" />
   </ItemGroup>
 </Project>

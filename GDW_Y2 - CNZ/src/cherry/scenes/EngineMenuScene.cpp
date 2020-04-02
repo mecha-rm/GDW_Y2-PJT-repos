@@ -112,8 +112,8 @@ void cherry::EngineMenuScene::Update(float deltaTime)
 {
 	MenuScene::Update(deltaTime);
 
-	if (enteredButton != nullptr)
-		std::cout << "STOP" << std::endl;
+	// if (enteredButton != nullptr)
+	// 	std::cout << "STOP" << std::endl;
 
 	if (enteredButton != nullptr && mousePressed == true)
 	{

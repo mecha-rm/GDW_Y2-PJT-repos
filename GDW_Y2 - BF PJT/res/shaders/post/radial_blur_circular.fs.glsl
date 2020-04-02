@@ -29,6 +29,9 @@ uniform int a_Samples;
 // positive is clockwise, negative is counter clockwise
 uniform int a_Direction;
 
+// if true (> 0), the uvs are clamped into the (0, 1) range.
+uniform int a_RestrictUVs;
+
 // rotates the vector
 vec2 Rotate(vec2 vec, float angle)
 {
@@ -48,7 +51,10 @@ vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples
 
 	// gets the pixel position and the distance to the pixel
 	vec2 pixelPos = inUV * inScreenRes;
-	float dist = length(inUV - center); // radius
+	vec2 centerPos = center * inScreenRes;
+
+	// determines whether to restrict uvs or not.
+	bool uvRestrict = (a_RestrictUVs > 0) ? true : false;
 	
 	// gets the rotation factor
 	float rotFactor = theta / samples;
@@ -61,7 +67,7 @@ vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples
 		float angle = rotFactor * i * direc;
 
 		// gets the position of the pixel being mixed in.
-		vec2 mixPixelPos = Rotate(pixelPos, angle);
+		vec2 mixPixelPos = Rotate(pixelPos - centerPos, angle) + centerPos;
 
 		// vec2 mixPixelPos = vec2(
 		// 	pixelPos.x * (cos(angle)) - pixelPos.y * (sin(angle)), 
@@ -72,10 +78,11 @@ vec4 ApplyBlur(vec4 pixel, vec2 center, float theta, bool clockWise, int samples
 		vec2 mixPixelUv = vec2(mixPixelPos.x / inScreenRes.x, mixPixelPos.y / inScreenRes.y);
 
 		// checks to see if the rotation got an 'out of bounds' pixel
-		vec2 temp = clamp(mixPixelUv, 0.0F, 1.0F);
+		vec2 temp = mixPixelUv;
 
-		// pixel in range
-		if(mixPixelUv == temp)
+		// pixel in range. If uvRestrict is false, then pixels are used regardless of their uvs.
+		// what happens in this case is determined by OpenGL.
+		if(!uvRestrict || (uvRestrict && mixPixelUv == clamp(mixPixelUv, 0.0F, 1.0F)))
 		{
 			// gets the pixel colour
 			result += texture(xImage, mixPixelUv);
