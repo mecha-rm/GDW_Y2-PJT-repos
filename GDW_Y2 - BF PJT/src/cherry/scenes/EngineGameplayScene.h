@@ -5,6 +5,8 @@
 #include "..\post/LookUpTable.h"
 #include "..\post/DepthOfFieldLayer.h"
 #include "..\post/BloomLayer.h"
+#include "..\post/KernelLayer.h"
+#include <queue>
 
 namespace cherry
 {
@@ -70,22 +72,43 @@ namespace cherry
 		TextureSampler::Sptr sampler; // texture sampler
 
 		// temporary (to be removed after review 3)
-		PostLayer::Sptr layer1 = nullptr;
-		PostLayer::Sptr layer2 = nullptr;
-		PostLayer::Sptr layer3 = nullptr;
-		PostLayer::Sptr layer4 = nullptr;
-		PostLayer::Sptr layer5 = nullptr;
-		PostLayer::Sptr layer6 = nullptr;
-		PostLayer::Sptr layer7 = nullptr;
+		std::queue<PostLayer::Sptr> layers1;
+		std::queue<PostLayer::Sptr> layers2;
+		std::queue<PostLayer::Sptr> layers3;
+		std::queue<PostLayer::Sptr> layers4;
+		std::queue<PostLayer::Sptr> layers5;
+		std::queue<PostLayer::Sptr> layers6;
+		std::queue<PostLayer::Sptr> layers7;
+		std::queue<PostLayer::Sptr> layers8;
+
+		
+		// PostLayer::Sptr layer1 = nullptr;
+		// PostLayer::Sptr layer2 = nullptr;
+		// PostLayer::Sptr layer3 = nullptr;
+		// PostLayer::Sptr layer4 = nullptr;
+		// PostLayer::Sptr layer5 = nullptr;
+		// PostLayer::Sptr layer6 = nullptr;
+		// PostLayer::Sptr layer7 = nullptr;
+
+		// kernel layers
+		Kernel3Layer edgeDetect1;
+		Kernel3Layer edgeDetect2;
+		Kernel3Layer edgeDetect3;
+		Kernel3Layer sharpen;
+		
+		// the bloom layer options.
+		BloomLayer bloomBox;
+		BloomLayer bloomGau;
+		BloomLayer bloomRad;
+
+		// BloomLayer bloomLayer;
 
 		// the depth of field layer
 		DepthOfFieldLayer dofLayer;
 
 		// the lookup table.
-		LookUpTable table;
-		
-		// the bloom layer.
-		BloomLayer bloomLayer;
+		LookUpTable warmTable;
+		LookUpTable coolTable;
 
 		bool useLayers = true;
 

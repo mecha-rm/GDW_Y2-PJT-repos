@@ -49,7 +49,7 @@ namespace cherry
 		// linear radial blur
 		static cherry::Shader::Sptr GenerateRadialBlurLinear(float length, float angle, int samples, bool restrictUVs = false);
 
-		// zoom radial blur
+		// zoom radial blur (positive intensity is zoom in, negative intensity is zoom out)
 		static cherry::Shader::Sptr GenerateRadialBlurZoom(glm::vec2 center, float intensity, int samples, bool restrictUVs = false);
 
 		// adds a pass to the bloom object.
