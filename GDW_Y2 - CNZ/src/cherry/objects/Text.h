@@ -105,6 +105,9 @@
          // generates text from a text file.
         //  static cherry::Text GenerateText(std::string filePath, std::string font, cherry::Vec3 pos, cherry::Vec4 color, float size);
  
+         // called to resize the text characters.
+         void OnWindowResize(int newWidth, int newHeight) override;
+
          // update time.
          void Update(float deltaTime);
 
@@ -112,6 +115,7 @@
          std::string ToString() const override;
  
      private:
+         
          // loads the text
          void LoadText(const std::string scene);
  
@@ -147,6 +151,9 @@
 
          // checks to see if the text has been made into a window child.
          bool windowChild = false;
+
+         // checks to see if the text should be post processed.
+         bool postProcess = true;
 
          // materials for characters and characters with no symbol
          Material::Sptr knownCharMaterial = nullptr;

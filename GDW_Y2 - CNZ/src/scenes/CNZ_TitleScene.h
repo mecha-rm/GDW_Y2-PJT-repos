@@ -33,7 +33,7 @@ namespace cnz
 
 		// text for the loading screen, and blur for the layer
 		cherry::Text* loadingText = nullptr;
-		cherry::Kernel3Layer loadLayer;
+		cherry::PostLayer::Sptr loadLayer;
 
 		// if 'load effect is false', then the loading effect isn't used.
 		const bool enableLoadEffect = true;
@@ -43,7 +43,6 @@ namespace cnz
 		// gets the string for the next scene.
 		// this is only used if the loading screen is active.
 		std::string nextScene = "";
-		int countDown = 0; // countdown for scene switch to allow for post processing
 
 
 	protected:

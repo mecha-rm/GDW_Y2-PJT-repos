@@ -190,6 +190,10 @@ namespace cherry
 		// if 'true', the object will be a child of the screen, keeping the same porportional size and position to the screen.
 		void SetWindowChild(bool windowChild);
 
+		// called when the window is being resized if the object is a window child.
+		// this is caleld after the object's scale and position are readjusted.
+		virtual void OnWindowResize(int newWidth, int newHeight);
+
 		// returns 'true' if this object is post processed.
 		bool GetPostProcess() const;
 
