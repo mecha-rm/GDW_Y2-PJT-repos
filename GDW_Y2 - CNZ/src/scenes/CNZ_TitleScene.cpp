@@ -1,6 +1,7 @@
 #include "CNZ_TitleScene.h"
 #include "..\CNZ_Game.h"
 #include "..\LevelLoader.h"
+#include "..\cherry\audio\AudioEngine.h"
 
 // title scene
 cnz::CNZ_TitleScene::CNZ_TitleScene(std::string sceneName)
@@ -26,6 +27,14 @@ void cnz::CNZ_TitleScene::OnOpen()
 	glm::vec2 offset{ -0.18F, 0.0F };
 
 	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
+
+	// sound
+	//AudioEngine::GetInstance().Init();
+	AudioEngine::GetInstance().LoadBank("Master");
+
+	AudioEngine::GetInstance().LoadEvent("Music");
+	AudioEngine::GetInstance().LoadEvent("menu accept");
+	AudioEngine::GetInstance().LoadEvent("menu click");
 
 	// title screen
 	{
@@ -282,6 +291,10 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 		// a button has been entered and the mouse has been pressed.
 		if (enteredButton != nullptr && mousePressed)
 		{
+			if (!AudioEngine::GetInstance().isEventPlaying("menu click")) {
+				AudioEngine::GetInstance().PlayEvent("menu click");
+			}
+
 			if (enteredButton == entryButton) // TODO: change the entry button to something else.
 			{
 				// taking out transition with logo press.
@@ -346,6 +359,11 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 	}
 	else
 	{
+	}
+
+	//// Sound
+	if (!AudioEngine::GetInstance().isEventPlaying("Music")) {
+		AudioEngine::GetInstance().PlayEvent("Music");
 	}
 
 	// button has been hit

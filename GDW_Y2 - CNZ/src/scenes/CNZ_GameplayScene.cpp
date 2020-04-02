@@ -68,7 +68,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	//// Sounds!
 	// load Master bank and events from resources
 	cherry::AudioEngine::GetInstance().LoadBank("Master");
-
+	
 	cherry::AudioEngine::GetInstance().LoadEvent("Dash");
 	cherry::AudioEngine::GetInstance().LoadEvent("Footstep");
 	cherry::AudioEngine::GetInstance().LoadEvent("Music");
@@ -1099,6 +1099,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
 
 			ls = false;
+		}
+
+		// since we don't check f outside of the AI loop on a per enemy basis and only if that enemy is stunned, I will check it here as well.
+		if (f && (!cherry::AudioEngine::GetInstance().isEventPlaying("timestop"))) {
+			cherry::AudioEngine::GetInstance().PlayEvent("timestop");
 		}
 
 		int enemyCount = 0;
