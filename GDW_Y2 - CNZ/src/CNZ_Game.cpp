@@ -60,7 +60,7 @@ void cnz::CNZ_Game::LoadContent()
 
 
 	// Sound 
-	cherry::AudioEngine audioEngine = cherry::AudioEngine()->GetInstance();
+	cherry::AudioEngine& audioEngine = cherry::AudioEngine::GetInstance();
 
 	// generates the source objects.
 	Level::GenerateSources();
