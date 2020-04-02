@@ -365,11 +365,15 @@ namespace cherry
 		// saves the game that's currently running.
 		static cherry::Game* runningGame;
 
+
 		// A shared pointer to our shader.
 		// Shader::Sptr myShader;
 
 		// the opening scene of the game.
 		Scene* openingScene = nullptr;
+
+		// the current scene. If this differs from what the SceneManager says, then the scene has been switched.
+		std::string currentSceneName = "";
 
 		// object list
 		cherry::ObjectList* objectList = nullptr;
