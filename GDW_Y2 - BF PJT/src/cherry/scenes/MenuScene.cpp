@@ -51,7 +51,10 @@ void cherry::MenuScene::OnClose()
 	ObjectManager::DestroySceneObjectListByPointer(objectList);
 	LightManager::DestroySceneLightListByPointer(lightList);
 
-
+	// resetting mouse key values.
+	enteredButton = nullptr;
+	mousePressed = false;
+	mouseKey = -1;
 
 	Scene::OnClose();
 }

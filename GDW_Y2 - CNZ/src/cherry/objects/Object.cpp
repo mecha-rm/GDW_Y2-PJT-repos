@@ -23,6 +23,9 @@ const unsigned int cherry::Object::VERTICES_MAX = pow(2, 32);
 // the maximum amount of indices; this value isn't used
 const unsigned int cherry::Object::INDICES_MAX = pow(2, 32);
 
+// the maximum body count.
+const unsigned int cherry::Object::MAX_BODY_COUNT = 1000;
+
 // constructor - gets the filename and opens it.
 cherry::Object::Object(std::string filePath, bool loadMtl, bool dynamicObj) 
 	: position(), vertices(nullptr), indices(nullptr), dynamicObject(dynamicObj)
@@ -190,9 +193,13 @@ cherry::Object::~Object()
 	delete[] indices; 
 	// indices = nullptr;
 
-	// deleting all of the physics bodies
-	for (PhysicsBody* body : bodies)
-		delete body;
+	// if the limit has been surpassed, its filled with garbage data, and must be cleared.
+	if (bodies.size() <= MAX_BODY_COUNT)
+	{
+		// deletes all bodies
+		for (PhysicsBody* body : bodies)
+			delete body;
+	}
 
 	bodies.clear();
 }
@@ -960,6 +967,12 @@ void cherry::Object::ForwardZ(float scalar, bool fromX)
 // returns true if added successfully.
 bool cherry::Object::AddPhysicsBody(cherry::PhysicsBody* body) 
 { 
+	if (bodies.size() >= MAX_BODY_COUNT)
+	{
+		std::cout << "Body limit reached. No more bodies can be attachted" << std::endl;
+		return false;
+	}
+
 	if (body == nullptr)
 		return false;
 
@@ -1028,9 +1041,13 @@ bool cherry::Object::DeletePhysicsBody(unsigned int index)
 // deletes all physics bodies.
 void cherry::Object::DeleteAllPhysicsBodies()
 {
-	// deletes all bodies
-	for (PhysicsBody* body : bodies)
-		delete body;
+	// if the limit has been surpassed, its filled with garbage data, and must be cleared.
+	if (bodies.size() <= MAX_BODY_COUNT)
+	{
+		// deletes all bodies
+		for (PhysicsBody* body : bodies)
+			delete body;
+	}
 
 	// clears all the bodies
 	bodies.clear();
@@ -1221,6 +1238,10 @@ void cherry::Object::Update(float deltaTime)
 	// if the object is meant to follow a target.
 	if (followTarget)
 		position = target->GetPosition() + targetOffset;
+
+	// this is to fix an error that would fill this with a bunch of garbage data.
+	if (bodies.size() > MAX_BODY_COUNT)
+		bodies.clear();
 
 	// updating the physics bodies
 	for (cherry::PhysicsBody* body : bodies)

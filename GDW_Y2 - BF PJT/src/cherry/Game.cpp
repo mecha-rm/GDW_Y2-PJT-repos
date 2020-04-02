@@ -953,7 +953,14 @@ void cherry::Game::Update(float deltaTime) {
 	Scene* scene = CurrentScene();
 
 	if (scene != nullptr)
+	{
 		scene->Update(deltaTime);
+		scene = CurrentScene(); // in the event that the current scene has changed.
+	}
+	else
+	{
+		LOG_ERROR("No current scene set. No updates will be called.");
+	}
 
 	// scene has been switched.
 	if (scene->GetName() != currentSceneName)

@@ -26,7 +26,7 @@ namespace cnz
 		cherry::Button* exitButton = nullptr;
 
 		// name of the file that will be used.
-		std::string fileName;
+		std::string fileName = "";
 
 	protected:
 	};

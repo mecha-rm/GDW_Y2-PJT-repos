@@ -139,6 +139,9 @@ namespace cherry
 		// deletes an object based on its name.
 		// bool DeleteLightByTag(std::string name);
 
+		// deletes all the lights.
+		void DeleteAllLights();
+
 		// returns 'true' if the background is ignored for post processed lighting.
 		bool IsIgnoringBackground() const;
 

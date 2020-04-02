@@ -60,17 +60,20 @@ void cnz::CNZ_RankingScene::OnOpen()
 		exitButton->object = image; // setting image as the object.
 
 		// creating the text.
-		exitButton->text = new Text("Back To Menu", sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
-		exitButton->text->SetWindowChild(true);
-		exitButton->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
+		// exitButton->text = new Text("Back To Menu", sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		// exitButton->text->SetWindowChild(true);
+		// exitButton->localTextPos = glm::vec3(0.0F, 0.0F, 1.0F);
 
 		AddButton(exitButton, false);
-		UpdateButton(exitButton);
+		// UpdateButton(exitButton);
 	}
 }
 
 void cnz::CNZ_RankingScene::OnClose()
 {
+	fileName = "";
+	exitButton = nullptr;
+
 	cherry::MenuScene::OnClose();
 }
 

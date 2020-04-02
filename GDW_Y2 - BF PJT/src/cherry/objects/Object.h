@@ -568,6 +568,9 @@ namespace cherry
 		// if 'true', the target is followed.
 		bool followTarget = false;
 
+		// the maximum amount of physics bodies one object can have.
+		static const unsigned int MAX_BODY_COUNT;
+
 	private:
 		// void setMesh(Mesh::sptr);
 

@@ -67,12 +67,12 @@ void cnz::CNZ_TitleScene::OnOpen()
 		rankButton->object = image; // setting image as the object.
 
 		// creating the text.
-		rankButton->text = new Text("Ranking", sceneName, textFnt, textClr, 10.0F);
-		rankButton->text->SetWindowChild(true);
-		rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 2.0F);
+		// rankButton->text = new Text("Ranking", sceneName, textFnt, textClr, 10.0F);
+		// rankButton->text->SetWindowChild(true);
+		// rankButton->localTextPos = glm::vec3(0.0F, 0.0F, 2.0F);
 
 		AddButton(rankButton, false);
-		UpdateButton(rankButton);
+		// UpdateButton(rankButton);
 	}
 
 	// button 1
@@ -95,10 +95,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 		map1Button->object = image; // setting image as the object.
 
 		// creating the text.
-		map1Button->text = new Text("Map 1", sceneName, textFnt, textClr, 10.0F);
-		map1Button->text->SetWindowChild(true);
-		map1Button->localTextPos = textLocalPos;
-		map1Button->text->SetPosition(image->GetPosition() + textLocalPos);
+		// map1Button->text = new Text("Map 1", sceneName, textFnt, textClr, 10.0F);
+		// map1Button->text->SetWindowChild(true);
+		// map1Button->localTextPos = textLocalPos;
+		// map1Button->text->SetPosition(image->GetPosition() + textLocalPos);
 		
 		AddButton(map1Button, false);
 		// UpdateButton(map1Button);
@@ -123,10 +123,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 		map2Button->object = image; // setting image as the object.
 
 		// creating the text.
-		map2Button->text = new Text("Map 2", sceneName, textFnt, textClr, 10.0F);
-		map2Button->text->SetWindowChild(true);
-		map2Button->localTextPos = textLocalPos;
-		map2Button->text->SetPosition(image->GetPosition() + textLocalPos);
+		// map2Button->text = new Text("Map 2", sceneName, textFnt, textClr, 10.0F);
+		// map2Button->text->SetWindowChild(true);
+		// map2Button->localTextPos = textLocalPos;
+		// map2Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map2Button, false);
 		// UpdateButton(map2Button);
@@ -151,10 +151,10 @@ void cnz::CNZ_TitleScene::OnOpen()
 		map3Button->object = image; // setting image as the object.
 
 		// creating the text.
-		map3Button->text = new Text("Map 3", sceneName, textFnt, textClr, 10.0F);
-		map3Button->text->SetWindowChild(true);
-		map3Button->localTextPos = textLocalPos;
-		map3Button->text->SetPosition(image->GetPosition() + textLocalPos);
+		// map3Button->text = new Text("Map 3", sceneName, textFnt, textClr, 10.0F);
+		// map3Button->text->SetWindowChild(true);
+		// map3Button->localTextPos = textLocalPos;
+		// map3Button->text->SetPosition(image->GetPosition() + textLocalPos);
 
 		AddButton(map3Button, false);
 		// UpdateButton(map3Button);

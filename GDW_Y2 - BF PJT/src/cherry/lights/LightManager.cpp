@@ -476,20 +476,29 @@ bool cherry::LightList::DeleteLightByIndex(unsigned int index)
 }
 
 // deletes the light via its pointer.
-bool cherry::LightList::DeleteLightByPointer(cherry::Light* ll)
+bool cherry::LightList::DeleteLightByPointer(cherry::Light* light)
 {
-	if (ll == nullptr) // nullptr passed
+	if (light == nullptr) // nullptr passed
 		return false;
 
-	if (RemoveLightByPointer(ll) != nullptr) // if the light was removed successfully
+	if (RemoveLightByPointer(light) != nullptr) // if the light was removed successfully
 	{
-		delete ll;
+		delete light;
 		return true;
 	}
 	else // not removed successfully
 	{
 		return false;
 	}
+}
+
+// delets all the lights.
+void cherry::LightList::DeleteAllLights()
+{
+	for (Light* light : lights)
+		delete light;
+
+	lights.clear();
 }
 
 // gets whether or not the background is being ignored
