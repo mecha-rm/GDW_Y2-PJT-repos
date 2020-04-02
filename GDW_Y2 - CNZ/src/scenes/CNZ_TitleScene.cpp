@@ -36,6 +36,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 	AudioEngine::GetInstance().LoadEvent("menu accept");
 	AudioEngine::GetInstance().LoadEvent("menu click");
 
+	AudioEngine::GetInstance().PlayEvent("Music");
+
 	// title screen
 	{
 		Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);

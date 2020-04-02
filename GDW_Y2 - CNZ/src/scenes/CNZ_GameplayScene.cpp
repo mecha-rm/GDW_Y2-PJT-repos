@@ -63,7 +63,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// initial lights 
 	// TODO: take out initial lights
 	LightManager::CreateSceneLightList(GetName());
-	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
+	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list 
 
 	//// Sounds!
 	// load Master bank and events from resources

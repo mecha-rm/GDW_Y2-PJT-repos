@@ -5,6 +5,9 @@
 
 cherry::Implementation* implementation = nullptr;
 
+// becomes 'true' when initialized.
+bool initialized = false;
+
 cherry::Implementation::Implementation()
 {
 	mpStudioSystem = NULL;
@@ -48,8 +51,16 @@ void cherry::Implementation::Update()
 
 void cherry::AudioEngine::Init()
 {
-	implementation = new Implementation;
-	LoadGUIDs();
+	if (initialized == false)
+	{
+		implementation = new Implementation;
+		LoadGUIDs();
+		initialized = true;
+	}
+	else
+	{
+		LOG_WARN("Init has already been called once, and shouldn't be called again");
+	}
 }
 
 void cherry::AudioEngine::LoadGUIDs()
