@@ -614,7 +614,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		layer7 = std::make_shared<PostLayer>(celShader, cfb);
 
 		// table 
-		table.LoadCubeFile("res/luts/ICG_2 - ASN01 - Warm Grading.CUBE"); 
+		table.LoadCubeFile("res/luts/gdw_y2_warm_filter_01.CUBE"); 
 
 		// depth of field layer
 		dofLayer = DepthOfFieldLayer();

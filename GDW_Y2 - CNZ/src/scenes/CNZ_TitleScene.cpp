@@ -257,6 +257,7 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 					nextScene = game->rankingSceneName;
 				else
 					game->SetCurrentScene(game->rankingSceneName, true);
+
 			}
 			else if (enteredButton == map1Button) // enters map 1
 			{
@@ -300,6 +301,7 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 	{
 		// switching scenes
 		game->SetCurrentScene(nextScene, true);
+		return;
 	}
 	else
 	{

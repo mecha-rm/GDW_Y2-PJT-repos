@@ -1683,6 +1683,14 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		pauseMenu->SetVisible(true);
 	}
 
+	// switching the scene.
+	if (lives <= 0)
+	{
+		cnz::CNZ_Game* const game = (CNZ_Game*)cherry::Game::GetRunningGame();
+		game->SetCurrentScene(game->titleSceneName, true);
+		return;
+	}
+
 	// updates the score if it has been changed.
 	if (updateScore)
 		UpdateScore();
