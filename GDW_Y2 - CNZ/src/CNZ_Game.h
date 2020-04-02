@@ -31,6 +31,9 @@ namespace cnz
 		// overwritten from the game class's data.
 		virtual void Update(float deltaTime) override;
 
+		// Audio Engine
+		cherry::AudioEngine audioEngine;
+
 		// name of the title scene.
 		std::string titleSceneName = "";
 
@@ -46,5 +49,6 @@ namespace cnz
 
 
 	private:
+
 	};
 }

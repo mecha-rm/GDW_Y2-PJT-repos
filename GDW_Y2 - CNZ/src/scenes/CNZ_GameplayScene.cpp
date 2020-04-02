@@ -65,6 +65,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
 
+	//// Sounds!
+	// Load Master bank and it's GUIDs from resources
+	game->audioEngine.LoadBank("Master");
+	game->audioEngine.LoadGUIDs();
+
+	game->audioEngine.LoadEvent("");
+
 	// default lights if no level has been loaded.
 	if (!levelLoading)
 	{
