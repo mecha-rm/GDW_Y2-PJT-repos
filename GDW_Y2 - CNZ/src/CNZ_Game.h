@@ -32,7 +32,7 @@ namespace cnz
 		virtual void Update(float deltaTime) override;
 
 		// Audio Engine
-		cherry::AudioEngine audioEngine;
+		//cherry::AudioEngine& audioEngine = cherry::AudioEngine::GetInstance();
 
 		// name of the title scene.
 		std::string titleSceneName = "";

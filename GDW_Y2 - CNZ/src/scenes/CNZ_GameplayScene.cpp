@@ -66,11 +66,19 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
 
 	//// Sounds!
-	// Load Master bank and it's GUIDs from resources
-	game->audioEngine.LoadBank("Master");
-	game->audioEngine.LoadGUIDs();
+	// load Master bank and events from resources
+	cherry::AudioEngine::GetInstance().LoadBank("Master");
 
-	game->audioEngine.LoadEvent("");
+	cherry::AudioEngine::GetInstance().LoadEvent("Dash");
+	cherry::AudioEngine::GetInstance().LoadEvent("Footstep");
+	cherry::AudioEngine::GetInstance().LoadEvent("Music");
+	cherry::AudioEngine::GetInstance().LoadEvent("arrow");
+	cherry::AudioEngine::GetInstance().LoadEvent("enemy death");
+	cherry::AudioEngine::GetInstance().LoadEvent("menu accept");
+	cherry::AudioEngine::GetInstance().LoadEvent("menu click");
+	cherry::AudioEngine::GetInstance().LoadEvent("new wave");
+	cherry::AudioEngine::GetInstance().LoadEvent("shield hit");
+	cherry::AudioEngine::GetInstance().LoadEvent("timestop");
 
 	// default lights if no level has been loaded.
 	if (!levelLoading)
@@ -551,7 +559,7 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 			enemyList.push_back(new Mechaspider(mechaspider, sceneName));
 		}
 
-		// index
+		// this is index
 		int index = enemyList.size() - 1;
 
 		enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
@@ -1018,9 +1026,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) { // if the player is not moving
 			playerObj->SetState(0);
+			if (cherry::AudioEngine::GetInstance().isEventPlaying("Footstep")) { // if footstep noise is playing, stop it since we are idle
+				cherry::AudioEngine::GetInstance().StopEvent("Footstep");
+			}
 		}
 		else { // if the player is walking
 			playerObj->SetState(1);
+			if (!cherry::AudioEngine::GetInstance().isEventPlaying("Footstep")) { // if footstep noise is NOT being played
+				cherry::AudioEngine::GetInstance().SetEventPosition("Footstep", playerObj->GetPositionGLM());
+				cherry::AudioEngine::GetInstance().PlayEvent("Footstep");
+			}
 		}
 
 		playerObj->UpdateAngle(myCamera, game->GetCursorViewPositionX(), game->GetCursorViewPositionY(), game->GetWindowWidth(), game->GetWindowHeight());
@@ -1097,6 +1112,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
 						proj->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
 						objectList->AddObject(proj);
+
+						cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
+						cherry::AudioEngine::GetInstance().PlayEvent("arrow");
 
 						// projList.push_back(new Projectile(*arrowBase));
 						// projTimeList.push_back(0);
@@ -1194,6 +1212,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// Spawn new wave when all enemies are dead
 		if (enemyCount == 0) {
 			SpawnEnemyGroup();
+			if (!cherry::AudioEngine::GetInstance().isEventPlaying("new wave")) {
+				cherry::AudioEngine::GetInstance().SetEventPosition("new wave", glm::vec3(25, 25, 0));
+				cherry::AudioEngine::GetInstance().PlayEvent("new wave");
+			}
 		}
 
 		// temporary stack of projectiles to be deleted
@@ -1291,6 +1313,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
 		{
+			if (!cherry::AudioEngine::GetInstance().isEventPlaying("Dash")) { // if dash sound is NOT playing, play it
+				cherry::AudioEngine::GetInstance().SetEventPosition("Dash", playerObj->GetPositionGLM());
+				cherry::AudioEngine::GetInstance().PlayEvent("Dash");
+			}
+
 			cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
 			float tempDist = dashVec.GetLength();
 			playerObj->SetDash(true);
@@ -1305,6 +1332,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						enemyList[i]->alive = false;
 						score += enemyList[i]->GetPoints();
 						updateScore = true;
+						cherry::AudioEngine::GetInstance().SetEventPosition("enemy death", enemyList[i]->GetPositionGLM());
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy death"); // play death noise
 					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
