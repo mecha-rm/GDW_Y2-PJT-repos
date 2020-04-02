@@ -661,6 +661,18 @@ void cherry::EngineGameplayScene::OnOpen()
 // called when the scene is being closed.
 void cherry::EngineGameplayScene::OnClose()
 {
+	// translation and rotation direction
+	t_Dir = glm::vec3(0, 0, 0);
+	r_Dir = glm::vec3(0, 0, 0);
+
+	// hitbox
+	hitBoxIndex = -1;
+
+	// the left, middle, and right mouse buttons
+	mbLeft = false;
+	mbMiddle = false;
+	mbRight = false;
+
 	GameplayScene::OnClose();
 }
 

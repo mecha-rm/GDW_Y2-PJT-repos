@@ -76,7 +76,11 @@ namespace cherry
 	class LightList
 	{
 	public:
+		// constructor
 		LightList(std::string scene);
+
+		// destructor
+		~LightList();
 
 		// gets the name of the scene the light list belongs to.
 		std::string GetSceneName() const;
@@ -167,7 +171,7 @@ namespace cherry
 		std::string scene = "";
 		
 		// a post procesisng layer
-		cherry::PostLayer::Sptr layer = nullptr;
+		cherry::PostLayer::Sptr layer;
 
 		// if 'true', then the background is post processed with the lights along with everything else.
 		// if 'false', the background retains its regular pixel colour.

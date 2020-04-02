@@ -212,11 +212,18 @@ void cnz::CNZ_TitleScene::OnOpen()
 	}
 
 	Level::GenerateSources();
+
+	// calling on window resize to fix aspect ratio
+	Game::GetRunningGame()->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // closing
 void cnz::CNZ_TitleScene::OnClose()
 {
+	// resetting variables back the original valeues
+	loading = false;
+	nextScene = "";
+
 	cherry::MenuScene::OnClose();
 }
 

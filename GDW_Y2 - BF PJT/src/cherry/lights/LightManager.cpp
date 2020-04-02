@@ -11,6 +11,7 @@ std::vector<cherry::LightList*> cherry::LightManager::lightLists = std::vector<c
 // destructor
 cherry::LightManager::~LightManager()
 {
+	// deletes all ight lists.
 	for (LightList* ll : lightLists)
 	{
 		delete ll;
@@ -238,6 +239,15 @@ cherry::LightList::LightList(std::string scene) : scene(scene)
 	
 	// creates a shadow layer.
 	shadowLayer = std::make_shared<PostLayer>(shadowShader, shadowBuffer);
+}
+
+// destructor
+cherry::LightList::~LightList()
+{
+	for (Light* light : lights)
+		delete light;
+
+	lights.clear();
 }
 
 // gets the name of the scene the light list is for.

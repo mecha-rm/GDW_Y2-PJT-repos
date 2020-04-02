@@ -98,11 +98,16 @@ void cherry::EngineMenuScene::OnOpen()
 	}
 
 	game->imguiMode = true;
+
+	// calling on window resize to fix aspect ratio
+	Game::GetRunningGame()->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // unloading the scene
 void cherry::EngineMenuScene::OnClose()
 {
+	nextScene = "";
+
 	MenuScene::OnClose();
 
 }

@@ -192,9 +192,6 @@ namespace cnz
 		cherry::Text* scoreText = nullptr;
 		bool showScore = true;
 
-		// camera
-		bool debugMode = true; // allows for debug mode.
-
 		// if 'true', the physics bodies are shown.
 		bool showPBs = false;
 

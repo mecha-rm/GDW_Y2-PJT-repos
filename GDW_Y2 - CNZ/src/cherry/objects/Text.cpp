@@ -734,7 +734,7 @@ std::string cherry::Text::ToString() const { return text; }
 
 // CHARACTERS
 cherry::Character::Character(const char a_CHAR, std::string scene, cherry::Material::Sptr fontMap, glm::vec2 size, glm::vec4 uvs)
-	: m_CHAR(a_CHAR), uvs(uvs)
+	: Object(), m_CHAR(a_CHAR), uvs(uvs)
 {
 	// making the mesh
 	verticesTotal = 4;

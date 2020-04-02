@@ -264,12 +264,51 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	}
 
 	// resizing the window so that it fixes the aspect ratio when switching scenes
-	// game->Resize(myWindowSize.x, myWindowSize.y);
+	game->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // called when the scene is being closed.
 void cnz::CNZ_GameplayScene::OnClose()
 {
+	// setting variables back to original values
+	curWave = 0; //Current enemy wave
+
+	mbLP = false;
+	mbLR = false;
+
+	camLerpPercent = 0.0f;
+
+	testPlayPos = glm::vec3(0, 0, 0);
+	playerPrevPos = glm::vec3(0, 0, 0);;
+	playerSpawn = glm::vec3(0, 0, 0);;
+
+	// player movement
+	w = false;
+	a = false;
+	s = false;
+	d = false;
+	f = false;
+	ls = false;
+	spaceP = false;
+	spaceR = false;
+
+	// stops the player from moving through solid objects.
+	cw = true;
+	ca = true;
+	cs = true;
+	cd = true;
+
+	paused = false;
+	restart = false;
+
+	isInvincible = false;
+	invincibleCountdown = 0.0F;
+
+	kills = 0;
+	lives = 3;
+	curGroup = -1;
+	score = 0;
+
 	// TODO: delete other pointers
 	cherry::GameplayScene::OnClose();
 }

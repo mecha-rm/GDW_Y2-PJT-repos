@@ -120,6 +120,9 @@ namespace cherry
 		// to delete the object from memory, use DeleteObject.
 		cherry::Object* RemoveObjectByName(std::string name);
 
+		// removes all objects, but does not delete them from memory.
+		void RemoveAllObjects();
+
 		// deletes an object from memory based on a provided index.
 		bool DeleteObjectByIndex(unsigned int index);
 
@@ -128,6 +131,9 @@ namespace cherry
 
 		// deletes an object based on its name.
 		bool DeleteObjectByName(std::string name);
+
+		// deletes all objects.
+		void DeleteAllObjects();
 
 		// standard operators
 		// reading; please user proper functions if adding or removing an object.
