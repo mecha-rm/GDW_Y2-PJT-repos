@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <objects serializationModel="Studio.02.00.00">
-	<object class="AudioFile" id="{4e739907-b82e-446b-8bc0-c2e1e20d41ca}">
+	<object class="AudioFile" id="{b7046f4e-b5a5-4746-a3c0-0c0263aec75e}">
 		<property name="assetPath">
-			<value>crash roll.mp3</value>
+			<value>quip 4.mp3</value>
 		</property>
 		<property name="frequencyInKHz">
 			<value>44.0999985</value>
@@ -11,7 +11,7 @@
 			<value>2</value>
 		</property>
 		<property name="length">
-			<value>1.8285714285714285</value>
+			<value>3.239183673469388</value>
 		</property>
 		<relationship name="masterAssetFolder">
 			<destination>{abe5ef89-200a-40bc-ad86-dee9fe6257fe}</destination>

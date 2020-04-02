@@ -1,2 +1,14 @@
-Master {13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}
-	- Menu_Song_1.0.mp3 
+{0a5d8280-9380-4462-97ea-13b3f41ec4a5} bank:/Master
+{9240a254-e2fb-0820-11a3-994d05edc23d} bank:/Master.strings
+{5b07302c-e2eb-4583-a95f-e78832f4bf66} bus:/
+{c95f6067-07e5-4e3c-b79c-ded00495092a} bus:/Reverb
+{845f60d8-6edb-4810-9164-367edb9b25fe} event:/Dash
+{5bb29cdf-f5b9-462a-8ac3-75cb2c5a9a4d} event:/Footstep
+{00e31c76-ffc8-4cce-ad45-cca42796c35a} event:/Music
+{19b0afab-03ac-4fd0-9491-ebf743c3e814} event:/arrow
+{7945c135-332c-41b6-ada4-a1d971efe7d7} event:/enemy death
+{054008f4-5c1d-4264-825d-a75ea99b6748} event:/menu accept
+{bf445502-073f-4dac-a720-1088a0575fd6} event:/menu click
+{920ff9b7-681f-4db7-9f6a-6305bef75c22} event:/new wave
+{4a0549c1-21d5-42a7-9dba-a5f4c2f1333b} event:/shield hit
+{f5b7bc5a-7c75-4520-b370-d49b259fd027} event:/timestop
