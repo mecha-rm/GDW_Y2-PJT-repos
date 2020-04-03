@@ -1,4 +1,3 @@
-// this is just taken from the Intermediate Computer Graphics tutorial.
 #version 440
 
 // TODO:

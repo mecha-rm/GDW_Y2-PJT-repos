@@ -64,7 +64,7 @@ void cherry::EngineMenuScene::OnOpen()
 		// pbb->SetVisible(true);
 		button->object = image;
 
-		button->text = new Text("DEBUG", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		button->text = new Text("DEBUG SCENE", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		// button->text->ClearText();
 		// button->text->SetText("DEBUG MENU");
 		// button->text->SetWindowChild(false);
@@ -72,7 +72,7 @@ void cherry::EngineMenuScene::OnOpen()
 		
 		
 		button->text->SetWindowChild(true);
-		button->text->SetPositionByWindowSize(Vec2(0.9F, 0.25F));
+		button->text->SetPositionByWindowSize(Vec2(0.9F, 0.30F));
 		button->text->SetRotationZDegrees(15.0F);
 
 
@@ -89,20 +89,28 @@ void cherry::EngineMenuScene::OnOpen()
 		AddButton(button);
 		// UpdateButton(button);
 
-		Text* tester = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10);
-		tester->SetPosition(5.0F, 0.0F, 0.0F);
-		tester->SetScale(1.9F);
+		Text* tester = new Text("Click Title to Enter Scene", GetName(), FONT_ARIAL, Vec4(0.0F, 0.0F, 0.0F, 1.0F), 8);
+		tester->SetWindowChild(true);
+		tester->SetPositionByWindowSize(0.82F, 0.83F);
+
+		// tester->SetPosition(5.0F, 10.0F, -2.0F);
+		// tester->SetScale(1.9F);
 		// tester->SetRotationZDegrees(14.0F);
 		objectList->AddObject(tester);
 
 	}
 
 	game->imguiMode = true;
+
+	// calling on window resize to fix aspect ratio
+	Game::GetRunningGame()->Resize(myWindowSize.x, myWindowSize.y);
 }
 
 // unloading the scene
 void cherry::EngineMenuScene::OnClose()
 {
+	nextScene = "";
+
 	MenuScene::OnClose();
 
 }
@@ -112,8 +120,8 @@ void cherry::EngineMenuScene::Update(float deltaTime)
 {
 	MenuScene::Update(deltaTime);
 
-	if (enteredButton != nullptr)
-		std::cout << "STOP" << std::endl;
+	// if (enteredButton != nullptr)
+	// 	std::cout << "STOP" << std::endl;
 
 	if (enteredButton != nullptr && mousePressed == true)
 	{

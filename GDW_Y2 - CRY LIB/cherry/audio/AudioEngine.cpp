@@ -5,6 +5,9 @@
 
 cherry::Implementation* implementation = nullptr;
 
+// becomes 'true' when initialized.
+bool initialized = false;
+
 cherry::Implementation::Implementation()
 {
 	mpStudioSystem = NULL;
@@ -48,8 +51,16 @@ void cherry::Implementation::Update()
 
 void cherry::AudioEngine::Init()
 {
-	implementation = new Implementation;
-	LoadGUIDs();
+	if (initialized == false)
+	{
+		implementation = new Implementation;
+		LoadGUIDs();
+		initialized = true;
+	}
+	else
+	{
+		LOG_WARN("Init has already been called once, and shouldn't be called again");
+	}
 }
 
 void cherry::AudioEngine::LoadGUIDs()
@@ -132,8 +143,9 @@ void cherry::AudioEngine::LoadBank(const std::string& strBankName)
 	if (tFoundIt != implementation->mBanks.end())
 		return;
 
+	// TODO: this really shouldn't be a hardcoded path, but it is.
 	FMOD::Studio::Bank* pBank;
-	cherry::AudioEngine::ErrorCheck(implementation->mpStudioSystem->loadBankFile(("Desktop/" + strBankName + ".bank").c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &pBank));
+	cherry::AudioEngine::ErrorCheck(implementation->mpStudioSystem->loadBankFile(("res/audio/Desktop/" + strBankName + ".bank").c_str(), FMOD_STUDIO_LOAD_BANK_NORMAL, &pBank));
 
 	if (pBank)
 	{

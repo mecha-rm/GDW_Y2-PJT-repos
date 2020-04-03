@@ -345,6 +345,13 @@ cherry::Object* cherry::ObjectList::RemoveObjectByName(std::string name)
 	return nullptr;
 }
 
+// removes all objects.
+void cherry::ObjectList::RemoveAllObjects()
+{
+	objects.clear();
+	windowChildren.clear();
+}
+
 // deletes an object from memory via its index in the list.
 bool cherry::ObjectList::DeleteObjectByIndex(unsigned int index)
 {
@@ -394,6 +401,17 @@ bool cherry::ObjectList::DeleteObjectByName(std::string name)
 		delete obj;
 		return true;
 	}
+}
+
+// delets all objects.
+void cherry::ObjectList::DeleteAllObjects()
+{
+	// deletes all objects.
+	for (int i = 0; i < objects.size(); i++)
+		delete objects[i];
+
+	objects.clear();
+	windowChildren.clear();
 }
 
 // reading ~ gets an object from the object list
@@ -447,6 +465,9 @@ void cherry::ObjectList::OnWindowResize(int newWidth, int newHeight)
 			currPos.z
 		);
 		windowChild->SetScale(windowChild->GetScale() * ((scale.x + scale.y) / 2.0F));
+
+		// called if the object has unique behaviour upon the window being resized.
+		windowChild->OnWindowResize(newWidth, newHeight);
 	}
 }
 

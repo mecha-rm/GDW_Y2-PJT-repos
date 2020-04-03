@@ -19,7 +19,6 @@ void main() {
 	
 	// weights = inTexWeights / totalWeight; // default
 
-	// this should really be passed in by the user.
 	weights = vec3(
 		clamp((-inVertHeight + 0.5f) * 4.0f, 0.0f, 1.0f),
 		min(clamp((-inVertHeight + 0.75f) * 4.0f, 0.0f, 1.0f), clamp((inVertHeight - 0.25f) * 4.0f, 0.0f, 1.0f)),

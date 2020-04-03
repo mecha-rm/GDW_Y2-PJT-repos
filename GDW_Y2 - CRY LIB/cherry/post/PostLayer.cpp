@@ -194,7 +194,7 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		// We'll bind our post-processing output as the current render target and clear it
 		pass.Output->Bind(RenderTargetBinding::Draw);
 		// glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // the original version only clears the colour buffer
+		glClear(GL_COLOR_BUFFER_BIT); // the original version only clears the colour buffer
 		// Set the viewport to be the entire size of the passes output
 		glViewport(0, 0, pass.Output->GetWidth(), pass.Output->GetHeight());
 
@@ -230,7 +230,8 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		pass.Shader->SetUniform("a_FarPlane", farPlane);
 
 		// post processed lights 
-		lastPass->Bind(1, RenderTargetAttachment::Depth); 
+		mainBuffer->Bind(1, RenderTargetAttachment::Depth);
+		// lastPass->Bind(1, RenderTargetAttachment::Depth); 
 		lastPass->Bind(2, RenderTargetAttachment::Color0);
 
 		// passing the resolution/buffer size
@@ -243,7 +244,8 @@ void cherry::PostLayer::PostRender(const cherry::Camera::Sptr& camera)
 		pass.Output->UnBind();
 
 		// unbinding attachments
-		lastPass->Bind(0, RenderTargetAttachment::Depth);
+		mainBuffer->Bind(0, RenderTargetAttachment::Depth);
+		// lastPass->Bind(0, RenderTargetAttachment::Depth); 
 		lastPass->Bind(0, RenderTargetAttachment::Color0);
 
 		// Update the last pass output to be this passes output

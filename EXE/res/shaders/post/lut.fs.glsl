@@ -14,7 +14,7 @@ uniform samplerCube a_Lut; // lookup table
 
 void main() {
 	vec4 color = texture(xImage, inUV);
-	vec4 newColor = texture(a_Lut, vec3(color.r, color.g, color.b)); // getting the colour value from the lookup table.
+	vec4 newColor = texture(a_Lut, vec3(color.r, color.b, color.b)); // getting the colour value from the lookup table.
 	// vec4 newColor = texture3D(a_Lut, vec3(color.r, color.b, color.b)); // getting the colour value from the lookup table.
 
 	outColor = vec4(newColor.rgb, color.a);

@@ -609,7 +609,7 @@ class null_terminating_iterator;
 template <typename Char>
 FMT_CONSTEXPR_DECL const Char *pointer_from(null_terminating_iterator<Char> it);
 
-// An output iterator that counts the number of sceneLists written to it and
+// An output iterator that counts the number of objects written to it and
 // discards them.
 template <typename T>
 class counting_iterator {
@@ -664,7 +664,7 @@ class truncating_iterator_base {
   std::size_t count() const { return count_; }
 };
 
-// An output iterator that truncates the output and counts the number of sceneLists
+// An output iterator that truncates the output and counts the number of objects
 // written to it.
 template <typename OutputIt, typename Enable = typename std::is_void<
     typename std::iterator_traits<OutputIt>::value_type>::type>
@@ -2914,7 +2914,7 @@ inline void format_decimal(char *&buffer, T value) {
   buffer += num_digits;
 }
 
-// Formatter of sceneLists of type T.
+// Formatter of objects of type T.
 template <typename T, typename Char>
 struct formatter<
     T, Char,

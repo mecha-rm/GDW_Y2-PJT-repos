@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{be84cf1b-fe52-4d8a-bdad-07a05a808bc8}">
+		<property name="assetPath">
+			<value>timestop.mp3</value>
+		</property>
+		<property name="isStreaming">
+			<value>true</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>13.453061224489796</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{abe5ef89-200a-40bc-ad86-dee9fe6257fe}</destination>
+		</relationship>
+	</object>
+</objects>

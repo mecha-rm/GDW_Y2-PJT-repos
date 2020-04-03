@@ -421,6 +421,7 @@ bool cherry::Game::CreateScene(const std::string sceneName, const cherry::Skybox
 		if (makeCurrent) // if the new scene should be the current scene.
 		{
 			SceneManager::SetCurrentScene(sceneName);
+			currentSceneName = sceneName;
 		}
 
 
@@ -519,6 +520,7 @@ bool cherry::Game::RegisterScene(cherry::Scene* scene, const bool makeCurrent)
 	if (makeCurrent) // if this should be the current scene.
 	{
 		SetCurrentScene(scene->GetName(), false);
+		currentSceneName = scene->GetName();
 	}
 
 	return true;
@@ -547,6 +549,7 @@ bool cherry::Game::RegisterScene(cherry::Scene* scene, const cherry::Skybox skyb
 		if (makeCurrent) // if this should be the current scene.
 		{
 			SetCurrentScene(scene->GetName(), false);
+			currentSceneName = scene->GetName();
 		}
 
 		return true;
@@ -592,6 +595,7 @@ bool cherry::Game::SetCurrentScene(std::string sceneName, bool createScene)
 
 		if (SceneManager::SetCurrentScene(sceneName)) // if the scene switch was successful.
 		{
+			currentSceneName = sceneName;
 			return true;
 		}
 		else // scene switch failed.
@@ -943,11 +947,44 @@ void cherry::Game::UnloadContent() {
 	LightManager::DestroyAllSceneLightLists();
 }
 
+// update loop.
 void cherry::Game::Update(float deltaTime) {
 	// calling the scene update
 	Scene* scene = CurrentScene();
+
 	if (scene != nullptr)
+	{
 		scene->Update(deltaTime);
+		scene = CurrentScene(); // in the event that the current scene has changed.
+	}
+	else
+	{
+		LOG_ERROR("No current scene set. No updates will be called.");
+	}
+
+	// scene has been switched.
+	if (scene->GetName() != currentSceneName)
+	{
+		// switching the object list and light list.
+		currentSceneName = scene->GetName();
+		objectList = ObjectManager::GetSceneObjectListByName(currentSceneName);
+
+		// object list does not exist
+		if (objectList == nullptr)
+		{
+			ObjectManager::CreateSceneObjectList(currentSceneName);
+			objectList = ObjectManager::GetSceneObjectListByName(currentSceneName);
+		}
+
+		lightList = LightManager::GetSceneLightListByName(currentSceneName);
+
+		// light list does not exist.
+		if (lightList == nullptr)
+		{
+			LightManager::CreateSceneLightList(currentSceneName);
+			lightList = LightManager::GetSceneLightListByName(currentSceneName);
+		}
+	}
 
 	// updating the cameras
 	myCamera->Update(deltaTime);

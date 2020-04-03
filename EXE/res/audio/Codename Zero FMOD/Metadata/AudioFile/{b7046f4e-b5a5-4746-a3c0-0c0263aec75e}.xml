@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.00.00">
+	<object class="AudioFile" id="{b7046f4e-b5a5-4746-a3c0-0c0263aec75e}">
+		<property name="assetPath">
+			<value>quip 4.mp3</value>
+		</property>
+		<property name="frequencyInKHz">
+			<value>44.0999985</value>
+		</property>
+		<property name="channelCount">
+			<value>2</value>
+		</property>
+		<property name="length">
+			<value>3.239183673469388</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{abe5ef89-200a-40bc-ad86-dee9fe6257fe}</destination>
+		</relationship>
+	</object>
+</objects>
