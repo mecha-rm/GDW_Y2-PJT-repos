@@ -1653,6 +1653,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	else {
 		//Pause Menu Code
+		////sound codeeee
+		cherry::AudioEngine::GetInstance().PlayEvent("menu accept");
+
 		if (restart) {
 			//Reset Everything
 			kills = 0;
