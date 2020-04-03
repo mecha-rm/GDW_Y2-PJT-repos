@@ -1,0 +1,2 @@
+Walk: 1
+Burrow: 0.54
