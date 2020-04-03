@@ -8,10 +8,11 @@
 	- Stephane Gagnon (100694227)
 	- Roderick "R.J." Montague (100701758)
 	- Ryan Burton (100707511)
+		- NOTE: this developer is no longer part of this program.
  
  * Game: CODENAME: ZERO
  * Engine: CHERRY ENGINE
- * Date: 11/28/2019
+ * Date: 04/02/2020
  * Description: the game development game. The engine files are in the 'cherry' folder, but there is a dedicated engine project.
  * References: 
 	* NOTE: The engine has its own set of references
