@@ -211,6 +211,26 @@ void cnz::CNZ_TitleScene::OnOpen()
 		image->SetVisible(true);
 	}
 
+	// instructons
+	{
+		cherry::Image* image = new Image("res/images/controls.png", GetName(), false, false);
+		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(Vec2(0.5F, 0.5F));
+		image->SetPositionZ(0.2F);
+		image->SetScale(0.5F);
+		image->SetVisible(false);
+
+		// saving image and adding it to the list.
+		controls = image;
+		objectList->AddObject(image);
+
+		cherry::Text* text = new Text("Press (I) to view controls/hide controls", sceneName, FONT_ARIAL, 
+			Vec4(0.8157F, 0.9725F, 1.0F, 1.0F), 4.0F);
+		text->SetWindowChild(true);
+		text->SetPositionByWindowSize(Vec2(0.975F, 0.96F));
+		objectList->AddObject(text);
+	}
+
 	// loading screen information
 	{
 		// text
@@ -274,8 +294,25 @@ void cnz::CNZ_TitleScene::OnClose()
 	// resetting variables back the original valeues
 	loading = false;
 	nextScene = "";
+	controls = nullptr;
 
 	cherry::MenuScene::OnClose();
+}
+
+// key has been pressed.
+void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
+{
+	cherry::MenuScene::KeyPressed(window, key);
+
+	switch (key)
+	{
+	case GLFW_KEY_I:
+		if (controls != nullptr)
+		{
+			controls->SetVisible();
+		}
+		break;
+	}
 }
 
 // update loop

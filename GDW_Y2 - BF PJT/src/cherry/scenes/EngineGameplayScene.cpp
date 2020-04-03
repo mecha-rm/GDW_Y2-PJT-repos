@@ -191,6 +191,8 @@ void cherry::EngineGameplayScene::OnOpen()
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
+	matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
+	matStatic->GetShader()->SetUniform("a_EmissivePower", 0.2F);
 
 	// loads in default sceneLists
 	if(true)

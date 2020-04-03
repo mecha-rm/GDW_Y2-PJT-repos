@@ -19,6 +19,9 @@ namespace cnz
 		// closing the scene
 		void OnClose() override;
 
+		// called when a key has been pressed
+		void KeyPressed(GLFWwindow* window, int key) override;
+
 		// update loop
 		void Update(float deltaTime) override;
 
@@ -40,10 +43,13 @@ namespace cnz
 		// if 'true', then the scene is loading.
 		
 		bool loading = false;
+		
+		// image of controls.
+		cherry::Image* controls = nullptr;
+		
 		// gets the string for the next scene.
 		// this is only used if the loading screen is active.
 		std::string nextScene = "";
-
 
 	protected:
 	};
