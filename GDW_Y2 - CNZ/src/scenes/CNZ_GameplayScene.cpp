@@ -1,6 +1,8 @@
 #include "CNZ_GameplayScene.h"
+
 #include "..\CNZ_Game.h"
 #include <stack>
+#include "..\cherry/Instrumentation.h"
 
 // static variables
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
@@ -37,6 +39,13 @@ cnz::CNZ_GameplayScene::CNZ_GameplayScene(const LevelLoadInfo& info)
 void cnz::CNZ_GameplayScene::OnOpen()
 {
 	using namespace cherry;
+	
+	if (PROFILE)
+		cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-open.json");
+
+	// starts timing
+	ProfileTimer loadTimer = ProfileTimer("gameplay-on_open");
+
 	cherry::GameplayScene::OnOpen();
 
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
@@ -65,6 +74,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list 
 
+	ProfileTimer audioLoad = ProfileTimer("gameplay-on_open-audio_loading");
+	
 	//// Sounds!
 	// load Master bank and events from resources
 	cherry::AudioEngine::GetInstance().LoadBank("Master");
@@ -79,6 +90,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	cherry::AudioEngine::GetInstance().LoadEvent("new wave");
 	cherry::AudioEngine::GetInstance().LoadEvent("shield hit");
 	cherry::AudioEngine::GetInstance().LoadEvent("timestop");
+
+	// audio loading finished.
+	audioLoad.Stop();
 
 	// default lights if no level has been loaded.
 	if (!levelLoading)
@@ -119,9 +133,17 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	// load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
 	if (levelLoading) {
+		ProfileTimer levelLoad = ProfileTimer("gameplay-on_open-level_load");
+
 		//// LOAD LEVELS
 		// loads level
+		ProfileTimer mapLoad = ProfileTimer("gameplay-on_open-map_load");
+		
 		MapSceneObjectsToGame();
+
+		// stops the map loading.
+		mapLoad.Stop();
+
 
 		ObjectList * objList = objectList;
 		LightList * tempList = lightList;
@@ -168,8 +190,14 @@ void cnz::CNZ_GameplayScene::OnOpen()
 			LoadEnemyGroups();
 		
 
+		// times enemy spawning
+		ProfileTimer enemySpawnTimer = ProfileTimer("gameplay-on_open-enemy_init_load");
+
 		//Number corresponds with enemygroups first index
 		SpawnEnemyGroup(4);
+
+		// stops eneemy spawning.
+		enemySpawnTimer.Stop();
 
 		//indArrowAnim = new MorphAnimation();
 		//indArrowAnim->AddFrame(new MorphAnimationFrame("res/objects/Arrow_Start.obj", 2.0F));
@@ -205,7 +233,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//// this is kind of useless in our game so it's commented out. No point wasting resources on it.
 
 
-		
+		// level loading finished.
+		levelLoad.Stop();
 	}
 	else // for testing, loads a level for testing collision, showing all objects and test paths and such
 	{
@@ -224,6 +253,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// if(levelLoading)
 	if (postProcess)
 	{
+		ProfileTimer postProcessLoad = ProfileTimer("gameplay-on_open-post_process_load");
+
 		// frame buffer
 		FrameBuffer::Sptr fb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
 
@@ -261,10 +292,18 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		edgeDetect.SetMatrix(postMat3);
 
 		useFrameBuffers = true;
+
+		postProcessLoad.Stop();
 	}
 
 	// resizing the window so that it fixes the aspect ratio when switching scenes
 	game->Resize(myWindowSize.x, myWindowSize.y);
+
+	// stops the load timer
+	loadTimer.Stop();
+
+	if (PROFILE)
+		cherry::ProfilingSession::End();
 }
 
 // called when the scene is being closed.
@@ -309,6 +348,7 @@ void cnz::CNZ_GameplayScene::OnClose()
 	curGroup = -1;
 	score = 0;
 
+	
 	// TODO: delete other pointers
 	cherry::GameplayScene::OnClose();
 }
@@ -857,6 +897,8 @@ void cnz::CNZ_GameplayScene::UpdateScore()
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
+	cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
+
 	// if 'true', the score text gets updated.
 	bool updateScore = false;
 
@@ -882,6 +924,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// gets the player's physics body
 		vector<cherry::PhysicsBody*> playerBodies = playerObj->GetPhysicsBodies();
+
+		cherry::ProfileTimer colTimer = cherry::ProfileTimer("profiling-player_collisions");
 
 		// goes through each physics body for hte player
 		for (cherry::PhysicsBody* pBody : playerBodies)
@@ -984,11 +1028,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+		colTimer.Stop();
+
 		cs = true;
 		cw = true;
 		ca = true;
 		cd = true;
 
+
+		cherry::ProfileTimer colBehaviourTimer("profiling-cnz_player_col_behaviour");
 
 		// TODO: actually fix collisions... and allow player to move out if colliding in all directions. (AKA when all of the above booleans are false)
 		// check what directions the player can move in based on its collisions with obstacles in the scene.
@@ -1100,6 +1148,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			ls = false;
 		}
+
+		colBehaviourTimer.Stop();
 
 		// since we don't check f outside of the AI loop on a per enemy basis and only if that enemy is stunned, I will check it here as well.
 		if (f && (!cherry::AudioEngine::GetInstance().isEventPlaying("timestop"))) {
@@ -1262,6 +1312,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+
+		cherry::ProfileTimer projTimer("profiling-projectile-update");
+
 		// temporary stack of projectiles to be deleted
 		std::stack<Projectile*> projKillList;
 		std::stack<int> indexKillList;
@@ -1321,6 +1374,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+		projTimer.Stop();
+
 		// removing and kills projectiles
 		while (!projKillList.empty())
 		{
@@ -1341,6 +1396,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 
 		//// DASH CODE
+
+		cherry::ProfileTimer dashProfiler("profiling-dash_timer");
 
 		// Dash indicator
 		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
@@ -1457,6 +1514,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 			}
 
+			dashProfiler.Stop();
+
 			// while the stack is not empty.
 			while (!indexes.empty())
 			{
@@ -1513,6 +1572,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// test PB
 		//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
 
+
+		cherry::ProfileTimer animationTimer("profiling-animation-change");
 
 		//// ANIMATION UPDATES
 		// Player
@@ -1613,6 +1674,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
+		animationTimer.Stop();
+
+
+		cherry::ProfileTimer cameraTimer("profiling-camera_move");
 
 		// camera position update code
 		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
@@ -1650,6 +1715,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		notDashing:
 			myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
 		}
+
+		cameraTimer.Stop();
 	}
 	else {
 		//Pause Menu Code
@@ -1705,6 +1772,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 	// calls the main game Update function to go through every object.
 	cherry::GameplayScene::Update(deltaTime);
+
+	cherry::ProfilingSession::End();
 }
 
 //Get Distance Between two Vectors in xy axis

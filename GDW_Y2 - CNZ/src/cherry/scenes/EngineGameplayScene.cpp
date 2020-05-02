@@ -9,6 +9,8 @@
 #include "..\objects/Text.h"
 
 #include "..\post/KernelLayer.h"
+#include "..\Instrumentation.h"
+
 #include <imgui\imgui.h>
 
 // creating the engine scene.
@@ -18,12 +20,20 @@ cherry::EngineGameplayScene::EngineGameplayScene(std::string sceneName) : Gamepl
 
 void cherry::EngineGameplayScene::OnOpen()
 {
+	// starts up profiling
+	if(PROFILE)
+		ProfilingSession::Start("profiling-init.json");
+
+	// general timer
+	ProfileTimer timer = ProfileTimer("debug_start");
+
 	GameplayScene::OnOpen();
 
 	Game* const game = Game::GetRunningGame();
 	
 	if (game == nullptr)
 		return;
+
 
 	game->imguiMode = true;
 
@@ -169,16 +179,16 @@ void cherry::EngineGameplayScene::OnOpen()
 
 	// TODO: add sampler for light list?
 	LightManager::CreateSceneLightList(game->GetCurrentSceneName()); 
-	// lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
-	//  
-	// lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
-	// 	Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 1.0F / 1200.0F));
-	// 
-	// lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F), 
-	// 	Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 1.0F / 800.0F));
-	// 
-	// game->AddLightToScene(new Light(game->GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
-	// 	Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 1.0F/1000.0F));  
+	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list
+	 
+	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
+		Vec3(0.1F, 1.0F, 0.4F), 0.4F, 0.2F, 250.0F, 1.0F / 1200.0F));
+	
+	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(7.0F, 0.0F, 0.0F), Vec3(0.1, 0.1F, 1.0F), 
+		Vec3(0.2F, 0.7F, 0.9F), 0.3F, 0.5F, 256.0F, 1.0F / 800.0F));
+	
+	game->AddLightToScene(new Light(game->GetCurrentSceneName(), Vec3(0.0F, 7.0F, 0.0F), Vec3(0.3, 0.9F, 0.1F),
+		Vec3(0.8F, 0.2F, 0.95F), 0.9F, 0.7F, 100.0F, 1.0F/1000.0F));  
 	 
 	lightList->AddLight(new Light(game->GetCurrentSceneName(), Vec3(4.0F, 1.0F, 2.5F), Vec3(0.825F, 0.342F, 0.623F),
 		Vec3(0.1F, 0.1F, 0.1F), 1.0F, 10.0F, 90.0F, 1.0F / 50000.0F));
@@ -191,6 +201,8 @@ void cherry::EngineGameplayScene::OnOpen()
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
+	matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
+	matStatic->GetShader()->SetUniform("a_EmissivePower", 0.1F);
 
 	// loads in default sceneLists
 	if(true)
@@ -368,8 +380,9 @@ void cherry::EngineGameplayScene::OnOpen()
 		{
 			// text
 			// TODO: find out why items are layeirng on top of one another.
-			Text* text = new Text("Hello World", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
-			text->SetPosition(1.0F, 50.0F, 3.0F);
+			Text* text = new Text("Shader Test", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
+			text->SetWindowChild(true);
+			text->SetPosition(10.0F, 50.0F, 10.0F);
 			text->SetVisible(true);
 			objectList->AddObject(text); 
 		}
@@ -549,92 +562,270 @@ void cherry::EngineGameplayScene::OnOpen()
 	// }
 
 	// temp
-	if (useLayers)
+	if (USE_LAYERS)
 	{
-		layer1 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
-		layer2 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/greyscale.fs.glsl");
+		// layer
+		// PostLayer::Sptr layer;
 
-		Shader::Sptr shader = std::make_shared<Shader>();
-		shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
-		// edge detection
-		shader->SetUniform("a_Kernel", glm::mat3(
-			-1, -1, -1,
-			-1, 8, -1,
-			-1, -1, -1
-		));
-		 
-		FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y); 
-		fBuffer->AddAttachment(sceneColor); 
-		fBuffer->AddAttachment(sceneDepth);
-
-		layer3 = std::make_shared<PostLayer>(shader, fBuffer);
-
-		// light list 
-		// TODO: either combine the shadows into one layer, or make htem two seperate passes.
-		lightList->SetIgnoreBackground(false);
-		lightList->UpdatePostLayer();
-		lightList->SetShadowsEnabled(true); 
-		layer4 = lightList->GetPostLayer(); 
-		// layer4 = std::make_shared<PostLayer>(lightList->shadowShader, lightList->shadowBuffer); 
-
-		// layer 5
-		// Shader::Sptr l5shader = std::make_shared<Shader>();
-		// l5shader->Load(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
-		// guassian blur
-		float temp = 1.0F / 256.0F;
-		Kernel5Layer kl(
-			temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
-			temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F,
-			temp * 6.0F, temp * 24.0F, temp * 36.0F, temp * 24.0F, temp * 6.0F,
-			temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
-			temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F
-		);
-		
-		layer5 = kl.GetPostLayer();
-
-		// little change
-		// layer5 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
-
-		// layer 6
-		layer6 = std::make_shared<PostLayer>(POST_VS, POST_GAMMA_FS);
-
-		// layer 7
-		// layer7 = std::make_shared<PostLayer>(POST_VS, POST_CEL_FS);
-
-		Shader::Sptr celShader = std::make_shared<Shader>();
-		celShader->Load(POST_VS, POST_CEL_FS);
-		// edge detection
-		celShader->SetUniform("a_OutlineSize", 0.1F);
-		celShader->SetUniform("a_Levels", 5);
-
-		FrameBuffer::Sptr cfb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
-		cfb->AddAttachment(sceneColor);
-		cfb->AddAttachment(sceneDepth);
-
-		layer7 = std::make_shared<PostLayer>(celShader, cfb);
-
-		// table 
-		table.LoadCubeFile("res/luts/gdw_y2_warm_filter_01.CUBE"); 
-
-		// depth of field layer
-		dofLayer = DepthOfFieldLayer();
-		dofLayer.SetFocalDepth(3.0F);
-		dofLayer.SetLenseDistance(1.0F);
-		dofLayer.SetAperture(20.0F);
-
-		// blur layer 
+		// K2 - scales 1
 		{
-			bloomLayer = BloomLayer(0.6F);
-			Shader::Sptr sdr;
-			
-			// sdr = BloomLayer::GenerateBoxBlur(); 
-			// sdr = BloomLayer::GenerateRadialBlurCircular(glm::vec2(0.5F, 0.5F), 30.0F, 10, 1, false); 
-			sdr = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 1.0F, 10, false); 
-			// sdr = BloomLayer::GenerateRadialBlurLinear(10.0F, glm::radians(30.0F), 10, false);   
-
-			FrameBuffer::Sptr bfr = FrameBuffer::GenerateDefaultBuffer();
-			bloomLayer.AddPass(sdr, bfr);
+			layers1.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl"));
+			layers1.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/greyscale.fs.glsl"));
+			layers1.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/sepiatone.fs.glsl"));
+			layers1.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/gamma_correction.fs.glsl"));
 		}
+
+		// K3 - scales 2
+		{
+			layers2.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/redscale.fs.glsl"));
+			layers2.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/bluescale.fs.glsl"));
+			layers2.push(std::make_shared<PostLayer>(POST_VS, "res/shaders/post/greenscale.fs.glsl"));
+		}
+
+		// K4 - Kernel
+		{
+			glm::mat3 temp;
+
+			// edge detect 1
+			temp = KERNEL_EDGE_1;
+			edgeDetect1 = Kernel3Layer(temp);
+			layers3.push(edgeDetect1.GetPostLayer());
+
+			// edge detect 2
+			temp = KERNEL_EDGE_2;
+			edgeDetect2 = Kernel3Layer(temp);
+			layers3.push(edgeDetect2.GetPostLayer());
+
+			// edge detect 3
+			temp = KERNEL_EDGE_3;
+			edgeDetect3 = Kernel3Layer(temp);
+			layers3.push(edgeDetect3.GetPostLayer());
+
+			// sharpen 
+			temp = KERNEL_SHARPEN;
+			sharpen = Kernel3Layer(temp);
+			layers3.push(sharpen.GetPostLayer());
+
+			// cell shader
+			Shader::Sptr celShader = std::make_shared<Shader>();
+			celShader->Load(POST_VS, POST_CEL_FS);
+
+			celShader->SetUniform("a_OutlineSize", 0.1F);
+			celShader->SetUniform("a_Levels", 5);
+
+			FrameBuffer::Sptr celFb = FrameBuffer::GenerateDefaultBuffer();
+
+			// adds cel shader
+			layers3.push(std::make_shared<PostLayer>(celShader, celFb));
+		}
+
+		// K5 - lighting
+		{
+			// lighting and shadows
+			lightList->SetShadowsEnabled(false);
+			lightList->Update(0);
+			layers4.push(lightList->GetPostLayer());
+			layers4.push(lightList->GetShadowLayer());
+		}
+
+		// K6 - blurs
+		{
+			Shader::Sptr blurShader;
+			FrameBuffer::Sptr blurBuffer;
+
+			blurShader = BloomLayer::GenerateBoxBlur();
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			// box
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+		
+			// guassian 3x3
+			blurShader = BloomLayer::GenerateGuassianBlur3();
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+			
+			// gaussian blur 5x5
+			blurShader = BloomLayer::GenerateGuassianBlur5();
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+			
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+			
+			// radial blur - circular
+			blurShader = BloomLayer::GenerateRadialBlurCircular(glm::vec2(0.5F, 0.5F), glm::radians(45.0F), 10, 1);
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+			
+			// radial blur - linear
+			blurShader = BloomLayer::GenerateRadialBlurLinear(5.0F, glm::radians(45.0F), 10);
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+			
+			// radial - zoom in
+			blurShader = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 5.0F, 7);
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+
+			// radial - zoom out
+			blurShader = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), -5.0F, 7);
+			blurBuffer = FrameBuffer::GenerateDefaultBuffer();
+
+			layers5.push(std::make_shared<PostLayer>(blurShader, blurBuffer));
+
+			// layers5.push(std::make_shared<PostLayer>(BloomLayer::GenerateRadialBlurZoom(
+			// 	glm::vec2(0.5F, 0.5F), -5.0F, 10), FrameBuffer::GenerateDefaultBuffer()));
+		}
+		
+		// // K7 - bloom
+		{
+			Shader::Sptr sdr;
+			FrameBuffer::Sptr fb;
+		
+			// box blur
+			bloomBox = BloomLayer(0.6F);
+			sdr = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 1.0F, 10);
+			fb = FrameBuffer::GenerateDefaultBuffer();
+			bloomBox.AddPass(sdr, fb);
+		
+			layers6.push(bloomBox.GetPostLayer());
+		
+			// gaussian blur
+			bloomGau = BloomLayer(0.6F);
+			sdr = BloomLayer::GenerateGuassianBlur3();
+			fb = FrameBuffer::GenerateDefaultBuffer();
+			bloomGau.AddPass(sdr, fb);
+
+			sdr = BloomLayer::GenerateGuassianBlur5();
+			fb = FrameBuffer::GenerateDefaultBuffer();
+			bloomGau.AddPass(sdr, fb);
+		
+			layers6.push(bloomGau.GetPostLayer());
+		
+			// radial blurs
+			bloomRad = BloomLayer(0.6F);
+			sdr = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 2.0F, 7);
+			fb = FrameBuffer::GenerateDefaultBuffer();
+			bloomRad.AddPass(sdr, fb);
+		
+			layers6.push(bloomRad.GetPostLayer());
+		}
+		
+		// K8 - Depth of Field + Motion Blur
+		{
+			dofLayer = DepthOfFieldLayer();
+			dofLayer.SetFocalDepth(3.0F);
+			dofLayer.SetLenseDistance(2.5F);
+			dofLayer.SetAperture(8.0F);
+		
+			layers7.push(dofLayer.GetPostLayer());
+		
+			// creates the motion blur shader
+			Shader::Sptr tempSdr = std::make_shared<Shader>();
+			tempSdr->Load(POST_VS, POST_MOTION_BLUR_FS);
+			tempSdr->SetUniform("a_Samples", 5);
+		
+			FrameBuffer::Sptr tempBfr = FrameBuffer::GenerateDefaultBuffer();
+
+			layers7.push(std::make_shared<PostLayer>(tempSdr, tempBfr));
+		}
+		
+		// K9 - LookUp Tables
+		{
+			warmTable.LoadCubeFile("res/luts/gdw_y2_warm_filter_01.CUBE");
+			layers8.push(warmTable.GetPostLayer());
+		
+			coolTable.LoadCubeFile("res/luts/gdw_y2_cool_filter_01.CUBE");
+			layers8.push(coolTable.GetPostLayer());
+		}
+
+		// // layer1 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/invert.fs.glsl");
+		// // layer2 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/greyscale.fs.glsl");
+		// 
+		// Shader::Sptr shader = std::make_shared<Shader>();
+		// shader->Load(POST_VS, "res/shaders/post/kernel3.fs.glsl");
+		// // edge detection
+		// shader->SetUniform("a_Kernel", glm::mat3(
+		// 	-1, -1, -1,
+		// 	-1, 8, -1,
+		// 	-1, -1, -1
+		// ));
+		//  
+		// FrameBuffer::Sptr fBuffer = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y); 
+		// fBuffer->AddAttachment(sceneColor); 
+		// fBuffer->AddAttachment(sceneDepth);
+		// 
+		// layer3 = std::make_shared<PostLayer>(shader, fBuffer);
+		// 
+		// // light list 
+		// // TODO: either combine the shadows into one layer, or make htem two seperate passes.
+		// lightList->SetIgnoreBackground(false);
+		// lightList->UpdatePostLayer();
+		// lightList->SetShadowsEnabled(true); 
+		// layer4 = lightList->GetPostLayer(); 
+		// // layer4 = std::make_shared<PostLayer>(lightList->shadowShader, lightList->shadowBuffer); 
+		// 
+		// // layer 5
+		// // Shader::Sptr l5shader = std::make_shared<Shader>();
+		// // l5shader->Load(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
+		// // guassian blur
+		// float temp = 1.0F / 256.0F;
+		// Kernel5Layer kl(
+		// 	temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
+		// 	temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F,
+		// 	temp * 6.0F, temp * 24.0F, temp * 36.0F, temp * 24.0F, temp * 6.0F,
+		// 	temp * 1.0F, temp * 4.0F,  temp * 6.0F, temp * 4.0F, temp * 1.0F,
+		// 	temp * 4.0F, temp * 16.0F, temp * 24.0F, temp * 16.0F, temp * 4.0F
+		// );
+		// 
+		// layer5 = kl.GetPostLayer();
+		// 
+		// // little change
+		// // layer5 = std::make_shared<PostLayer>(POST_VS, "res/shaders/post/motion_blur.fs.glsl");
+		// 
+		// // layer 6
+		// layer6 = std::make_shared<PostLayer>(POST_VS, POST_GAMMA_FS);
+		// 
+		// // layer 7
+		// // layer7 = std::make_shared<PostLayer>(POST_VS, POST_CEL_FS);
+		// 
+		// Shader::Sptr celShader = std::make_shared<Shader>();
+		// celShader->Load(POST_VS, POST_CEL_FS);
+		// // edge detection
+		// celShader->SetUniform("a_OutlineSize", 0.1F);
+		// celShader->SetUniform("a_Levels", 5);
+		// 
+		// FrameBuffer::Sptr cfb = std::make_shared<FrameBuffer>(myWindowSize.x, myWindowSize.y);
+		// cfb->AddAttachment(sceneColor);
+		// cfb->AddAttachment(sceneDepth);
+		// 
+		// layer7 = std::make_shared<PostLayer>(celShader, cfb);
+		// 
+		// // table 
+		// // table.LoadCubeFile("res/luts/gdw_y2_warm_filter_01.CUBE");  
+		// table.LoadCubeFile("res/luts/gdw_y2_cool_filter_01.CUBE");
+		// 
+		// // depth of field layer
+		// dofLayer = DepthOfFieldLayer();
+		// dofLayer.SetFocalDepth(3.0F);
+		// dofLayer.SetLenseDistance(1.0F);
+		// dofLayer.SetAperture(20.0F);
+		// 
+		// // blur layer 
+		// {
+		// 	bloomLayer = BloomLayer(0.6F);
+		// 	Shader::Sptr sdr;
+		// 	
+		// 	// sdr = BloomLayer::GenerateBoxBlur(); 
+		// 	// sdr = BloomLayer::GenerateRadialBlurCircular(glm::vec2(0.5F, 0.5F), 30.0F, 10, 1, false); 
+		// 	sdr = BloomLayer::GenerateRadialBlurZoom(glm::vec2(0.5F, 0.5F), 1.0F, 10, false); 
+		// 	// sdr = BloomLayer::GenerateRadialBlurLinear(10.0F, glm::radians(30.0F), 10, false);   
+		// 
+		// 	FrameBuffer::Sptr bfr = FrameBuffer::GenerateDefaultBuffer();
+		// 	bloomLayer.AddPass(sdr, bfr);
+		// }
 	}
 
 
@@ -656,6 +847,12 @@ void cherry::EngineGameplayScene::OnOpen()
 	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
+
+	timer.Stop();
+	
+	// ends session
+	if (PROFILE)
+		ProfilingSession::End();
 }
 
 // called when the scene is being closed.
@@ -733,6 +930,9 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 
 	if (game == nullptr) // if game is 'null', then nothing happens
 		return;
+
+	// temporary object.
+	PostLayer::Sptr layer;
 
 	// checks key value.
 	switch (key)
@@ -825,58 +1025,150 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_1:
 		layers.clear();
 		break;
+
 	case GLFW_KEY_2:
+
+		// grabs the layer at the front of the queue
+		layer = layers1.front();
+		layers1.pop();
+		layers1.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer1);
-		layer1->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(layer1);
+		// layer1->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
+
 	case GLFW_KEY_3:
+		// grabs the layer at the front of the queue
+		layer = layers2.front();
+		layers2.pop();
+		layers2.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 
-		// inversion
-		// layers.push_back(layer2);
-		// layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
-
-		// depth of field
-		// layers.push_back(dofLayer.GetPostLayer());
-		// dofLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
-
-		// bloom
-		// layers.push_back(layer4);
-		layers.push_back(bloomLayer.GetPostLayer());
-		bloomLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		// layers.clear();
+		// 
+		// 
+		// // inversion
+		// // layers.push_back(layer2);
+		// // layer2->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		// 
+		// // depth of field
+		// // layers.push_back(dofLayer.GetPostLayer());
+		// // dofLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		// 
+		// // bloom
+		// // layers.push_back(layer4);
+		// layers.push_back(bloomLayer.GetPostLayer());
+		// bloomLayer.GetPostLayer()->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 
 		break;
 	case GLFW_KEY_4:
+		// grabs the layer at the front of the queue
+		layer = layers3.front();
+		layers3.pop();
+		layers3.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer3);
-		layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(layer3);
+		// layer3->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_5:
+		// grabs the layer at the front of the queue
+		layer = layers4.front();
+		layers4.pop();
+		layers4.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer4);
-		// layers.push_back(lightList->GetShadowLayer()); // shadow layer 
-		layer4->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		
+		// layers.clear();
+		// layers.push_back(layer4);
+		// // layers.push_back(lightList->GetShadowLayer()); // shadow layer 
+		// layer4->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_6:
+		// grabs the layer at the front of the queue
+		layer = layers5.front();
+		layers5.pop();
+		layers5.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer5);
-		layer5->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(layer5);
+		// layer5->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_7:
+		// grabs the layer at the front of the queue
+		layer = layers6.front();
+		layers6.pop();
+		layers6.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer6);
-		layer6->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(layer6);
+		// layer6->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_8:
+		// grabs the layer at the front of the queue
+		layer = layers7.front();
+		layers7.pop();
+		layers7.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(layer7);
-		layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(layer7);
+		// layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	case GLFW_KEY_9:
+		// grabs the layer at the front of the queue
+		layer = layers8.front();
+		layers8.pop();
+		layers8.push(layer); // moves it to the back.
+
+
+		// adds the layer
 		layers.clear();
-		layers.push_back(table.GetPostLayer());
-		layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+		layers.push_back(layer);
+		layer->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
+
+		// layers.clear();
+		// layers.push_back(table.GetPostLayer());
+		// layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
 	}
 }

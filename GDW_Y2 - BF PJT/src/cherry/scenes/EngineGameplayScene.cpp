@@ -9,6 +9,8 @@
 #include "..\objects/Text.h"
 
 #include "..\post/KernelLayer.h"
+#include "..\Instrumentation.h"
+
 #include <imgui\imgui.h>
 
 // creating the engine scene.
@@ -18,12 +20,20 @@ cherry::EngineGameplayScene::EngineGameplayScene(std::string sceneName) : Gamepl
 
 void cherry::EngineGameplayScene::OnOpen()
 {
+	// starts up profiling
+	if(PROFILE)
+		ProfilingSession::Start("profiling-init.json");
+
+	// general timer
+	ProfileTimer timer = ProfileTimer("debug_start");
+
 	GameplayScene::OnOpen();
 
 	Game* const game = Game::GetRunningGame();
 	
 	if (game == nullptr)
 		return;
+
 
 	game->imguiMode = true;
 
@@ -552,7 +562,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	// }
 
 	// temp
-	if (useLayers)
+	if (USE_LAYERS)
 	{
 		// layer
 		// PostLayer::Sptr layer;
@@ -837,6 +847,12 @@ void cherry::EngineGameplayScene::OnOpen()
 	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
+
+	timer.Stop();
+	
+	// ends session
+	if (PROFILE)
+		ProfilingSession::End();
 }
 
 // called when the scene is being closed.

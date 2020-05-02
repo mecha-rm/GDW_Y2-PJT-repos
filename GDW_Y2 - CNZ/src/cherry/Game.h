@@ -312,7 +312,7 @@ namespace cherry
 
 		virtual void LoadContent();
 
-		void UnloadContent();
+		virtual void UnloadContent();
 
 		void InitImGui();
 

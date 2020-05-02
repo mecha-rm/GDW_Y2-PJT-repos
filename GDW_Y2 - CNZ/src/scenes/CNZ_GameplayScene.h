@@ -201,6 +201,9 @@ namespace cnz
 		// edge detection object
 		cherry::Kernel3Layer edgeDetect;
 
+		// profile the game
+		const bool PROFILE = true;
+
 	protected:
 
 	};

@@ -112,6 +112,7 @@ cherry::Kernel3Layer::Kernel3Layer() : KernelLayer(POST_VS, POST_KERNEL3_FS)
 cherry::Kernel3Layer::Kernel3Layer(glm::mat3 kernel)
 	: KernelLayer(POST_VS, POST_KERNEL3_FS), kernel3(kernel)
 {
+	SetMatrix(kernel);
 }
 
 // gets the matrix

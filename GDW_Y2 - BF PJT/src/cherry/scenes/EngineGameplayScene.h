@@ -110,7 +110,11 @@ namespace cherry
 		LookUpTable warmTable;
 		LookUpTable coolTable;
 
-		bool useLayers = true;
+		// uses layers
+		const bool USE_LAYERS = true;
+
+		// tells the engine to write profiles
+		const bool PROFILE = true;
 
 	protected:
 	};

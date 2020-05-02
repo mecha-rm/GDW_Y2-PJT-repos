@@ -2,6 +2,7 @@
 #include "cherry/scenes/SceneManager.h"
 #include "scenes/CNZ_GameplayScene.h"
 #include <toolkit/Logging.h>
+#include "cherry/Instrumentation.h"
 
 // sources TODO: remove nullptr initialiation?
 cnz::Player* cnz::Level::sourcePlayer = nullptr;
@@ -1456,6 +1457,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 // generates the soruce objects.
 void cnz::Level::GenerateSources()
 {
+	cherry::ProfilingSession::Start("profiling-level-source_load.json");
+	cherry::ProfileTimer sourceTimer = cherry::ProfileTimer("level-generate_sources");
+
 	// becomes 'true' when the sources are loaded.
 	static bool initSources = false;
 
@@ -1514,6 +1518,9 @@ void cnz::Level::GenerateSources()
 
 	// sources have been initialized.
 	initSources = true;
+
+	sourceTimer.Stop();
+	cherry::ProfilingSession::End();
 }
 
 // gets the objects; will be empty if it doesn't exist yet.

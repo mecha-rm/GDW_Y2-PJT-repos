@@ -5,6 +5,7 @@
 #include "scenes/CNZ_TitleScene.h"
 #include "scenes/CNZ_RankingScene.h"
 #include "cherry/audio/AudioEngine.h"
+#include "cherry/Instrumentation.h"
 
 // constructor
 cnz::CNZ_Game::CNZ_Game() : Game() {}
@@ -18,6 +19,10 @@ cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen)
 // loads content
 void cnz::CNZ_Game::LoadContent()
 {
+	// profiling enabled
+	if(PROFILE)
+		cherry::ProfilingSession::Start("profiling-game_load_content.json");
+
 	// if 'true', then the menu is loaded
 	bool loadMenu = true; // if 'true', it loads in from the menu.
 
@@ -104,7 +109,15 @@ void cnz::CNZ_Game::LoadContent()
 	// 	RegisterScene(mapScene, true);
 	// }
 
-	
+	// profiling enabled
+	if (PROFILE)
+		cherry::ProfilingSession::End();
+}
+
+// unload content
+void cnz::CNZ_Game::UnloadContent()
+{
+	cherry::Game::UnloadContent();
 }
 
 // Update function
