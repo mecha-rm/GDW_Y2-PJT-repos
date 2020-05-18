@@ -16,11 +16,13 @@ namespace util
 
 			friend std::ostream& operator<<(std::ostream&, const Vec&); // << operator
 
+			// calculates the length of the vector.
 			virtual float length() const = 0;
 
 			// normalizes the vector, replacing its current values.
 			virtual void normalize() = 0;
 
+			// to string function for vectors.
 			virtual std::string toString() const = 0;
 
 		protected:

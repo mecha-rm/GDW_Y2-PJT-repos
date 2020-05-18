@@ -79,6 +79,27 @@ namespace util
 		return val;
 	}
 
+	// string to int
+	int stringToInt(const std::string& str);
+
+	// string to short
+	short stringToShort(const std::string& str);
+
+	// string to long
+	long stringToLong(const std::string& str);
+
+	// string to double
+	double stringToDouble(const std::string& str);
+
+	// string to int
+	float stringToFloat(const std::string& str);
+
+	// converts a double to a string
+	std::string doubleToString(double value);
+
+	// converts a float to a string
+	std::string floatToString(float value);
+
 	// returns a string of size 'LENGTH' with zeros filling in the rest of the string's size.
 	// if the length provided is less than the length of the number provided, the number is truncated.
 	std::string zeroFill(int num, const unsigned int LENGTH);
@@ -164,34 +185,6 @@ namespace util
 
 		return false;
 	}
-
-
-	// Mathematic Utilities
-	// http://www.cplusplus.com/reference/random/
-	// http://www.cplusplus.com/reference/limits/numeric_limits/
-	// Returns a random number starting form 'lbound' upto ubound.
-	// If 'includeUbound' is set to 'true', it's upto and including ubound; if false, it's upto but not including ubound. False by default.
-	int randInt(int lBound, int uBound, bool includeUBound = false);
-
-	// Returns a random float from 1.7E-308 to 1.7E+308
-	float randFloat();
-
-	// returns a random float. If a 'true' is used, it is up-to and including the upper bound. Not complete.
-	// 1.7E-38 to 1.7E+38
-	// float randFloat(unsigned int dPlaces, float lBound, float uBound, bool includeUBound = false);
-	float randFloat(unsigned int dPlaces);
-
-	// returns a random double
-	double randDouble();
-
-	// returns a random double. If 'true' is used for includeUBound, the upper bound is included. Not complete.
-	// 1.7E-308 to 1.7E+308
-	double randDouble(unsigned int dPlaces);
-
-	double randDecimal(unsigned int dPlaces);
-
-	// returns a random ASCII character. This can return 256 characters, which includes character '0', which is 'NULL'.
-	char randAsciiChar();
 }
 
 #endif // !UTILITIES_H

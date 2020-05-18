@@ -8,6 +8,9 @@
 
 #include "UtilsLib.h"
 #include "math/MathLib.h"
+#include "Timer.h"
+#include "sort/Sort.h"
+
 
 #endif // !UTILITY_TOOLS_LIBRARY
 
