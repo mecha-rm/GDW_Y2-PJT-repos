@@ -14,6 +14,12 @@ cherry::ImageAnimation::ImageAnimation(const ImageAnimation& ani)
 {
 }
 
+// adds a frame and saves a pose.
+bool cherry::ImageAnimation::AddFrame(AnimationFrame* frame)
+{
+	return Animation::AddFrame(frame);
+}
+
 // update loop
 void cherry::ImageAnimation::Update(float deltaTime)
 {

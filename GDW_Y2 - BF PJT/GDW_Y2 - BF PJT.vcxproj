@@ -146,7 +146,6 @@
     <ClCompile Include="src\cherry\utils\math\Interpolation.cpp" />
     <ClCompile Include="src\cherry\utils\math\LargeInt.cpp" />
     <ClCompile Include="src\cherry\utils\math\Matrix.cpp" />
-    <ClCompile Include="src\cherry\utils\math\Object.cpp" />
     <ClCompile Include="src\cherry\utils\math\Point.cpp" />
     <ClCompile Include="src\cherry\utils\math\Quaternion.cpp" />
     <ClCompile Include="src\cherry\utils\math\Rotation.cpp" />
@@ -502,7 +501,6 @@
     <ClInclude Include="src\cherry\utils\math\LargeInt.h" />
     <ClInclude Include="src\cherry\utils\math\MathLib.h" />
     <ClInclude Include="src\cherry\utils\math\Matrix.h" />
-    <ClInclude Include="src\cherry\utils\math\Object.h" />
     <ClInclude Include="src\cherry\utils\math\Point.h" />
     <ClInclude Include="src\cherry\utils\math\Quaternion.h" />
     <ClInclude Include="src\cherry\utils\math\Rotation.h" />

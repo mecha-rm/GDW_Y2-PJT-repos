@@ -123,7 +123,6 @@
     <ClCompile Include="src\cherry\textures\TextureCube.cpp" />
     <ClCompile Include="src\cherry\textures\TextureSampler.cpp" />
     <ClCompile Include="src\cherry\utils\math\Interpolation.cpp" />
-    <ClCompile Include="src\cherry\utils\math\Object.cpp" />
     <ClCompile Include="src\cherry\utils\math\Point.cpp" />
     <ClCompile Include="src\cherry\utils\math\Shape.cpp" />
     <ClCompile Include="src\cherry\utils\Random.cpp" />
@@ -446,7 +445,6 @@
     <ClInclude Include="src\cherry\textures\TextureSampler.h" />
     <ClInclude Include="src\cherry\UtilsCRY.h" />
     <ClInclude Include="src\cherry\utils\math\Interpolation.h" />
-    <ClInclude Include="src\cherry\utils\math\Object.h" />
     <ClInclude Include="src\cherry\utils\math\Point.h" />
     <ClInclude Include="src\cherry\utils\math\Shape.h" />
     <ClInclude Include="src\cherry\utils\Random.h" />

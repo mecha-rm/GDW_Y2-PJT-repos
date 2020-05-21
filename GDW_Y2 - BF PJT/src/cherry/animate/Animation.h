@@ -73,16 +73,16 @@ namespace cherry
 		// adds a frame to the list. If 'true' is passed, then the frame was added successfully.
 		// the same frame cannot be put into the list twice.
 		// TODO: check to make sure it's the right kind of frame.
-		bool AddFrame(AnimationFrame * frame);
+		virtual bool AddFrame(AnimationFrame * frame);
 
 		// removes the provided frame
-		bool RemoveFrame(AnimationFrame* frame);
+		// bool RemoveFrame(AnimationFrame* frame);
 
 		// deletes the frame if it's part of the list.
-		bool DeleteFrame(AnimationFrame* frame);
+		// bool DeleteFrame(AnimationFrame* frame);
 
 		// clears out all frames
-		void ClearAllFrames();
+		// void ClearAllFrames();
 
 		// deletes all frames
 		void DeleteAllFrames();
@@ -178,6 +178,7 @@ namespace cherry
 		
 		// plays the animation in reverse
 		bool reverse = false; 
+
 
 	protected:
 		// for inherited classes to specify their derived type.

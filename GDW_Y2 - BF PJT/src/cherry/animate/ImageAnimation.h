@@ -13,6 +13,9 @@ namespace cherry
 		// constructor
 		ImageAnimation(const ImageAnimation&);
 
+		// adds a frame and saves a pose.
+		bool AddFrame(AnimationFrame* frame) override;
+
 		// updates the texture animation.
 		void Update(float deltaTime);
 
@@ -24,6 +27,9 @@ namespace cherry
 		// TODO: add option to blend frames.
 		// TODO: add size, orientation, and orientation changes.
 		// SwitchFrames();
+
+		// TODO: optimize for saving poses when a frame is added.
+		std::vector<Vertex*> poses;
 
 	protected:
 	};

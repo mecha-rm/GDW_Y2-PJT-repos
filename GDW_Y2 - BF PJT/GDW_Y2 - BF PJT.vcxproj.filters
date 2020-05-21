@@ -252,9 +252,6 @@
     <ClCompile Include="src\cherry\post\BloomLayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\utils\math\Object.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\cherry\utils\Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1317,9 +1314,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\post\BloomLayer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\utils\math\Object.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\utils\sort\BubbleSort.h">

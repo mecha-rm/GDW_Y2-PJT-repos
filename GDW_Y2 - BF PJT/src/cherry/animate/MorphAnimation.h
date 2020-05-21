@@ -5,8 +5,14 @@
 
 namespace cherry
 {
+	class MorphAnimationFrame;
+
+
 	typedef class MorphAnimation : public Animation
 	{
+	private:
+		struct Pose;
+
 	public:
 		MorphAnimation();
 
@@ -14,13 +20,16 @@ namespace cherry
 		MorphAnimation(const MorphAnimation&);
 
 		// destructor
-		// ~MorphAnimation() = default;
+		virtual ~MorphAnimation();
 
 		// the object being used for the morph target animation.
 		MorphAnimation(Object* obj);
 		
 		// creates the object and changes its mesh type.
 		void SetObject(cherry::Object* obj);
+
+		// adds a frame and generates a pose.
+		bool AddFrame(AnimationFrame* frame) override;
 
 		// generates a mesh for the current pose, with position1 and normal1 being the targets.
 		MorphVertex* GeneratePose() const;
@@ -32,8 +41,31 @@ namespace cherry
 		std::string ToString() const override;
 
 	private:
+		// generates a pose based on the provided frames.
+		Pose GeneratePose(MorphAnimationFrame* f0, MorphAnimationFrame* f1);
+
+		// gets a pose from the list. One is generated if it cannot be found.
+		Pose& GetPose(MorphAnimationFrame* f0, MorphAnimationFrame* f1);
+
+		// gets the current pose
+		Pose GetCurrentPose();
+		
 		// the value of 't'
 		float t = 0;
+
+		// the current frame
+		// int currFrame = 0;
+
+		// pose struct
+		struct Pose
+		{
+			MorphVertex* pose;
+			MorphAnimationFrame* f0;
+			MorphAnimationFrame* f1;
+		};
+
+		// poses
+		std::vector<Pose> poses;
 
 	protected:
 

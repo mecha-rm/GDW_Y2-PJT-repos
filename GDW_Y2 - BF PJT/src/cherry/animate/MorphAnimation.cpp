@@ -13,6 +13,18 @@ cherry::MorphAnimation::MorphAnimation(const MorphAnimation& ani)
 	t = ani.t;
 }
 
+// destructor
+cherry::MorphAnimation::~MorphAnimation()
+{
+	// deleting all the poses.
+	for(int i = 0; i < poses.size(); i++)
+		delete[] poses[i].pose;
+
+	// clears out all data.
+	// the frames will be deleted in the parent destructor.
+	poses.clear();	
+}
+
 
 // constructor
 cherry::MorphAnimation::MorphAnimation(Object* obj)
@@ -28,6 +40,70 @@ void cherry::MorphAnimation::SetObject(cherry::Object* obj)
 
 	// TODO: add in checker for mesh type
 
+}
+
+// adds a frame and generates a pose.
+bool cherry::MorphAnimation::AddFrame(AnimationFrame* frame)
+{
+	return Animation::AddFrame(frame);
+
+	bool added = Animation::AddFrame(frame);
+
+	int frameCount = GetFrameCount();
+
+	// there aren't any other frames.
+	if (frameCount <= 1 || added)
+		return false;
+
+	// the pose
+	MorphVertex* pose;
+	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
+
+	MorphAnimationFrame* f0 = (MorphAnimationFrame*)f0;
+	MorphAnimationFrame* f1 = (MorphAnimationFrame*)GetFrame(frameCount - 2);
+
+	// checks for vertex equality.
+	if (!(object->GetVerticesTotal() == f0->GetVertexCount() == f1->GetVertexCount()))
+		throw std::runtime_error("Error. Vertex count inequality between frames.");
+
+	// gets the poses.
+	const Vertex* POSE0 = f0->GetPose(); // pose for the current frame
+	const Vertex* POSE1 = f1->GetPose(); // pose for the next frame
+	const int VERTEX_COUNT = object->GetVerticesTotal();
+
+	// gets all the values
+	for (int i = 0; i < VERTEX_COUNT; i++)
+	{
+		int ind1 = i - 1, ind2 = i; // the indexes
+
+		// if the index is out of range, then it lops around
+		if (ind1 < 0)
+			ind1 = VERTEX_COUNT - ind1;
+
+		// position
+		// pose[i].Position = verts[i].Position;
+		pose[i].Position1 = POSE0[i].Position;
+		pose[i].Position2 = POSE1[i].Position;
+
+		// colour
+		// pose[i].Color = verts[i].Color;
+		pose[i].Color1 = POSE0[i].Color;
+		pose[i].Color2 = POSE1[i].Color;
+
+		// normals
+		// pose[i].Normal = verts[i].Normal;
+		pose[i].Normal1 = POSE0[i].Normal;
+		pose[i].Normal2 = POSE1[i].Normal;
+
+		// uvs
+		// pose[i].UV = verts[i].UV;
+		pose[i].UV1 = POSE0[i].UV;
+		pose[i].UV2 = POSE1[i].UV;
+	}
+
+	// saves the pose
+	Pose newPose{ pose, f0, f1 };
+	poses.push_back(newPose);
 }
 
 // generates the pose and returns it.
@@ -94,6 +170,125 @@ cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 	}
 
 	return pose;
+}
+
+// generates a pose based on the provided frames.
+cherry::MorphAnimation::Pose cherry::MorphAnimation::GeneratePose(MorphAnimationFrame* f0, MorphAnimationFrame* f1)
+{
+	// empty data
+	if (f0 == nullptr || f1 == nullptr)
+		return Pose{ nullptr, nullptr, nullptr };
+
+	// the pose
+	MorphVertex* pose;
+	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
+
+	// checks for vertex equality.
+	if (!(object->GetVerticesTotal() == f0->GetVertexCount() == f1->GetVertexCount()))
+		throw std::runtime_error("Error. Vertex count inequality between frames.");
+
+	// gets the poses.
+	const Vertex* POSE0 = f0->GetPose(); // pose for the current frame
+	const Vertex* POSE1 = f1->GetPose(); // pose for the next frame
+	const int VERTEX_COUNT = object->GetVerticesTotal();
+
+	// gets all the values
+	for (int i = 0; i < VERTEX_COUNT; i++)
+	{
+		int ind1 = i - 1, ind2 = i; // the indexes
+
+		// if the index is out of range, then it lops around
+		if (ind1 < 0)
+			ind1 = VERTEX_COUNT - ind1;
+
+		// position
+		// pose[i].Position = verts[i].Position;
+		pose[i].Position1 = POSE0[i].Position;
+		pose[i].Position2 = POSE1[i].Position;
+
+		// colour
+		// pose[i].Color = verts[i].Color;
+		pose[i].Color1 = POSE0[i].Color;
+		pose[i].Color2 = POSE1[i].Color;
+
+		// normals
+		// pose[i].Normal = verts[i].Normal;
+		pose[i].Normal1 = POSE0[i].Normal;
+		pose[i].Normal2 = POSE1[i].Normal;
+
+		// uvs
+		// pose[i].UV = verts[i].UV;
+		pose[i].UV1 = POSE0[i].UV;
+		pose[i].UV2 = POSE1[i].UV;
+	}
+
+	// saves the pose
+	Pose newPose{ pose, f0, f1 };
+
+	return newPose;
+}
+
+// gets a pose
+cherry::MorphAnimation::Pose& cherry::MorphAnimation::GetPose(MorphAnimationFrame* f0, MorphAnimationFrame* f1)
+{
+	// returns empty pose if frames are empty.
+	if (f0 == nullptr || f1 == nullptr)
+	{
+		Pose temp{ nullptr, nullptr, nullptr };
+		return temp;
+	}
+
+	// does a quick check for the right pose (should be aligned to the proper index).
+	{
+		int currIndex = GetCurrentFrameIndex();
+
+		// if the current index is less than the amount of poses.
+		//
+		if (currIndex < poses.size())
+		{
+			// if the pose has been found.
+			if (poses[currIndex].f0 == f0 && poses[currIndex].f1 == f1)
+				return poses[currIndex];
+
+		}
+	}
+
+	// the quick check failed, so each index is checked.
+	for (int i = 0; i < poses.size(); i++)
+	{
+		// if the pose has been found.
+		if (poses[i].f0 == f0 && poses[i].f1 == f1)
+		{
+			return poses[i];
+		}
+
+	}
+
+	// the pose doesn't exist, so a new one must be made.
+	poses.push_back(GeneratePose(f0, f1));
+
+	// returns the newly generated pose.
+	return poses.at(poses.size() - 1);
+}
+
+// gets the current pose
+cherry::MorphAnimation::Pose cherry::MorphAnimation::GetCurrentPose()
+{
+	int currIndex = GetCurrentFrameIndex();
+	MorphAnimationFrame* f0 = (MorphAnimationFrame*)GetCurrentFrame();
+	MorphAnimationFrame* f1;
+
+	// if the index of the current frame is past the frame count.
+	if (currIndex + 1 >= GetFrameCount())
+	{
+		f1 = f0;
+	}
+	else
+	{
+		f1 = (MorphAnimationFrame*)GetFrame(currIndex + 1);
+	}
+
+	return GetPose(f0, f1);
 }
 
 // updating hte morphing animation.

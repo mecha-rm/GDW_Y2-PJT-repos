@@ -97,7 +97,6 @@
     <ClCompile Include="src\cherry\JsonProfiling.cpp" />
     <ClCompile Include="src\cherry\post\DepthOfFieldLayer.cpp" />
     <ClCompile Include="src\cherry\post\BloomLayer.cpp" />
-    <ClCompile Include="src\cherry\utils\math\Object.cpp" />
     <ClCompile Include="src\cherry\utils\Random.cpp" />
     <ClCompile Include="src\cherry\utils\Timer.cpp" />
   </ItemGroup>
@@ -424,7 +423,6 @@
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\BloomLayer.h" />
     <ClInclude Include="src\ScoreManager.h" />
-    <ClInclude Include="src\cherry\utils\math\Object.h" />
     <ClInclude Include="src\cherry\utils\sort\BubbleSort.h" />
     <ClInclude Include="src\cherry\utils\sort\CountSort.h" />
     <ClInclude Include="src\cherry\utils\sort\InsertionSort.h" />

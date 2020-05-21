@@ -126,22 +126,22 @@ int cherry::Animation::GetCurrentFrameIndex() const { return (signed)currentFram
 bool cherry::Animation::AddFrame(AnimationFrame* frame) { return util::addToVector(frames, frame); }
 
 // removes the animation frame
-bool cherry::Animation::RemoveFrame(AnimationFrame* frame) { return util::removeFromVector(frames, frame); }
+// bool cherry::Animation::RemoveFrame(AnimationFrame* frame) { return util::removeFromVector(frames, frame); }
 
 // deletes the frame if it's part of the list
-bool cherry::Animation::DeleteFrame(AnimationFrame* frame)
-{
-	bool removed = RemoveFrame(frame);
-
-	// if removed successfully
-	if (removed)
-		delete frame;
-
-	return removed;
-}
+// bool cherry::Animation::DeleteFrame(AnimationFrame* frame)
+// {
+// 	bool removed = RemoveFrame(frame);
+// 
+// 	// if removed successfully
+// 	if (removed)
+// 		delete frame;
+// 
+// 	return removed;
+// }
 
 // clears all frames
-void cherry::Animation::ClearAllFrames() { frames.clear(); }
+// void cherry::Animation::ClearAllFrames() { frames.clear(); }
 
 // deletes all frames
 void cherry::Animation::DeleteAllFrames()
