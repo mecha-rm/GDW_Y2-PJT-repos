@@ -54,7 +54,7 @@ namespace cherry
 		float t = 0;
 
 		// the current frame
-		// int currFrame = 0;
+		int currFrameIndex = -1;
 
 		// pose struct
 		struct Pose

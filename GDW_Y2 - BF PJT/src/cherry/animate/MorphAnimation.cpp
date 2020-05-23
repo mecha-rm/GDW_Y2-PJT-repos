@@ -318,10 +318,37 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	// getting the pose
 	// TODO: optimize so that a pose isn't generated every frame.
 	// it needs to be saved so that the pose gets deleted afterwards.
-	morphVerts = GeneratePose();
 	
-	object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
-	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+	// new
+	// if the index of the current frame has changed.
+	// if(currFrameIndex != GetCurrentFrameIndex())
+	// {
+	// 	MorphAnimationFrame* f0 = (MorphAnimationFrame*)GetCurrentFrame();
+	// 	MorphAnimationFrame* f1;
+	// 
+	// 	int nextIndex = GetCurrentFrameIndex() + 1;
+	// 
+	// 	// gets the next frame.
+	// 	if (nextIndex >= GetFrameCount())
+	// 		f1 = f0;
+	// 	else
+	// 		f1 = (MorphAnimationFrame*)(GetFrame(nextIndex));
+	// 
+	// 
+	// 	morphVerts = GetPose((MorphAnimationFrame*)GetCurrentFrame(),
+	// 		(MorphAnimationFrame*)(GetFrame(GetCurrentFrameIndex() + 1))).pose;
+	// 
+	// 	object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
+	// 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+	// }
+
+	// original
+	{
+		morphVerts = GeneratePose();
+
+		object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
+		object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+	}
 	
 	// deleting the vertices
 	delete[] morphVerts;
