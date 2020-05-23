@@ -45,25 +45,28 @@ void cherry::MorphAnimation::SetObject(cherry::Object* obj)
 // adds a frame and generates a pose.
 bool cherry::MorphAnimation::AddFrame(AnimationFrame* frame)
 {
-	return Animation::AddFrame(frame);
+	// return Animation::AddFrame(frame);
 
 	bool added = Animation::AddFrame(frame);
 
 	int frameCount = GetFrameCount();
 
 	// there aren't any other frames.
-	if (frameCount <= 1 || added)
+	if (frameCount <= 1 || !added)
 		return false;
+
+	if (object == nullptr)
+		throw std::runtime_error("The object has not been set for this animation. Attach the object before adding frames");
 
 	// the pose
 	MorphVertex* pose;
 	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
 
-	MorphAnimationFrame* f0 = (MorphAnimationFrame*)f0;
+	MorphAnimationFrame* f0 = (MorphAnimationFrame*)frame;
 	MorphAnimationFrame* f1 = (MorphAnimationFrame*)GetFrame(frameCount - 2);
 
 	// checks for vertex equality.
-	if (!(object->GetVerticesTotal() == f0->GetVertexCount() == f1->GetVertexCount()))
+	if (!(object->GetVerticesTotal() == f0->GetVertexCount() && f0->GetVertexCount() == f1->GetVertexCount()))
 		throw std::runtime_error("Error. Vertex count inequality between frames.");
 
 	// gets the poses.
@@ -102,7 +105,11 @@ bool cherry::MorphAnimation::AddFrame(AnimationFrame* frame)
 	}
 
 	// saves the pose
-	Pose newPose{ pose, f0, f1 };
+	Pose newPose;
+	newPose.pose = pose;
+	newPose.f0 = f0;
+	newPose.f1 = f1;
+
 	poses.push_back(newPose);
 }
 
@@ -110,7 +117,7 @@ bool cherry::MorphAnimation::AddFrame(AnimationFrame* frame)
 cherry::MorphVertex* cherry::MorphAnimation::GeneratePose() const
 {
 	// the pose
-	MorphVertex* pose = nullptr;
+	MorphVertex* pose;
 	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
 
 	// const Vertex* verts = object->GetVertices(); // the vertices of the object
@@ -182,9 +189,13 @@ cherry::MorphAnimation::Pose cherry::MorphAnimation::GeneratePose(MorphAnimation
 	// the pose
 	MorphVertex* pose;
 	pose = Mesh::ConvertToMorphVertexArray(object->GetVertices(), object->GetVerticesTotal()); // copies the object
+	
+	// int v1 = object->GetVerticesTotal();
+	// int v2 = f0->GetVertexCount();
+	// int v3 = f1->GetVertexCount();
 
 	// checks for vertex equality.
-	if (!(object->GetVerticesTotal() == f0->GetVertexCount() == f1->GetVertexCount()))
+	if (object->GetVerticesTotal() != f0->GetVertexCount() || f0->GetVertexCount() != f1->GetVertexCount())
 		throw std::runtime_error("Error. Vertex count inequality between frames.");
 
 	// gets the poses.
@@ -302,7 +313,7 @@ void cherry::MorphAnimation::Update(float deltaTime)
 
 	// TODO: fix so that the morphing happens from the second animation
 	// gets the new pose to be generated.
-	MorphVertex* morphVerts = nullptr;
+	MorphVertex* morphVerts;
 	
 	// if no animation is playing, nothing happens.
 	if (isPlaying() == false)
@@ -321,37 +332,46 @@ void cherry::MorphAnimation::Update(float deltaTime)
 	
 	// new
 	// if the index of the current frame has changed.
-	// if(currFrameIndex != GetCurrentFrameIndex())
+	if(currFrameIndex != GetCurrentFrameIndex())
+	{
+		MorphAnimationFrame* f0 = (MorphAnimationFrame*)GetCurrentFrame();
+		MorphAnimationFrame* f1;
+	
+		int nextIndex = GetCurrentFrameIndex() + 1;
+	
+		// gets the next frame.
+		if (nextIndex >= GetFrameCount())
+		{
+			// starting the animation over from the beginning.
+			f1 = f0;
+			Animation::Update(deltaTime);
+			return;
+		}
+		else
+		{
+			f1 = (MorphAnimationFrame*)(GetFrame(nextIndex));
+		}
+	
+		morphVerts = GetPose(f0, f1).pose;
+	
+		object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
+
+		currFrameIndex = GetCurrentFrameIndex();
+	}
+
+	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+
+	// original
 	// {
-	// 	MorphAnimationFrame* f0 = (MorphAnimationFrame*)GetCurrentFrame();
-	// 	MorphAnimationFrame* f1;
-	// 
-	// 	int nextIndex = GetCurrentFrameIndex() + 1;
-	// 
-	// 	// gets the next frame.
-	// 	if (nextIndex >= GetFrameCount())
-	// 		f1 = f0;
-	// 	else
-	// 		f1 = (MorphAnimationFrame*)(GetFrame(nextIndex));
-	// 
-	// 
-	// 	morphVerts = GetPose((MorphAnimationFrame*)GetCurrentFrame(),
-	// 		(MorphAnimationFrame*)(GetFrame(GetCurrentFrameIndex() + 1))).pose;
+	// 	morphVerts = GeneratePose();
 	// 
 	// 	object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
 	// 	object->GetMaterial()->GetShader()->SetUniform("a_T", t);
+	// 
+	// 	// deleting the vertices
+	// 	delete[] morphVerts;
 	// }
-
-	// original
-	{
-		morphVerts = GeneratePose();
-
-		object->GetMesh()->Morph(morphVerts, ((MorphAnimationFrame*)(GetCurrentFrame()))->GetVertexCount());
-		object->GetMaterial()->GetShader()->SetUniform("a_T", t);
-	}
 	
-	// deleting the vertices
-	delete[] morphVerts;
 
 	// switches the frame if at the end of the animation.
 	Animation::Update(deltaTime);

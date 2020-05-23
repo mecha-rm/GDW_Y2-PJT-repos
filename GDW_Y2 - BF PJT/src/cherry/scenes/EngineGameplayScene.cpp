@@ -25,7 +25,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		ProfilingSession::Start("profiling-init.json");
 
 	// general timer
-	ProfileTimer timer = ProfileTimer("debug_start");
+	// ProfileTimer timer = ProfileTimer("debug_start");
 
 	GameplayScene::OnOpen();
 
@@ -449,18 +449,20 @@ void cherry::EngineGameplayScene::OnOpen()
 		// VER 2
 		objectList->objects.push_back(new Object("res/objects/hero pose one.obj", game->GetCurrentSceneName(), matDynamic, false, true));
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, offset, 0.0F);
-		//
-
+		
+		// attaches the animation.
 		MorphAnimation* mph = new MorphAnimation();
+		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 0.0F));
 		// mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_target_0.obj", 2.0F));
 		mph->SetInfiniteLoop(true);
 		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
 		//mph->SetLoopsTotal(3);
 		mph->Play();
-		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+		// objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
 		// objectList->objects.at(objectList->objects.size() - 1)->DeleteAllAnimations();
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
@@ -848,7 +850,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
 
-	timer.Stop();
+	// Btimer.Stop();
 	
 	// ends session
 	if (PROFILE)

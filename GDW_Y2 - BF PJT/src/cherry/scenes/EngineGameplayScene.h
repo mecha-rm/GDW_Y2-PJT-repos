@@ -114,7 +114,7 @@ namespace cherry
 		const bool USE_LAYERS = true;
 
 		// tells the engine to write profiles
-		const bool PROFILE = true;
+		const bool PROFILE = false;
 
 	protected:
 	};
