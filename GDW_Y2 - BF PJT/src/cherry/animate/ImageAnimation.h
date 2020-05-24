@@ -35,7 +35,7 @@ namespace cherry
 		// SwitchFrames();
 
 		// the current index.
-		int currIndex = -1;
+		int currFrameIndex = -1;
 
 		// for images, there is no interpolation between frames.
 		// a frame is on screen for time (t), then it switches to the next frame.

@@ -12,6 +12,27 @@ cherry::ImageAnimation::ImageAnimation() : Animation(3) { }
 cherry::ImageAnimation::ImageAnimation(const ImageAnimation& ani)
 	: Animation(ani)
 {
+	// copies the current index.
+	currFrameIndex = ani.currFrameIndex;
+
+	const int VERT_COUNT = ani.object->GetVerticesTotal();
+
+	// copies the poses.
+	for (int i = 0; i < ani.poses.size(); i++)
+	{
+		// creates a new pose.
+		Pose newPose;
+
+		// copies the pose.
+		newPose.pose = new Vertex[VERT_COUNT];
+		memcpy(newPose.pose, ani.poses[i].pose, sizeof(Vertex) * VERT_COUNT);
+
+		// copies the frame.
+		newPose.f0 = new ImageAnimationFrame(*ani.poses[i].f0);
+
+		// adds the new pose.
+		poses.push_back(newPose);
+	}
 }
 
 // destructor
@@ -166,10 +187,10 @@ void cherry::ImageAnimation::Update(float deltaTime)
 		// delete[] newVerts;
 
 		// new
-		if (currIndex != GetCurrentFrameIndex())
+		if (currFrameIndex != GetCurrentFrameIndex())
 		{
 			// updates the current frame.
-			currIndex = GetCurrentFrameIndex();
+			currFrameIndex = GetCurrentFrameIndex();
 		
 			int vertsTotal = object->GetVerticesTotal();
 
@@ -177,10 +198,10 @@ void cherry::ImageAnimation::Update(float deltaTime)
 			ImageAnimationFrame* prevFrame;
 
 			// gets the previous frame
-			if (currIndex - 1 < 0)
+			if (currFrameIndex - 1 < 0)
 				prevFrame = (ImageAnimationFrame*)GetFrame(GetFrameCount() - 1);
 			else
-				prevFrame = (ImageAnimationFrame*)GetFrame(currIndex - 1);
+				prevFrame = (ImageAnimationFrame*)GetFrame(currFrameIndex - 1);
 
 			// = (ImageAnimationFrame*);
 
@@ -199,7 +220,7 @@ void cherry::ImageAnimation::Update(float deltaTime)
 				object->GetMaterial()->Set("s_Albedos[2]", txtr, image->GetTextureSampler());
 			}
 			
-			object->GetMesh()->Morph(poses.at(currIndex).pose, vertsTotal); // morphs the vertices.
+			object->GetMesh()->Morph(poses.at(currFrameIndex).pose, vertsTotal); // morphs the vertices.
 		}
 	}
 

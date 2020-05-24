@@ -10,7 +10,32 @@ cherry::MorphAnimation::MorphAnimation() : Animation(1) {}
 cherry::MorphAnimation::MorphAnimation(const MorphAnimation& ani)
 	: Animation(ani)
 {
+	// copies the time.
 	t = ani.t;
+
+	// the vertex count of the object.
+	const int VERTEX_COUNT = ani.GetObject()->GetVerticesTotal();
+
+	// the frame index
+	currFrameIndex = ani.currFrameIndex;
+
+	// copies all the poses.
+	for (int i = 0; i < ani.poses.size(); i++)
+	{
+		// makes a new pose.
+		Pose newPose;
+
+		// copying the pose
+		newPose.pose = new MorphVertex[VERTEX_COUNT];
+		memcpy(newPose.pose, ani.poses[i].pose, sizeof(MorphVertex) * VERTEX_COUNT);
+
+		// copying the frames
+		newPose.f0 = new MorphAnimationFrame(*ani.poses[i].f0);
+		newPose.f1 = new MorphAnimationFrame(*ani.poses[i].f1);
+
+		// adds the new pose.
+		poses.push_back(newPose);
+	}
 }
 
 // destructor
