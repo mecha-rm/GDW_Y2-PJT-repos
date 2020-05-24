@@ -5,8 +5,8 @@
 
 namespace cherry
 {
+	// morph animation frame (forward declare)
 	class MorphAnimationFrame;
-
 
 	typedef class MorphAnimation : public Animation
 	{

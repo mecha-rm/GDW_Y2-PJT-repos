@@ -328,6 +328,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
 			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			image->AddAnimation(imgAnime, false);
 
 			// 14 frames
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
@@ -350,7 +351,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
-			image->AddAnimation(imgAnime, false);
+			// image->AddAnimation(imgAnime, false);
 			image->SetVisible(true);
 
 			objectList->objects.push_back(image);

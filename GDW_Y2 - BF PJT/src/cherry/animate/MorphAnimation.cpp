@@ -49,6 +49,7 @@ bool cherry::MorphAnimation::AddFrame(AnimationFrame* frame)
 
 	bool added = Animation::AddFrame(frame);
 
+	// gets the amount of frames.
 	int frameCount = GetFrameCount();
 
 	// there aren't any other frames.
