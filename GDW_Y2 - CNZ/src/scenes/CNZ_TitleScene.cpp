@@ -185,6 +185,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		
 		// animation
 		cherry::ImageAnimation* imgAnime = new ImageAnimation();
+		image->AddAnimation(imgAnime, false);
 
 		// 14 frames
 		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 2.5F));
@@ -207,7 +208,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 		imgAnime->SetInfiniteLoop(true);
 		imgAnime->Play();
-		image->AddAnimation(imgAnime, false);
+		// image->AddAnimation(imgAnime, false);
 		image->SetVisible(true);
 	}
 

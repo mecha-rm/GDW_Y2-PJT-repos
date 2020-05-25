@@ -25,7 +25,7 @@ void cherry::EngineGameplayScene::OnOpen()
 		ProfilingSession::Start("profiling-init.json");
 
 	// general timer
-	ProfileTimer timer = ProfileTimer("debug_start");
+	// ProfileTimer timer = ProfileTimer("debug_start");
 
 	GameplayScene::OnOpen();
 
@@ -328,6 +328,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
 			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			image->AddAnimation(imgAnime, false);
 
 			// 14 frames
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
@@ -350,7 +351,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
-			image->AddAnimation(imgAnime, false);
+			// image->AddAnimation(imgAnime, false);
 			image->SetVisible(true);
 
 			objectList->objects.push_back(image);
@@ -449,18 +450,20 @@ void cherry::EngineGameplayScene::OnOpen()
 		// VER 2
 		objectList->objects.push_back(new Object("res/objects/hero pose one.obj", game->GetCurrentSceneName(), matDynamic, false, true));
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, offset, 0.0F);
-		//
-
+		
+		// attaches the animation.
 		MorphAnimation* mph = new MorphAnimation();
+		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 0.0F));
 		// mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_target_0.obj", 2.0F));
 		mph->SetInfiniteLoop(true);
 		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
 		//mph->SetLoopsTotal(3);
 		mph->Play();
-		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+		// objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
 		// objectList->objects.at(objectList->objects.size() - 1)->DeleteAllAnimations();
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
@@ -848,7 +851,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
 
-	timer.Stop();
+	// Btimer.Stop();
 	
 	// ends session
 	if (PROFILE)

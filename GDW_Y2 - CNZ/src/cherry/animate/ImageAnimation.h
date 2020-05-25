@@ -3,6 +3,9 @@
 
 namespace cherry
 {
+	// image animation frame (forward declare)
+	class ImageAnimationFrame;
+
 	// Texture Animation; used for the image class.
 	class ImageAnimation : public Animation
 	{
@@ -12,6 +15,12 @@ namespace cherry
 
 		// constructor
 		ImageAnimation(const ImageAnimation&);
+		
+		// destructor
+		virtual ~ImageAnimation();
+
+		// adds a frame and saves a pose.
+		bool AddFrame(AnimationFrame* frame) override;
 
 		// updates the texture animation.
 		void Update(float deltaTime);
@@ -24,6 +33,27 @@ namespace cherry
 		// TODO: add option to blend frames.
 		// TODO: add size, orientation, and orientation changes.
 		// SwitchFrames();
+
+		// the current index.
+		int currFrameIndex = -1;
+
+		// for images, there is no interpolation between frames.
+		// a frame is on screen for time (t), then it switches to the next frame.
+		// as such, morph vertices aren't needed.
+	
+		// pose struct
+		// the vertices and the frames.
+		struct Pose
+		{
+			Vertex* pose; // new pose (basically just the new set of uvs)
+			ImageAnimationFrame* f0; // frame
+
+			// TODO: maybe include a texture if the frame is different?
+			// However, doing so woudl result in wasted space.
+		};
+
+		// poses
+		std::vector<Pose> poses;
 
 	protected:
 	};

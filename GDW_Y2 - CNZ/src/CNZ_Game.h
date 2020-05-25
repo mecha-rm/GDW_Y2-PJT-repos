@@ -54,7 +54,7 @@ namespace cnz
 	private:
 
 		// profiles game (performance check)
-		const bool PROFILE = true;
+		const bool PROFILE = false;
 
 	};
 }
