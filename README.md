@@ -45,6 +45,8 @@ RIGHT ARROW - rotate camera to the right
 Page Up - rotate camera clockwise
 Page Down - rotate camera counter-clockwise
 
+(I) - Switch Path
+(P) - Pause Path
 (L) - look at world origin
 
 (0) - Delete Item

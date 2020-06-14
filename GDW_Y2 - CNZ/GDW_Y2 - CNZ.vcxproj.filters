@@ -408,7 +408,6 @@
     <ClInclude Include="src\cherry\textures\ITexture.h" />
     <ClInclude Include="src\cherry\textures\TextureEnums.h" />
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
-    <ClInclude Include="src\cherry\scenes\EngineGamplayScene.h" />
     <ClInclude Include="src\cherry\scenes\EngineGameplayScene.h" />
     <ClInclude Include="src\cherry\scenes\EngineMenuScene.h" />
     <ClInclude Include="src\cherry\scenes\MenuScene.h" />
