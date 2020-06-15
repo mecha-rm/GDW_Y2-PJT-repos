@@ -237,8 +237,22 @@ cherry::ObjectList::ObjectList(std::string scene)
 cherry::ObjectList::~ObjectList()
 {
 	// deletes all sceneLists
-	for (cherry::Object* obj : objects)
+	// for (cherry::Object* obj : objects)
+	// 	delete obj;
+
+	// for (int i = 0; i < objects.size(); i++)
+	// {
+	// 	delete objects[i];
+	// }
+
+	// the game breaking bug happens here.
+	while (!objects.empty())
+	{
+		Object* obj = objects[0];
+		util::removeFromVector(objects, obj);
+
 		delete obj;
+	}
 
 	objects.clear();
 	windowChildren.clear(); // has objects that are also in objects vector.

@@ -258,9 +258,6 @@
     <ClCompile Include="src\cherry\utils\Random.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\cherry\scenes\EngineGameplayScene0.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\KHR\khrplatform.h">
@@ -1344,9 +1341,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\cherry\utils\Random.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\cherry\scenes\EngineGameplayScene0.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

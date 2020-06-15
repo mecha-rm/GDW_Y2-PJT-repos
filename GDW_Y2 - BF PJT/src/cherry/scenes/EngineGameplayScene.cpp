@@ -1173,6 +1173,14 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		// layers.push_back(table.GetPostLayer());
 		// layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
+
+	case GLFW_KEY_R:
+		// refreshes the scene.
+		if(nextScene != "")
+			Game::GetRunningGame()->SetCurrentScene(nextScene, false);
+			
+		// Game::GetRunningGame()->SetCurrentScene(GetName(), false);
+		break;
 	}
 }
 

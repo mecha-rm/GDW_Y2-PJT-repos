@@ -78,7 +78,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\cherry\scenes\EngineGameplayScene0.cpp" />
     <ClCompile Include="src\cherry\animate\AnimationManager.cpp" />
     <ClCompile Include="src\cherry\animate\Animation.cpp" />
     <ClCompile Include="external\GLM\detail\glm.cpp" />
@@ -162,7 +161,6 @@
     <ClCompile Include="src\cherry\animate\ImageAnimation.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\cherry\scenes\EngineGameplayScene0.h" />
     <ClInclude Include="external\fmod\fmod.h" />
     <ClInclude Include="external\fmod\fmod.hpp" />
     <ClInclude Include="external\fmod\fmod_codec.h" />

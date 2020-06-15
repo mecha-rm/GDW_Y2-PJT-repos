@@ -32,7 +32,7 @@ bool cherry::SceneManager::SetCurrentScene(const std::string& name) {
 			
 			// this would be null if it's the first time we're making the m_Scene. We don't want to close null.
 			if (_CurrentScene != nullptr)
-				_CurrentScene->OnClose();
+				_CurrentScene->OnClose(); // TODO: this causes crashes sometimes for unknown reasons. (3 successful closures, crashes afterwards)
 			_CurrentScene = it->second;
 			_CurrentScene->OnOpen();
 		}

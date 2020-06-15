@@ -66,8 +66,21 @@ cherry::Text::~Text()
 	//     delete ch;
 
 	// deleting the text characters.
-	for (Character* ch : textChars)
+	// for (Character* ch : textChars)
+	// 	delete ch;
+
+	// deletes all text characters.
+	while (!textChars.empty())
+	{
+		Character* ch = textChars[0];
+		util::removeFromVector(textChars, ch);
+		
+		// std::cout << "Char BFD: " << ch->m_CHAR << std::endl;
+
 		delete ch;
+
+		// std::cout << "\nChar AFD: " << ch->m_CHAR << "\n" << std::endl;
+	}
 }
 
 // the text is visible.
@@ -333,11 +346,19 @@ void cherry::Text::LoadText(const std::string scene)
 			// if there are no uvs, then the default character is used.
 			if (uvs != glm::vec4(0, 0, 0, 0))
 			{
+				// TODO: take out this array
 				chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
+				
+				// saves the uvs and bool for what material to use
+				chs[index] = uvs; // saves the uvs for the image
+
 			}
 			else
 			{
 				chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
+
+				// saves the uvs and bool for what material to use
+				chs[index] = glm::vec4(0, 0, 1, 1);
 			}
 
 			chars[index]->SetVisible(false);

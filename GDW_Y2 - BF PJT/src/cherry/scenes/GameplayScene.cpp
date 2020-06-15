@@ -23,6 +23,6 @@ void cherry::GameplayScene::OnOpen()
 // caled when the scene is being closed.
 void cherry::GameplayScene::OnClose()
 {
-	ObjectManager::DestroySceneObjectListByPointer(objectList);
+	ObjectManager::DestroySceneObjectListByPointer(objectList); // TODO: crashes here after 3 successful deletions.
 	LightManager::DestroySceneLightListByPointer(lightList);
 }

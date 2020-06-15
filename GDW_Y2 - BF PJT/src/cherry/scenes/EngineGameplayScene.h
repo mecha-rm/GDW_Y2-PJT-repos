@@ -48,6 +48,8 @@ namespace cherry
 		// update loop.
 		void Update(float deltaTime) override;
 
+		std::string nextScene = "";
+
 	private:
 		// translation and rotation direction
 		glm::vec3 t_Dir = glm::vec3(0, 0, 0);
