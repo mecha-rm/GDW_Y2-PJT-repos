@@ -383,7 +383,9 @@ void cherry::EngineGameplayScene::OnOpen()
 			// TODO: find out why items are layeirng on top of one another.
 			Text* text = new Text("Shader Test", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
 			text->SetWindowChild(true);
-			text->SetPosition(10.0F, 50.0F, 10.0F);
+			// text->SetPosition(10.0F, 50.0F, 10.0F);
+			text->SetPositionByWindowSize(0.85F, 0.3F);
+			text->SetScale(5.0F);
 			text->SetVisible(true);
 			objectList->AddObject(text); 
 		}

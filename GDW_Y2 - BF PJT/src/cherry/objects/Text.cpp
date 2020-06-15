@@ -141,6 +141,40 @@ void cherry::Text::SetText(const std::string newText)
 
 		// charCopy->SetRotationZDegrees(180.0F);
 		textChars.push_back(charCopy);
+
+		// New
+		//if(false)
+		//{
+		//	// gets the character
+		//	const char c = text[i];
+		//	Character* charObject;
+		//
+		//	// generates the characters
+		//	if(validChars[c] == true) // checks to see if it's a known character material
+		//		charObject = new Character(c, sceneName, knownCharMaterial, cellSize * fontSize, chs[c]);
+		//	else
+		//		charObject = new Character(c, sceneName, unknownCharMaterial, cellSize * fontSize, chs[c]);
+		//
+		//	charObject->localPosition = Vec3(spacing * fontSize * i, 0, 0);
+		//	charObject->SetPosition(charObject->localPosition);
+		//	charObject->SetScale(0.1F);
+		//	charObject->SetVisible(visible);
+		//
+		//	// for some reason this is false initially. Maybe you don't need to do this now?
+		//	charObject->GetMaterial()->HasTransparency = true;
+		//
+		//	// gets the character mesh
+		//	Mesh::Sptr& charMesh = charObject->GetMesh();
+		//	charMesh->SetWindowChild(windowChild);
+		//	charMesh->postProcess = postProcess;
+		//
+		//	// pushes back the character object.
+		//	textChars.push_back(charObject);
+		//
+		//
+		//	// chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
+		//	// chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
+		//}
 	}
 
 	// calculations transformations.
@@ -346,19 +380,21 @@ void cherry::Text::LoadText(const std::string scene)
 			// if there are no uvs, then the default character is used.
 			if (uvs != glm::vec4(0, 0, 0, 0))
 			{
-				// TODO: take out this array
+				// TODO: take out this array.
 				chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
 				
 				// saves the uvs and bool for what material to use
 				chs[index] = uvs; // saves the uvs for the image
-
+				validChars[index] = true;
 			}
 			else
 			{
+				// TODO: take out this array.
 				chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
 
 				// saves the uvs and bool for what material to use
 				chs[index] = glm::vec4(0, 0, 1, 1);
+				validChars[index] = false;
 			}
 
 			chars[index]->SetVisible(false);

@@ -132,6 +132,8 @@
 
          // the font size
          float fontSize = 1;
+
+         // cell size from the uv map
          glm::vec2 cellSize{};
 
          static const int CHAR_COUNT; // 256
@@ -141,6 +143,7 @@
  
          // character uvs
          glm::vec4 chs[256];
+         
          // bools for valid characters. If invalid, then a 'noChar' material is used.
          bool validChars[256];
 
