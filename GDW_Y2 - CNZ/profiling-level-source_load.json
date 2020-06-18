@@ -1,1 +1,1 @@
-{"otherData": {}, "traceEvents": [
+{"otherData": {}, "traceEvents": [{"cat": "function","dur": 1243,"name": "level-generate_sources","ph": "X","ts": 113776365658,"tid": 2309922608,"pid": 0},{"cat": "function","dur": 46,"name": "gameplay-on_open-audio_loading","ph": "X","ts": 113783167172,"tid": 2309922608,"pid": 0}]}

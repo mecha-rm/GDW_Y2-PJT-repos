@@ -139,7 +139,7 @@
          static const int CHAR_COUNT; // 256
          
          // the characters (0 - 255)
-         std::shared_ptr<Character> chars[256];
+         // std::shared_ptr<Character> chars[256];
  
          // character uvs
          glm::vec4 chs[256];
