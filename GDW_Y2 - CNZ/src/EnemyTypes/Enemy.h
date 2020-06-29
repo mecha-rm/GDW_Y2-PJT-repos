@@ -44,10 +44,13 @@ namespace cnz
 		// loads in the Enemy using a default model. The Enemy takes this model's information.
 		// Enemy(const cherry::Primitive * model);
 
+		// the enemy's update
 		virtual void Update(float dt);
 
+		// the enemy's attack
 		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// the type of enemy
 		virtual std::string WhoAmI() { return description; }
 
 		// Holdovers from the Object class.
@@ -64,7 +67,7 @@ namespace cnz
 		void UpdateAngle(cherry::Vec3 one, cherry::Vec3 two);
 
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
-		void SetAngle(float angle, bool isDegrees);
+		void SetAngle(float angle, const bool isDegrees);
 
 		// sets object angle in vec3
 		void SetAngle(glm::vec3 angle);
@@ -78,22 +81,40 @@ namespace cnz
 		// get pbody size
 		cherry::Vec3 GetPBodySize() const;
 
-		// get pbody width, height and depth.
+		// gets the width of the pbody
 		float GetPBodyWidth() const;
+
+		// gets the height of the pbody
 		float GetPBodyHeight() const;
+
+		// gets the depth of the pbody
 		float GetPBodyDepth() const;
 
+		// getter for state
 		int GetState() const;
+
+		// setting the state
 		void SetState(int newState);
 
 		// gets the amount of points for killing the enemy.
 		int GetPoints() const;
 
+		// the enemy's description.
 		std::string description = "Enemy";
+
+		// variable for attacking
 		bool attacking = false;
+
+		// no longer used.
 		cherry::Object* arrow = nullptr;
+
+		// bool for alive
 		bool alive = false;
+
+		// bool for stunned
 		bool stunned = false;
+
+		// stun timer
 		float stunTimer = 0.0F;
 		int state = 0;
 

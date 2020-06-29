@@ -57,8 +57,6 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
 	pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.25f));
 
-	bool levelLoading = true;
-
 	description = SamplerDesc();
 
 	description.MinFilter = MinFilter::LinearMipNearest;
@@ -74,25 +72,31 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list 
 
-	ProfileTimer audioLoad = ProfileTimer("gameplay-on_open-audio_loading");
-	
-	//// Sounds!
-	// load Master bank and events from resources
-	cherry::AudioEngine::GetInstance().LoadBank("Master");
-	
-	cherry::AudioEngine::GetInstance().LoadEvent("Dash");
-	cherry::AudioEngine::GetInstance().LoadEvent("Footstep");
-	cherry::AudioEngine::GetInstance().LoadEvent("Music");
-	cherry::AudioEngine::GetInstance().LoadEvent("arrow");
-	cherry::AudioEngine::GetInstance().LoadEvent("enemy death");
-	cherry::AudioEngine::GetInstance().LoadEvent("menu accept");
-	cherry::AudioEngine::GetInstance().LoadEvent("menu click");
-	cherry::AudioEngine::GetInstance().LoadEvent("new wave");
-	cherry::AudioEngine::GetInstance().LoadEvent("shield hit");
-	cherry::AudioEngine::GetInstance().LoadEvent("timestop");
+	// Sounds and Audio
+	{
+		// ProfileTimer audioLoad = ProfileTimer("gameplay-on_open-audio_loading");
+		// load Master bank and events from resources
+		AudioEngine& ae = AudioEngine::GetInstance();
 
-	// audio loading finished.
-	audioLoad.Stop();
+		// ae.LoadBank("Master");
+
+		ae.LoadEvent("Dash");
+		ae.LoadEvent("Footstep");
+		ae.LoadEvent("Music");
+		ae.LoadEvent("arrow");
+		ae.LoadEvent("enemy death");
+		ae.LoadEvent("menu accept");
+		ae.LoadEvent("menu click");
+		ae.LoadEvent("new wave");
+		ae.LoadEvent("shield hit");
+		ae.LoadEvent("timestop");
+
+		// audio loading finished.
+		// audioLoad.Stop();
+	}
+
+	// if 'true', then the level loading will be completed.
+	bool levelLoading = true;
 
 	// default lights if no level has been loaded.
 	if (!levelLoading)
@@ -109,7 +113,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	else
 	{
 		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 0.0F, 45.0F), Vec3(1.0F, 0.0F, 0.73333333333F),
-			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 8000.0F));
+			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 9000.0F));
 	}
 
 	// score
@@ -127,6 +131,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		objectList->AddObject(scoreText);
 	}
 	
+	// default materials
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
@@ -144,11 +149,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// stops the map loading.
 		// mapLoad.Stop();
 
-
-		ObjectList * objList = objectList;
-		LightList * tempList = lightList;
-		playerObj = map.GetPlayerObject(); // gets player object
-		playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point
+		// Moved to MapSceneObjectsToGame()
+		// playerObj = map.GetPlayerObject(); // gets player object
+		// playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point
 
 		//Skybox stuff
 		skyboxObj = cherry::Skybox(
@@ -678,8 +681,10 @@ void cnz::CNZ_GameplayScene::MapSceneObjectsToGame(bool loadFromFile) {
 	LightList* lgtList = lightList;
 	
 	// grabs the objects
-	obstacles = map.GetObstacles();
-	playerObj = map.GetPlayerObject();
+	playerObj = map.GetPlayerObject(); // gets player object.
+	playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point.
+
+	obstacles = map.GetObstacles(); // gets the map obstacles.
 
 	// updates the light list to apply lights to all materials
 	lgtList->Update(1.0F);
@@ -690,165 +695,452 @@ void cnz::CNZ_GameplayScene::LoadEnemyGroups()
 {
 	enemyGroups.clear();
 
-	// filling the vector
-	for (int i = 0; i < 20; i++) {
-		enemyGroups.push_back(std::vector<string>());
+	// Mode 1 vs. Mode 2
+	const int VER = 0;
+
+	if(VER <= 1)
+	{
+		// filling the vector
+		for (int i = 0; i < 20; i++) {
+			enemyGroups.push_back(std::vector<string>());
+		}
+
+		// Original
+		{
+			//Easy
+			enemyGroups[0].push_back("marauder");
+			enemyGroups[0].push_back("marauder");
+			enemyGroups[0].push_back("sentry");
+
+			//Easy
+			enemyGroups[1].push_back("mechaspider");
+			enemyGroups[1].push_back("mechaspider");
+			enemyGroups[1].push_back("mechaspider");
+			enemyGroups[1].push_back("mechaspider");
+			enemyGroups[1].push_back("mechaspider");
+
+			//Easy
+			enemyGroups[2].push_back("bastion");
+			enemyGroups[2].push_back("mechaspider");
+			enemyGroups[2].push_back("mechaspider");
+			enemyGroups[2].push_back("mechaspider");
+
+			//Easy
+			enemyGroups[3].push_back("marauder");
+			enemyGroups[3].push_back("marauder");
+			enemyGroups[3].push_back("oracle");
+			enemyGroups[3].push_back("oracle");
+
+			//Easy
+			enemyGroups[4].push_back("marauder");
+			enemyGroups[4].push_back("marauder");
+			enemyGroups[4].push_back("marauder");
+			enemyGroups[4].push_back("marauder");
+			enemyGroups[4].push_back("marauder");
+
+			//Easy
+			enemyGroups[5].push_back("bastion");
+			enemyGroups[5].push_back("bastion");
+
+			//Medium
+			enemyGroups[6].push_back("sentry");
+			enemyGroups[6].push_back("sentry");
+			enemyGroups[6].push_back("oracle");
+
+			//Medium
+			enemyGroups[7].push_back("marauder");
+			enemyGroups[7].push_back("sentry");
+			enemyGroups[7].push_back("oracle");
+			enemyGroups[7].push_back("bastion");
+
+			//Medium
+			enemyGroups[8].push_back("oracle");
+			enemyGroups[8].push_back("oracle");
+			enemyGroups[8].push_back("bastion");
+			enemyGroups[8].push_back("mechaspider");
+
+			//Medium
+			enemyGroups[9].push_back("sentry");
+			enemyGroups[9].push_back("bastion");
+			enemyGroups[9].push_back("bastion");
+
+			//Medium
+			enemyGroups[10].push_back("oracle");
+			enemyGroups[10].push_back("oracle");
+			enemyGroups[10].push_back("oracle");
+			enemyGroups[10].push_back("oracle");
+
+			//Medium
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("marauder");
+			enemyGroups[11].push_back("mechaspider");
+
+			//Medium
+			enemyGroups[12].push_back("sentry");
+			enemyGroups[12].push_back("sentry");
+			enemyGroups[12].push_back("bastion");
+			enemyGroups[12].push_back("bastion");
+			enemyGroups[12].push_back("bastion");
+
+			//Hard
+			enemyGroups[13].push_back("sentry");
+			enemyGroups[13].push_back("sentry");
+			enemyGroups[13].push_back("sentry");
+			enemyGroups[13].push_back("sentry");
+			enemyGroups[13].push_back("sentry");
+
+			//Hard
+			enemyGroups[14].push_back("sentry");
+			enemyGroups[14].push_back("oracle");
+			enemyGroups[14].push_back("oracle");
+			enemyGroups[14].push_back("oracle");
+			enemyGroups[14].push_back("bastion");
+
+			//Hard
+			enemyGroups[15].push_back("marauder");
+			enemyGroups[15].push_back("marauder");
+			enemyGroups[15].push_back("oracle");
+			enemyGroups[15].push_back("oracle");
+			enemyGroups[15].push_back("oracle");
+			enemyGroups[15].push_back("mechaspider");
+			enemyGroups[15].push_back("mechaspider");
+			enemyGroups[15].push_back("mechaspider");
+
+			//Hard
+			enemyGroups[16].push_back("bastion");
+			enemyGroups[16].push_back("bastion");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+			enemyGroups[16].push_back("mechaspider");
+
+			//Hard
+			enemyGroups[17].push_back("marauder");
+			enemyGroups[17].push_back("marauder");
+			enemyGroups[17].push_back("marauder");
+			enemyGroups[17].push_back("marauder");
+			enemyGroups[17].push_back("sentry");
+			enemyGroups[17].push_back("sentry");
+			enemyGroups[17].push_back("bastion");
+			enemyGroups[17].push_back("bastion");
+			enemyGroups[17].push_back("bastion");
+
+			//Insane
+			enemyGroups[18].push_back("sentry");
+			enemyGroups[18].push_back("sentry");
+			enemyGroups[18].push_back("sentry");
+			enemyGroups[18].push_back("oracle");
+			enemyGroups[18].push_back("oracle");
+			enemyGroups[18].push_back("oracle");
+			enemyGroups[18].push_back("bastion");
+			enemyGroups[18].push_back("bastion");
+			enemyGroups[18].push_back("bastion");
+
+			//Insane
+			enemyGroups[19].push_back("marauder");
+			enemyGroups[19].push_back("marauder");
+			enemyGroups[19].push_back("sentry");
+			enemyGroups[19].push_back("sentry");
+			enemyGroups[19].push_back("sentry");
+			enemyGroups[19].push_back("oracle");
+			enemyGroups[19].push_back("oracle");
+			enemyGroups[19].push_back("bastion");
+			enemyGroups[19].push_back("mechaspider");
+			enemyGroups[19].push_back("mechaspider");
+			enemyGroups[19].push_back("mechaspider");
+
+			groupsLoaded = true;
+		}
 	}
+	// Enemy ~ 20 lists
+	else if (VER > 1)
+	{
+		// Group 0 - Easy
+		{
+			// vector to be pushed onto enemy groups
+			std::vector<std::string> vec;
 
-	//Easy
-	enemyGroups[0].push_back("marauder");
-	enemyGroups[0].push_back("marauder");
-	enemyGroups[0].push_back("sentry");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("sentry");
 
-	//Easy
-	enemyGroups[1].push_back("mechaspider");
-	enemyGroups[1].push_back("mechaspider");
-	enemyGroups[1].push_back("mechaspider");
-	enemyGroups[1].push_back("mechaspider");
-	enemyGroups[1].push_back("mechaspider");
+			enemyGroups.push_back(vec);
+		}
 
-	//Easy
-	enemyGroups[2].push_back("bastion");
-	enemyGroups[2].push_back("mechaspider");
-	enemyGroups[2].push_back("mechaspider");
-	enemyGroups[2].push_back("mechaspider");
+		// Group 1 - Easy
+		{
+			std::vector<std::string> vec;
 
-	//Easy
-	enemyGroups[3].push_back("marauder");
-	enemyGroups[3].push_back("marauder");
-	enemyGroups[3].push_back("oracle");
-	enemyGroups[3].push_back("oracle");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
 
-	//Easy
-	enemyGroups[4].push_back("marauder");
-	enemyGroups[4].push_back("marauder");
-	enemyGroups[4].push_back("marauder");
-	enemyGroups[4].push_back("marauder");
-	enemyGroups[4].push_back("marauder");
+			enemyGroups.push_back(vec);
+		}
 
-	//Easy
-	enemyGroups[5].push_back("bastion");
-	enemyGroups[5].push_back("bastion");
+		// Group 2 - Easy
+		{
+			std::vector<std::string> vec;
 
-	//Medium
-	enemyGroups[6].push_back("sentry");
-	enemyGroups[6].push_back("sentry");
-	enemyGroups[6].push_back("oracle");
+			vec.push_back("bastion");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
 
-	//Medium
-	enemyGroups[7].push_back("marauder");
-	enemyGroups[7].push_back("sentry");
-	enemyGroups[7].push_back("oracle");
-	enemyGroups[7].push_back("bastion");
+			enemyGroups.push_back(vec);
+		}
 
-	//Medium
-	enemyGroups[8].push_back("oracle");
-	enemyGroups[8].push_back("oracle");
-	enemyGroups[8].push_back("bastion");
-	enemyGroups[8].push_back("mechaspider");
+		// Group 3 - Easy
+		{
+			std::vector<std::string> vec;
 
-	//Medium
-	enemyGroups[9].push_back("sentry");
-	enemyGroups[9].push_back("bastion");
-	enemyGroups[9].push_back("bastion");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
 
-	//Medium
-	enemyGroups[10].push_back("oracle");
-	enemyGroups[10].push_back("oracle");
-	enemyGroups[10].push_back("oracle");
-	enemyGroups[10].push_back("oracle");
+			enemyGroups.push_back(vec);
+		}
 
-	//Medium
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("marauder");
-	enemyGroups[11].push_back("mechaspider");
+		// Group 4 - Easy
+		{
+			std::vector<std::string> vec;
 
-	//Medium
-	enemyGroups[12].push_back("sentry");
-	enemyGroups[12].push_back("sentry");
-	enemyGroups[12].push_back("bastion");
-	enemyGroups[12].push_back("bastion");
-	enemyGroups[12].push_back("bastion");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
 
-	//Hard
-	enemyGroups[13].push_back("sentry");
-	enemyGroups[13].push_back("sentry");
-	enemyGroups[13].push_back("sentry");
-	enemyGroups[13].push_back("sentry");
-	enemyGroups[13].push_back("sentry");
+			enemyGroups.push_back(vec);
+		}
 
-	//Hard
-	enemyGroups[14].push_back("sentry");
-	enemyGroups[14].push_back("oracle");
-	enemyGroups[14].push_back("oracle");
-	enemyGroups[14].push_back("oracle");
-	enemyGroups[14].push_back("bastion");
+		// Group 5 - Easy
+		{
+			std::vector<std::string> vec;
 
-	//Hard
-	enemyGroups[15].push_back("marauder");
-	enemyGroups[15].push_back("marauder");
-	enemyGroups[15].push_back("oracle");
-	enemyGroups[15].push_back("oracle");
-	enemyGroups[15].push_back("oracle");
-	enemyGroups[15].push_back("mechaspider");
-	enemyGroups[15].push_back("mechaspider");
-	enemyGroups[15].push_back("mechaspider");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
 
-	//Hard
-	enemyGroups[16].push_back("bastion");
-	enemyGroups[16].push_back("bastion");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
-	enemyGroups[16].push_back("mechaspider");
+			enemyGroups.push_back(vec);
+		}
 
-	//Hard
-	enemyGroups[17].push_back("marauder");
-	enemyGroups[17].push_back("marauder");
-	enemyGroups[17].push_back("marauder");
-	enemyGroups[17].push_back("marauder");
-	enemyGroups[17].push_back("sentry");
-	enemyGroups[17].push_back("sentry");
-	enemyGroups[17].push_back("bastion");
-	enemyGroups[17].push_back("bastion");
-	enemyGroups[17].push_back("bastion");
+		// Group 6 - Medium
+		{
+			std::vector<std::string> vec;
 
-	//Insane
-	enemyGroups[18].push_back("sentry");
-	enemyGroups[18].push_back("sentry");
-	enemyGroups[18].push_back("sentry");
-	enemyGroups[18].push_back("oracle");
-	enemyGroups[18].push_back("oracle");
-	enemyGroups[18].push_back("oracle");
-	enemyGroups[18].push_back("bastion");
-	enemyGroups[18].push_back("bastion");
-	enemyGroups[18].push_back("bastion");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("oracle");
 
-	//Insane
-	enemyGroups[19].push_back("marauder");
-	enemyGroups[19].push_back("marauder");
-	enemyGroups[19].push_back("sentry");
-	enemyGroups[19].push_back("sentry");
-	enemyGroups[19].push_back("sentry");
-	enemyGroups[19].push_back("oracle");
-	enemyGroups[19].push_back("oracle");
-	enemyGroups[19].push_back("bastion");
-	enemyGroups[19].push_back("mechaspider");
-	enemyGroups[19].push_back("mechaspider");
-	enemyGroups[19].push_back("mechaspider");
+			enemyGroups.push_back(vec);
+		}
 
-	groupsLoaded = true;
+		// Group 7 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("marauder");
+			vec.push_back("sentry");
+			vec.push_back("oracle");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 8 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("bastion");
+			vec.push_back("mechaspider");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 9 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("sentry");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 10 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 11 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("mechaspider");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 12 - Medium
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 13 - Hard
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 14 - Hard
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("sentry");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 15 - Hard
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 16 - Hard
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 17 - Hard
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 18 - Insane
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+			vec.push_back("bastion");
+
+			enemyGroups.push_back(vec);
+		}
+
+		// Group 19 - Insane
+		{
+			std::vector<std::string> vec;
+
+			vec.push_back("marauder");
+			vec.push_back("marauder");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("sentry");
+			vec.push_back("oracle");
+			vec.push_back("oracle");
+			vec.push_back("bastion");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+			vec.push_back("mechaspider");
+
+			enemyGroups.push_back(vec);
+		}
+		
+	}
 }
 
 // gets the visible physics bodies.

@@ -128,7 +128,10 @@ namespace cnz
 		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 
 		static std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
-		static bool groupsLoaded; // becomes 'true' when the groups are loaded in.
+		
+		// becomes 'true' when the groups are loaded in.
+		// since this is static, groups only need to be loaded once.
+		static bool groupsLoaded;
 
 		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 

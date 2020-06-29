@@ -71,12 +71,15 @@ cnz::Enemy::Enemy(std::string modelPath, std::string scene, bool loadMtl, cherry
 	position = pos;
 }
 
+// update loop
 void cnz::Enemy::Update(float dt) {
 	Object::Update(dt);
 }
 
+// attack function
 void cnz::Enemy::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
+	// Nothing here since this behaviour is set by the enemies.
 }
 
 // TODO: holdovers from object class. May not be needed?
@@ -98,14 +101,16 @@ void cnz::Enemy::UpdateAngle(cherry::Vec3 one, cherry::Vec3 two) {
 }
 
 // sets the angle
-void cnz::Enemy::SetAngle(float angle, bool isDegrees) {
+void cnz::Enemy::SetAngle(float angle, const bool isDegrees) {
 	if (isDegrees) {
-		this->degreeAngle = angle;
-		this->radianAngle = (this->degreeAngle) * (M_PI / 180.0f);
+		degreeAngle = angle;
+		radianAngle = (degreeAngle) * (M_PI / 180.0f);
 	}
-	else if (!isDegrees) {
-		this->radianAngle = angle;
-		this->degreeAngle = (this->radianAngle) * (180.0f / M_PI);
+	// else if (!isDegrees) {
+	else
+	{
+		radianAngle = angle;
+		degreeAngle = (radianAngle) * (180.0f / M_PI);
 	}
 
 	// add code here to convert from screenspace to world space
@@ -113,50 +118,63 @@ void cnz::Enemy::SetAngle(float angle, bool isDegrees) {
 
 void cnz::Enemy::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
+// sets the draw pbody
 bool cnz::Enemy::SetDrawPBody(bool draw)
 {
-	if (this->GetPhysicsBodyCount() == 0) {
-		this->drawPBody = false;
+	if (GetPhysicsBodyCount() == 0) {
+		drawPBody = false;
 		return false;
 	}
 	else {
-		this->drawPBody = true;
+		drawPBody = true;
 		return true;
 	}
 }
 
+// gets the draw pbody
 bool cnz::Enemy::GetDrawPBody() const
 {
-	return this->drawPBody;
+	return drawPBody;
 }
 
+// gets the pbody size
 cherry::Vec3 cnz::Enemy::GetPBodySize() const
 {
-	return this->pBodySize;
+	return pBodySize;
 }
 
+// gets the pbody width
 float cnz::Enemy::GetPBodyWidth() const
 {
-	return this->GetPBodySize().GetX() / 2;
+	return GetPBodySize().GetX() / 2.0F;
 }
 
+// gets the pbody height
 float cnz::Enemy::GetPBodyHeight() const
 {
-	return this->GetPBodySize().GetY() / 2;
+	return GetPBodySize().GetY() / 2.0F;
 }
 
+// gets the pbody depth
 float cnz::Enemy::GetPBodyDepth() const
 {
-	return this->GetPBodySize().GetZ() / 2;
+	return GetPBodySize().GetZ() / 2.0F;
 }
 
-int cnz::Enemy::GetState() const {
-	return this->state;
+// gets the state of the enemy
+int cnz::Enemy::GetState() const 
+{
+	return state;
 }
 
-void cnz::Enemy::SetState(int newState) {
-	this->state = newState;
+// sets the state of the enemy.
+void cnz::Enemy::SetState(int newState) 
+{
+	state = newState;
 }
 
 // gets the amount of points for killing the enemy.
-int cnz::Enemy::GetPoints() const { return points; }
+int cnz::Enemy::GetPoints() const 
+{ 
+	return points; 
+}
