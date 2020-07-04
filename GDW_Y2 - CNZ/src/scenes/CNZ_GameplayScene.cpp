@@ -132,7 +132,11 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	}
 	
 	// default materials
-	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+	// TODO: I think I found where the problem is. These are shared pointers that do NOT get deleted when the scene is closed.
+	// This is because a reference to these materails still exist in memory. When these scenes are opened again, they try to...
+	// rebuild these materials for a second time, getting rid of these references. This may be the problem.
+	// TODO: shift arrow in image upwards.
+	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler); // error caused here.
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
 
@@ -165,28 +169,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		game->SetSkybox(skyboxObj, GetName());
 
 		// Jonah Load Enemy Stuff
+		// Gets the soruce objects.
 		sentry = Level::sourceSentry;
-		// sentry = new Sentry(GetName());
-		// sentry->SetVisible(false);
-
 		oracle = Level::sourceOracle;
-		// oracle = new Oracle(GetName());
-		// oracle->SetVisible(false);
-
 		marauder = Level::sourceMarauder;
-		// marauder = new Marauder(GetName());
-		// marauder->SetVisible(false);
-
 		bastion = Level::sourceBastion;
-		// bastion = new Bastion(GetName());
-		// bastion->SetVisible(false);
-
 		mechaspider = Level::sourceSpider;
-		// mechaspider = new Mechaspider(GetName());
-		// mechaspider->SetVisible(false);
-
 		arrowBase = Level::sourceArrow;
-		// arrowBase->SetVisible(false);
 
 		// if the enemy groups have not been loaded yet.
 		if (!groupsLoaded || enemyGroups.empty())
@@ -196,8 +185,9 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// times enemy spawning
 		// ProfileTimer enemySpawnTimer = ProfileTimer("gameplay-on_open-enemy_init_load");
 
-		//Number corresponds with enemygroups first index
-		SpawnEnemyGroup(4);
+		// Number corresponds with enemygroups first index
+		// SpawnEnemyGroup(4);
+		SpawnEnemyGroup(rand() % 4 + 1);
 
 		// stops eneemy spawning.
 		// enemySpawnTimer.Stop();
@@ -211,8 +201,17 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//indArrow->AddAnimation(indArrowAnim);
 		//AddObjectToScene(indArrow);
 
-		indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
-		indicatorObj->SetRotationXDegrees(90);
+		// replacing model with image.
+		// indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
+
+		// new file with merged objects
+		indicatorObj = new Object("res/objects/indicator_arrow.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
+		
+		indicatorObj->SetRotationXDegrees(90); // uncomment if using 3D model
+
+		// indicatorObj = new Image("res/images/indicator_arrow.png", GetName(), false, false);
+		// indicatorObj->SetScale(0.1F);
+		
 
 		// indicatorObj = new Image("res/images/indicator_arrow.png", GetName(), true, false);
 		
@@ -1691,15 +1690,17 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// cherry::ProfileTimer dashProfiler("profiling-dash_timer");
 
-		// Dash indicator
-		if (playerObj->GetDashTime() >= 1.0f) { // ready to dash but hasn't released chargey button yet
+		// Dash indicator - ready to dash but hasn't released chargey button yet
+		if (playerObj->GetDashTime() >= 1.0f) 
+		{ 
 			//Display indicator
 			//indArrowAnim->Play();
 			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 0.001f));
 			indicatorObj->SetVisible(true);
 			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
 		}
-		else { // dash timer is below 1.0f
+		else // dash timer is below 1.0f 
+		{ 
 			//Hide indicator
 			indicatorObj->SetVisible(false);
 		}
