@@ -118,6 +118,9 @@ namespace cherry
 		// tells the engine to write profiles
 		const bool PROFILE = false;
 
+		// if 'true', then this scene is being reopened. If false, the scene has not been open once.
+		bool reopened = false;
+
 	protected:
 	};
 }

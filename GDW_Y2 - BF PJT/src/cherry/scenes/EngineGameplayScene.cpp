@@ -19,7 +19,7 @@ cherry::EngineGameplayScene::EngineGameplayScene(std::string sceneName) : Gamepl
 }
 
 void cherry::EngineGameplayScene::OnOpen()
-{
+{	
 	// starts up profiling
 	if(PROFILE)
 		ProfilingSession::Start("profiling-init.json");
@@ -94,39 +94,42 @@ void cherry::EngineGameplayScene::OnOpen()
 	// sampler = std::make_shared<TextureSampler>(description);
 
 	// added for mip mapping. As long as its above the material, it's fine.
-	description = SamplerDesc();
+	if (!reopened)
+	{
+		description = SamplerDesc();
 
-	description.MinFilter = MinFilter::LinearMipNearest;
-	description.MagFilter = MagFilter::Linear;
-	description.WrapS = description.WrapT = WrapMode::Repeat;
+		description.MinFilter = MinFilter::LinearMipNearest;
+		description.MagFilter = MagFilter::Linear;
+		description.WrapS = description.WrapT = WrapMode::Repeat;
 
-	// TODO: make linear and NearestMipNearest different variables?
-	// called 'Linear' in the original code
-	sampler = std::make_shared<TextureSampler>(description);
+		// TODO: make linear and NearestMipNearest different variables?
+		// called 'Linear' in the original code
+		sampler = std::make_shared<TextureSampler>(description);
 
-	// TODO: remove upon submission
-	//desc1 = SamplerDesc();
-	//desc1.MinFilter = MinFilter::NearestMipNearest;
-	//desc1.MagFilter = MagFilter::Nearest;
+		// TODO: remove upon submission
+		//desc1 = SamplerDesc();
+		//desc1.MinFilter = MinFilter::NearestMipNearest;
+		//desc1.MagFilter = MagFilter::Nearest;
 
-	//desc2 = SamplerDesc();
-	//desc2.MinFilter = MinFilter::LinearMipLinear;
-	//desc2.MagFilter = MagFilter::Linear;
+		//desc2 = SamplerDesc();
+		//desc2.MinFilter = MinFilter::LinearMipLinear;
+		//desc2.MagFilter = MagFilter::Linear;
 
-	//samplerEX = std::make_shared<TextureSampler>(desc1);
-
+		//samplerEX = std::make_shared<TextureSampler>(desc1);
+	}
 
 
 	// before the mesh in the original code
-	Shader::Sptr phong = std::make_shared<Shader>();
+	// Shader::Sptr phong = std::make_shared<Shader>();
 	// TODO: make version without UVs?
-	phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
+	// phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
 	// dedicated variable no longer needed?
 
 	// no longer needed since GenerateMaterial() exists.
+	// if (reopened){
 	// matStatic = std::make_shared<Material>(phong);
 	// matStatic->Set("a_EnabledLights", 1);
 	// matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
@@ -137,6 +140,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	// matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
 	// matStatic->Set("a_LightAttenuation[0]", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
+	// }
 
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
 
@@ -198,11 +202,15 @@ void cherry::EngineGameplayScene::OnOpen()
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
-	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
-	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
+	if (!reopened)
+	{
+		matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+		matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
-	matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
-	matStatic->GetShader()->SetUniform("a_EmissivePower", 0.1F);
+
+		matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
+		matStatic->GetShader()->SetUniform("a_EmissivePower", 0.1F);
+	}
 
 	// loads in default sceneLists
 	if(true)
@@ -858,6 +866,9 @@ void cherry::EngineGameplayScene::OnOpen()
 	// ends session
 	if (PROFILE)
 		ProfilingSession::End();
+
+	// the scene has been opened once, so some functions don't need to be initiated again.
+	reopened = true;
 }
 
 // called when the scene is being closed.

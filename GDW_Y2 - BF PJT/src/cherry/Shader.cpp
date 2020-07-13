@@ -44,7 +44,30 @@ char* readFile(const char* filename) {
 cherry::Shader::Shader() { myShaderHandle = glCreateProgram(); }
 
 // destructor
-cherry::Shader::~Shader()  { glDeleteProgram(myShaderHandle); }
+// TODO: maybe try a try-catch block?
+cherry::Shader::~Shader() 
+{
+	// https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glValidateProgram.xml
+	// https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glGetProgramiv.xml
+
+	// checks for shader validation
+	glValidateProgram(myShaderHandle);
+
+	// GLint result;
+	// glGetProgramiv(myShaderHandle, GL_VALIDATE_STATUS, &result);
+	// 
+	// // the shader is not valid.
+	// if (result == GL_FALSE)
+	// {
+	// 	// std::cout << "Validation Failure" << std::endl;
+	// }
+
+	// if(glValidateProgram(myShaderHandle) == false)
+
+	// glCreateProgram should return a non-zero value. If myShaderHandle is equal to 0, then it should've already been deleted.
+	
+	glDeleteProgram(myShaderHandle); 
+}
 
 // loads the shaders
 void cherry::Shader::Load(const char* vsFile, const char* fsFile)
