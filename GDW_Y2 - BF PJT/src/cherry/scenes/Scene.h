@@ -23,19 +23,20 @@ namespace cherry
 		// EX: creates a scene, providing it its name.
 		Scene(const std::string name);
 
+		// destructor.
 		virtual ~Scene() = default;
 
 		// this is the equivalent of 'LoadContent' in Game.cpp.
 		virtual void OnOpen();
 
+		// called when a scene is being closed.
 		virtual void OnClose();
 
 		// returns the main/primary registry
 		entt::registry& Registry();
-
+		
+		// gets the name of the scene
 		const std::string& GetName() const;
-
-		// void SetName(const std::string& name);
 
 		// if 'true', then the scene is using the imGui draw.
 		bool IsUsingImgui() const;
@@ -45,6 +46,17 @@ namespace cherry
 
 		// returns the post layers.
 		std::vector<cherry::PostLayer::Sptr> GetPostLayers() const;
+
+		// creates a new scene with the same name as the current scene.
+		// this can be used to reset a scene entirely by deleting the old scene and replacing it with a new instance of the same scene.
+		// do note that allowNewInstances must be set to 'true' so that the program knows that GetNewInstance() has been overwritten.
+		// otherwise, data would be lost by generating a scene of the base type rather than the derived type.
+		virtual Scene* GenerateNewInstance() const;
+
+		// checked to see if the scene allows for new instances to be generated.
+		// if 'true', a new isntance of the scene is made instead of reopening the same scene over and over.
+		// reusing the same scene causes problems, so this is meant to fix that.
+		bool IsAllowingNewInstances() const;
 
 		// these functions get called by the game class by default, but they can be overwritten.
 		// called when a mouse button has been pressed
@@ -80,17 +92,27 @@ namespace cherry
 	private:
 		entt::registry myRegistry; // registry
 
-		std::string myName; // name
+		// this should be const since it can't be changed.
+		const std::string myName; // name
 
 	protected:
 
 		// tells the scene to use (or not use) its frame buffers.
 		void SetUsingFrameBuffers(bool useFbs);
 
+		// determines whether the scene can create new instances or not.
+		// if 'true', then a new instance is made rather than reopening the same scene over and over.
+		// if false, the same scene is used over and over again. This seems to cash crashes.
+		void SetAllowingNewInstances(bool newInstances);
+
 		// TODO: set it to use the frame buffer.
 		// if 'true', then the game renders to the frame buffer.
 		bool useFrameBuffers = false;
 
+		// use Imgui window
 		bool useImgui = false;
+
+		// allow new instances to be
+		bool allowNewInstances = false;
 	};
 }

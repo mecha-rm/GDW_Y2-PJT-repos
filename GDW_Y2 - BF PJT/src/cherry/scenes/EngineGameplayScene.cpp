@@ -24,6 +24,10 @@ void cherry::EngineGameplayScene::OnOpen()
 	if(PROFILE)
 		ProfilingSession::Start("profiling-init.json");
 
+	// uses instances instead of reopening the same scene over and over again.
+	// allowNewInstances = true;
+	SetAllowingNewInstances(true);
+
 	// general timer
 	// ProfileTimer timer = ProfileTimer("debug_start");
 
@@ -889,6 +893,15 @@ void cherry::EngineGameplayScene::OnClose()
 	GameplayScene::OnClose();
 }
 
+// generates a new instance of the engine gameplay scene.
+cherry::Scene* cherry::EngineGameplayScene::GenerateNewInstance() const
+{
+	EngineGameplayScene* scene = new EngineGameplayScene(GetName());
+	scene->nextScene = nextScene; // this value should be saved.
+
+	return scene;
+}
+
 // mouse button has been pressed.
 void cherry::EngineGameplayScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
@@ -1188,11 +1201,31 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 
 	case GLFW_KEY_R:
-		// refreshes the scene.
-		if(nextScene != "")
+		// refreshes the scene by loading in a new one.
+		if(nextScene != "" || allowNewInstances == true)
 			Game::GetRunningGame()->SetCurrentScene(nextScene, false);
-			
-		// Game::GetRunningGame()->SetCurrentScene(GetName(), false);
+		
+		// try creating the scene from scratch every time?
+		if(false)
+		{
+			// Game::GetRunningGame()->SetCurrentScene(GetName(), false);
+			std::string str = "";
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+
+			EngineGameplayScene* newScene;
+			newScene = new EngineGameplayScene(str);
+			newScene->nextScene = GetName();
+			Game::GetRunningGame()->RegisterScene(newScene, true);
+
+		}
+
 		break;
 	}
 }

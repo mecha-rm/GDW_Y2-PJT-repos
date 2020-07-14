@@ -56,7 +56,20 @@ void cherry::MenuScene::OnClose()
 	mousePressed = false;
 	mouseKey = -1;
 
+	// now uses shared pointers
+	// for (PostLayer* layer : layers)
+	// 	delete layer;
+
+	layers.clear();
+
+	// this is empty
 	Scene::OnClose();
+}
+
+// generates a new instance.
+cherry::Scene* cherry::MenuScene::GenerateNewInstance() const
+{
+	return new MenuScene(GetName());
 }
 
 // mouse button pressed

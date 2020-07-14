@@ -51,7 +51,7 @@ cherry::Shader::~Shader()
 	// https://www.khronos.org/registry/OpenGL-Refpages/es2.0/xhtml/glGetProgramiv.xml
 
 	// checks for shader validation
-	glValidateProgram(myShaderHandle);
+	// glValidateProgram(myShaderHandle);
 
 	// GLint result;
 	// glGetProgramiv(myShaderHandle, GL_VALIDATE_STATUS, &result);
@@ -66,6 +66,7 @@ cherry::Shader::~Shader()
 
 	// glCreateProgram should return a non-zero value. If myShaderHandle is equal to 0, then it should've already been deleted.
 	
+	LOG_INFO("Deleting shader with ID: {}", myShaderHandle);
 	glDeleteProgram(myShaderHandle); 
 }
 
