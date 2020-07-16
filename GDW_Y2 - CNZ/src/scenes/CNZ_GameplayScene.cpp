@@ -1837,6 +1837,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 				enemyList.erase(enemyList.begin() + index);
 				indexes.pop(); // pops off value.
+				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
 
 			}
 
