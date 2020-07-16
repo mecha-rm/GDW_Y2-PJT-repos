@@ -615,9 +615,10 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	auto& ecs = GetRegistry(scene);
 
 	// the entity to be set.
-	entt::entity entity = ecs.create();
+	// entt::entity entity = ecs.create();
+	entity = ecs.create();
 
-
+	// TODO: the entity screws up here for some reason?
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
 	mr.Material = this->material;
 	

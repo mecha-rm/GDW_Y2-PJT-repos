@@ -854,13 +854,14 @@ void cherry::EngineGameplayScene::OnOpen()
 	// TODO: streamline audio inclusion
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL) 
 	// TODO: put in dedicated folder with ID on it?
-	audioEngine.LoadBank("res/audio/Master");
+	// audioEngine.LoadBank("res/audio/Master");
+	audioEngine.LoadBank("Master");
 
 	// Load an event
 	// audioEngine.LoadEvent("Music", "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
 	audioEngine.LoadEvent("Music");
 	// Play the event
-	audioEngine.PlayEvent("Music");
+	// audioEngine.PlayEvent("Music");
 	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);

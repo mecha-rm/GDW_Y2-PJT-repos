@@ -48,6 +48,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	cherry::GameplayScene::OnOpen();
 
+	SetAllowingNewInstances(true);
+
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
 	Camera::Sptr myCamera = game->myCamera;
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
@@ -155,7 +157,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 		// Moved to MapSceneObjectsToGame()
 		// playerObj = map.GetPlayerObject(); // gets player object
-		// playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point
+		// playerSpawn = map.GetPlayerSpawnPosition(); // gets player spawn point 
 
 		//Skybox stuff
 		skyboxObj = cherry::Skybox(
@@ -353,6 +355,16 @@ void cnz::CNZ_GameplayScene::OnClose()
 	
 	// TODO: delete other pointers
 	cherry::GameplayScene::OnClose();
+}
+
+// creates a new instance of this scene.
+cherry::Scene* cnz::CNZ_GameplayScene::GenerateNewInstance() const
+{
+	// creates a new instance of the gameplay scene
+	CNZ_GameplayScene* cgs;
+	cgs = new CNZ_GameplayScene(map.legendPath, map.levelPath, GetName());
+
+	return cgs;
 }
 
 // mouse button has been pressed.

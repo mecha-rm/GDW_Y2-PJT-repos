@@ -14,6 +14,23 @@ void cnz::CNZ_RankingScene::OnOpen()
 	using namespace cherry;
 	cherry::MenuScene::OnOpen();
 
+	SetAllowingNewInstances(true);
+
+	// set skybox 
+	{
+		cherry::Skybox skybox(
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		);
+
+		skybox.AddSkyboxToScene(this);
+		Game::GetRunningGame()->SetSkyboxVisible(true);
+	}
+
 	fileName = "res/data/ranking.txt";
 
 	std::ifstream file(fileName, std::ios::in);
@@ -75,6 +92,12 @@ void cnz::CNZ_RankingScene::OnClose()
 	exitButton = nullptr;
 
 	cherry::MenuScene::OnClose();
+}
+
+// generates a new instance of the ranking scene.
+cherry::Scene* cnz::CNZ_RankingScene::GenerateNewInstance() const
+{
+	return new CNZ_RankingScene(GetName());
 }
 
 void cnz::CNZ_RankingScene::Update(float deltaTime)

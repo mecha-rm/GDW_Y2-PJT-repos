@@ -42,6 +42,9 @@ namespace cnz
 		// called when the scene is being closed.
 		void OnClose() override;
 
+		// generates a new instance of the cnz gameplay scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 		// mouse button pressed
 		void MouseButtonPressed(GLFWwindow* window, int button) override;
 

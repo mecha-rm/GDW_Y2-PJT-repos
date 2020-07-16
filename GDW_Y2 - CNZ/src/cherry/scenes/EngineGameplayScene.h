@@ -23,6 +23,9 @@ namespace cherry
 		// closing the scene
 		void OnClose() override;
 
+		// generates a new instance of the engine gameplay scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 		// these functions get called by the game class by default, but they can be overwritten.
 		void MouseButtonPressed(GLFWwindow* window, int button) override;
 
@@ -47,6 +50,8 @@ namespace cherry
 
 		// update loop.
 		void Update(float deltaTime) override;
+
+		std::string nextScene = "";
 
 	private:
 		// translation and rotation direction
@@ -115,6 +120,9 @@ namespace cherry
 
 		// tells the engine to write profiles
 		const bool PROFILE = false;
+
+		// if 'true', then this scene is being reopened. If false, the scene has not been open once.
+		bool reopened = false;
 
 	protected:
 	};

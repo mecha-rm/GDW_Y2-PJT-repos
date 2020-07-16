@@ -22,6 +22,9 @@ namespace cherry
 		// use GameplayScene::OnClose() to call the inherited function.
 		virtual void OnClose() override;
 
+		// generates a new instance of the gameplay scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 	private:
 
 	protected:

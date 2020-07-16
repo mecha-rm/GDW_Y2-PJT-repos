@@ -617,6 +617,8 @@ namespace cherry
 		// the emissive power
 		float emissivePower = 0.0F;
 
+		entt::entity entity;
+
 	protected:
 		// constructor used for default primitives
 		Object();

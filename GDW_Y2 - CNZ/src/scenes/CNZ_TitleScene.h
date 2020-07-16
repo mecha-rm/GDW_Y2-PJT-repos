@@ -19,6 +19,9 @@ namespace cnz
 		// closing the scene
 		void OnClose() override;
 
+		// generates a new instance of the engine gameplay scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 		// called when a key has been pressed
 		void KeyPressed(GLFWwindow* window, int key) override;
 

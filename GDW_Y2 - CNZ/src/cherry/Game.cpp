@@ -879,6 +879,7 @@ void cherry::Game::Shutdown() {
 void cherry::Game::LoadContent()
 {
 	std::string engineGameplayName = "Cherry - Debug Game";
+	std::string engineGameplayName0 = "Cherry - Debug Game_0";
 	std::string engineMenuName = "Cherry - Debug Menu";
 
 	// setting up the camera
@@ -912,8 +913,20 @@ void cherry::Game::LoadContent()
 		// registers the scene and makes it the main scene if the opening scene is not a nullptr.
 		if (openingScene == nullptr)
 		{
-			RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+			// RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+			// RegisterScene(new EngineGameplayScene(engineGameplayName0), false);
 
+			// registering scenes for alternating
+			EngineGameplayScene* egs;
+			egs = new EngineGameplayScene(engineGameplayName);
+			egs->nextScene = engineGameplayName0;
+			RegisterScene(egs, false);
+
+			egs = new EngineGameplayScene(engineGameplayName0);
+			egs->nextScene = engineGameplayName;
+			RegisterScene(egs, false);
+
+			// menu
 			EngineMenuScene* menu = new EngineMenuScene(engineMenuName);
 			menu->nextScene = engineGameplayName;
 			RegisterScene(menu, true);
@@ -921,8 +934,20 @@ void cherry::Game::LoadContent()
 		}
 		else // loads the default scene, but sets to the opening scene
 		{
-			RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+			// RegisterScene(new EngineGameplayScene(engineGameplayName), false);
+			// RegisterScene(new EngineGameplayScene(engineGameplayName0), false);
 
+			// registering scenes for alternating
+			EngineGameplayScene* egs;
+			egs = new EngineGameplayScene(engineGameplayName);
+			egs->nextScene = engineGameplayName0;
+			RegisterScene(egs, false);
+
+			egs = new EngineGameplayScene(engineGameplayName0);
+			egs->nextScene = engineGameplayName;
+			RegisterScene(egs, false);
+
+			// menu
 			EngineMenuScene* menu = new EngineMenuScene(engineMenuName);
 			menu->nextScene = engineGameplayName;
 			RegisterScene(menu, false);
@@ -1382,6 +1407,7 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	// We'll grab a reference to the ecs to make things easier
 	auto& ecs = CurrentRegistry();
 
+
 	// sorting to make sure transparent items are rendered last, and above items that are opaque or have lower transparencies.
 	ecs.sort<MeshRenderer>([&](const MeshRenderer& lhs, const MeshRenderer& rhs) {
 		if (rhs.Material == nullptr || rhs.Mesh == nullptr)
@@ -1406,6 +1432,13 @@ void cherry::Game::__RenderScene(glm::ivec4 viewport, const Camera::Sptr& camera
 	auto view = ecs.view<MeshRenderer>();
 
 	for (const auto& entity : view) {
+
+		// WE HAVE A PROBLEM
+		if (ecs.valid(entity) == false)
+		{
+			throw std::runtime_error("This entity has a problem.");
+		}
+
 		// Get our shader 
 		const MeshRenderer& renderer = ecs.get<MeshRenderer>(entity);
 		// Early bail if mesh is invalid

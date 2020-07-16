@@ -16,6 +16,9 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	cherry::MenuScene::OnOpen();
 
+	// new instances added.
+	SetAllowingNewInstances(true);
+	
 	glm::ivec2 myWindowSize = Game::GetRunningGame()->GetWindowSize();
 
 	std::string sceneName = GetName();
@@ -28,15 +31,35 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
 
-	// sound
-	//AudioEngine::GetInstance().Init();
-	AudioEngine::GetInstance().LoadBank("Master");
+	// skybox added in
+	{
+		// image options
+		// "res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		// "res/images/cubemaps/blue_lightning.jpg"
 
-	AudioEngine::GetInstance().LoadEvent("Music");
-	AudioEngine::GetInstance().LoadEvent("menu accept");
-	AudioEngine::GetInstance().LoadEvent("menu click");
+		cherry::Skybox skybox(
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		);
 
-	AudioEngine::GetInstance().PlayEvent("Music");
+		
+
+		skybox.AddSkyboxToScene(this);
+		Game::GetRunningGame()->SetSkyboxVisible(true);
+	}
+
+	// sound - bank loaded in CNZ_Game
+	AudioEngine& audio = AudioEngine::GetInstance();
+
+	// AudioEngine::GetInstance().LoadBank("Master");
+	// AudioEngine::GetInstance().LoadEvent("Music");
+	audio.LoadEvent("menu accept");
+	audio.LoadEvent("menu click");
+	audio.PlayEvent("Music");
 
 	// title screen
 	{
@@ -212,6 +235,18 @@ void cnz::CNZ_TitleScene::OnOpen()
 		image->SetVisible(true);
 	}
 
+	// background graphic
+	{
+		cherry::Image* image = new Image("res/images/title_bg.png", GetName(), false, false);
+		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(Vec2(0.5F, 0.5F));
+		image->SetPositionZ(-1.0F);
+		// image->SetOrthographicObject(true);
+		image->SetVisible(false);
+
+		objectList->AddObject(image);
+	}
+
 	// instructons
 	{
 		cherry::Image* image = new Image("res/images/controls.png", GetName(), false, false);
@@ -298,6 +333,12 @@ void cnz::CNZ_TitleScene::OnClose()
 	controls = nullptr;
 
 	cherry::MenuScene::OnClose();
+}
+
+// generates a new instance of the title scene.
+cherry::Scene* cnz::CNZ_TitleScene::GenerateNewInstance() const
+{
+	return new CNZ_TitleScene(GetName());
 }
 
 // key has been pressed.
@@ -401,10 +442,14 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 	{
 	}
 
-	//// Sound
+	//// Sound (for SOME REASON, the music only plays when the screen is moving. Removing this stops the music entirely.)
 	if (!AudioEngine::GetInstance().isEventPlaying("Music")) {
 		AudioEngine::GetInstance().PlayEvent("Music");
+		
 	}
+	// AudioEngine::GetInstance().PlayEvent("Music");
+	// AudioEngine::GetInstance().SetEventPosition("Music", glm::vec3(0.0F, 0.0F, 0.0F));
+	// AudioEngine::GetInstance().SetListenerPosition(glm::vec3(0.0F, 0.0F, 0.0F));
 
 	// button has been hit
 	// if (enteredButton == entryButton && mousePressed)

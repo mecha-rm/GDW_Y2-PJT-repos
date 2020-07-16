@@ -16,6 +16,8 @@ namespace cherry
 			const_iterator begin() const { return SceneManager::_KnownScenes.begin(); }
 			const_iterator end() const { return SceneManager::_KnownScenes.end(); }
 		};
+
+		// gets the current scene.
 		static Scene* Current();
 
 		// sets the current m_Scene
@@ -33,8 +35,23 @@ namespace cherry
 		// registers the provided scene.
 		static void RegisterScene(Scene* scene);
 
+		// returns a SceneIterator
 		static SceneIterator Each();
 
+		// removes a scene based on its name. The scene is then returned (nullptr returned otherwise).
+		static Scene* RemoveScene(const std::string& name);
+
+		// removes a scene based on its scene object. The scene is then returned (nullptr returned otherwise).
+		static void RemoveScene(const Scene* scene);
+
+		// destroys a scene based on its name. A true is returned if it's successful.
+		static bool DestroyScene(const std::string& name);
+
+		// destroys a scene based on its scene object. A true is returned if it's successful.
+		// note that if the scene is NOT in the scene manager's list, it will NOT be destroyed.
+		static bool DestroyScene(Scene* scene);
+
+		// destorys all scenes
 		static void DestroyScenes();
 
 		static entt::registry Prefabs;

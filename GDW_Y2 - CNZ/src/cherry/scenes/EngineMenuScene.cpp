@@ -166,6 +166,12 @@ void cherry::EngineMenuScene::OnClose()
 
 }
 
+// generates a new instance of the engine menu scene.
+cherry::Scene* cherry::EngineMenuScene::GenerateNewInstance() const
+{
+	return new EngineMenuScene(GetName());
+}
+
 // update loop
 void cherry::EngineMenuScene::Update(float deltaTime)
 {

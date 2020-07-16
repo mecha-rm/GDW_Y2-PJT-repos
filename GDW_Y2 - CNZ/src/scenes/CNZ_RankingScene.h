@@ -19,6 +19,9 @@ namespace cnz
 		// closing the scene
 		void OnClose() override;
 
+		// generates a new instance of the ranking scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 		// update loop
 		void Update(float deltaTime) override;
 
