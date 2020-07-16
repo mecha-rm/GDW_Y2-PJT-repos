@@ -64,8 +64,9 @@ namespace cherry
 	{
 	public:
 
-		//// TODO: Singleton Stuff Here
-		static AudioEngine& GetInstance() // creates an audio engine instance.
+		// TODO: put this in the cpp file.
+		// singleton function that creates an audio engine instance.
+		static AudioEngine& GetInstance()
 		{
 			static AudioEngine* singleton = new AudioEngine();
 			return *singleton;
@@ -83,8 +84,14 @@ namespace cherry
 		void UnloadAllBanks();
 
 		// Events
+
+		// loads an event. Make sure the event does NOT have any spaces in its name, otherwise it won't load it.
 		void LoadEvent(const std::string& strEventName);
+
+		// plays an event.
 		void PlayEvent(const std::string& strEventName);
+
+		// stops an event.
 		void StopEvent(const std::string& strEventName, bool bImmediate = false);
 
 		void SetEventPosition(const std::string& strEventName, const glm::vec3 vPosition);

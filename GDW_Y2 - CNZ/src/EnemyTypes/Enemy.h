@@ -116,7 +116,12 @@ namespace cnz
 
 		// stun timer
 		float stunTimer = 0.0F;
+
+		// I don't know what this is.
 		int state = 0;
+
+		// difficulty. TODO: the spawning system needs a major overhaul, so this will be needed for that.
+		int difficulty = 0;
 
 	private:
 

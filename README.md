@@ -2,6 +2,9 @@
 Repository for Bonus Fruit second year game development engine and game.
 The game is named 'Codename: ZERO'.
 
+Due to the COVID-19 pandemic, GameCon for Winter 2020 was not held. It is assumed that some replacement will be held Fall 2020.
+As such, the game will still be worked on to fix problems.
+
 TEAM: BONUS FRUIT
 - Kennedy Adams	(100632983)
 - Jonah Griffin	(100702748)
@@ -22,6 +25,10 @@ NOTES
 - the game will crash if it switches scenes too many times. So it's best that only the map levels are entered.
 	- The ranking scene wasn't completed, so there's no point in going in there. But if you do go in there, just click on the game logo to go back.
 - the mouse clicks can be a bit finicky. Try looking at the C++ console to see if shaders are being compiled after a mouse click. If so, then the scene is being switched.
+- Information regarding Audio:
+	- the isEventPlaying() function for the Audio Engine does not work for some reason.
+	- the audio banks only need to be loaded once, so it's best just to load them all at the start. An event cannot be unloaded.
+	- If you tell the audio to play, it will start over. So if the audio doesn't play, it's likely because it keeps getting started over.
 
 **********************************
 CHERRY ENGINE - GDW_Y2 - BF PJT

@@ -53,13 +53,14 @@ void cnz::CNZ_TitleScene::OnOpen()
 	}
 
 	// sound - bank loaded in CNZ_Game
+	// TODO: have the audio start in CNZ_Game, and have the menu music start back up when a game scene closes.
 	AudioEngine& audio = AudioEngine::GetInstance();
 
 	// AudioEngine::GetInstance().LoadBank("Master");
-	// AudioEngine::GetInstance().LoadEvent("Music");
-	audio.LoadEvent("menu accept");
-	audio.LoadEvent("menu click");
-	audio.PlayEvent("Music");
+	// AudioEngine::GetInstance().LoadEvent("bgm_01");
+	// audio.LoadEvent("menu_accept");
+	// audio.LoadEvent("menu_click");
+	// audio.PlayEvent("bgm_01"); // gets started when closing the gameplay scene.
 
 	// title screen
 	{
@@ -341,6 +342,14 @@ cherry::Scene* cnz::CNZ_TitleScene::GenerateNewInstance() const
 	return new CNZ_TitleScene(GetName());
 }
 
+// called when a mouse button has been pressed.
+void cnz::CNZ_TitleScene::MouseButtonPressed(GLFWwindow* window, int button)
+{
+	cherry::MenuScene::MouseButtonPressed(window, button);
+
+	cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
+}
+
 // key has been pressed.
 void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
 {
@@ -360,21 +369,22 @@ void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
 // update loop
 void cnz::CNZ_TitleScene::Update(float deltaTime)
 {
-	MenuScene::Update(deltaTime);
-
 	using namespace cherry;
+
+	MenuScene::Update(deltaTime);
 
 	CNZ_Game* const game = (CNZ_Game*)Game::GetRunningGame();
 
 	// if the load effect isn't enabled, or if the load effect is enabled and the loading screen isn't active. 
-	if (!enableLoadEffect || (enableLoadEffect && loading == false))
+	if (enableLoadEffect == false || (enableLoadEffect == true && loading == false))
 	{
 		// a button has been entered and the mouse has been pressed.
 		if (enteredButton != nullptr && mousePressed)
 		{
-			if (!AudioEngine::GetInstance().isEventPlaying("menu click")) {
-				AudioEngine::GetInstance().PlayEvent("menu click");
-			}
+			// AudioEngine::GetInstance().PlayEvent("menu_click");
+			// if (!AudioEngine::GetInstance().isEventPlaying("menu_click")) {
+			// 	AudioEngine::GetInstance().PlayEvent("menu_click");
+			// }
 
 			if (enteredButton == entryButton) // TODO: change the entry button to something else.
 			{
@@ -388,6 +398,8 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			}
 			else if (enteredButton == rankButton) // ranking list
 			{
+				AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 				if (enableLoadEffect)
 					nextScene = game->rankingSceneName;
 				else
@@ -396,6 +408,8 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			}
 			else if (enteredButton == map1Button) // enters map 1
 			{
+				AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 				if (enableLoadEffect)
 					nextScene = game->map1Info.sceneName;
 				else
@@ -403,6 +417,8 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			}
 			else if (enteredButton == map2Button) // enters map 2
 			{
+				AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 				if (enableLoadEffect)
 					nextScene = game->map2Info.sceneName;
 				else
@@ -410,6 +426,8 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			}
 			else if (enteredButton == map3Button) // enters map 3
 			{
+				AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 				if (enableLoadEffect)
 					nextScene = game->map3Info.sceneName;
 				else
@@ -432,7 +450,7 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 			}
 		}
 	}
-	else if(enableLoadEffect && loading == true && nextScene != "")
+	else if(enableLoadEffect == true && loading == true && nextScene != "")
 	{
 		// switching scenes
 		game->SetCurrentScene(nextScene, true);
@@ -443,13 +461,16 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 	}
 
 	//// Sound (for SOME REASON, the music only plays when the screen is moving. Removing this stops the music entirely.)
-	if (!AudioEngine::GetInstance().isEventPlaying("Music")) {
-		AudioEngine::GetInstance().PlayEvent("Music");
-		
-	}
-	// AudioEngine::GetInstance().PlayEvent("Music");
-	// AudioEngine::GetInstance().SetEventPosition("Music", glm::vec3(0.0F, 0.0F, 0.0F));
-	// AudioEngine::GetInstance().SetListenerPosition(glm::vec3(0.0F, 0.0F, 0.0F));
+	// not needed? (I don't think it worked properly anyway)
+	// if (!AudioEngine::GetInstance().isEventPlaying("bgm_01"))
+	// {
+	// 	AudioEngine::GetInstance().StopEvent("bgm_01");
+	// 	AudioEngine::GetInstance().PlayEvent("bgm_01");
+	// }
+
+	// AudioEngine::GetInstance().PlayEvent("bgm_01");
+	// AudioEngine::GetInstance().SetEventPosition("bgm_01", glm::vec3(0.0F, 0.0F, 0.0F));
+	// AudioEngine::GetInstance().SetListenerPosition(glm:f:vec3(0.0F, 0.0F, 0.0F));
 
 	// button has been hit
 	// if (enteredButton == entryButton && mousePressed)

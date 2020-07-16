@@ -26,7 +26,11 @@ namespace cnz
 		void Update(float deltaTime) override;
 
 	private:
+		// exit button
 		cherry::Button* exitButton = nullptr;
+
+		// line of scores.
+		std::vector<cherry::Text*> scores;
 
 		// name of the file that will be used.
 		std::string fileName = "";

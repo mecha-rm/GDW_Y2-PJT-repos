@@ -16,6 +16,8 @@ void cnz::CNZ_RankingScene::OnOpen()
 
 	SetAllowingNewInstances(true);
 
+	std::string sceneName = GetName();
+
 	// set skybox 
 	{
 		cherry::Skybox skybox(
@@ -31,41 +33,78 @@ void cnz::CNZ_RankingScene::OnOpen()
 		Game::GetRunningGame()->SetSkyboxVisible(true);
 	}
 
-	fileName = "res/data/ranking.txt";
+	// music trigger (if not already playing) - this doesn't work since isEventPlaying() doesn't actually work.
+	// AudioEngine& audio = AudioEngine::GetInstance();
+	// if (audio.isEventPlaying("bgm_01") == false) {
+	// 	audio.PlayEvent("bgm_01");
+	// }
 
-	std::ifstream file(fileName, std::ios::in);
-	std::string line; // line from file.
-	std::string sceneName = GetName();
-	std::string font = FONT_ARIAL;
-
-	glm::vec2 startPos{}; // start
-	Vec2 offset{ 0.0F, 0.15F }; // offset
-
-	// making the texts
-	if (!file)
+	// reading in lines.
 	{
-		LOG_ERROR("Ranking file not found.");
+		fileName = "res/data/ranking.txt";
+
+		std::ifstream file(fileName, std::ios::in);
+		std::string line; // line from file.
+		std::string font = FONT_ARIAL;
+
+		glm::vec2 startPos{}; // start
+		Vec2 offset{ 0.0F, 0.05F }; // offset per line
+		int lNum = 0; // number of lines
+		int spaces = 10;
+		std::string spaceLine = "";
+
+		// making the texts
+		if (!file)
+		{
+			LOG_ERROR("Ranking file not found.");
+			file.close();
+			return;
+		}
+
+		// space for lines
+		for (int i = 1; i <= spaces; i++)
+			spaceLine += " ";
+
+		// while the file still has lines.
+		while (std::getline(file, line))
+		{
+			// splits the line between the score and the name.
+			std::vector<std::string> splitStr = util::splitString<std::string>(line);
+			std::string str = "";
+
+			// forms the line for the text.
+			if (splitStr.size() >= 2)
+				str = splitStr[0] + spaceLine + splitStr[1];
+
+			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 4.5F);
+			text->SetWindowChild(true);
+			// the names line up with the center, but not the scores.
+			text->SetPositionByWindowSize(Vec2(0.6F, 0.275F) + offset * lNum);
+
+			scores.push_back(text);
+
+			objectList->AddObject(text);
+			lNum++;
+		}
+
 		file.close();
-		return;
 	}
 
-	// while the file still has lines.
-	while (std::getline(file, line))
-	{
-		Text* text = new Text(line, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 9.0F);
-		text->SetWindowChild(true);
-		text->SetPositionByWindowSize(Vec2(0.8F, 0.6F) + offset);
-		
-		objectList->AddObject(text);
-	}
-
-	file.close();
-	
-	// exit button
+	// logo
 	{
 		Image* image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(0.5F, 0.1F));
+		image->SetScale(0.4F);
+		objectList->AddObject(image);
+	}
+
+	// exit button
+	{
+		Image* image = new Image("res/images/level_select_button.png", sceneName, false, false);
+		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(Vec2(0.5F, 0.85F));
+		image->SetScale(0.4F);
 
 		// collision box
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(Vec3(0, 0, 0), image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum());
@@ -90,6 +129,7 @@ void cnz::CNZ_RankingScene::OnClose()
 {
 	fileName = "";
 	exitButton = nullptr;
+	scores.clear();
 
 	cherry::MenuScene::OnClose();
 }

@@ -1,3 +1,11 @@
+/*
+ * Name: BONUS FRUIT
+ * Date: 07/16/2020
+ * Description: engine gameplay scene tester.
+ * References:
+	- https://www.glfw.org/docs/latest/group__keys.html
+*/
+
 #include "EngineGameplayScene.h"
 
 #include "..\objects/ObjectManager.h"
@@ -854,15 +862,19 @@ void cherry::EngineGameplayScene::OnOpen()
 	// TODO: streamline audio inclusion
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL) 
 	// TODO: put in dedicated folder with ID on it?
-	// audioEngine.LoadBank("res/audio/Master");
 	audioEngine.LoadBank("Master");
 
 	// Load an event
-	// audioEngine.LoadEvent("Music", "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
-	audioEngine.LoadEvent("Music");
+	bgmName = "bgm_02";
+	// audioEngine.LoadEvent(bgmName, "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
+	audioEngine.LoadEvent(bgmName);
+	// audioEngine.SetEventPosition(bgmName, glm::vec3(0.0F, 0.0F, 0.0F));
+
 	// Play the event
-	// audioEngine.PlayEvent("Music");
-	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
+	if(ENABLE_AUDIO)
+		audioEngine.PlayEvent(bgmName);
+	// else
+	// 	audioEngine.StopEvent(bgmName); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
 
@@ -1020,6 +1032,14 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 
 	case GLFW_KEY_PAGE_DOWN: // z-direction +
 		r_Dir[2] = 1;
+		break;
+
+	case GLFW_KEY_COMMA: // < (turn music down)
+		volumeChange = -1;
+		break;
+
+	case GLFW_KEY_PERIOD: // > (turn music up)
+		volumeChange = 1;
 		break;
 
 		// resets the camera so that it looks at the origin
@@ -1291,6 +1311,14 @@ void cherry::EngineGameplayScene::KeyHeld(GLFWwindow* window, int key)
 	case GLFW_KEY_PAGE_DOWN: // z-direction +
 		r_Dir[2] = 1;
 		break;
+
+	case GLFW_KEY_COMMA: // < (turn music down)
+		volumeChange = -1;
+		break;
+
+	case GLFW_KEY_PERIOD: // > (turn music up)
+		volumeChange = 1;
+		break;
 	}
 }
 
@@ -1341,6 +1369,11 @@ void cherry::EngineGameplayScene::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_PAGE_UP:
 	case GLFW_KEY_PAGE_DOWN:
 		r_Dir[2] = 0;
+		break;
+
+	case GLFW_KEY_COMMA: // no volume change
+	case GLFW_KEY_PERIOD:
+		volumeChange = 0;
 		break;
 
 		// deletes an object
@@ -1425,6 +1458,38 @@ void cherry::EngineGameplayScene::Update(float deltaTime)
 		)
 	);
 
+	// updates sound
+	if (ENABLE_AUDIO && volumeChange != 0) // volume is being changed
+	{
+		AudioEngine& audio = AudioEngine::GetInstance();
+
+		// changes the audio, and mixes it. The near position is 100%, and the far position is 0%.
+		float aT_old = audioT;
+		audioT = clamp(audioT + audioT_inc * volumeChange * deltaTime, 0.0F, 1.0F);
+
+		// calculates the new position (lerping).
+		glm::vec3 newPos = glm::mix(audioFar, audioNear, audioT);
+
+		std::cout << "audioT: " << audioT << "" << std::endl;
+
+		// If the position is equal to audioFar, the audio is turned off. If it isn't, then it's turned on.
+		// if the audio has just been turned enough, the event starts to play event.
+		// NOTE: changed this to just move the audio source far away so that the music doesn't restart.
+		if (newPos == audioFar)
+		{
+			// audio.StopEvent(bgmName);
+			newPos = glm::vec3(0.0F, 0.0F, 100.0F); // can't hear it from this distance
+		}
+		else if (newPos != audioFar && aT_old == 0) // was previously turned off.
+		{
+			// audio.PlayEvent(bgmName);
+		}
+
+		// old
+		// (newPos == audioFar) ? audio.StopEvent(bgmName) : audio.PlayEvent(bgmName);
+
+		audio.SetEventPosition(bgmName, newPos); // setting new event position
+	}
 
 	// collision calculations
 mainLoop:

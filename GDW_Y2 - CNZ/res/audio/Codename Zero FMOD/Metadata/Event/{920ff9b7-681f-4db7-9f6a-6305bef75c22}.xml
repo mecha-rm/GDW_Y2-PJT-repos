@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.00.00">
 	<object class="Event" id="{920ff9b7-681f-4db7-9f6a-6305bef75c22}">
 		<property name="name">
-			<value>new wave</value>
+			<value>new_wave</value>
 		</property>
 		<property name="outputFormat">
 			<value>2</value>

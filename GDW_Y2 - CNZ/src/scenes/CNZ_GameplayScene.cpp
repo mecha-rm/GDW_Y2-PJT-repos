@@ -50,6 +50,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 
 	SetAllowingNewInstances(true);
 
+	// TODO: add in sound effects, then redo the whole system.
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
 	Camera::Sptr myCamera = game->myCamera;
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
@@ -74,27 +75,31 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	LightManager::CreateSceneLightList(GetName());
 	lightList = LightManager::GetSceneLightListByName(game->GetCurrentSceneName()); // getting the light list 
 
-	// Sounds and Audio
+	// Audio
 	{
 		// ProfileTimer audioLoad = ProfileTimer("gameplay-on_open-audio_loading");
-		// load Master bank and events from resources
-		AudioEngine& ae = AudioEngine::GetInstance();
+		// get instance
+		AudioEngine& audio = AudioEngine::GetInstance();
 
-		// ae.LoadBank("Master");
-
-		ae.LoadEvent("Dash");
-		ae.LoadEvent("Footstep");
-		ae.LoadEvent("Music");
-		ae.LoadEvent("arrow");
-		ae.LoadEvent("enemy death");
-		ae.LoadEvent("menu accept");
-		ae.LoadEvent("menu click");
-		ae.LoadEvent("new wave");
-		ae.LoadEvent("shield hit");
-		ae.LoadEvent("timestop");
+		// loaded in the CNZ_Game file now.
+		// audio.LoadBank("Master");
+		// audio.LoadEvent("dash");
+		// audio.LoadEvent("footstep");
+		// audio.LoadEvent("bgm_01");
+		// audio.LoadEvent("arrow");
+		// audio.LoadEvent("enemy_death");
+		// audio.LoadEvent("menu_accept");
+		// audio.LoadEvent("menu_click");
+		// audio.LoadEvent("new_wave");
+		// audio.LoadEvent("shield_hit");
+		// audio.LoadEvent("timestop");
 
 		// audio loading finished.
 		// audioLoad.Stop();
+
+		// switching bgms
+		audio.StopEvent("bgm_01");
+		audio.PlayEvent("bgm_02");
 	}
 
 	// if 'true', then the level loading will be completed.
@@ -352,6 +357,10 @@ void cnz::CNZ_GameplayScene::OnClose()
 	curGroup = -1;
 	score = 0;
 
+	// switching bgms for the menu.
+	cherry::AudioEngine& audio = cherry::AudioEngine::GetInstance();
+	audio.StopEvent("bgm_02");
+	audio.PlayEvent("bgm_01"); // TODO: change audio position so that it's quieter.
 	
 	// TODO: delete other pointers
 	cherry::GameplayScene::OnClose();
@@ -1416,15 +1425,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) { // if the player is not moving
 			playerObj->SetState(0);
-			if (cherry::AudioEngine::GetInstance().isEventPlaying("Footstep")) { // if footstep noise is playing, stop it since we are idle
-				cherry::AudioEngine::GetInstance().StopEvent("Footstep");
+			if (cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is playing, stop it since we are idle
+				cherry::AudioEngine::GetInstance().StopEvent("footstep");
 			}
 		}
 		else { // if the player is walking
 			playerObj->SetState(1);
-			if (!cherry::AudioEngine::GetInstance().isEventPlaying("Footstep")) { // if footstep noise is NOT being played
-				cherry::AudioEngine::GetInstance().SetEventPosition("Footstep", playerObj->GetPositionGLM());
-				cherry::AudioEngine::GetInstance().PlayEvent("Footstep");
+			if (!cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is NOT being played
+				cherry::AudioEngine::GetInstance().SetEventPosition("footstep", playerObj->GetPositionGLM());
+				cherry::AudioEngine::GetInstance().PlayEvent("footstep");
 			}
 		}
 
@@ -1609,10 +1618,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// Spawn new wave when all enemies are dead
 		if (enemyCount == 0) {
 			SpawnEnemyGroup();
-			if (!cherry::AudioEngine::GetInstance().isEventPlaying("new wave")) {
-				cherry::AudioEngine::GetInstance().SetEventPosition("new wave", glm::vec3(25, 25, 0));
-				cherry::AudioEngine::GetInstance().PlayEvent("new wave");
-			}
+			// if (!cherry::AudioEngine::GetInstance().isEventPlaying("new_wave")) {
+			// 	cherry::AudioEngine::GetInstance().SetEventPosition("new_wave", glm::vec3(25, 25, 0));
+			// 	cherry::AudioEngine::GetInstance().PlayEvent("new_wave");
+			// }
 		}
 
 
@@ -1719,9 +1728,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
 		{
-			if (!cherry::AudioEngine::GetInstance().isEventPlaying("Dash")) { // if dash sound is NOT playing, play it
-				cherry::AudioEngine::GetInstance().SetEventPosition("Dash", playerObj->GetPositionGLM());
-				cherry::AudioEngine::GetInstance().PlayEvent("Dash");
+			if (!cherry::AudioEngine::GetInstance().isEventPlaying("dash")) { // if dash sound is NOT playing, play it
+				cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
+				cherry::AudioEngine::GetInstance().PlayEvent("dash");
 			}
 
 			cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
@@ -1738,8 +1747,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						enemyList[i]->alive = false;
 						score += enemyList[i]->GetPoints();
 						updateScore = true;
-						cherry::AudioEngine::GetInstance().SetEventPosition("enemy death", enemyList[i]->GetPositionGLM());
-						cherry::AudioEngine::GetInstance().PlayEvent("enemy death"); // play death noise
+						cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
 					}
 				}
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
@@ -2026,7 +2035,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	else {
 		//Pause Menu Code
 		////sound codeeee
-		cherry::AudioEngine::GetInstance().PlayEvent("menu accept");
+		cherry::AudioEngine::GetInstance().PlayEvent("menu_accept");
 
 		if (restart) {
 			//Reset Everything
