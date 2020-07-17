@@ -16,8 +16,10 @@ cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 // cell offset
 const float cnz::Level::cellOffset = 6.25f;
 
-cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) {
-	this->sceneName = sceneName;
+cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) 
+: legendPath(legendPath), levelPath(levelPath), sceneName(sceneName) 
+{
+	// this->sceneName = sceneName;
 
 	if (!LoadLegend(legendPath)) { // wasn't valid
 		LOG_ERROR("Legend CSV is NOT VALID. Exiting.");
