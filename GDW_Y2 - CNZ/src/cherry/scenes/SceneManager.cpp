@@ -62,7 +62,6 @@ bool cherry::SceneManager::SetCurrentScene(const std::string& name)
 			if (_CurrentScene != nullptr)
 			{
 				// new instances are allowed.
-				// NOTE: anything added to the scene outside of its constructor and OnOpen() is deleted.
 				if (_CurrentScene->IsAllowingNewInstances())
 				{
 					Scene* remadeScene = _CurrentScene->GenerateNewInstance(); // gets a new scene
