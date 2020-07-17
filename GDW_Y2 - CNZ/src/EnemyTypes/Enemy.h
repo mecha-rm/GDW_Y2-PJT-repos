@@ -8,15 +8,15 @@
 namespace cnz
 {
 	// enum for enemies
-	enum enemy_t
-	{
-		null = 0,
-		marauder = 1,
-		oracle = 2,
-		sentry = 3,
-		bastion = 4,
-		mechaspider = 5
-	};
+	// enum enemy_t
+	// {
+	// 	null = 0,
+	// 	marauder = 1,
+	// 	oracle = 2,
+	// 	sentry = 3,
+	// 	bastion = 4,
+	// 	mechaspider = 5
+	// };
 
 	// Enemy class
 	class Enemy : public cherry::Object
@@ -37,7 +37,7 @@ namespace cnz
 		// sets the model for the Enemy, and the position.
 		Enemy(std::string modelPath, float posX, float posY, float posZ);
 
-		// creates an Enemy, and the file path of the user, which also saves the position of hte user.
+		// creates an Enemy, and the file path of the user, which also saves the position of the user.
 		Enemy(std::string modelPath, cherry::Vec3 pos);
 
 		// creates the Enemy, taking in the scene and material as well.
@@ -66,7 +66,7 @@ namespace cnz
 		virtual std::string WhoAmI() { return description; }
 
 		// returns the type of enemy
-		virtual cnz::enemy_t GetType() const;
+		// virtual cnz::enemy_t GetType() const;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
@@ -154,7 +154,7 @@ namespace cnz
 	protected:
 		
 		// sets the type of this enemy.
-		void SetType(cnz::enemy_t et);
+		// void SetType(cnz::enemy_t et);
 
 		// loads in all animations. This is a pure virtual function since all enemies need animations.
 		virtual void LoadAnimations() = 0;
@@ -167,6 +167,6 @@ namespace cnz
 		int points = 1;
 
 		// the enemy type (as an enum)
-		cnz::enemy_t type = null;
+		// cnz::enemy_t type = null;
 	};
 }

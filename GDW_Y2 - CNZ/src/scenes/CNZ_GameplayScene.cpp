@@ -642,117 +642,117 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 	// cout << i << endl;
 	curGroup = i;
 
-	// int n = enemyGroups[i].size();
-	// 
-	// for (int j = 0; j < n; j++) {
-	// 	if (enemyGroups[i][j] == "sentry") {
-	// 		enemyList.push_back(new Sentry(sentry, sceneName));
-	// 	}
-	// 	else if (enemyGroups[i][j] == "bastion") {
-	// 		enemyList.push_back(new Bastion(bastion, sceneName));
-	// 	}
-	// 	else if (enemyGroups[i][j] == "oracle") {
-	// 		enemyList.push_back(new Oracle(oracle, sceneName));
-	// 	}
-	// 	else if (enemyGroups[i][j] == "marauder") {
-	// 		enemyList.push_back(new Marauder(marauder, sceneName));
-	// 	}
-	// 	else if (enemyGroups[i][j] == "mechaspider") {
-	// 		enemyList.push_back(new Mechaspider(mechaspider, sceneName));
-	// 	}
-	// 
-	// 	// this is index
-	// 	int index = enemyList.size() - 1;
-	// 
-	// 	enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
-	// 	enemyList[index]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
-	// 	enemyList[index]->alive = true;
-	// 	enemyList[index]->SetRotationXDegrees(90);
-	// 
-	// 	// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
-	// 	// phyiscs body
-	// 	PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
-	// 	pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
-	// 	pb->SetVisible(showPBs);
-	// 
-	// 	enemyList[index]->AddPhysicsBody(pb);
-	// 
-	// 	objectList->AddObject(enemyList[index]);
-	// 
-	// 	if (j % 2 == 0) {
-	// 		count++;
-	// 	}
-	// 	count *= -1;
-	// }
+	int n = enemyGroups[i].size();
+	
+	for (int j = 0; j < n; j++) {
+		if (enemyGroups[i][j] == "sentry") {
+			enemyList.push_back(new Sentry(sentry, sceneName));
+		}
+		else if (enemyGroups[i][j] == "bastion") {
+			enemyList.push_back(new Bastion(bastion, sceneName));
+		}
+		else if (enemyGroups[i][j] == "oracle") {
+			enemyList.push_back(new Oracle(oracle, sceneName));
+		}
+		else if (enemyGroups[i][j] == "marauder") {
+			enemyList.push_back(new Marauder(marauder, sceneName));
+		}
+		else if (enemyGroups[i][j] == "mechaspider") {
+			enemyList.push_back(new Mechaspider(mechaspider, sceneName));
+		}
+	
+		// this is index
+		int index = enemyList.size() - 1;
+	
+		enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
+		enemyList[index]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
+		enemyList[index]->alive = true;
+		enemyList[index]->SetRotationXDegrees(90);
+	
+		// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
+		// phyiscs body
+		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
+		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+		pb->SetVisible(showPBs);
+	
+		enemyList[index]->AddPhysicsBody(pb);
+	
+		objectList->AddObject(enemyList[index]);
+	
+		if (j % 2 == 0) {
+			count++;
+		}
+		count *= -1;
+	}
 
 	// NEW
 	//if(false)
-	{
-		std::queue<int> spawns; // amount of spawns
-		Enemy* enemy;
-		int eNum = 0;
-
-		// generates a series of random numbers.
-		for (int i = 1; i <= waveEnemyCount; i++)
-		{
-			// 0 = null, 1 = bastion, 2 = marauder, 3 = mechaspider, 4 = oracle, 5 = sentry
-			spawns.push(rand() % 5 + 1);
-		}
-
-		// while there are still enemies to spawn
-		while (!spawns.empty())
-		{
-			switch (spawns.front())
-			{			
-			case cnz::marauder: // 1
-			default: // 0
-				enemy = new Marauder(marauder, sceneName);
-				break;
-			case cnz::oracle: // 2
-				enemy = new Oracle(oracle, sceneName);
-				break;
-			case cnz::sentry: // 3
-				enemy = new Sentry(sentry, sceneName);
-				break;
-			case cnz::bastion: // 4
-				enemy = new Bastion(bastion, sceneName);
-				break;
-			case cnz::mechaspider: // 5
-				enemy = new Mechaspider(mechaspider, sceneName);
-				break;			
-			}
-
-			enemy->SetRotation(cherry::Vec3(0, 0, 0), true);
-			enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
-			enemy->alive = true;
-			enemy->SetRotationXDegrees(90);
-
-			// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
-			// phyiscs body
-			PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
-			pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
-			pb->SetVisible(showPBs);
-
-			enemy->AddPhysicsBody(pb);
-
-			// add them to the lists
-			objectList->AddObject(enemy);
-			enemyList.push_back(enemy);
-
-			// remove front
-			spawns.pop();
-			// enemy number 
-			eNum++;
-		}
-
-		// increasing the amount of enemies per the wave.
-		if (wave % 3 == 0 && waveEnemyCount < WAVE_ENEMY_COUNT_MAX)
-		{
-			waveEnemyCount++;
-		}
-
-		wave++;
-	}
+	// {
+	// 	std::queue<int> spawns; // amount of spawns
+	// 	Enemy* enemy;
+	// 	int eNum = 0;
+	// 
+	// 	// generates a series of random numbers.
+	// 	for (int i = 1; i <= waveEnemyCount; i++)
+	// 	{
+	// 		// 0 = null, 1 = bastion, 2 = marauder, 3 = mechaspider, 4 = oracle, 5 = sentry
+	// 		spawns.push(rand() % 5 + 1);
+	// 	}
+	// 
+	// 	// while there are still enemies to spawn
+	// 	while (!spawns.empty())
+	// 	{
+	// 		switch (spawns.front())
+	// 		{			
+	// 		case cnz::marauder: // 1
+	// 		default: // 0
+	// 			enemy = new Marauder(marauder, sceneName);
+	// 			break;
+	// 		case cnz::oracle: // 2
+	// 			enemy = new Oracle(oracle, sceneName);
+	// 			break;
+	// 		case cnz::sentry: // 3
+	// 			enemy = new Sentry(sentry, sceneName);
+	// 			break;
+	// 		case cnz::bastion: // 4
+	// 			enemy = new Bastion(bastion, sceneName);
+	// 			break;
+	// 		case cnz::mechaspider: // 5
+	// 			enemy = new Mechaspider(mechaspider, sceneName);
+	// 			break;			
+	// 		}
+	// 
+	// 		enemy->SetRotation(cherry::Vec3(0, 0, 0), true);
+	// 		enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
+	// 		enemy->alive = true;
+	// 		enemy->SetRotationXDegrees(90);
+	// 
+	// 		// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
+	// 		// phyiscs body
+	// 		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
+	// 		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+	// 		pb->SetVisible(showPBs);
+	// 
+	// 		enemy->AddPhysicsBody(pb);
+	// 
+	// 		// add them to the lists
+	// 		objectList->AddObject(enemy);
+	// 		enemyList.push_back(enemy);
+	// 
+	// 		// remove front
+	// 		spawns.pop();
+	// 		// enemy number 
+	// 		eNum++;
+	// 	}
+	// 
+	// 	// increasing the amount of enemies per the wave.
+	// 	if (wave % 3 == 0 && waveEnemyCount < WAVE_ENEMY_COUNT_MAX)
+	// 	{
+	// 		waveEnemyCount++;
+	// 	}
+	// 
+	// 	wave++;
+	// }
 }
 
 // generates the objects.
