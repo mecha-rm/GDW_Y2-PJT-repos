@@ -76,6 +76,15 @@ namespace cherry
 		SamplerDesc description; // texture description 
 		TextureSampler::Sptr sampler; // texture sampler
 
+		// audio variables
+		const bool ENABLE_AUDIO = true; // enables sound
+		std::string bgmName = ""; // the name of the bgm
+		glm::vec3 audioNear = glm::vec3(0.0F, 0.0F, 0.0F); // near positio for audio (loudest)
+		glm::vec3 audioFar = glm::vec3(0.0F, 0.0F, 15.0F); // far position for audio (quietest/off)
+		float audioT = 1.0F; // interpolates between audio near and audio far (starts at max volume)
+		float audioT_inc = 0.5F; // incrementer for audio
+		int volumeChange = 0; // -1 for lower, +1 for higher
+
 		// temporary (to be removed after review 3)
 		std::queue<PostLayer::Sptr> layers1;
 		std::queue<PostLayer::Sptr> layers2;
