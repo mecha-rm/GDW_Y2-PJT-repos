@@ -78,6 +78,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="external\stbs\stb_impl.cpp" />
     <ClCompile Include="src\cherry\animate\AnimationManager.cpp" />
     <ClCompile Include="src\cherry\animate\Animation.cpp" />
     <ClCompile Include="external\GLM\detail\glm.cpp" />
@@ -221,6 +222,13 @@
     <ClInclude Include="external\freetype\freetype\ttnameid.h" />
     <ClInclude Include="external\freetype\freetype\tttables.h" />
     <ClInclude Include="external\freetype\freetype\tttags.h" />
+    <ClInclude Include="external\stbs\stb_image.h" />
+    <ClInclude Include="external\stbs\stb_image_write.h" />
+    <ClInclude Include="external\stbs\stb_impl.h" />
+    <ClInclude Include="external\stbs\stb_include.h" />
+    <ClInclude Include="external\stbs\stb_perlin.h" />
+    <ClInclude Include="external\stbs\stb_rect_pack.h" />
+    <ClInclude Include="external\stbs\stb_truetype.h" />
     <ClInclude Include="src\cherry\animate\AnimationManager.h" />
     <ClInclude Include="src\cherry\animate\Animation.h" />
     <ClInclude Include="external\entt\entt.hpp" />
