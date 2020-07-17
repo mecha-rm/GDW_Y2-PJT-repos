@@ -14,6 +14,7 @@
  * Engine: CHERRY ENGINE
  * Date: 04/02/2020
  * Description: the game development game. The engine files are in the 'cherry' folder, but there is a dedicated engine project.
+	* For some reason, the rdk_cnz branch doesn't work.
  * References: 
 	* NOTE: The engine has its own set of references
 */
