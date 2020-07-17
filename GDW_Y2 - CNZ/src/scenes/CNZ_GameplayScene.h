@@ -101,8 +101,9 @@ namespace cnz
 	private:
 		
 		Level map; // the map
-		int curWave = 0; //Current enemy wave
+		int curWave = 0; // current enemy wave
 
+		// the pause menu
 		cherry::Image* pauseMenu = nullptr;
 
 		// the GameplayScene already has the object list and light list.
@@ -130,6 +131,12 @@ namespace cnz
 		// 
 		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 
+		// NEW
+		int wave = 1; // wave number
+		int waveEnemyCount = 5; // starting enemy number for spawn
+		const int WAVE_ENEMY_COUNT_MAX = 20; // maximum enemy count.
+
+		// TODO: remove this, sicne the enemy list is the same for everything.
 		static std::vector<std::vector<string>> enemyGroups; //2D Vector of enemy groups [which group][what enemy in the group]
 		
 		// becomes 'true' when the groups are loaded in.
@@ -184,8 +191,13 @@ namespace cnz
 		float invincibleCountdown = 0.0F;
 		static const float INVINCIBLE_TIME_MAX;
 
+		// number of kills
 		int kills = 0;
+
+		// the amount of lives
 		int lives = 3;
+
+		// the current group
 		int curGroup = -1;
 
 		// score

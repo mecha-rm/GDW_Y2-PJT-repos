@@ -7,6 +7,17 @@
 // class for the Enemy
 namespace cnz
 {
+	// enum for enemies
+	enum enemy_t
+	{
+		null = 0,
+		marauder = 1,
+		oracle = 2,
+		sentry = 3,
+		bastion = 4,
+		mechaspider = 5
+	};
+
 	// Enemy class
 	class Enemy : public cherry::Object
 	{
@@ -51,7 +62,11 @@ namespace cnz
 		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
 		// the type of enemy
+		// TODO: move this.
 		virtual std::string WhoAmI() { return description; }
+
+		// returns the type of enemy
+		virtual cnz::enemy_t GetType() const;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
@@ -121,7 +136,7 @@ namespace cnz
 		int state = 0;
 
 		// difficulty. TODO: the spawning system needs a major overhaul, so this will be needed for that.
-		int difficulty = 0;
+		// int difficulty = 0;
 
 	private:
 
@@ -137,6 +152,10 @@ namespace cnz
 		glm::vec3 worldAngle;
 
 	protected:
+		
+		// sets the type of this enemy.
+		void SetType(cnz::enemy_t et);
+
 		// loads in all animations. This is a pure virtual function since all enemies need animations.
 		virtual void LoadAnimations() = 0;
 
@@ -146,5 +165,8 @@ namespace cnz
 
 		// the points recieved for killing the enemy
 		int points = 1;
+
+		// the enemy type (as an enum)
+		cnz::enemy_t type = null;
 	};
 }

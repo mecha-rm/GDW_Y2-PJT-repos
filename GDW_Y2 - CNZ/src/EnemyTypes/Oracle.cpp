@@ -8,6 +8,7 @@ const float cnz::Oracle::EMISSIVE_POWER = 1.0F;
 cnz::Oracle::Oracle(std::string scene)
 	: Enemy("res/objects/enemies/Oracle.obj", scene, true)
 {
+	type = cnz::oracle;
 	description = "Oracle";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -20,6 +21,7 @@ cnz::Oracle::Oracle(std::string scene)
 cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Oracle.obj", scene, mat)
 {
+	type = cnz::oracle;
 	description = "Oracle";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -31,6 +33,7 @@ cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 // copy constructor
 cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 {
+	type = cnz::oracle;
 	description = "Oracle";
 
 	// getting references to the animations
@@ -41,6 +44,7 @@ cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 
 cnz::Oracle::Oracle(cnz::Oracle* obj, std::string scene) : cnz::Enemy(obj, scene) 
 { 
+	type = cnz::oracle;
 	description = "Oracle"; 
 
 	// getting references to the animations
