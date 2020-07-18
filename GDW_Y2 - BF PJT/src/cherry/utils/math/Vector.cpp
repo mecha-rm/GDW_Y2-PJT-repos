@@ -284,7 +284,7 @@ util::math::Vec4::Vec4(Vec3 vec, float w) : x(vec.x), y(vec.y), z(vec.z), w(w) {
 // istream
 std::istream& util::math::operator>>(std::istream& in, Vec4& vec)
 {
-	in >> vec.x >> vec.y >> vec.z >> vec.w;
+	in >> vec.x >> vec.y >> vec.z >> vec.w;  
 	return in;
 }
 
