@@ -669,7 +669,7 @@ static void ShowDemoWindowWidgets()
             if (align_label_with_current_x_position)
                 ImGui::Unindent(ImGui::GetTreeNodeToLabelSpacing());
 
-            static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your objects in whatever format you see fit.
+            static int selection_mask = (1 << 2); // Dumb representation of what may be user-side selection state. You may carry selection state inside or outside your sceneLists in whatever format you see fit.
             int node_clicked = -1;                // Temporary storage of what node we have clicked to process selection at the end of the loop. May be a pointer to your own node type, etc.
             ImGui::PushStyleVar(ImGuiStyleVar_IndentSpacing, ImGui::GetFontSize()*3); // Increase spacing to differentiate leaves from expanded contents.
             for (int i = 0; i < 6; i++)
@@ -904,7 +904,7 @@ static void ShowDemoWindowWidgets()
         // Selectable() has 2 overloads:
         // - The one taking "bool selected" as a read-only selection information. When Selectable() has been clicked is returns true and you can alter selection state accordingly.
         // - The one taking "bool* p_selected" as a read-write selection information (convenient in some cases)
-        // The earlier is more flexible, as in real application your selection may be stored in a different manner (in flags within objects, as an external list, etc).
+        // The earlier is more flexible, as in real application your selection may be stored in a different manner (in flags within sceneLists, as an external list, etc).
         if (ImGui::TreeNode("Basic"))
         {
             static bool selection[5] = { false, true, false, false, false };
@@ -4134,7 +4134,7 @@ static void ShowExampleAppPropertyEditor(bool* p_open)
         }
     };
 
-    // Iterate dummy objects with dummy members (all the same data)
+    // Iterate dummy sceneLists with dummy members (all the same data)
     for (int obj_i = 0; obj_i < 3; obj_i++)
         funcs::ShowDummyObject("Object", obj_i);
 
@@ -4595,7 +4595,7 @@ struct MyDocument
 {
     const char* Name;           // Document title
     bool        Open;           // Set when the document is open (in this demo, we keep an array of all available documents to simplify the demo)
-    bool        OpenPrev;       // Copy of Open from last Update.
+    bool        OpenPrev;       // Copy of Open from last update.
     bool        Dirty;          // Set when the document has been modified
     bool        WantClose;      // Set when the document
     ImVec4      Color;          // An arbitrary variable associated to the document

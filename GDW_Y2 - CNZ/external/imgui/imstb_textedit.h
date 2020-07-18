@@ -195,7 +195,7 @@
 // here.
 //
 // Each textfield keeps its own insert mode state, which is not how normal
-// applications work. To keep an app-wide insert mode, Update/copy the
+// applications work. To keep an app-wide insert mode, update/copy the
 // "insert_mode" field of STB_TexteditState before/after calling API functions.
 //
 // API
@@ -216,12 +216,12 @@
 //          constructing the textedit.
 //
 //      click:
-//          call this with the mouse x,y on a mouse down; it will Update the cursor
+//          call this with the mouse x,y on a mouse down; it will update the cursor
 //          and reset the selection start/end to the cursor point. the x,y must
 //          be relative to the text widget, with (0,0) being the top left.
 //     
 //      drag:
-//          call this with the mouse x,y on a mouse drag/up; it will Update the
+//          call this with the mouse x,y on a mouse drag/up; it will update the
 //          cursor and the selection end point
 //     
 //      cut:
@@ -681,7 +681,7 @@ static int stb_textedit_move_to_word_next( STB_TEXTEDIT_STRING *str, int c )
 
 #endif
 
-// Update selection and cursor to match each other
+// update selection and cursor to match each other
 static void stb_textedit_prep_selection_at_cursor(STB_TexteditState *state)
 {
    if (!STB_TEXT_HAS_SELECTION(state))
