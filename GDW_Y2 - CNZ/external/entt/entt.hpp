@@ -2742,7 +2742,7 @@ private:
  * the sink that generated it.
  */
 class connection {
-    /*! @brief A sink is allowed to create connection objects. */
+    /*! @brief A sink is allowed to create connection sceneLists. */
     template<typename>
     friend class sink;
 
@@ -2814,7 +2814,7 @@ private:
  * Opaque object the aim of which is to allow users to release an already
  * estabilished connection without having to keep a reference to the signal or
  * the sink that generated it.<br/>
- * A scoped connection automatically breaks the link between the two objects
+ * A scoped connection automatically breaks the link between the two sceneLists
  * when it goes out of scope.
  */
 struct scoped_connection: private connection {
@@ -4675,15 +4675,15 @@ public:
      * assigned doesn't exist yet, the loader will take care to create a local
      * counterpart for it.<br/>
      * Members can be either data members of type entity_type or containers of
-     * entities. In both cases, the loader will visit them and Update the
+     * entities. In both cases, the loader will visit them and update the
      * entities by replacing each one with its local counterpart.
      *
      * @tparam Component Type of component to restore.
      * @tparam Archive Type of input archive.
-     * @tparam Type Types of components to Update with local counterparts.
-     * @tparam Member Types of members to Update with their local counterparts.
+     * @tparam Type Types of components to update with local counterparts.
+     * @tparam Member Types of members to update with their local counterparts.
      * @param archive A valid reference to an input archive.
-     * @param member Members to Update with their local counterparts.
+     * @param member Members to update with their local counterparts.
      * @return A non-const reference to this loader.
      */
     template<typename... Component, typename Archive, typename... Type, typename... Member>
@@ -4811,8 +4811,8 @@ namespace entt {
  * to the entities.
  *
  * @note
- * Entities and objects have the same order. It's guaranteed both in case of raw
- * access (either to entities or objects) and when using random or input access
+ * Entities and sceneLists have the same order. It's guaranteed both in case of raw
+ * access (either to entities or sceneLists) and when using random or input access
  * iterators.
  *
  * @note
@@ -4822,14 +4822,14 @@ namespace entt {
  * functions for that). Use `begin` and `end` instead.
  *
  * @warning
- * Empty types aren't explicitly instantiated. Temporary objects are returned in
+ * Empty types aren't explicitly instantiated. Temporary sceneLists are returned in
  * place of the instances of the components and raw access isn't available for
  * them.
  *
  * @sa sparse_set<Entity>
  *
  * @tparam Entity A valid entity type (see entt_traits for more details).
- * @tparam Type Type of objects assigned to the entities.
+ * @tparam Type Type of sceneLists assigned to the entities.
  */
 template<typename Entity, typename Type, typename = std::void_t<>>
 class basic_storage: public sparse_set<Entity> {
@@ -4939,7 +4939,7 @@ class basic_storage: public sparse_set<Entity> {
     };
 
 public:
-    /*! @brief Type of the objects associated with the entities. */
+    /*! @brief Type of the sceneLists associated with the entities. */
     using object_type = Type;
     /*! @brief Underlying entity identifier. */
     using entity_type = typename underlying_type::entity_type;
@@ -4970,7 +4970,7 @@ public:
     }
 
     /**
-     * @brief Direct access to the array of objects.
+     * @brief Direct access to the array of sceneLists.
      *
      * The returned pointer is such that range `[raw(), raw() + size()]` is
      * always a valid range, even if the container is empty.
@@ -4982,7 +4982,7 @@ public:
      * performance boost but less guarantees. Use `begin` and `end` if you want
      * to iterate the storage in the expected order.
      *
-     * @return A pointer to the array of objects.
+     * @return A pointer to the array of sceneLists.
      */
     const object_type * raw() const ENTT_NOEXCEPT {
         return instances.data();
@@ -5117,7 +5117,7 @@ public:
 
     /**
      * @brief Assigns one or more entities to a storage and default constructs
-     * their objects.
+     * their sceneLists.
      *
      * The object type must be at least move and default insertable.
      *
@@ -5143,7 +5143,7 @@ public:
 
     /**
      * @brief Assigns one or more entities to a storage and copy constructs
-     * their objects.
+     * their sceneLists.
      *
      * The object type must be at least move and copy insertable.
      *
@@ -5152,7 +5152,7 @@ public:
      * @tparam It Type of forward iterator.
      * @param first An iterator to the first element of the range of entities.
      * @param last An iterator past the last element of the range of entities.
-     * @param value The value to initialize the new objects with.
+     * @param value The value to initialize the new sceneLists with.
      * @return An iterator to the list of instances just created and sorted the
      * same of the entities.
      */
@@ -5183,7 +5183,7 @@ public:
     }
 
     /**
-     * @brief Swaps entities and objects in the internal packed arrays.
+     * @brief Swaps entities and sceneLists in the internal packed arrays.
      *
      * @warning
      * Attempting to swap entities that don't belong to the sparse set results
@@ -5378,7 +5378,7 @@ class basic_storage<Entity, Type, std::enable_if_t<std::is_empty_v<Type>>>: publ
     };
 
 public:
-    /*! @brief Type of the objects associated with the entities. */
+    /*! @brief Type of the sceneLists associated with the entities. */
     using object_type = Type;
     /*! @brief Underlying entity identifier. */
     using entity_type = typename underlying_type::entity_type;
@@ -5861,7 +5861,7 @@ public:
      * @endcode
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned during iterations. They can be caught only by copy or with
      * const references.
      *
@@ -6285,7 +6285,7 @@ public:
      * @endcode
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned during iterations. They can be caught only by copy or with
      * const references.
      *
@@ -6792,7 +6792,7 @@ public:
      * @endcode
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned during iterations. They can be caught only by copy or with
      * const references.
      *
@@ -6827,7 +6827,7 @@ public:
      * there will be greater control over the order of iteration.
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned during iterations. They can be caught only by copy or with
      * const references.
      *
@@ -7111,7 +7111,7 @@ public:
      * @endcode
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned during iterations. They can be caught only by copy or with
      * const references.
      *
@@ -8101,7 +8101,7 @@ public:
      * entity. The order of invocation of the listeners isn't guaranteed.
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned through signals. They can be caught only by copy or with
      * const references.
      *
@@ -8132,7 +8132,7 @@ public:
      * order of invocation of the listeners isn't guaranteed.
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned through signals. They can be caught only by copy or with
      * const references.
      *
@@ -8164,7 +8164,7 @@ public:
      * entity. The order of invocation of the listeners isn't guaranteed.
      *
      * @note
-     * Empty types aren't explicitly instantiated. Therefore, temporary objects
+     * Empty types aren't explicitly instantiated. Therefore, temporary sceneLists
      * are returned through signals. They can be caught only by copy or with
      * const references.
      *
@@ -8420,7 +8420,7 @@ public:
     /**
      * @brief Returns a view for the given components.
      *
-     * This kind of objects are created on the fly and share with the registry
+     * This kind of sceneLists are created on the fly and share with the registry
      * its internal data structures.<br/>
      * Feel free to discard a view after the use. Creating and destroying a view
      * is an incredibly cheap operation because they do not require any type of
@@ -8474,7 +8474,7 @@ public:
     /**
      * @brief Returns a group for the given components.
      *
-     * This kind of objects are created on the fly and share with the registry
+     * This kind of sceneLists are created on the fly and share with the registry
      * its internal data structures.<br/>
      * Feel free to discard a group after the use. Creating and destroying a
      * group is an incredibly cheap operation because they do not require any
@@ -8623,7 +8623,7 @@ public:
     /**
      * @brief Returns a runtime view for the given components.
      *
-     * This kind of objects are created on the fly and share with the registry
+     * This kind of sceneLists are created on the fly and share with the registry
      * its internal data structures.<br/>
      * Users should throw away the view after use. Fortunately, creating and
      * destroying a runtime view is an incredibly cheap operation because they
@@ -9001,7 +9001,7 @@ namespace entt {
  * entity-component-system architecture.
  *
  * Tiny wrapper around a registry, for all those users that aren't confident
- * with entity-component-system architecture and prefer to iterate objects
+ * with entity-component-system architecture and prefer to iterate sceneLists
  * directly.
  *
  * @tparam Entity A valid entity type (see entt_traits for more details).
@@ -10692,7 +10692,7 @@ public:
     }
 
     /**
-     * @brief Swaps two meta any objects.
+     * @brief Swaps two meta any sceneLists.
      * @param lhs A valid meta any object.
      * @param rhs A valid meta any object.
      */
@@ -10834,7 +10834,7 @@ inline bool operator!=(const meta_any &lhs, const meta_any &rhs) ENTT_NOEXCEPT {
  * Properties are associated with any other meta object to enrich it.
  */
 class meta_prop {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_prop(const internal::meta_prop_node *curr) ENTT_NOEXCEPT
@@ -10872,9 +10872,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_prop &other) const ENTT_NOEXCEPT {
@@ -10887,10 +10887,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_prop &lhs, const meta_prop &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -10904,7 +10904,7 @@ inline bool operator!=(const meta_prop &lhs, const meta_prop &rhs) ENTT_NOEXCEPT
  * through hierarchies.
  */
 class meta_base {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_base(const internal::meta_base_node *curr) ENTT_NOEXCEPT
@@ -10947,9 +10947,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_base &other) const ENTT_NOEXCEPT {
@@ -10962,10 +10962,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_base &lhs, const meta_base &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -10979,7 +10979,7 @@ inline bool operator!=(const meta_base &lhs, const meta_base &rhs) ENTT_NOEXCEPT
  * to be used to convert a given instance to another type.
  */
 class meta_conv {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_conv(const internal::meta_conv_node *curr) ENTT_NOEXCEPT
@@ -11022,9 +11022,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_conv &other) const ENTT_NOEXCEPT {
@@ -11037,10 +11037,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_conv &lhs, const meta_conv &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -11054,7 +11054,7 @@ inline bool operator!=(const meta_conv &lhs, const meta_conv &rhs) ENTT_NOEXCEPT
  * construct instances of a given type.
  */
 class meta_ctor {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_ctor(const internal::meta_ctor_node *curr) ENTT_NOEXCEPT
@@ -11152,9 +11152,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_ctor &other) const ENTT_NOEXCEPT {
@@ -11167,10 +11167,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_ctor &lhs, const meta_ctor &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -11184,7 +11184,7 @@ inline bool operator!=(const meta_ctor &lhs, const meta_ctor &rhs) ENTT_NOEXCEPT
  * destroy instances of a given type.
  */
 class meta_dtor {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_dtor(const internal::meta_dtor_node *curr) ENTT_NOEXCEPT
@@ -11226,9 +11226,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_dtor &other) const ENTT_NOEXCEPT {
@@ -11241,10 +11241,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_dtor &lhs, const meta_dtor &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -11258,7 +11258,7 @@ inline bool operator!=(const meta_dtor &lhs, const meta_dtor &rhs) ENTT_NOEXCEPT
  * type.
  */
 class meta_data {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_data(const internal::meta_data_node *curr) ENTT_NOEXCEPT
@@ -11417,9 +11417,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_data &other) const ENTT_NOEXCEPT {
@@ -11432,10 +11432,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_data &lhs, const meta_data &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -11449,7 +11449,7 @@ inline bool operator!=(const meta_data &lhs, const meta_data &rhs) ENTT_NOEXCEPT
  * a given type.
  */
 class meta_func {
-    /*! @brief A meta factory is allowed to create meta objects. */
+    /*! @brief A meta factory is allowed to create meta sceneLists. */
     template<typename> friend class meta_factory;
 
     meta_func(const internal::meta_func_node *curr) ENTT_NOEXCEPT
@@ -11585,9 +11585,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_func &other) const ENTT_NOEXCEPT {
@@ -11600,10 +11600,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_func &lhs, const meta_func &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -11614,10 +11614,10 @@ inline bool operator!=(const meta_func &lhs, const meta_func &rhs) ENTT_NOEXCEPT
  * @brief Meta type object.
  *
  * A meta type is the starting point for accessing a reflected type, thus being
- * able to work through it on real objects.
+ * able to work through it on real sceneLists.
  */
 class meta_type {
-    /*! @brief A meta node is allowed to create meta objects. */
+    /*! @brief A meta node is allowed to create meta sceneLists. */
     template<typename...> friend struct internal::meta_node;
 
     meta_type(const internal::meta_type_node *curr) ENTT_NOEXCEPT
@@ -12016,9 +12016,9 @@ public:
     }
 
     /**
-     * @brief Checks if two meta objects refer to the same node.
+     * @brief Checks if two meta sceneLists refer to the same node.
      * @param other The meta object with which to compare.
-     * @return True if the two meta objects refer to the same node, false
+     * @return True if the two meta sceneLists refer to the same node, false
      * otherwise.
      */
     bool operator==(const meta_type &other) const ENTT_NOEXCEPT {
@@ -12031,10 +12031,10 @@ private:
 
 
 /**
- * @brief Checks if two meta objects refer to the same node.
+ * @brief Checks if two meta sceneLists refer to the same node.
  * @param lhs A meta object, either valid or not.
  * @param rhs A meta object, either valid or not.
- * @return True if the two meta objects refer to the same node, false otherwise.
+ * @return True if the two meta sceneLists refer to the same node, false otherwise.
  */
 inline bool operator!=(const meta_type &lhs, const meta_type &rhs) ENTT_NOEXCEPT {
     return !(lhs == rhs);
@@ -13157,7 +13157,7 @@ namespace entt {
  * required:
  *
  * * @code{.cpp}
- *   void Update(Delta, void *);
+ *   void update(Delta, void *);
  *   @endcode
  *
  *   It's invoked once per tick until a process is explicitly aborted or it
@@ -13165,7 +13165,7 @@ namespace entt {
  *   declare this member function, as a rule of thumb each process should at
  *   least define it to work properly. The `void *` parameter is an opaque
  *   pointer to user data (if any) forwarded directly to the process during an
- *   Update.
+ *   update.
  *
  * * @code{.cpp}
  *   void init();
@@ -13180,14 +13180,14 @@ namespace entt {
  *   void succeeded();
  *   @endcode
  *
- *   It's invoked in case of success, immediately after an Update and during the
+ *   It's invoked in case of success, immediately after an update and during the
  *   same tick.
  *
  * * @code{.cpp}
  *   void failed();
  *   @endcode
  *
- *   It's invoked in case of errors, immediately after an Update and during the
+ *   It's invoked in case of errors, immediately after an update and during the
  *   same tick.
  *
  * * @code{.cpp}
@@ -15507,7 +15507,7 @@ private:
  * the sink that generated it.
  */
 class connection {
-    /*! @brief A sink is allowed to create connection objects. */
+    /*! @brief A sink is allowed to create connection sceneLists. */
     template<typename>
     friend class sink;
 
@@ -15579,7 +15579,7 @@ private:
  * Opaque object the aim of which is to allow users to release an already
  * estabilished connection without having to keep a reference to the signal or
  * the sink that generated it.<br/>
- * A scoped connection automatically breaks the link between the two objects
+ * A scoped connection automatically breaks the link between the two sceneLists
  * when it goes out of scope.
  */
 struct scoped_connection: private connection {
@@ -15815,7 +15815,7 @@ namespace entt {
  * type `const Event &`, no matter what the return type is.
  *
  * The types of the instances are `Class &`. Users must guarantee that the
- * lifetimes of the objects overcome the one of the dispatcher itself to avoid
+ * lifetimes of the sceneLists overcome the one of the dispatcher itself to avoid
  * crashes.
  */
 class dispatcher {
