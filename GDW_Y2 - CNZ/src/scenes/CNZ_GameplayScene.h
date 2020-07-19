@@ -128,7 +128,7 @@ namespace cnz
 		cnz::Bastion* bastion = nullptr; //Bastion enemy : Shield guy
 		cnz::Mechaspider* mechaspider = nullptr; //Mechaspider enemy : Land mine
 		Projectile* arrowBase = nullptr;
-		// 
+		//  obstacle list.
 		std::vector<cnz::Obstacle*> obstacles; // vector of every non moving object in the game. Non moving, for now.
 
 		// NEW

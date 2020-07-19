@@ -10,7 +10,7 @@ const float cnz::Marauder::EMISSIVE_POWER = 1.0F;
 cnz::Marauder::Marauder(std::string scene) 
 	: Enemy("res/objects/enemies/Marauder.obj", scene, true)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -22,7 +22,7 @@ cnz::Marauder::Marauder(std::string scene)
 cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Marauder.obj", scene, mat)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -34,7 +34,7 @@ cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 
 cnz::Marauder::Marauder(cnz::Marauder* obj, std::string scene) : cnz::Enemy(obj, scene)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 	
 	cherry::AnimationManager& ani = GetAnimationManager();
@@ -45,7 +45,7 @@ cnz::Marauder::Marauder(cnz::Marauder* obj, std::string scene) : cnz::Enemy(obj,
 // copy constructor
 cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	cherry::AnimationManager& ani = GetAnimationManager();

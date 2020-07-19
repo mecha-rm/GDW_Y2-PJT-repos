@@ -10,7 +10,7 @@ const float cnz::Bastion::EMISSIVE_POWER = 1.0F;
 cnz::Bastion::Bastion(std::string scene)
 	: Enemy("res/objects/enemies/Bastion.obj", scene, true)
 {
-	// type = cnz::bastion;
+	type = cnz::bastion;
 	description = "Bastion";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -23,7 +23,7 @@ cnz::Bastion::Bastion(std::string scene)
 cnz::Bastion::Bastion(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Bastion.obj", scene, mat)
 {
-	// type = cnz::bastion;
+	type = cnz::bastion;
 	description = "Bastion";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -35,7 +35,7 @@ cnz::Bastion::Bastion(std::string scene, cherry::Material::Sptr mat)
 // copying from a pointer
 cnz::Bastion::Bastion(cnz::Bastion* obj, std::string scene) : cnz::Enemy(obj, scene)
 {
-	// type = cnz::bastion;
+	type = cnz::bastion;
 	description = "Bastion";
 	
 	// getting references to the animations
@@ -47,7 +47,7 @@ cnz::Bastion::Bastion(cnz::Bastion* obj, std::string scene) : cnz::Enemy(obj, sc
 // copy constructor
 cnz::Bastion::Bastion(const cnz::Bastion& emy) : cnz::Enemy(emy)
 {
-	// type = cnz::bastion;
+	type = cnz::bastion;
 	description = "Bastion";
 
 	cherry::AnimationManager& ani = GetAnimationManager();

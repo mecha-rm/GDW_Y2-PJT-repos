@@ -9,7 +9,7 @@ const float cnz::Mechaspider::EMISSIVE_POWER = 1.0F;
 cnz::Mechaspider::Mechaspider(std::string scene)
 	:Enemy("res/objects/enemies/spider.obj", scene, true)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -22,7 +22,7 @@ cnz::Mechaspider::Mechaspider(std::string scene)
 cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/spider.obj", scene, mat)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 	
 	SetEmissiveColor(EMISSIVE_COLOR);
@@ -34,7 +34,7 @@ cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 // copy and change scene
 cnz::Mechaspider::Mechaspider(cnz::Mechaspider* obj, std::string scene) : Enemy(obj, scene)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	// getting references to the animations
@@ -46,7 +46,7 @@ cnz::Mechaspider::Mechaspider(cnz::Mechaspider* obj, std::string scene) : Enemy(
 // copy constructor
 cnz::Mechaspider::Mechaspider(const cnz::Mechaspider& enemy) : Enemy(enemy)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	// getting references to the animations

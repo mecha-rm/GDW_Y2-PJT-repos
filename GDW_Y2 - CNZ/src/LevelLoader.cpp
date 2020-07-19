@@ -160,7 +160,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	cherry::LightList* lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
 
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
-	bool useCopy = false;
+	bool useCopy = true;
 
 	// object list does not exist, so it must be created.
 	if (objectList == nullptr)
@@ -1506,6 +1506,13 @@ void cnz::Level::GenerateSources()
 
 	sourceBastion = new Bastion(sceneName);
 	sourceSpider = new Mechaspider(sceneName);
+
+	// physics body to be added to the enemy.
+	// PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
+	// pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+	// pb->SetVisible(showPBs);
+	// 
+	// enemy->AddPhysicsBody(pb);
 
 	// arrow projectile
 	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);
