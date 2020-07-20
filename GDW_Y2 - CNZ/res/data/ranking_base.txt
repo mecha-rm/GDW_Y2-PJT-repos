@@ -1,3 +1,5 @@
+#Only 10 scores are saved and written. Underscores are used to represent spaces in names, so those cannot be used.
+#NAME/SCORE_CHAR_LIMIT	16	8	
 XXXXXXXXXXXXXXXX	00000000
 XXXXXXXXXXXXXXXX	00000000
 XXXXXXXXXXXXXXXX	00000000
