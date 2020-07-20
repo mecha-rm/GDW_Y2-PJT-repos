@@ -728,13 +728,24 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 			enemy->alive = true;
 			enemy->SetRotationXDegrees(90);
 
-			// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
-			// phyiscs body
-			PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
-			pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
-			pb->SetVisible(showPBs);
+			// gets the physics bodies, and sets whether they should be visible or not.
+			if (showPBs == true)
+			{
+				std::vector<PhysicsBody*> pbodies = enemy->GetPhysicsBodies();
+				for (PhysicsBody* body : pbodies)
+				{
+					body->SetVisible(showPBs);
+				}
+			}
 
-			enemy->AddPhysicsBody(pb);
+
+			// // TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
+			// // phyiscs body
+			// PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
+			// pb->SetLocalPosition(cherry::Vec3(0, 0, 1)); // enemy->GetPosition() is useless, since this overrides it.
+			// pb->SetVisible(showPBs);
+			// 
+			// enemy->AddPhysicsBody(pb);
 
 			// add them to the lists
 			objectList->AddObject(enemy);

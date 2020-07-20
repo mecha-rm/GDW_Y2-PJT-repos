@@ -1,4 +1,5 @@
 #include "Mechaspider.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // emissive properties
 // const glm::vec3 cnz::Mechaspider::EMISSIVE_COLOR = glm::vec3(0.41F, 0.431F, 0.9F);
@@ -15,6 +16,10 @@ cnz::Mechaspider::Mechaspider(std::string scene)
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
 
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
+
 	LoadAnimations();
 }
 
@@ -27,6 +32,10 @@ cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 	
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }

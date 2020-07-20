@@ -1,4 +1,14 @@
+/*
+ * Name: Bonus Fruit
+ * Date: 07/20/2020
+ * Description: game file for Codename: ZERO
+ * References:
+*/
+
 #pragma once
+
+#define RANKING_FILE "res/data/ranking.txt"
+
 #include "cherry/Game.h"
 #include "Player.h"
 #include "EnemyTypes/Enemies.h"

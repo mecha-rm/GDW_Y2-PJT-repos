@@ -173,6 +173,7 @@
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Projectile.cpp" />
+    <ClCompile Include="src\scenes\CNZ_GameOverScene.cpp" />
     <ClCompile Include="src\scenes\CNZ_GameplayScene.cpp" />
     <ClCompile Include="src\scenes\CNZ_RankingScene.cpp" />
     <ClCompile Include="src\scenes\CNZ_TitleScene.cpp" />
@@ -504,6 +505,7 @@
     <ClInclude Include="src\cherry\VectorCRY.h" />
     <ClInclude Include="src\CNZ_Game.h" />
     <ClInclude Include="src\Projectile.h" />
+    <ClInclude Include="src\scenes\CNZ_GameOverScene.h" />
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
     <ClInclude Include="src\scenes\CNZ_RankingScene.h" />
     <ClInclude Include="src\scenes\CNZ_TitleScene.h" />

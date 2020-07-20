@@ -1,4 +1,5 @@
 #include "Sentry.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // setting emissive values
 // const glm::vec3 cnz::Sentry::EMISSIVE_COLOR = glm::vec3(0.811F, 0.3231F, 0.421F);
@@ -14,6 +15,10 @@ cnz::Sentry::Sentry(std::string scene)
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 	
 	LoadAnimations();
 }
@@ -27,6 +32,10 @@ cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }

@@ -140,7 +140,8 @@ namespace cnz
 
 	private:
 
-										//		   z?		something is really funky here...
+		// TODO: this probably shouldn't be the same for every enemy. But you can look at this later.
+		//		   z?		something is really funky here...
 		cherry::Vec3 pBodySize = cherry::Vec3(1, 2, 1);
 		bool drawPBody = false;
 

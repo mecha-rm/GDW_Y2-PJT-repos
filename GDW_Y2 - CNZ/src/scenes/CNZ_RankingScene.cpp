@@ -41,7 +41,7 @@ void cnz::CNZ_RankingScene::OnOpen()
 
 	// reading in lines.
 	{
-		fileName = "res/data/ranking.txt";
+		fileName = RANKING_FILE;
 
 		std::ifstream file(fileName, std::ios::in);
 		std::string line; // line from file.

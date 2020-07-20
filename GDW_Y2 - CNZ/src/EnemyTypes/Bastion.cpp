@@ -1,4 +1,5 @@
 #include "Bastion.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // emissive properties
 // const glm::vec3 cnz::Bastion::EMISSIVE_COLOR = glm::vec3(0.1F, 0.8F, 0.1F);
@@ -16,6 +17,10 @@ cnz::Bastion::Bastion(std::string scene)
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
 
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
+
 	LoadAnimations();
 }
 
@@ -28,6 +33,10 @@ cnz::Bastion::Bastion(std::string scene, cherry::Material::Sptr mat)
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
