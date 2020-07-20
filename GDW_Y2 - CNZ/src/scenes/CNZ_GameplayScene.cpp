@@ -1279,8 +1279,8 @@ void cnz::CNZ_GameplayScene::UpdateScore()
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
-	// TODO: get rid of this.
-	cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
+	if(PROFILE)
+		cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
 
 	// if 'true', the score text gets updated.
 	bool updateScore = false;
@@ -1571,7 +1571,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
 				enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
-				if (enemyList[i]->WhoAmI() == "Sentry") {
+
+				// TODO: replace the function calls so that you have the position.
+				switch (enemyList[i]->GetType())
+				{
+				case cnz::sentry:
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
 						// Spawn projectiles
 						enemyList[i]->attacking = true;
@@ -1616,70 +1620,88 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							enemyList[i]->GetCurrentAnimation()->Play();
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Marauder" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
+					break;
+
+				case cnz::marauder:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
+					break;
+
+				case cnz::oracle:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Oracle" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
+					break;
+
+				case cnz::bastion:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
+					break;
+
+				case cnz::mechaspider:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Bastion" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
-						}
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
-						}
-					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
-						}
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
-						}
-					}
+					break;
+
 				}
 				// TODO: why is this being called here? It errors out.
 				// enemyList[i]->Update(deltaTime);
@@ -2159,7 +2181,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// calls the main game Update function to go through every object.
 	cherry::GameplayScene::Update(deltaTime);
 
-	cherry::ProfilingSession::End();
+	if (PROFILE)
+		cherry::ProfilingSession::End();
 }
 
 //Get Distance Between two Vectors in xy axis

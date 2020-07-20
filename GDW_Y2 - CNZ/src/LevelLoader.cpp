@@ -159,8 +159,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	cherry::ObjectList* objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
 	cherry::LightList* lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
 
+	// TODO: optimize this, since it might be being given to an actual scene, and then being destroyed.
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
-	bool useCopy = true;
+	bool useCopy = false;
 
 	// object list does not exist, so it must be created.
 	if (objectList == nullptr)
@@ -1499,6 +1500,9 @@ void cnz::Level::GenerateSources()
 
 	// generating defaults
 	sourcePlayer = cnz::Player::GenerateDefault(sceneName);
+
+	// enemies
+	// Sentry
 	sourceSentry = new Sentry(sceneName);
 
 	sourceOracle = new Oracle(sceneName);
