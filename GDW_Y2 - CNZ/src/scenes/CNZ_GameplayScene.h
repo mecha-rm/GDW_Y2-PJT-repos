@@ -204,7 +204,7 @@ namespace cnz
 		int score = 0;
 
 		// the maximum amount of digits
-		static const int DIGITS_MAX;
+		// static const int DIGITS_MAX;
 
 		// score text.
 		cherry::Text* scoreText = nullptr;

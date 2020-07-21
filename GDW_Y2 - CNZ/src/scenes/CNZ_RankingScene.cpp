@@ -16,6 +16,7 @@ void cnz::CNZ_RankingScene::OnOpen()
 
 	SetAllowingNewInstances(true);
 
+	// scene name
 	std::string sceneName = GetName();
 
 	// set skybox 
@@ -65,6 +66,7 @@ void cnz::CNZ_RankingScene::OnOpen()
 		for (int i = 1; i <= spaces; i++)
 			spaceLine += " ";
 
+		// TODO: add numbers for ranks (currently built into names)
 		// while the file still has lines.
 		while (std::getline(file, line))
 		{
@@ -73,9 +75,8 @@ void cnz::CNZ_RankingScene::OnOpen()
 			std::string str = "";
 
 			// forms the line for the text.
-			// TODO: accoutn for comments - the line at the start splits into three, which is "score/name_limit	
 			if (splitStr.size() == 2) // name	score
-				str = splitStr[0] + spaceLine + splitStr[1];
+				str = util::replaceSubstring(splitStr[0], "_", " ") + spaceLine + splitStr[1];
 
 			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 4.5F);
 			text->SetWindowChild(true);

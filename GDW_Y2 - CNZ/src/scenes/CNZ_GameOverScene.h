@@ -45,6 +45,10 @@ namespace cnz
 		// todo: get ranking file name.
 
 	private:
+
+		//  saves the scores.
+		void SaveScores();
+
 		// struct for scores
 		// TODO: change limit on how many characters can be used for the name.
 		struct Score
@@ -53,11 +57,11 @@ namespace cnz
 			int points = 0;
 		};
 
-		// the size of the array
-		const int SCORES_ARR_SZE = 10;
-
 		// array of scores
-		Score scores[10];
+		std::vector<Score> scores;
+
+		// the rank of the current player.
+		int playerRank = 99;
 
 		// Buttons
 		cherry::Button* exitButton = nullptr;

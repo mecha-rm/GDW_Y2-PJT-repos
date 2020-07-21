@@ -7,7 +7,11 @@
 
 #pragma once
 
+// macros
 #define RANKING_FILE "res/data/ranking.txt"
+#define RANKING_SCORES 10
+#define NAME_CHAR_LIMIT 16
+#define SCORE_DIGIT_LIMIT 8
 
 #include "cherry/Game.h"
 #include "Player.h"
@@ -16,11 +20,12 @@
 #include "cherry/physics/PhysicsBody.h"
 #include "Projectile.h"
 #include "cherry/animate/Path.h"
-#include <ctime>
 #include "LevelLoader.h"
 
 //Enemy Sub-classes
 #include "EnemyTypes/Enemies.h"
+
+#include <ctime>
 
 // inherits from the game class.
 namespace cnz

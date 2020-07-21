@@ -9,6 +9,7 @@
 
 #include "CNZ_GameOverScene.h"
 #include "..\CNZ_Game.h"
+#include "..\cherry/utils/sort/SelectionSort.h"
 
 #include <toolkit/Logging.h>
 #include <imgui/imgui.h>
@@ -41,41 +42,58 @@ void cnz::CNZ_GameOverScene::OnOpen()
 		std::ofstream newFile(fileName);
 		newFile << "Blank" << std::endl;
 		newFile.close();
+
+		// adds dummy scores
+		for (int i = 0; i < RANKING_SCORES; i++)
+			scores.push_back(Score{});
+		
 	}
 	else
 	{
-		// index of the score array.
-		int index = 0;
-
 		// while the file still has lines, get scores.
-		while (std::getline(file, line) && index < SCORES_ARR_SZE)
+		while (std::getline(file, line))
 		{
 			// splits the line between the score and the name.
 			std::vector<std::string> splitStr = util::splitString<std::string>(line);
+
+			// adds in a score.
+			Score newScore;
+
 
 			// if the line is of the right length.
 			// [0] = name, [1] = score
 			if (splitStr.size() == 2)
 			{
 				// name 
-				scores[index].name = splitStr[0];
+				newScore.name = splitStr[0];
 
 				// points
 				if (util::isInt(splitStr[1]))
-					scores[index].points = util::stringToInt(splitStr[1]);
+					newScore.points = util::stringToInt(splitStr[1]);
 				else
-					scores[index].points = 0;
+					newScore.points = 0;
 
 			}
 
-			// indexes for scores
-			index++;
+			// saves the score.
+			scores.push_back(newScore);
 		}
-
 		file.close();
 	}
 
+	// going through all the scores, from last to first.
+	// this gets the rank of the player.
+	for (int i = scores.size() - 1; i >= 0; i--)
+	{
+		if (playerScore > scores[i].points)
+			playerRank = i + 1;
+	}
 
+	// if the player rank is less than or equal to the amount of available scores, their score will be saved.
+	if (playerRank <= RANKING_SCORES)
+	{
+		useImgui = true;
+	}
 }
 
 // on close
@@ -105,27 +123,43 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	// the window title (as a string)
 	// std::string wtStr = game->GetWindowTitle();
 	std::string wtStr = "Score Enterer";
-
+	
+	char entryNameChr[NAME_CHAR_LIMIT];
+	std::string entryNameStr = "";
 
 	// Open a new ImGui window
-	// ImGui::Begin("Colour Picker");
+	ImGui::Begin("Score Entry");
 
-	// // Draw widgets here
-	// // ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
-	// ImGui::ColorPicker4("Color", &myClearColor.x); // new version
-	// // ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
-	// // ImGui::SetNextWindowCollapsed(false);
-	// // ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
-	// ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
-	// if (ImGui::InputText("Title", myWindowTitle, 31))
-	// {
-	// 	glfwSetWindowTitle(myWindow, myWindowTitle);
-	// }
-	// 
-	// if (ImGui::Button("Apply")) // adding another button, which allows for the application of the window title.
-	// {
-	// 	glfwSetWindowTitle(myWindow, myWindowTitle);
-	// }
+	// Draw Widgits
+	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
+	// ImGui::SetNextWindowCollapsed(false);
+	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
+	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
+
+	ImGui::Text("Ranking: " + playerRank);
+	if (ImGui::InputText("Name: ", entryNameChr, NAME_CHAR_LIMIT))
+	{
+		entryNameStr = entryNameChr; // saves the name.
+	}
+	
+	if (ImGui::Button("Enter")) // adding another button, which allows for the application of the window title.
+	{
+		// if characters were entered that aren't all spaces.
+		if (util::replaceSubstring(entryNameStr, " ", "") != "")
+		{
+			entryNameStr = util::replaceSubstring(entryNameStr, " ", "_"); // replaces all spaces with underscores.
+
+			// saves the name and points for the current player.
+			scores.at(playerRank - 1).name = entryNameStr;
+			scores.at(playerRank - 1).points = playerScore;
+
+			// saves the scores.
+			SaveScores();
+
+			// the imgui window can be turned off now.
+			useImgui = false;
+		}
+	}
 	// if (ImGui::Button("Wireframe/Fill Toggle"))
 	// {
 	// 	for (cherry::Object* obj : objectList->objects)
@@ -136,7 +170,7 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	// std::string camMode = myCamera->InPerspectiveMode() ? "Perspective" : "Orthographic";
 	// ImGui::InputText((std::string("CAMERA MODE (\'SPACE\')") + camMode).c_str(), myWindowTitle, WINDOW_TITLE_CHAR_MAX);
 
-	// ImGui::End();
+	ImGui::End();
 
 	Scene::DrawGui(deltaTime);
 }
@@ -147,7 +181,11 @@ void cnz::CNZ_GameOverScene::SetScore(float score)
 	playerScore = score;
 }
 
-
+// saves the scores in the vector.
+void cnz::CNZ_GameOverScene::SaveScores()
+{
+	// TODO: save scores
+}
 
 // update loop
 void cnz::CNZ_GameOverScene::Update(float deltaTime)

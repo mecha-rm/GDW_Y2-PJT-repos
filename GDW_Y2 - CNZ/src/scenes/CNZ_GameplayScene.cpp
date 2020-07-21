@@ -10,7 +10,7 @@ std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
 
 const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of time the player is invincible for.
-const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
+// const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
@@ -127,7 +127,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// score
 	{
 		std::string tempStr = "";
-		tempStr.resize(DIGITS_MAX, '0');
+		tempStr.resize(SCORE_DIGIT_LIMIT, '0');
 
 		scoreText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		scoreText->SetWindowChild(true);
@@ -1270,10 +1270,11 @@ void cnz::CNZ_GameplayScene::SetVisiblePhysicsBodies(bool visible)
 void cnz::CNZ_GameplayScene::UpdateScore()
 {
 	// maximum score
-	std::string maxScoreStr = std::string(DIGITS_MAX, '9');
+	std::string maxScoreStr = std::string(SCORE_DIGIT_LIMIT, '9');
 	int maxScore = util::convertString<int>(maxScoreStr);
 
-	std::string zeroFilled = util::zeroFill(score, DIGITS_MAX);
+	// fills the score with zeroes.
+	std::string zeroFilled = util::zeroFill(score, SCORE_DIGIT_LIMIT);
 
 	// because window object positions are reversed, the string must be too.
 	// std::reverse(zeroFilled.begin(), zeroFilled.end());

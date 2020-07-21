@@ -12,9 +12,9 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 
 // constructor with window size
 cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) 
-	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, nullptr, false) {
+	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, nullptr, false) 
+{
 }
-
 
 // loads content
 void cnz::CNZ_Game::LoadContent()
