@@ -2,6 +2,7 @@
 
 #include "..\CNZ_Game.h"
 #include "..\cherry/Instrumentation.h"
+#include "CNZ_GameOverScene.h"
 
 #include <stack>
 
@@ -2181,8 +2182,25 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// switching the scene.
 	if (lives <= 0)
 	{
+		// game
 		cnz::CNZ_Game* const game = (CNZ_Game*)cherry::Game::GetRunningGame();
-		game->SetCurrentScene(game->titleSceneName, true);
+
+		// gets the game over scene
+		cnz::CNZ_GameOverScene* gos = nullptr;
+		gos = (CNZ_GameOverScene*)cherry::SceneManager::Get(game->gameOverSceneName);
+		
+		// leaving the game.
+		if (gos == nullptr) // goes to main title if the game over scene is unavailable.
+		{
+			game->SetCurrentScene(game->titleSceneName, true); // main menu
+		}
+		else // goes to game over screen.
+		{
+			gos->SetScore(score); // gives the scene the score.
+			game->SetCurrentScene(gos->GetName(), false); // game over
+		}
+
+		// this shouldn't ever be reached.
 		return;
 	}
 

@@ -232,9 +232,10 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 }
 
 // sets the score.
-void cnz::CNZ_GameOverScene::SetScore(float score)
+void cnz::CNZ_GameOverScene::SetScore(int score)
 {
-	playerScore = score;
+	// the score cannot be negative
+	playerScore = (score > 0) ? score : 0;
 }
 
 // saves the scores in the vector.

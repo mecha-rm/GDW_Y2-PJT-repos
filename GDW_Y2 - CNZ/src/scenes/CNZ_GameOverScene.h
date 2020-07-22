@@ -33,16 +33,11 @@ namespace cnz
 		void DrawGui(float deltaTime) override;
 
 		// sets the score for the player.
-		void SetScore(float score);
+		void SetScore(int score);
 
 
 		// update loop
 		void Update(float deltaTime) override;
-
-		// player
-		int playerScore = 0;
-
-		// todo: get ranking file name.
 
 	private:
 
@@ -59,6 +54,9 @@ namespace cnz
 
 		// array of scores
 		std::vector<Score> scores;
+
+		// player
+		int playerScore = 0;
 
 		// the rank of the current player.
 		int playerRank = 99;

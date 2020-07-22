@@ -56,7 +56,7 @@ void cnz::CNZ_Game::LoadContent()
 
 	// game over
 	CNZ_GameOverScene* gameover = new CNZ_GameOverScene(gameOverSceneName);
-	// gameover->playerScore = 99999; // used for testing purposes.
+	// gameover->SetScore(99999); // used for testing purposes.
 	RegisterScene(gameover, false);
 
 
@@ -77,8 +77,8 @@ void cnz::CNZ_Game::LoadContent()
 
 	if (loadMenu) // load menu
 	{
-		SetCurrentScene(title->GetName(), false);
-		// SetCurrentScene(gameover->GetName(), false); // score entry.
+		// SetCurrentScene(title->GetName(), false);
+		SetCurrentScene(gameover->GetName(), false); // score entry.
 	}
 	else // load level
 	{
