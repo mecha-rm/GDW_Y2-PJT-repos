@@ -66,6 +66,9 @@ namespace cnz
 		// Buttons
 		cherry::Button* exitButton = nullptr;
 
+		// used for imGUI
+		std::string entryNameStr = ""; // string version
+
 	protected:
 	};
 }

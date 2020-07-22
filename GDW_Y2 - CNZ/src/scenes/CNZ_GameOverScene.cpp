@@ -5,6 +5,7 @@
  * References:
 	* https://stackoverflow.com/questions/478075/creating-files-in-c
 	* http://www.cplusplus.com/doc/tutorial/files/
+	* https://stackoverflow.com/questions/8960087/how-to-convert-a-char-array-to-a-string
 */
 
 #include "CNZ_GameOverScene.h"
@@ -162,18 +163,16 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 {
 	cherry::Game* game = cherry::Game::GetRunningGame();
 
-	// window title (char array)
-	char myWindowTitle[WINDOW_TITLE_CHAR_MAX];
+	const int NAME_LEN_LIMIT = NAME_CHAR_LIMIT;
 
-	// the window title (as a string)
-	// std::string wtStr = game->GetWindowTitle();
-	std::string wtStr = "Score Enterer";
-	
-	char entryNameChr[NAME_CHAR_LIMIT];
-	std::string entryNameStr = "";
+	// entry text for player name
+	char entryNameChr[NAME_LEN_LIMIT]; // array version
+
+	entryNameStr.resize(NAME_LEN_LIMIT, '\0'); // fill rest of string with null termination character.
+	memcpy(entryNameChr, entryNameStr.c_str(), NAME_LEN_LIMIT);
 
 	// Open a new ImGui window
-	ImGui::Begin("Score Entry");
+	ImGui::Begin("Score Entry"); // window title
 
 	// Draw Widgits
 	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
@@ -181,8 +180,8 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	// ImGui::SetWindowPos(ImVec2(-225.0F, 1.0F));
 	// ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
 
-	ImGui::Text("Ranking: " + playerRank);
-	if (ImGui::InputText("Name: ", entryNameChr, NAME_CHAR_LIMIT))
+	ImGui::Text(("Ranking: " + std::to_string(playerRank)).c_str());
+	if (ImGui::InputText("Name", entryNameChr, NAME_LEN_LIMIT))
 	{
 		entryNameStr = entryNameChr; // saves the name.
 	}
@@ -192,7 +191,18 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 		// if characters were entered that aren't all spaces.
 		if (util::replaceSubstring(entryNameStr, " ", "") != "")
 		{
-			entryNameStr = util::replaceSubstring(entryNameStr, " ", "_"); // replaces all spaces with underscores.
+			// TODO: this is actually handled when putting in the scores. So we can take this out.
+			// entryNameStr = util::replaceSubstring(entryNameStr, " ", "_"); // replaces all spaces with underscores.
+
+			// resizes the name and fills empty spaces with underscores.
+			// it would still print otherwise, but it would be full of unrecognizable characters.
+			// since the string is full of null termination characters, the resize function doesn't work.
+			// so a loop must be used instead.
+			for (int i = 0; i < entryNameStr.size(); i++)
+			{
+				if (entryNameStr[i] == '\0') // if this is equal to a null termination character.
+					entryNameStr[i] = '_';
+			}
 
 			// saves the name and points for the current player.
 			scores.at(playerRank - 1).name = entryNameStr;
