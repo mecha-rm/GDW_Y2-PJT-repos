@@ -24,13 +24,17 @@ cnz::CNZ_GameOverScene::CNZ_GameOverScene(std::string sceneName)
 // on open
 void cnz::CNZ_GameOverScene::OnOpen()
 {
+	cherry::MenuScene::OnOpen();
+
+	const std::string SCENE_NAME = GetName();
+
 	// reading in the scores
 	std::string fileName = RANKING_FILE;
 	std::ifstream file(fileName, std::ios::in);
 	std::string line; // line from file.
 
 	// an imgui window should be used.
-	useImgui = true;
+	// useImgui = true;
 
 	// if the file does not exist, or otherwise could not be opened.
 	if (!file)
@@ -93,6 +97,46 @@ void cnz::CNZ_GameOverScene::OnOpen()
 	if (playerRank <= RANKING_SCORES)
 	{
 		useImgui = true;
+		cherry::Game::GetRunningGame()->imguiMode = true; // TODO: make this more convenient.
+	}
+
+	// Text
+	const cherry::Vec4 WHITE(1.0F, 1.0F, 1.0F, 1.0F);
+
+	// GAME OVER
+	{
+		cherry::Text* text = new cherry::Text("GAME OVER", GetName(), FONT_ARIAL, WHITE, 10.0F);
+		text->SetWindowChild(true);
+		text->SetPositionByWindowSize(0.5F, 0.7F);
+
+		objectList->AddObject(text);
+	}
+
+	// Final Score
+	{
+		cherry::Text* text = new cherry::Text("FINAL SCORE: " + std::to_string(playerScore), SCENE_NAME, FONT_ARIAL, WHITE, 10.0F);
+		text->SetWindowChild(true);
+		text->SetPositionByWindowSize(0.5F, 0.5F);
+
+		objectList->AddObject(text);
+	}
+
+	// Button
+	{
+		cherry::Image* image = new cherry::Image("res/images/continue_button.png", SCENE_NAME, false, false);
+		image->SetWindowChild(true);
+		image->SetPositionByWindowSize(0.5F, 0.1F);
+		image->SetScale(0.45F);
+
+		// physics body.
+		cherry::Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
+		cherry::PhysicsBodyBox* pbb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), size * 2);
+		image->AddPhysicsBody(pbb); // collision box
+
+		// adds button
+		exitButton = new cherry::Button();
+		exitButton->object = image;
+		AddButton(exitButton);
 	}
 }
 
@@ -110,6 +154,7 @@ cherry::Scene* cnz::CNZ_GameOverScene::GenerateNewInstance() const
 // called when a mouse button as been pressed.
 void cnz::CNZ_GameOverScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
+	cherry::MenuScene::MouseButtonPressed(window, button);
 }
 
 // draw gui for entering in a new score.
@@ -133,8 +178,8 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	// Draw Widgits
 	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
 	// ImGui::SetNextWindowCollapsed(false);
-	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
-	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
+	// ImGui::SetWindowPos(ImVec2(-225.0F, 1.0F));
+	// ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
 
 	ImGui::Text("Ranking: " + playerRank);
 	if (ImGui::InputText("Name: ", entryNameChr, NAME_CHAR_LIMIT))
@@ -158,6 +203,7 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 
 			// the imgui window can be turned off now.
 			useImgui = false;
+			game->imguiMode = false;
 		}
 	}
 	// if (ImGui::Button("Wireframe/Fill Toggle"))
@@ -185,12 +231,50 @@ void cnz::CNZ_GameOverScene::SetScore(float score)
 void cnz::CNZ_GameOverScene::SaveScores()
 {
 	// TODO: save scores
+	std::string fileName = RANKING_FILE;
+	std::ofstream fw(fileName, std::ios::out); // opens the file, creating it if necessary.
+
+	// the file does not exist.
+	// if (!fileWrite)
+	// {
+	// 	std::ofstream newFile(fileName);
+	// 	newFile << "Blank" << std::endl;
+	// 	newFile.close();
+
+	// puts in all the scores.
+	for (int i = 0; i < scores.size(); i++)
+	{
+		// puts in the 10 names.
+		fw << util::replaceSubstring(scores[i].name, " ", "_") << " " << std::to_string(scores[i].points) << "\n";
+	}
+
+	fw.close();
 }
+
+	
 
 // update loop
 void cnz::CNZ_GameOverScene::Update(float deltaTime)
 {
-	cherry::MenuScene::Update(deltaTime);
+	using namespace cherry;
+
+	MenuScene::Update(deltaTime);
+
+	CNZ_Game* const game = (CNZ_Game*)Game::GetRunningGame();
+
+	// a button has been entered and the mouse has been pressed.
+	if (enteredButton != nullptr && mousePressed && useImgui == false)
+	// if (enteredButton != nullptr && mousePressed)
+	{
+		// if the entered button is the contnue button, and imGui is off.
+		if (enteredButton == exitButton) // exit button
+		{
+			// leaves and goes back to the title scene.
+			game->SetCurrentScene(game->titleSceneName, false);
+
+		}
+		
+	}
 }
 
 

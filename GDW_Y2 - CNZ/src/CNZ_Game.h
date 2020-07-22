@@ -58,6 +58,9 @@ namespace cnz
 		// name of the score scene.
 		std::string rankingSceneName = "";
 
+		// game over scene name.
+		std::string gameOverSceneName = "";
+
 		// maps; do not make changes.
 		LevelLoadInfo map1Info;
 		LevelLoadInfo map2Info;

@@ -4,6 +4,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include "scenes/CNZ_TitleScene.h"
 #include "scenes/CNZ_RankingScene.h"
+#include "scenes/CNZ_GameOverScene.h"
 #include "cherry/audio/AudioEngine.h"
 #include "cherry/Instrumentation.h"
 
@@ -37,6 +38,7 @@ void cnz::CNZ_Game::LoadContent()
 	// Menus
 	titleSceneName = "Title Screen";
 	rankingSceneName = "Ranking";
+	gameOverSceneName = "Game Over";
 
 	// Levels
 	map1Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
@@ -44,12 +46,18 @@ void cnz::CNZ_Game::LoadContent()
 	map3Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map3.csv", "map3" };
 	
 	// creating the scenes
+	// title
 	CNZ_TitleScene* title = new CNZ_TitleScene(titleSceneName);
 	RegisterScene(title, false);
 
-	// creating the scenes
+	// ranking listing
 	CNZ_RankingScene* ranking = new CNZ_RankingScene(rankingSceneName);
 	RegisterScene(ranking, false);
+
+	// game over
+	CNZ_GameOverScene* gameover = new CNZ_GameOverScene(gameOverSceneName);
+	gameover->playerScore = 99999;
+	RegisterScene(gameover, false);
 
 
 	// CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
@@ -69,7 +77,8 @@ void cnz::CNZ_Game::LoadContent()
 
 	if (loadMenu) // load menu
 	{
-		SetCurrentScene(title->GetName(), false);
+		// SetCurrentScene(title->GetName(), false);
+		SetCurrentScene(gameover->GetName(), false);
 	}
 	else // load level
 	{
