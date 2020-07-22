@@ -9,7 +9,7 @@ cnz::Enemy::Enemy() {}
 // copy constructor
 cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 {
-	// type = emy.type; // enemy type
+	type = emy.type; // enemy type
 	description = emy.description; // enemy description (name)
 	attacking = emy.attacking;
 
@@ -84,10 +84,10 @@ void cnz::Enemy::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 }
 
 // returns the enemy type.
-// cnz::enemy_t cnz::Enemy::GetType() const { return type; }
-// 
-// // returns the enemy type.
-// void cnz::Enemy::SetType(cnz::enemy_t et) { type = et; }
+cnz::enemy_t cnz::Enemy::GetType() const { return type; }
+
+// returns the enemy type.
+void cnz::Enemy::SetType(cnz::enemy_t et) { type = et; }
 
 // TODO: holdovers from object class. May not be needed?
 float cnz::Enemy::GetDegreeAngle() const { return degreeAngle; }

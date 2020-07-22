@@ -1,4 +1,5 @@
 #include "Marauder.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // emissive properties
 // const glm::vec3 cnz::Marauder::EMISSIVE_COLOR = glm::vec3(0.9F, 0.1231F, 0.5F);
@@ -10,11 +11,15 @@ const float cnz::Marauder::EMISSIVE_POWER = 1.0F;
 cnz::Marauder::Marauder(std::string scene) 
 	: Enemy("res/objects/enemies/Marauder.obj", scene, true)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -22,19 +27,23 @@ cnz::Marauder::Marauder(std::string scene)
 cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Marauder.obj", scene, mat)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
 
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
+
 	LoadAnimations();
 }
 
-
+// copy constructor (from a pointer)
 cnz::Marauder::Marauder(cnz::Marauder* obj, std::string scene) : cnz::Enemy(obj, scene)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 	
 	cherry::AnimationManager& ani = GetAnimationManager();
@@ -45,7 +54,7 @@ cnz::Marauder::Marauder(cnz::Marauder* obj, std::string scene) : cnz::Enemy(obj,
 // copy constructor
 cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
 {
-	// type = cnz::marauder;
+	type = cnz::marauder;
 	description = "Marauder";
 
 	cherry::AnimationManager& ani = GetAnimationManager();

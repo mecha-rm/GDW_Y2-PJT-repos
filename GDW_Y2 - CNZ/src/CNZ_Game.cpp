@@ -4,6 +4,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include "scenes/CNZ_TitleScene.h"
 #include "scenes/CNZ_RankingScene.h"
+#include "scenes/CNZ_GameOverScene.h"
 #include "cherry/audio/AudioEngine.h"
 #include "cherry/Instrumentation.h"
 
@@ -12,9 +13,9 @@ cnz::CNZ_Game::CNZ_Game() : Game() {}
 
 // constructor with window size
 cnz::CNZ_Game::CNZ_Game(float windowWidth, float windowHeight, bool fullScreen) 
-	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, nullptr, false) {
+	: Game("GDW_Y2 - Bonus Fruit - Codename: ZERO", windowWidth, windowHeight, fullScreen, false, nullptr, false) 
+{
 }
-
 
 // loads content
 void cnz::CNZ_Game::LoadContent()
@@ -37,6 +38,7 @@ void cnz::CNZ_Game::LoadContent()
 	// Menus
 	titleSceneName = "Title Screen";
 	rankingSceneName = "Ranking";
+	gameOverSceneName = "Game Over";
 
 	// Levels
 	map1Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
@@ -44,12 +46,18 @@ void cnz::CNZ_Game::LoadContent()
 	map3Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map3.csv", "map3" };
 	
 	// creating the scenes
+	// title
 	CNZ_TitleScene* title = new CNZ_TitleScene(titleSceneName);
 	RegisterScene(title, false);
 
-	// creating the scenes
+	// ranking listing
 	CNZ_RankingScene* ranking = new CNZ_RankingScene(rankingSceneName);
 	RegisterScene(ranking, false);
+
+	// game over
+	CNZ_GameOverScene* gameover = new CNZ_GameOverScene(gameOverSceneName);
+	// gameover->SetScore(99999); // used for testing purposes.
+	RegisterScene(gameover, false);
 
 
 	// CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
@@ -69,7 +77,8 @@ void cnz::CNZ_Game::LoadContent()
 
 	if (loadMenu) // load menu
 	{
-		SetCurrentScene(title->GetName(), false);
+		// SetCurrentScene(title->GetName(), false);
+		SetCurrentScene(gameover->GetName(), false); // score entry.
 	}
 	else // load level
 	{

@@ -72,7 +72,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		image->SetScale(0.8F);
 
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(Vec3(0, 0, 0), size);
-		pbb->SetVisible(true);
+		pbb->SetVisible(false);
 
 		image->AddPhysicsBody(pbb); // collision box
 

@@ -159,6 +159,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	cherry::ObjectList* objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
 	cherry::LightList* lightList = cherry::LightManager::GetSceneLightListByName(sceneName);
 
+	// TODO: optimize this, since it might be being given to an actual scene, and then being destroyed.
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
 	bool useCopy = false;
 
@@ -1499,6 +1500,9 @@ void cnz::Level::GenerateSources()
 
 	// generating defaults
 	sourcePlayer = cnz::Player::GenerateDefault(sceneName);
+
+	// enemies
+	// Sentry
 	sourceSentry = new Sentry(sceneName);
 
 	sourceOracle = new Oracle(sceneName);
@@ -1506,6 +1510,13 @@ void cnz::Level::GenerateSources()
 
 	sourceBastion = new Bastion(sceneName);
 	sourceSpider = new Mechaspider(sceneName);
+
+	// physics body to be added to the enemy.
+	// PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
+	// pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+	// pb->SetVisible(showPBs);
+	// 
+	// enemy->AddPhysicsBody(pb);
 
 	// arrow projectile
 	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);

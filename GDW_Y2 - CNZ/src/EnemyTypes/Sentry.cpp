@@ -1,4 +1,5 @@
 #include "Sentry.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // setting emissive values
 // const glm::vec3 cnz::Sentry::EMISSIVE_COLOR = glm::vec3(0.811F, 0.3231F, 0.421F);
@@ -9,11 +10,15 @@ const float cnz::Sentry::EMISSIVE_POWER = 1.0F;
 cnz::Sentry::Sentry(std::string scene)
 	: Enemy("res/objects/enemies/Sentry.obj", scene, true)
 {
-	// type = cnz::sentry;
+	type = cnz::sentry;
 	description = "Sentry";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 	
 	LoadAnimations();
 }
@@ -22,11 +27,15 @@ cnz::Sentry::Sentry(std::string scene)
 cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Sentry.obj", scene, mat)
 {
-	// type = cnz::sentry;
+	type = cnz::sentry;
 	description = "Sentry";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -35,7 +44,7 @@ cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 cnz::Sentry::Sentry(const cnz::Sentry& sentry)
 	: Enemy(sentry)
 {
-	// type = cnz::sentry;
+	type = cnz::sentry;
 	description = "Sentry";
 
 	// getting references to the animations
@@ -47,7 +56,7 @@ cnz::Sentry::Sentry(const cnz::Sentry& sentry)
 // copies the enemy and replaces its scene.
 cnz::Sentry::Sentry(const cnz::Sentry* obj, std::string scene) : cnz::Enemy(obj, scene)
 {
-	// type = cnz::sentry;
+	type = cnz::sentry;
 	description = "Sentry";
 
 	// getting references to the animations

@@ -8,15 +8,15 @@
 namespace cnz
 {
 	// enum for enemies
-	// enum enemy_t
-	// {
-	// 	null = 0,
-	// 	marauder = 1,
-	// 	oracle = 2,
-	// 	sentry = 3,
-	// 	bastion = 4,
-	// 	mechaspider = 5
-	// };
+	enum enemy_t
+	{
+		null = 0,
+		marauder = 1,
+		oracle = 2,
+		sentry = 3,
+		bastion = 4,
+		mechaspider = 5
+	};
 
 	// Enemy class
 	class Enemy : public cherry::Object
@@ -66,7 +66,7 @@ namespace cnz
 		virtual std::string WhoAmI() { return description; }
 
 		// returns the type of enemy
-		// virtual cnz::enemy_t GetType() const;
+		virtual cnz::enemy_t GetType() const;
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
@@ -140,7 +140,8 @@ namespace cnz
 
 	private:
 
-										//		   z?		something is really funky here...
+		// TODO: this probably shouldn't be the same for every enemy. But you can look at this later.
+		//		   z?		something is really funky here...
 		cherry::Vec3 pBodySize = cherry::Vec3(1, 2, 1);
 		bool drawPBody = false;
 
@@ -154,7 +155,7 @@ namespace cnz
 	protected:
 		
 		// sets the type of this enemy.
-		// void SetType(cnz::enemy_t et);
+		void SetType(cnz::enemy_t et);
 
 		// loads in all animations. This is a pure virtual function since all enemies need animations.
 		virtual void LoadAnimations() = 0;
@@ -167,6 +168,6 @@ namespace cnz
 		int points = 1;
 
 		// the enemy type (as an enum)
-		// cnz::enemy_t type = null;
+		cnz::enemy_t type = null;
 	};
 }

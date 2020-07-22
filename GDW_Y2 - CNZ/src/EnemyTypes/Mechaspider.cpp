@@ -1,4 +1,5 @@
 #include "Mechaspider.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // emissive properties
 // const glm::vec3 cnz::Mechaspider::EMISSIVE_COLOR = glm::vec3(0.41F, 0.431F, 0.9F);
@@ -9,11 +10,15 @@ const float cnz::Mechaspider::EMISSIVE_POWER = 1.0F;
 cnz::Mechaspider::Mechaspider(std::string scene)
 	:Enemy("res/objects/enemies/spider.obj", scene, true)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -22,11 +27,15 @@ cnz::Mechaspider::Mechaspider(std::string scene)
 cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/spider.obj", scene, mat)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 	
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -34,7 +43,7 @@ cnz::Mechaspider::Mechaspider(std::string scene, cherry::Material::Sptr mat)
 // copy and change scene
 cnz::Mechaspider::Mechaspider(cnz::Mechaspider* obj, std::string scene) : Enemy(obj, scene)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	// getting references to the animations
@@ -46,7 +55,7 @@ cnz::Mechaspider::Mechaspider(cnz::Mechaspider* obj, std::string scene) : Enemy(
 // copy constructor
 cnz::Mechaspider::Mechaspider(const cnz::Mechaspider& enemy) : Enemy(enemy)
 {
-	// type = cnz::mechaspider;
+	type = cnz::mechaspider;
 	description = "Mechaspider";
 
 	// getting references to the animations

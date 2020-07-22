@@ -1,4 +1,18 @@
+/*
+ * Name: Bonus Fruit
+ * Date: 07/20/2020
+ * Description: game file for Codename: ZERO
+ * References:
+*/
+
 #pragma once
+
+// macros
+#define RANKING_FILE "res/data/ranking.txt"
+#define RANKING_SCORES 10
+#define NAME_CHAR_LIMIT 16
+#define SCORE_DIGIT_LIMIT 8
+
 #include "cherry/Game.h"
 #include "Player.h"
 #include "EnemyTypes/Enemies.h"
@@ -6,11 +20,12 @@
 #include "cherry/physics/PhysicsBody.h"
 #include "Projectile.h"
 #include "cherry/animate/Path.h"
-#include <ctime>
 #include "LevelLoader.h"
 
 //Enemy Sub-classes
 #include "EnemyTypes/Enemies.h"
+
+#include <ctime>
 
 // inherits from the game class.
 namespace cnz
@@ -42,6 +57,9 @@ namespace cnz
 
 		// name of the score scene.
 		std::string rankingSceneName = "";
+
+		// game over scene name.
+		std::string gameOverSceneName = "";
 
 		// maps; do not make changes.
 		LevelLoadInfo map1Info;

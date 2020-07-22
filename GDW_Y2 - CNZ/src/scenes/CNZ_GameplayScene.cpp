@@ -1,15 +1,17 @@
 #include "CNZ_GameplayScene.h"
 
 #include "..\CNZ_Game.h"
-#include <stack>
 #include "..\cherry/Instrumentation.h"
+#include "CNZ_GameOverScene.h"
+
+#include <stack>
 
 // static variables
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
 
 const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of time the player is invincible for.
-const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
+// const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
 // Get Distance Between two Vectors in xy axis
@@ -126,7 +128,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// score
 	{
 		std::string tempStr = "";
-		tempStr.resize(DIGITS_MAX, '0');
+		tempStr.resize(SCORE_DIGIT_LIMIT, '0');
 
 		scoreText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		scoreText->SetWindowChild(true);
@@ -644,115 +646,126 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 
 	int n = enemyGroups[i].size();
 	
-	for (int j = 0; j < n; j++) {
-		if (enemyGroups[i][j] == "sentry") {
-			enemyList.push_back(new Sentry(sentry, sceneName));
-		}
-		else if (enemyGroups[i][j] == "bastion") {
-			enemyList.push_back(new Bastion(bastion, sceneName));
-		}
-		else if (enemyGroups[i][j] == "oracle") {
-			enemyList.push_back(new Oracle(oracle, sceneName));
-		}
-		else if (enemyGroups[i][j] == "marauder") {
-			enemyList.push_back(new Marauder(marauder, sceneName));
-		}
-		else if (enemyGroups[i][j] == "mechaspider") {
-			enemyList.push_back(new Mechaspider(mechaspider, sceneName));
-		}
-	
-		// this is index
-		int index = enemyList.size() - 1;
-	
-		enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
-		enemyList[index]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
-		enemyList[index]->alive = true;
-		enemyList[index]->SetRotationXDegrees(90);
-	
-		// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
-		// phyiscs body
-		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
-		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
-		pb->SetVisible(showPBs);
-	
-		enemyList[index]->AddPhysicsBody(pb);
-	
-		objectList->AddObject(enemyList[index]);
-	
-		if (j % 2 == 0) {
-			count++;
-		}
-		count *= -1;
-	}
+	// for (int j = 0; j < n; j++) {
+	// 	if (enemyGroups[i][j] == "sentry") {
+	// 		enemyList.push_back(new Sentry(sentry, sceneName));
+	// 	}
+	// 	else if (enemyGroups[i][j] == "bastion") {
+	// 		enemyList.push_back(new Bastion(bastion, sceneName));
+	// 	}
+	// 	else if (enemyGroups[i][j] == "oracle") {
+	// 		enemyList.push_back(new Oracle(oracle, sceneName));
+	// 	}
+	// 	else if (enemyGroups[i][j] == "marauder") {
+	// 		enemyList.push_back(new Marauder(marauder, sceneName));
+	// 	}
+	// 	else if (enemyGroups[i][j] == "mechaspider") {
+	// 		enemyList.push_back(new Mechaspider(mechaspider, sceneName));
+	// 	}
+	// 
+	// 	// this is index
+	// 	int index = enemyList.size() - 1;
+	// 
+	// 	enemyList[index]->SetRotation(cherry::Vec3(0, 0, 0), true);
+	// 	enemyList[index]->SetPosition(cherry::Vec3(25 + count * 5, 25 - 10 + abs(count) * -5, 0));
+	// 	enemyList[index]->alive = true;
+	// 	enemyList[index]->SetRotationXDegrees(90);
+	// 
+	// 	// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
+	// 	// phyiscs body
+	// 	PhysicsBody* pb = new cherry::PhysicsBodyBox(enemyList[index]->GetPosition(), enemyList[index]->GetPBodySize());
+	// 	pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
+	// 	pb->SetVisible(showPBs);
+	// 
+	// 	enemyList[index]->AddPhysicsBody(pb);
+	// 
+	// 	objectList->AddObject(enemyList[index]);
+	// 
+	// 	if (j % 2 == 0) {
+	// 		count++;
+	// 	}
+	// 	count *= -1;
+	// }
 
 	// NEW
-	//if(false)
-	// {
-	// 	std::queue<int> spawns; // amount of spawns
-	// 	Enemy* enemy;
-	// 	int eNum = 0;
-	// 
-	// 	// generates a series of random numbers.
-	// 	for (int i = 1; i <= waveEnemyCount; i++)
-	// 	{
-	// 		// 0 = null, 1 = bastion, 2 = marauder, 3 = mechaspider, 4 = oracle, 5 = sentry
-	// 		spawns.push(rand() % 5 + 1);
-	// 	}
-	// 
-	// 	// while there are still enemies to spawn
-	// 	while (!spawns.empty())
-	// 	{
-	// 		switch (spawns.front())
-	// 		{			
-	// 		case cnz::marauder: // 1
-	// 		default: // 0
-	// 			enemy = new Marauder(marauder, sceneName);
-	// 			break;
-	// 		case cnz::oracle: // 2
-	// 			enemy = new Oracle(oracle, sceneName);
-	// 			break;
-	// 		case cnz::sentry: // 3
-	// 			enemy = new Sentry(sentry, sceneName);
-	// 			break;
-	// 		case cnz::bastion: // 4
-	// 			enemy = new Bastion(bastion, sceneName);
-	// 			break;
-	// 		case cnz::mechaspider: // 5
-	// 			enemy = new Mechaspider(mechaspider, sceneName);
-	// 			break;			
-	// 		}
-	// 
-	// 		enemy->SetRotation(cherry::Vec3(0, 0, 0), true);
-	// 		enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
-	// 		enemy->alive = true;
-	// 		enemy->SetRotationXDegrees(90);
-	// 
-	// 		// TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
-	// 		// phyiscs body
-	// 		PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
-	// 		pb->SetLocalPosition(cherry::Vec3(0, 0, 1));
-	// 		pb->SetVisible(showPBs);
-	// 
-	// 		enemy->AddPhysicsBody(pb);
-	// 
-	// 		// add them to the lists
-	// 		objectList->AddObject(enemy);
-	// 		enemyList.push_back(enemy);
-	// 
-	// 		// remove front
-	// 		spawns.pop();
-	// 		// enemy number 
-	// 		eNum++;
-	// 	}
-	// 
-	// 	// increasing the amount of enemies per the wave.
-	// 	if (wave % 3 == 0 && waveEnemyCount < WAVE_ENEMY_COUNT_MAX)
-	// 	{
-	// 		waveEnemyCount++;
-	// 	}
-	// 
-	// 	wave++;
-	// }
+	// if (false)
+	{
+		std::queue<int> spawns; // amount of spawns
+		Enemy* enemy;
+		int eNum = 0;
+
+		// generates a series of random numbers.
+		for (int i = 1; i <= waveEnemyCount; i++)
+		{
+			// 0 = null, 1 = bastion, 2 = marauder, 3 = mechaspider, 4 = oracle, 5 = sentry
+			spawns.push(rand() % 5 + 1);
+		}
+
+		// while there are still enemies to spawn
+		while (!spawns.empty())
+		{
+			switch (spawns.front())
+			{
+			case cnz::marauder: // 1
+			default: // 0
+				enemy = new Marauder(marauder, sceneName);
+				break;
+			case cnz::oracle: // 2
+				enemy = new Oracle(oracle, sceneName);
+				break;
+			case cnz::sentry: // 3
+				enemy = new Sentry(sentry, sceneName);
+				break;
+			case cnz::bastion: // 4
+				enemy = new Bastion(bastion, sceneName);
+				break;
+			case cnz::mechaspider: // 5
+				enemy = new Mechaspider(mechaspider, sceneName);
+				break;
+			}
+
+			enemy->SetRotation(cherry::Vec3(0, 0, 0), true);
+			enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
+			enemy->alive = true;
+			enemy->SetRotationXDegrees(90);
+
+			// gets the physics bodies, and sets whether they should be visible or not.
+			if (showPBs == true)
+			{
+				std::vector<PhysicsBody*> pbodies = enemy->GetPhysicsBodies();
+				for (PhysicsBody* body : pbodies)
+				{
+					body->SetVisible(showPBs);
+				}
+			}
+
+
+			// // TODO: these physics bodies could be added to the source objects instead, which would be more efficient.
+			// // phyiscs body
+			// PhysicsBody* pb = new cherry::PhysicsBodyBox(enemy->GetPosition(), enemy->GetPBodySize());
+			// pb->SetLocalPosition(cherry::Vec3(0, 0, 1)); // enemy->GetPosition() is useless, since this overrides it.
+			// pb->SetVisible(showPBs);
+			// 
+			// enemy->AddPhysicsBody(pb);
+
+			// add them to the lists
+			objectList->AddObject(enemy);
+			enemyList.push_back(enemy);
+
+			// remove front
+			spawns.pop();
+			// enemy number 
+			eNum++;
+		}
+
+		// increasing the amount of enemies per the wave.
+		if (wave % 3 == 0 && waveEnemyCount < WAVE_ENEMY_COUNT_MAX)
+		{
+			waveEnemyCount++;
+		}
+
+		wave++;
+	}
 }
 
 // generates the objects.
@@ -1258,10 +1271,11 @@ void cnz::CNZ_GameplayScene::SetVisiblePhysicsBodies(bool visible)
 void cnz::CNZ_GameplayScene::UpdateScore()
 {
 	// maximum score
-	std::string maxScoreStr = std::string(DIGITS_MAX, '9');
+	std::string maxScoreStr = std::string(SCORE_DIGIT_LIMIT, '9');
 	int maxScore = util::convertString<int>(maxScoreStr);
 
-	std::string zeroFilled = util::zeroFill(score, DIGITS_MAX);
+	// fills the score with zeroes.
+	std::string zeroFilled = util::zeroFill(score, SCORE_DIGIT_LIMIT);
 
 	// because window object positions are reversed, the string must be too.
 	// std::reverse(zeroFilled.begin(), zeroFilled.end());
@@ -1278,7 +1292,8 @@ void cnz::CNZ_GameplayScene::UpdateScore()
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
 {
-	cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
+	if(PROFILE)
+		cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
 
 	// if 'true', the score text gets updated.
 	bool updateScore = false;
@@ -1569,7 +1584,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
 				enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
-				if (enemyList[i]->WhoAmI() == "Sentry") {
+
+				// TODO: replace the function calls so that you have the position.
+				switch (enemyList[i]->GetType())
+				{
+				case cnz::sentry:
 					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
 						// Spawn projectiles
 						enemyList[i]->attacking = true;
@@ -1614,70 +1633,88 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							enemyList[i]->GetCurrentAnimation()->Play();
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Marauder" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
+					break;
+
+				case cnz::marauder:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
+					break;
+
+				case cnz::oracle:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Oracle" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
+					break;
+
+				case cnz::bastion:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
+					break;
+
+				case cnz::mechaspider:
+					if (enemyList[i]->attacking == false)
+					{
+						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+							//Attack
+							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+								enemyList[i]->GetCurrentAnimation()->Stop();
+							}
+						}
+						else {
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->GetCurrentAnimation()->Play();
+							}
 						}
 					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Bastion" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
-						}
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
-						}
-					}
-				}
-				else if (enemyList[i]->WhoAmI() == "Mechaspider" && enemyList[i]->attacking == false) {
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
-						//Attack
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
-						}
-					}
-					else {
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
-						}
-					}
+					break;
+
 				}
 				// TODO: why is this being called here? It errors out.
 				// enemyList[i]->Update(deltaTime);
@@ -2145,8 +2182,25 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// switching the scene.
 	if (lives <= 0)
 	{
+		// game
 		cnz::CNZ_Game* const game = (CNZ_Game*)cherry::Game::GetRunningGame();
-		game->SetCurrentScene(game->titleSceneName, true);
+
+		// gets the game over scene
+		cnz::CNZ_GameOverScene* gos = nullptr;
+		gos = (CNZ_GameOverScene*)cherry::SceneManager::Get(game->gameOverSceneName);
+		
+		// leaving the game.
+		if (gos == nullptr) // goes to main title if the game over scene is unavailable.
+		{
+			game->SetCurrentScene(game->titleSceneName, true); // main menu
+		}
+		else // goes to game over screen.
+		{
+			gos->SetScore(score); // gives the scene the score.
+			game->SetCurrentScene(gos->GetName(), false); // game over
+		}
+
+		// this shouldn't ever be reached.
 		return;
 	}
 
@@ -2157,7 +2211,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// calls the main game Update function to go through every object.
 	cherry::GameplayScene::Update(deltaTime);
 
-	cherry::ProfilingSession::End();
+	if (PROFILE)
+		cherry::ProfilingSession::End();
 }
 
 //Get Distance Between two Vectors in xy axis

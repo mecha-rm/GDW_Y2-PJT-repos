@@ -1,4 +1,5 @@
 #include "Oracle.h"
+#include "..\cherry\physics\PhysicsBody.h"
 
 // const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.77F, 0.451F, 0.2F);
 const glm::vec3 cnz::Oracle::EMISSIVE_COLOR = glm::vec3(0.8F, 0.6F, 1.0F);
@@ -8,11 +9,15 @@ const float cnz::Oracle::EMISSIVE_POWER = 1.0F;
 cnz::Oracle::Oracle(std::string scene)
 	: Enemy("res/objects/enemies/Oracle.obj", scene, true)
 {
-	// type = cnz::oracle;
+	type = cnz::oracle;
 	description = "Oracle";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -21,11 +26,15 @@ cnz::Oracle::Oracle(std::string scene)
 cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Oracle.obj", scene, mat)
 {
-	// type = cnz::oracle;
+	type = cnz::oracle;
 	description = "Oracle";
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);
+
+	// physics body
+	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
+	AddPhysicsBody(pb);
 
 	LoadAnimations();
 }
@@ -33,7 +42,7 @@ cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 // copy constructor
 cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 {
-	// type = cnz::oracle;
+	type = cnz::oracle;
 	description = "Oracle";
 
 	// getting references to the animations
@@ -44,7 +53,7 @@ cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 
 cnz::Oracle::Oracle(cnz::Oracle* obj, std::string scene) : cnz::Enemy(obj, scene) 
 { 
-	// type = cnz::oracle;
+	type = cnz::oracle;
 	description = "Oracle"; 
 
 	// getting references to the animations

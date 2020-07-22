@@ -99,6 +99,7 @@
     <ClCompile Include="src\cherry\post\BloomLayer.cpp" />
     <ClCompile Include="src\cherry\utils\Random.cpp" />
     <ClCompile Include="src\cherry\utils\Timer.cpp" />
+    <ClCompile Include="src\scenes\CNZ_GameOverScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="external\entt\entt.hpp" />
@@ -431,6 +432,7 @@
     <ClInclude Include="src\cherry\utils\sort\Sort.h" />
     <ClInclude Include="src\cherry\utils\Random.h" />
     <ClInclude Include="src\cherry\utils\Timer.h" />
+    <ClInclude Include="src\scenes\CNZ_GameOverScene.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\cherry.lib" />
