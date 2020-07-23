@@ -56,6 +56,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	CNZ_Game* game = (CNZ_Game*)CNZ_Game::GetRunningGame();
 	Camera::Sptr myCamera = game->myCamera;
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
+	const std::string SCENE_NAME = GetName();
+
 
 	pauseMenu = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName());
 	pauseMenu->SetWindowChild(true);
@@ -123,6 +125,15 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	{
 		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 0.0F, 45.0F), Vec3(1.0F, 0.0F, 0.73333333333F),
 			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 9000.0F));
+	}
+
+	// player light
+	{
+		// todo: maybe make the light be out in front of the player instead, and be where they're facing.
+		// the light is okay for now, but it could be better.
+		playerLight = new Light(SCENE_NAME, Vec3(0, 0, 1.5F), Vec3(1, 1, 1), Vec3(1.0F, 0.01F, 0.01F), 0.15f, 0.12f, 10.0f, 1/75.0f);
+		playerLightOffset = Vec3(0.0F, 0.0F, 2.5F);
+		lightList->AddLight(playerLight);
 	}
 
 	// score
@@ -227,8 +238,13 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		//indicatorObj->AddPhysicsBody(new cherry::PhysicsBodyBox(indicatorObj->GetPosition(), indicatorObj->GetPBodySize()));
 		game->AddObjectToScene(indicatorObj);
 
-		//// setting up the camera
+		//// setting up the camera 
 		myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
+		
+		// sets the light to be the player position.
+		playerLight->SetLightPositionX(playerObj->GetPositionX());
+		playerLight->SetLightPositionY(playerObj->GetPositionY());
+
 		//myCamera->LookAt(glm::vec3(0));
 
 		//// sets the camera to perspective mode for the scene.
@@ -2138,6 +2154,14 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 
 		// cameraTimer.Stop();
+
+		// moving the player light.
+		if (playerLight->GetLightPosition() != playerObj->GetPosition())
+		{
+			playerLight->SetLightPositionX(playerObj->GetPositionX());
+			playerLight->SetLightPositionY(playerObj->GetPositionY());
+			lightList->UpdatePostLayer(); // updates the post layer.
+		}
 	}
 	else {
 		//Pause Menu Code

@@ -167,6 +167,10 @@ namespace cnz
 		cherry::Vec3 playerPrevPos;
 		cherry::Vec3 playerSpawn;
 
+		// the player light (follows the player)
+		cherry::Light* playerLight;
+		cherry::Vec3 playerLightOffset;
+
 		// player movement
 		bool w = false;
 		bool a = false;
@@ -183,6 +187,7 @@ namespace cnz
 		bool cs = true;
 		bool cd = true;
 
+		// paused bool, and restart bool.
 		bool paused = false;
 		bool restart = false;
 

@@ -77,8 +77,8 @@ void cnz::CNZ_Game::LoadContent()
 
 	if (loadMenu) // load menu
 	{
-		// SetCurrentScene(title->GetName(), false);
-		SetCurrentScene(gameover->GetName(), false); // score entry.
+		SetCurrentScene(title->GetName(), false);
+		// SetCurrentScene(gameover->GetName(), false); // score entry.
 	}
 	else // load level
 	{
