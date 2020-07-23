@@ -453,7 +453,11 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 		if (postProcess) // add post processing layer
 		{
 			// layers.clear();
-			util::addToVector(layers, edgeDetect.GetPostLayer());
+
+			// plays the sound effect if the layer has just been added.
+			if(util::addToVector(layers, edgeDetect.GetPostLayer()))
+				cherry::AudioEngine::GetInstance().PlayEvent("timestop");
+			
 		}
 		break;
 	case GLFW_KEY_LEFT_SHIFT:
@@ -1511,16 +1515,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				cherry::Vec3 obstPos = playerObstacleCollisions[i]->GetWorldPosition();
 				//cherry::Vec3 dP = obstPos - plyrPos;
 
-				if ((obstPos.GetY() - plyrPos.GetY()) >= 0) { // above the object
+				if ((obstPos.v.y - plyrPos.v.y) >= 0) { // above the object
 					cs = false;
 				}
-				if ((obstPos.GetY() - plyrPos.GetY()) <= 0) { // below the object
+				if ((obstPos.v.y - plyrPos.v.y) <= 0) { // below the object
 					cw = false;
 				}
-				if ((obstPos.GetX() - plyrPos.GetX()) >= 0) { // right of the object
+				if ((obstPos.v.x - plyrPos.v.x) >= 0) { // right of the object
 					ca = false;
 				}
-				if ((obstPos.GetX() - plyrPos.GetX()) <= 0) { // left of the object
+				if ((obstPos.v.x - plyrPos.v.x) <= 0) { // left of the object
 					cd = false;
 				}
 
@@ -1554,24 +1558,30 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		cherry::Vec3 curMoveDir;
 
 		// moving the player.
-		if (w && cw) { // up
+		if (w && cw) // up
+		{ 
 			curMoveDir += cherry::Vec3(0, 1, 0);
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, moveInc * deltaTime, 0.0F));
 		}
-		if (s && cs) { // down
+		if (s && cs) // down
+		{ 
 			curMoveDir += cherry::Vec3(0, -1, 0);
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0.0F, -moveInc * deltaTime, 0.0F));
 		}
-		if (a && ca) { // left
+		if (a && ca) // left
+		{ 
 			curMoveDir += cherry::Vec3(-1, 0, 0);
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(-moveInc * deltaTime, 0.0F, 0.0F));
 		}
-		if (d && cd) { // right
+		if (d && cd) // right
+		{ 
 			curMoveDir += cherry::Vec3(1, 0, 0);
 			playerObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(moveInc * deltaTime, 0.0F, 0.0F));
 		}
 
-		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) { // if the player is not moving
+		// TODO: the footsteps won't play since the sound effect keeps starting over.
+		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) // if the player is not moving 
+		{ 
 			playerObj->SetState(0);
 			if (cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is playing, stop it since we are idle
 				cherry::AudioEngine::GetInstance().StopEvent("footstep");
@@ -1589,19 +1599,24 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 
 		// dodge code
-		if (ls) {
+		if (ls) 
+		{
 			cherry::Vec3 temp;
-			if (w && cw) {
-				temp.SetY(temp.GetY() - 1.0f);
+			if (w && cw) 
+			{
+				temp.v.y = (temp.v.y - 1.0f);
 			}
-			if (s && cs) {
-				temp.SetY(temp.GetY() + 1.0f);
+			if (s && cs) 
+			{
+				temp.v.y = (temp.v.y + 1.0f);
 			}
-			if (a && ca) {
-				temp.SetX(temp.GetX() + 1.0f);
+			if (a && ca) 
+			{
+				temp.v.x = (temp.v.x + 1.0f);
 			}
-			if (d && cd) {
-				temp.SetX(temp.GetX() - 1.0f);
+			if (d && cd) 
+			{
+				temp.v.x = (temp.v.x - 1.0f);
 			}
 
 			playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
@@ -1612,9 +1627,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// colBehaviourTimer.Stop();
 
 		// since we don't check f outside of the AI loop on a per enemy basis and only if that enemy is stunned, I will check it here as well.
-		if (f && (!cherry::AudioEngine::GetInstance().isEventPlaying("timestop"))) {
-			cherry::AudioEngine::GetInstance().PlayEvent("timestop");
-		}
+		// moved to key pressed section.
+		// if (f && (!cherry::AudioEngine::GetInstance().isEventPlaying("timestop"))) {
+		// 	cherry::AudioEngine::GetInstance().PlayEvent("timestop");
+		// }
 
 		int enemyCount = 0;
 
