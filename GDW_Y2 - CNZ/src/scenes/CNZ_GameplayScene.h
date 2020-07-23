@@ -99,7 +99,12 @@ namespace cnz
 		void Update(float deltaTime) override;
 
 	private:
-		
+		// function called for regular gameplay.
+		// void GameplayUpdate();
+		// 
+		// // function called for pause menu.
+		// void PauseUpdate();
+
 		Level map; // the map
 		int curWave = 0; // current enemy wave
 

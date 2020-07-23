@@ -461,6 +461,7 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 		break;
 	case GLFW_KEY_ESCAPE:
 		paused = !paused;
+		cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
 		break;
 	case GLFW_KEY_R:
 		if (paused) {
@@ -782,6 +783,10 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 
 		wave++;
 	}
+
+	// new wave chime
+	// TODO: add a bool to check and see if it's the first time the game is starting. The voice clip doesn't make sense if the game just started.
+	cherry::AudioEngine::GetInstance().PlayEvent("new_wave");
 }
 
 // generates the objects.
@@ -1293,17 +1298,60 @@ void cnz::CNZ_GameplayScene::UpdateScore()
 	// fills the score with zeroes.
 	std::string zeroFilled = util::zeroFill(score, SCORE_DIGIT_LIMIT);
 
-	// because window object positions are reversed, the string must be too.
-	// std::reverse(zeroFilled.begin(), zeroFilled.end());
-
 	// clamping the score.
 	score = glm::clamp(score, 0, maxScore);
-
 
 	// setting the text.
 	scoreText->SetText(zeroFilled);
 	// scoreText->SetPositionByWindowSize(cherry::Vec2(0.95F, 0.05F), cherry::Game::GetRunningGame()->GetWindowSize());
 }
+
+// TODO: maybe move the gameplay loop here.
+
+// gameplay update
+//void cnz::CNZ_GameplayScene::GameplayUpdate()
+//{
+//
+//}
+//
+//// pause update
+//void cnz::CNZ_GameplayScene::PauseUpdate()
+//{
+//	// if the game should be restated.
+//	if (restart) {
+//		//Reset Everything
+//		kills = 0;
+//		curGroup = -1;
+//		curWave = 0;
+//		score = 0;
+//
+//		// score needs to be updated.
+//		updateScore = true;
+//
+//		//Enemies
+//		for (int i = 0; i < enemyList.size(); i++) {
+//			enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+//			cherry::Object* obj = enemyList[i];
+//			util::removeFromVector(enemyList, enemyList[i]);
+//			objectList->RemoveObjectByPointer(obj);
+//			delete obj;
+//			kills++;
+//			// cout << kills << endl;
+//			i--;
+//		}
+//		enemyList.clear();
+//
+//		//Player
+//		// not needed?
+//		// playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+//		playerObj->SetPosition(playerSpawn);
+//
+//		paused = false;
+//		restart = false;
+//	}
+//
+//	pauseMenu->SetVisible(true);
+//}
 
 // update loop
 void cnz::CNZ_GameplayScene::Update(float deltaTime)
@@ -2163,13 +2211,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			lightList->UpdatePostLayer(); // updates the post layer.
 		}
 	}
-	else {
-		//Pause Menu Code
-		////sound codeeee
-		cherry::AudioEngine::GetInstance().PlayEvent("menu_accept");
-
+	else 
+	{
+		// Pause Menu Code
 		if (restart) {
-			//Reset Everything
+			// Resets Everything
 			kills = 0;
 			curGroup = -1;
 			curWave = 0;
@@ -2178,13 +2224,18 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			// score needs to be updated.
 			updateScore = true;
 
-			//Enemies
+			// kills all enemies
 			for (int i = 0; i < enemyList.size(); i++) {
-				enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+				// the physics body doesn't need to be removed for the game to be reset.
+				// enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+				
 				cherry::Object* obj = enemyList[i];
-				util::removeFromVector(enemyList, enemyList[i]);
-				objectList->RemoveObjectByPointer(obj);
-				delete obj;
+				util::removeFromVector(enemyList, enemyList[i]); // removes from the enemy list
+				
+				// objectList->RemoveObjectByPointer(obj);
+				objectList->DeleteObjectByPointer(obj); // deletes the object.
+
+				// delete obj;
 				kills++;
 				// cout << kills << endl;
 				i--;
