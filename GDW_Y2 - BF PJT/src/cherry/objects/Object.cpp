@@ -186,6 +186,11 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 
 cherry::Object::~Object()
 {
+	// makes the object invisible before deleting it.
+	// this is mainly for text since sometimes there are remnants leftover when a character is deleted.
+	// do note that this doesn't fix the crash problem from closing and reopening scenes.
+	SetVisible(false);
+
 	// TODO: add back deletions
 	delete[] vertices;
 	// vertices = nullptr;
