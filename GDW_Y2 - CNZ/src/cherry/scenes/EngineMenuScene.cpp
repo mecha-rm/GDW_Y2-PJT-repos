@@ -70,7 +70,7 @@ void cherry::EngineMenuScene::OnOpen()
 
 		button->text = new Text("DEBUG SCENE", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		// button->text->ClearText();
-		// button->text->SetText("DEBUG MENU");
+		button->text->SetText("DEBUG MENU");
 		// button->text->SetWindowChild(false);
 		button->text->SetPosition(40.0F, 0.0F, 0.0F);
 		

@@ -186,7 +186,14 @@ void cherry::Text::ClearText()
 {
 	// clears all characters from the text
 	for (Character* chr : textChars)
+	{
+		// there are occassional graphical remnants left over when a character is deleted.
+		// I'm unsure of why this happens, but setting the character to being invisible BEFORE it is deleted hides this problem.
+		// the memory is still being used unfortunately, but another rewrite or a full on text object deletion should get rid of it anyway.
+		// NOTE: this line has been moved to the Object destructor.
+		// chr->SetVisible(false);
 		delete chr;
+	}
 
 	textChars.clear();
 
