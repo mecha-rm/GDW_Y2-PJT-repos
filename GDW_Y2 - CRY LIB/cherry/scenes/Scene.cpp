@@ -14,11 +14,7 @@ void cherry::Scene::OnOpen()
 // on close
 void cherry::Scene::OnClose()
 {
-	// now uses shared pointers
-	// for (PostLayer* layer : layers)
-	// 	delete layer;
-	
-	layers.clear();
+
 }
 
 // returns the main/primary registry
@@ -38,7 +34,23 @@ void cherry::Scene::SetUsingFrameBuffers(bool useFbs) { useFrameBuffers = useFbs
 // returns the post layers.
 std::vector<cherry::PostLayer::Sptr> cherry::Scene::GetPostLayers() const { return layers; }
 
-// void cherry::Scene::SetName(const std::string& name) { myName = name; }
+// generates a new instance of the given scene.
+cherry::Scene* cherry::Scene::GenerateNewInstance() const
+{
+	return new Scene(myName);
+}
+
+// is allowing new instances to be used instead of reopening the same scene over and over.
+bool cherry::Scene::IsAllowingNewInstances() const
+{
+	return allowNewInstances;
+}
+
+// set whether to allow new instances or not.
+void cherry::Scene::SetAllowingNewInstances(bool newInstances)
+{
+	allowNewInstances = newInstances;
+}
 
 // mouse button pressed.
 void cherry::Scene::MouseButtonPressed(GLFWwindow* window, int button)

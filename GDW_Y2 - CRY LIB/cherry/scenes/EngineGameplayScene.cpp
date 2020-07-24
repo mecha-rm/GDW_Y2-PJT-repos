@@ -1,3 +1,11 @@
+/*
+ * Name: BONUS FRUIT
+ * Date: 07/16/2020
+ * Description: engine gameplay scene tester.
+ * References:
+	- https://www.glfw.org/docs/latest/group__keys.html
+*/
+
 #include "EngineGameplayScene.h"
 
 #include "..\objects/ObjectManager.h"
@@ -9,6 +17,8 @@
 #include "..\objects/Text.h"
 
 #include "..\post/KernelLayer.h"
+#include "..\Instrumentation.h"
+
 #include <imgui\imgui.h>
 
 // creating the engine scene.
@@ -17,13 +27,25 @@ cherry::EngineGameplayScene::EngineGameplayScene(std::string sceneName) : Gamepl
 }
 
 void cherry::EngineGameplayScene::OnOpen()
-{
+{	
+	// starts up profiling
+	if(PROFILE)
+		ProfilingSession::Start("profiling-init.json");
+
+	// uses instances instead of reopening the same scene over and over again.
+	// allowNewInstances = true;
+	SetAllowingNewInstances(true);
+
+	// general timer
+	// ProfileTimer timer = ProfileTimer("debug_start");
+
 	GameplayScene::OnOpen();
 
 	Game* const game = Game::GetRunningGame();
 	
 	if (game == nullptr)
 		return;
+
 
 	game->imguiMode = true;
 
@@ -84,39 +106,42 @@ void cherry::EngineGameplayScene::OnOpen()
 	// sampler = std::make_shared<TextureSampler>(description);
 
 	// added for mip mapping. As long as its above the material, it's fine.
-	description = SamplerDesc();
+	if (!reopened)
+	{
+		description = SamplerDesc();
 
-	description.MinFilter = MinFilter::LinearMipNearest;
-	description.MagFilter = MagFilter::Linear;
-	description.WrapS = description.WrapT = WrapMode::Repeat;
+		description.MinFilter = MinFilter::LinearMipNearest;
+		description.MagFilter = MagFilter::Linear;
+		description.WrapS = description.WrapT = WrapMode::Repeat;
 
-	// TODO: make linear and NearestMipNearest different variables?
-	// called 'Linear' in the original code
-	sampler = std::make_shared<TextureSampler>(description);
+		// TODO: make linear and NearestMipNearest different variables?
+		// called 'Linear' in the original code
+		sampler = std::make_shared<TextureSampler>(description);
 
-	// TODO: remove upon submission
-	//desc1 = SamplerDesc();
-	//desc1.MinFilter = MinFilter::NearestMipNearest;
-	//desc1.MagFilter = MagFilter::Nearest;
+		// TODO: remove upon submission
+		//desc1 = SamplerDesc();
+		//desc1.MinFilter = MinFilter::NearestMipNearest;
+		//desc1.MagFilter = MagFilter::Nearest;
 
-	//desc2 = SamplerDesc();
-	//desc2.MinFilter = MinFilter::LinearMipLinear;
-	//desc2.MagFilter = MagFilter::Linear;
+		//desc2 = SamplerDesc();
+		//desc2.MinFilter = MinFilter::LinearMipLinear;
+		//desc2.MagFilter = MagFilter::Linear;
 
-	//samplerEX = std::make_shared<TextureSampler>(desc1);
-
+		//samplerEX = std::make_shared<TextureSampler>(desc1);
+	}
 
 
 	// before the mesh in the original code
-	Shader::Sptr phong = std::make_shared<Shader>();
+	// Shader::Sptr phong = std::make_shared<Shader>();
 	// TODO: make version without UVs?
-	phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
+	// phong->Load("res/shaders/lighting.vs.glsl", "res/shaders/blinn-phong.fs.glsl");
 
 	// TODO: change this so that it uses the light manager.
 	// used to make the albedo
 	// dedicated variable no longer needed?
 
 	// no longer needed since GenerateMaterial() exists.
+	// if (reopened){
 	// matStatic = std::make_shared<Material>(phong);
 	// matStatic->Set("a_EnabledLights", 1);
 	// matStatic->Set("a_LightPos[0]", { 0, 0, 3 });
@@ -127,6 +152,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	// matStatic->Set("a_LightShininess[0]", 256.0f); // MUST be a float
 	// matStatic->Set("a_LightAttenuation[0]", 0.15f);
 	// material->Set("s_Albedo", albedo, sampler); // sceneLists will just be blank if no texture is set.
+	// }
 
 	// testMat->Set("s_Albedo", albedo); // right now, this is using the texture state.
 
@@ -188,11 +214,15 @@ void cherry::EngineGameplayScene::OnOpen()
 
 	// material = LightManager::GetLightList(currentScene)->at(1).GenerateMaterial(sampler);
 	// replace the shader for the material if using morph tagets.
-	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
-	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
+	if (!reopened)
+	{
+		matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler);
+		matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
-	matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
-	matStatic->GetShader()->SetUniform("a_EmissivePower", 0.2F);
+
+		matStatic->GetShader()->SetUniform("a_EmissiveColor", glm::vec3(1.0F, 1.0F, 0.0F));
+		matStatic->GetShader()->SetUniform("a_EmissivePower", 0.1F);
+	}
 
 	// loads in default sceneLists
 	if(true)
@@ -318,6 +348,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			// ..ss_bw and ..ss_rb are the same size, and are good for showing image switching. However, it's slow to siwtch them.
 			cherry::ImageAnimation* imgAnime = new ImageAnimation();
+			image->AddAnimation(imgAnime, false);
 
 			// 14 frames
 			imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/bonus_fruit_logo_ss_sml.png", Image::ConvertImagePixelsToUVSpace(Vec4(395 * 0, 0, 395 * 1, 198), 5530, 198, false), 0.5F));
@@ -340,7 +371,7 @@ void cherry::EngineGameplayScene::OnOpen()
 
 			imgAnime->SetInfiniteLoop(true);
 			imgAnime->Play();
-			image->AddAnimation(imgAnime, false);
+			// image->AddAnimation(imgAnime, false);
 			image->SetVisible(true);
 
 			objectList->objects.push_back(image);
@@ -372,7 +403,9 @@ void cherry::EngineGameplayScene::OnOpen()
 			// TODO: find out why items are layeirng on top of one another.
 			Text* text = new Text("Shader Test", GetName(), FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 2.0F);
 			text->SetWindowChild(true);
-			text->SetPosition(10.0F, 50.0F, 10.0F);
+			// text->SetPosition(10.0F, 50.0F, 10.0F);
+			text->SetPositionByWindowSize(0.85F, 0.3F);
+			text->SetScale(5.0F);
 			text->SetVisible(true);
 			objectList->AddObject(text); 
 		}
@@ -439,18 +472,20 @@ void cherry::EngineGameplayScene::OnOpen()
 		// VER 2
 		objectList->objects.push_back(new Object("res/objects/hero pose one.obj", game->GetCurrentSceneName(), matDynamic, false, true));
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, offset, 0.0F);
-		//
-
+		
+		// attaches the animation.
 		MorphAnimation* mph = new MorphAnimation();
+		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose one.obj", 2.0F));
 		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose two.obj", 2.0F));
-		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 2.0F));
+		mph->AddFrame(new MorphAnimationFrame("res/objects/hero pose three.obj", 0.0F));
 		// mph->AddFrame(new MorphAnimationFrame("res/sceneLists/cube_target_0.obj", 2.0F));
 		mph->SetInfiniteLoop(true);
 		// TODO: set up ability to return to pose 0, t-pose, or stay on ending frame.
 		//mph->SetLoopsTotal(3);
 		mph->Play();
-		objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
+		// objectList->objects.at(objectList->objects.size() - 1)->AddAnimation(mph, true);
 		// objectList->objects.at(objectList->objects.size() - 1)->DeleteAllAnimations();
 		// sceneLists.at(sceneLists.size() - 1)->GetMesh()->SetVisible(false);
 
@@ -552,7 +587,7 @@ void cherry::EngineGameplayScene::OnOpen()
 	// }
 
 	// temp
-	if (useLayers)
+	if (USE_LAYERS)
 	{
 		// layer
 		// PostLayer::Sptr layer;
@@ -827,16 +862,30 @@ void cherry::EngineGameplayScene::OnOpen()
 	// TODO: streamline audio inclusion
 	// Load a bank (Use the flag FMOD_STUDIO_LOAD_BANK_NORMAL) 
 	// TODO: put in dedicated folder with ID on it?
-	audioEngine.LoadBank("res/audio/Master");
+	audioEngine.LoadBank("Master");
 
 	// Load an event
-	// audioEngine.LoadEvent("Music", "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
-	audioEngine.LoadEvent("Music");
+	bgmName = "bgm_02";
+	// audioEngine.LoadEvent(bgmName, "{13471b17-f4bd-4cd5-afaa-e9e60eb1ee67}");
+	audioEngine.LoadEvent(bgmName);
+	// audioEngine.SetEventPosition(bgmName, glm::vec3(0.0F, 0.0F, 0.0F));
+
 	// Play the event
-	audioEngine.PlayEvent("Music");
-	// audioEngine.StopEvent("Music"); // TODO: uncomment if you want the music to play.
+	if(ENABLE_AUDIO)
+		audioEngine.PlayEvent(bgmName);
+	// else
+	// 	audioEngine.StopEvent(bgmName); // TODO: uncomment if you want the music to play.
 	
 	game->Resize(myWindowSize.x, myWindowSize.y);
+
+	// Btimer.Stop();
+	
+	// ends session
+	if (PROFILE)
+		ProfilingSession::End();
+
+	// the scene has been opened once, so some functions don't need to be initiated again.
+	reopened = true;
 }
 
 // called when the scene is being closed.
@@ -855,6 +904,15 @@ void cherry::EngineGameplayScene::OnClose()
 	mbRight = false;
 
 	GameplayScene::OnClose();
+}
+
+// generates a new instance of the engine gameplay scene.
+cherry::Scene* cherry::EngineGameplayScene::GenerateNewInstance() const
+{
+	EngineGameplayScene* scene = new EngineGameplayScene(GetName());
+	scene->nextScene = nextScene; // this value should be saved.
+
+	return scene;
 }
 
 // mouse button has been pressed.
@@ -974,6 +1032,14 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 
 	case GLFW_KEY_PAGE_DOWN: // z-direction +
 		r_Dir[2] = 1;
+		break;
+
+	case GLFW_KEY_COMMA: // < (turn music down)
+		volumeChange = -1;
+		break;
+
+	case GLFW_KEY_PERIOD: // > (turn music up)
+		volumeChange = 1;
 		break;
 
 		// resets the camera so that it looks at the origin
@@ -1154,6 +1220,34 @@ void cherry::EngineGameplayScene::KeyPressed(GLFWwindow* window, int key)
 		// layers.push_back(table.GetPostLayer());
 		// layer7->OnWindowResize(Game::GetRunningGame()->GetWindowWidth(), Game::GetRunningGame()->GetWindowHeight());
 		break;
+
+	case GLFW_KEY_R:
+		// refreshes the scene by loading in a new one.
+		if(nextScene != "" || allowNewInstances == true)
+			Game::GetRunningGame()->SetCurrentScene(nextScene, false);
+		
+		// try creating the scene from scratch every time?
+		if(false)
+		{
+			// Game::GetRunningGame()->SetCurrentScene(GetName(), false);
+			std::string str = "";
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+			str += char(rand() % 255);
+			str += rand() % 10;
+
+			EngineGameplayScene* newScene;
+			newScene = new EngineGameplayScene(str);
+			newScene->nextScene = GetName();
+			Game::GetRunningGame()->RegisterScene(newScene, true);
+
+		}
+
+		break;
 	}
 }
 
@@ -1217,6 +1311,14 @@ void cherry::EngineGameplayScene::KeyHeld(GLFWwindow* window, int key)
 	case GLFW_KEY_PAGE_DOWN: // z-direction +
 		r_Dir[2] = 1;
 		break;
+
+	case GLFW_KEY_COMMA: // < (turn music down)
+		volumeChange = -1;
+		break;
+
+	case GLFW_KEY_PERIOD: // > (turn music up)
+		volumeChange = 1;
+		break;
 	}
 }
 
@@ -1267,6 +1369,11 @@ void cherry::EngineGameplayScene::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_PAGE_UP:
 	case GLFW_KEY_PAGE_DOWN:
 		r_Dir[2] = 0;
+		break;
+
+	case GLFW_KEY_COMMA: // no volume change
+	case GLFW_KEY_PERIOD:
+		volumeChange = 0;
 		break;
 
 		// deletes an object
@@ -1351,6 +1458,38 @@ void cherry::EngineGameplayScene::Update(float deltaTime)
 		)
 	);
 
+	// updates sound
+	if (ENABLE_AUDIO && volumeChange != 0) // volume is being changed
+	{
+		AudioEngine& audio = AudioEngine::GetInstance();
+
+		// changes the audio, and mixes it. The near position is 100%, and the far position is 0%.
+		float aT_old = audioT;
+		audioT = clamp(audioT + audioT_inc * volumeChange * deltaTime, 0.0F, 1.0F);
+
+		// calculates the new position (lerping).
+		glm::vec3 newPos = glm::mix(audioFar, audioNear, audioT);
+
+		std::cout << "audioT: " << audioT << "" << std::endl;
+
+		// If the position is equal to audioFar, the audio is turned off. If it isn't, then it's turned on.
+		// if the audio has just been turned enough, the event starts to play event.
+		// NOTE: changed this to just move the audio source far away so that the music doesn't restart.
+		if (newPos == audioFar)
+		{
+			// audio.StopEvent(bgmName);
+			newPos = glm::vec3(0.0F, 0.0F, 100.0F); // can't hear it from this distance
+		}
+		else if (newPos != audioFar && aT_old == 0) // was previously turned off.
+		{
+			// audio.PlayEvent(bgmName);
+		}
+
+		// old
+		// (newPos == audioFar) ? audio.StopEvent(bgmName) : audio.PlayEvent(bgmName);
+
+		audio.SetEventPosition(bgmName, newPos); // setting new event position
+	}
 
 	// collision calculations
 mainLoop:

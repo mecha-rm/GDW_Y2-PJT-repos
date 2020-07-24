@@ -186,6 +186,11 @@ cherry::Object::Object() : position(), vertices(nullptr), indices(nullptr) { fil
 
 cherry::Object::~Object()
 {
+	// makes the object invisible before deleting it.
+	// this is mainly for text since sometimes there are remnants leftover when a character is deleted.
+	// do note that this doesn't fix the crash problem from closing and reopening scenes.
+	SetVisible(false);
+
 	// TODO: add back deletions
 	delete[] vertices;
 	// vertices = nullptr;
@@ -615,9 +620,10 @@ void cherry::Object::CreateEntity(std::string scene, cherry::Material::Sptr mate
 	auto& ecs = GetRegistry(scene);
 
 	// the entity to be set.
-	entt::entity entity = ecs.create();
+	// entt::entity entity = ecs.create();
+	entity = ecs.create();
 
-
+	// TODO: the entity screws up here for some reason?
 	MeshRenderer& mr = ecs.assign<MeshRenderer>(entity);
 	mr.Material = this->material;
 	

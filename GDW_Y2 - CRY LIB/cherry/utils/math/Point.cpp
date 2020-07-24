@@ -6,7 +6,7 @@
 // brings a point into the ostream.
 std::ostream& util::math::operator<<(std::ostream& os, const Point& p) { return os << p.toString(); }
 
-// POINT 2 
+// POINT 2  
 // point
 util::math::Point2::Point2(float x, float y) : x(x), y(y) {}
 

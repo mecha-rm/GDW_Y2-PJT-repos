@@ -9,5 +9,6 @@
 #include "Utils.h"
 #include "Array.h"
 #include "Color.h"
+#include "Random.h"
 
 #endif // !UTILITY_LIBRARY_H

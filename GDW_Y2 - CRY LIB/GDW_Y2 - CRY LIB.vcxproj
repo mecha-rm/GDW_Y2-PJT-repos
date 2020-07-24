@@ -15,13 +15,13 @@
     <ProjectGuid>{8249296C-10DD-4279-BAB7-AEBDF8F5F70B}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GDWY2CRYLIB</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
@@ -89,12 +89,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="cherry\animate\Animation.h" />
+    <ClInclude Include="cherry\animate\AnimationManager.h" />
+    <ClInclude Include="cherry\animate\ImageAnimation.h" />
+    <ClInclude Include="cherry\animate\MorphAnimation.h" />
+    <ClInclude Include="cherry\animate\Path.h" />
+    <ClInclude Include="cherry\audio\AudioComponent.h" />
+    <ClInclude Include="cherry\audio\AudioEngine.h" />
     <ClInclude Include="cherry\Camera.h" />
     <ClInclude Include="cherry\Game.h" />
+    <ClInclude Include="cherry\IGraphicsResource.h" />
+    <ClInclude Include="cherry\Instrumentation.h" />
+    <ClInclude Include="cherry\JsonProfiling.h" />
+    <ClInclude Include="cherry\lights\Light.h" />
+    <ClInclude Include="cherry\lights\LightManager.h" />
     <ClInclude Include="cherry\Material.h" />
     <ClInclude Include="cherry\Mesh.h" />
     <ClInclude Include="cherry\MeshRenderer.h" />
+    <ClInclude Include="cherry\objects\Image.h" />
+    <ClInclude Include="cherry\objects\Liquid.h" />
     <ClInclude Include="cherry\objects\Object.h" />
+    <ClInclude Include="cherry\objects\ObjectManager.h" />
     <ClInclude Include="cherry\objects\Primitive.h" />
     <ClInclude Include="cherry\objects\PrimitiveCapsule.h" />
     <ClInclude Include="cherry\objects\PrimitiveCircle.h" />
@@ -105,25 +120,64 @@
     <ClInclude Include="cherry\objects\PrimitivePlane.h" />
     <ClInclude Include="cherry\objects\Primitives.h" />
     <ClInclude Include="cherry\objects\PrimitiveSphere.h" />
+    <ClInclude Include="cherry\objects\Terrain.h" />
+    <ClInclude Include="cherry\objects\Text.h" />
+    <ClInclude Include="cherry\Physics.h" />
     <ClInclude Include="cherry\PhysicsBody.h" />
+    <ClInclude Include="cherry\physics\Physics.h" />
+    <ClInclude Include="cherry\physics\PhysicsBody.h" />
+    <ClInclude Include="cherry\post\BloomLayer.h" />
+    <ClInclude Include="cherry\post\DepthOfFieldLayer.h" />
+    <ClInclude Include="cherry\post\FrameBuffer.h" />
+    <ClInclude Include="cherry\post\KernelLayer.h" />
+    <ClInclude Include="cherry\post\LookUpTable.h" />
+    <ClInclude Include="cherry\post\PostLayer.h" />
     <ClInclude Include="cherry\Scene.h" />
     <ClInclude Include="cherry\SceneManager.h" />
+    <ClInclude Include="cherry\scenes\EngineGameplayScene.h" />
+    <ClInclude Include="cherry\scenes\EngineMenuScene.h" />
+    <ClInclude Include="cherry\scenes\GameplayScene.h" />
+    <ClInclude Include="cherry\scenes\MenuScene.h" />
+    <ClInclude Include="cherry\scenes\Scene.h" />
+    <ClInclude Include="cherry\scenes\SceneManager.h" />
     <ClInclude Include="cherry\Shader.h" />
+    <ClInclude Include="cherry\Skybox.h" />
     <ClInclude Include="cherry\stb_image.h" />
+    <ClInclude Include="cherry\Target.h" />
+    <ClInclude Include="cherry\textures\ITexture.h" />
+    <ClInclude Include="cherry\textures\Texture2D.h" />
+    <ClInclude Include="cherry\textures\Texture3D.h" />
+    <ClInclude Include="cherry\textures\TextureCube.h" />
+    <ClInclude Include="cherry\textures\TextureEnums.h" />
+    <ClInclude Include="cherry\textures\TextureSampler.h" />
+    <ClInclude Include="cherry\UtilsCRY.h" />
     <ClInclude Include="cherry\utils\Array.h" />
     <ClInclude Include="cherry\utils\Color.h" />
     <ClInclude Include="cherry\utils\math\Collision.h" />
     <ClInclude Include="cherry\utils\math\Consts.h" />
+    <ClInclude Include="cherry\utils\math\Interpolation.h" />
     <ClInclude Include="cherry\utils\math\LargeInt.h" />
     <ClInclude Include="cherry\utils\math\MathLib.h" />
     <ClInclude Include="cherry\utils\math\Matrix.h" />
+    <ClInclude Include="cherry\utils\math\Point.h" />
     <ClInclude Include="cherry\utils\math\Quaternion.h" />
     <ClInclude Include="cherry\utils\math\Rotation.h" />
+    <ClInclude Include="cherry\utils\math\Shape.h" />
     <ClInclude Include="cherry\utils\math\Vector.h" />
+    <ClInclude Include="cherry\utils\Random.h" />
+    <ClInclude Include="cherry\utils\sort\BubbleSort.h" />
+    <ClInclude Include="cherry\utils\sort\CountSort.h" />
+    <ClInclude Include="cherry\utils\sort\InsertionSort.h" />
+    <ClInclude Include="cherry\utils\sort\MergeSort.h" />
+    <ClInclude Include="cherry\utils\sort\QuickSort.h" />
+    <ClInclude Include="cherry\utils\sort\SelectionSort.h" />
+    <ClInclude Include="cherry\utils\sort\Sort.h" />
+    <ClInclude Include="cherry\utils\Timer.h" />
     <ClInclude Include="cherry\utils\Utils.h" />
     <ClInclude Include="cherry\utils\UtilsLib.h" />
     <ClInclude Include="cherry\utils\UtilsToolsLib.h" />
     <ClInclude Include="cherry\VectorCRY.h" />
+    <ClInclude Include="cherry\WorldTransform.h" />
     <ClInclude Include="external\entt\entt.hpp" />
     <ClInclude Include="external\fmod\fmod.h" />
     <ClInclude Include="external\fmod\fmod.hpp" />
@@ -362,12 +416,26 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="cherry\animate\Animation.cpp" />
+    <ClCompile Include="cherry\animate\AnimationManager.cpp" />
+    <ClCompile Include="cherry\animate\ImageAnimation.cpp" />
+    <ClCompile Include="cherry\animate\MorphAnimation.cpp" />
+    <ClCompile Include="cherry\animate\Path.cpp" />
+    <ClCompile Include="cherry\audio\AudioComponent.cpp" />
+    <ClCompile Include="cherry\audio\AudioEngine.cpp" />
     <ClCompile Include="cherry\Camera.cpp" />
     <ClCompile Include="cherry\Game.cpp" />
+    <ClCompile Include="cherry\Instrumentation.cpp" />
+    <ClCompile Include="cherry\JsonProfiling.cpp" />
+    <ClCompile Include="cherry\lights\Light.cpp" />
+    <ClCompile Include="cherry\lights\LightManager.cpp" />
     <ClCompile Include="cherry\Material.cpp" />
     <ClCompile Include="cherry\Mesh.cpp" />
     <ClCompile Include="cherry\MeshRenderer.cpp" />
+    <ClCompile Include="cherry\objects\Image.cpp" />
+    <ClCompile Include="cherry\objects\Liquid.cpp" />
     <ClCompile Include="cherry\objects\Object.cpp" />
+    <ClCompile Include="cherry\objects\ObjectManager.cpp" />
     <ClCompile Include="cherry\objects\Primitive.cpp" />
     <ClCompile Include="cherry\objects\PrimitiveCapsule.cpp" />
     <ClCompile Include="cherry\objects\PrimitiveCircle.cpp" />
@@ -377,21 +445,51 @@
     <ClCompile Include="cherry\objects\PrimitiveDiamond.cpp" />
     <ClCompile Include="cherry\objects\PrimitivePlane.cpp" />
     <ClCompile Include="cherry\objects\PrimitiveSphere.cpp" />
+    <ClCompile Include="cherry\objects\Terrain.cpp" />
+    <ClCompile Include="cherry\objects\Text.cpp" />
+    <ClCompile Include="cherry\Physics.cpp" />
     <ClCompile Include="cherry\PhysicsBody.cpp" />
+    <ClCompile Include="cherry\physics\Physics.cpp" />
+    <ClCompile Include="cherry\physics\PhysicsBody.cpp" />
+    <ClCompile Include="cherry\post\BloomLayer.cpp" />
+    <ClCompile Include="cherry\post\DepthOfFieldLayer.cpp" />
+    <ClCompile Include="cherry\post\FrameBuffer.cpp" />
+    <ClCompile Include="cherry\post\KernelLayer.cpp" />
+    <ClCompile Include="cherry\post\LookUpTable.cpp" />
+    <ClCompile Include="cherry\post\PostLayer.cpp" />
     <ClCompile Include="cherry\Scene.cpp" />
     <ClCompile Include="cherry\SceneManager.cpp" />
+    <ClCompile Include="cherry\scenes\EngineGameplayScene.cpp" />
+    <ClCompile Include="cherry\scenes\EngineMenuScene.cpp" />
+    <ClCompile Include="cherry\scenes\GameplayScene.cpp" />
+    <ClCompile Include="cherry\scenes\MenuScene.cpp" />
+    <ClCompile Include="cherry\scenes\Scene.cpp" />
+    <ClCompile Include="cherry\scenes\SceneManager.cpp" />
     <ClCompile Include="cherry\Shader.cpp" />
+    <ClCompile Include="cherry\Skybox.cpp" />
     <ClCompile Include="cherry\stb_image.cpp" />
+    <ClCompile Include="cherry\Target.cpp" />
+    <ClCompile Include="cherry\textures\ITexture.cpp" />
+    <ClCompile Include="cherry\textures\Texture2D.cpp" />
+    <ClCompile Include="cherry\textures\Texture3D.cpp" />
+    <ClCompile Include="cherry\textures\TextureCube.cpp" />
+    <ClCompile Include="cherry\textures\TextureSampler.cpp" />
     <ClCompile Include="cherry\utils\Array.cpp" />
     <ClCompile Include="cherry\utils\Color.cpp" />
     <ClCompile Include="cherry\utils\math\Collision.cpp" />
+    <ClCompile Include="cherry\utils\math\Interpolation.cpp" />
     <ClCompile Include="cherry\utils\math\LargeInt.cpp" />
     <ClCompile Include="cherry\utils\math\Matrix.cpp" />
+    <ClCompile Include="cherry\utils\math\Point.cpp" />
     <ClCompile Include="cherry\utils\math\Quaternion.cpp" />
     <ClCompile Include="cherry\utils\math\Rotation.cpp" />
+    <ClCompile Include="cherry\utils\math\Shape.cpp" />
     <ClCompile Include="cherry\utils\math\Vector.cpp" />
+    <ClCompile Include="cherry\utils\Random.cpp" />
+    <ClCompile Include="cherry\utils\Timer.cpp" />
     <ClCompile Include="cherry\utils\Utils.cpp" />
     <ClCompile Include="cherry\VectorCRY.cpp" />
+    <ClCompile Include="cherry\WorldTransform.cpp" />
     <ClCompile Include="external\GLM\detail\glm.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp" />
     <ClCompile Include="external\imgui\imgui_demo.cpp" />

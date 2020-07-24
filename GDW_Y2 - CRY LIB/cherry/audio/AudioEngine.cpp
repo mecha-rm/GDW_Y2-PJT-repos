@@ -49,6 +49,7 @@ void cherry::Implementation::Update()
 
 //////// Logistics ////////
 
+// initializes function
 void cherry::AudioEngine::Init()
 {
 	if (initialized == false)

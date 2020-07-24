@@ -66,8 +66,21 @@ cherry::Text::~Text()
 	//     delete ch;
 
 	// deleting the text characters.
-	for (Character* ch : textChars)
+	// for (Character* ch : textChars)
+	// 	delete ch;
+
+	// deletes all text characters.
+	while (!textChars.empty())
+	{
+		Character* ch = textChars[0];
+		util::removeFromVector(textChars, ch);
+		
+		// std::cout << "Char BFD: " << ch->m_CHAR << std::endl;
+
 		delete ch;
+
+		// std::cout << "\nChar AFD: " << ch->m_CHAR << "\n" << std::endl;
+	}
 }
 
 // the text is visible.
@@ -102,32 +115,66 @@ void cherry::Text::SetText(const std::string newText)
 	// creating the new characters
 	for (int i = 0; i < text.size(); i++)
 	{
-		const char c = text[i];
+		// const char c = text[i];
+		// 
+		// // gets the character.
+		// const Character* charObject = chars[(int)c].get();
+		// // const Character& cpy = charObject->get();
+		// 
+		// // making a copy of the character.
+		// Character* charCopy = new Character(*charObject);
+		// 
+		// charCopy->localPosition = Vec3(spacing * fontSize * i, 0, 0);
+		// charCopy->SetPosition(charCopy->localPosition);
+		// charCopy->SetScale(0.1F);
+		// charCopy->SetVisible(visible);
+		// 
+		// // for some reason, the material's transparency is turned off at some point.
+		// // this turns it back on.
+		// charCopy->GetMaterial()->HasTransparency = true;
+		// 
+		// Mesh::Sptr& charMesh = charCopy->GetMesh();
+		// charMesh->SetWindowChild(windowChild);
+		// charMesh->postProcess = postProcess;
+		// 
+		// // charCopy->SetAlpha(alpha);
+		// 
+		// // charCopy->SetRotationZDegrees(180.0F);
+		// textChars.push_back(charCopy);
 
-		// gets the character.
-		const Character* charObject = chars[(int)c].get();
-		// const Character& cpy = charObject->get();
-
-		// making a copy of the character.
-		Character* charCopy = new Character(*charObject);
-
-		charCopy->localPosition = Vec3(spacing * fontSize * i, 0, 0);
-		charCopy->SetPosition(charCopy->localPosition);
-		charCopy->SetScale(0.1F);
-		charCopy->SetVisible(visible);
-
-		// for some reason, the material's transparency is turned off at some point.
-		// this turns it back on.
-		charCopy->GetMaterial()->HasTransparency = true;
-
-		Mesh::Sptr& charMesh = charCopy->GetMesh();
-		charMesh->SetWindowChild(windowChild);
-		charMesh->postProcess = postProcess;
-
-		// charCopy->SetAlpha(alpha);
-
-		// charCopy->SetRotationZDegrees(180.0F);
-		textChars.push_back(charCopy);
+		// New
+		if(true)
+		{
+			// gets the character
+			const char c = text[i];
+			Character* charObject;
+		
+			// generates the characters
+			if(validChars[c] == true) // checks to see if it's a known character material
+				charObject = new Character(c, sceneName, knownCharMaterial, cellSize * fontSize, chs[c]);
+			else
+				charObject = new Character(c, sceneName, unknownCharMaterial, cellSize * fontSize, chs[c]);
+		
+			charObject->localPosition = Vec3(spacing * fontSize * i, 0, 0);
+			charObject->SetPosition(charObject->localPosition);
+			charObject->SetScale(0.1F);
+			charObject->SetVisible(visible);
+		
+			// for some reason this is false initially. Maybe you don't need to do this now?
+			charObject->GetMaterial()->HasTransparency = true;
+		
+			// gets the character mesh
+			Mesh::Sptr& charMesh = charObject->GetMesh();
+			charMesh->SetWindowChild(windowChild);
+			charMesh->postProcess = postProcess;
+		
+			// pushes back the character object.
+			textChars.push_back(charObject);
+		
+		
+			// chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
+			// chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
+		}
 	}
 
 	// calculations transformations.
@@ -139,7 +186,14 @@ void cherry::Text::ClearText()
 {
 	// clears all characters from the text
 	for (Character* chr : textChars)
+	{
+		// there are occassional graphical remnants left over when a character is deleted.
+		// I'm unsure of why this happens, but setting the character to being invisible BEFORE it is deleted hides this problem.
+		// the memory is still being used unfortunately, but another rewrite or a full on text object deletion should get rid of it anyway.
+		// NOTE: this line has been moved to the Object destructor.
+		// chr->SetVisible(false);
 		delete chr;
+	}
 
 	textChars.clear();
 
@@ -333,14 +387,24 @@ void cherry::Text::LoadText(const std::string scene)
 			// if there are no uvs, then the default character is used.
 			if (uvs != glm::vec4(0, 0, 0, 0))
 			{
-				chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
+				// TODO: take out this array.
+				// chars[index] = std::make_shared<Character>((char)index, scene, charMaterial, cellSize * fontSize, uvs);
+				
+				// saves the uvs and bool for what material to use
+				chs[index] = uvs; // saves the uvs for the image
+				validChars[index] = true;
 			}
 			else
 			{
-				chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
+				// TODO: take out this array.
+				// chars[index] = std::make_shared<Character>((char)index, scene, noCharMaterial, cellSize * fontSize, glm::vec4(0, 0, 1, 1));
+
+				// saves the uvs and bool for what material to use
+				chs[index] = glm::vec4(0, 0, 1, 1);
+				validChars[index] = false;
 			}
 
-			chars[index]->SetVisible(false);
+			// chars[index]->SetVisible(false);
 		}
 	}
 
@@ -349,11 +413,15 @@ void cherry::Text::LoadText(const std::string scene)
 	// creating the characters
 	// TODO: multiple lines.
 
+	// saves the materials.
+	knownCharMaterial = charMaterial;
+	unknownCharMaterial = noCharMaterial;
+
 	// creates all the characters.
 	SetText(text);
 
-	knownCharMaterial = charMaterial;
-	unknownCharMaterial = noCharMaterial;
+	// knownCharMaterial = charMaterial;
+	// unknownCharMaterial = noCharMaterial;
 
 	// plane representing the text box.
 	verticesTotal = 4;

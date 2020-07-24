@@ -121,7 +121,7 @@
  
          std::string text = ""; // text
          std::string filePath = ""; // text path
-         std::string fontMap = ""; // font
+         std::string fontMap = ""; // font // TODO: have a default file path for the font map.
          cherry::Vec4 color; // colour
          
          // checks to see if the text is visible or not.
@@ -132,13 +132,21 @@
 
          // the font size
          float fontSize = 1;
+
+         // cell size from the uv map
          glm::vec2 cellSize{};
 
          static const int CHAR_COUNT; // 256
          
          // the characters (0 - 255)
-         std::shared_ptr<Character> chars[256];
+         // std::shared_ptr<Character> chars[256];
  
+         // character uvs
+         glm::vec4 chs[256];
+         
+         // bools for valid characters. If invalid, then a 'noChar' material is used.
+         bool validChars[256];
+
          // the characters of the text.
          std::vector<Character*> textChars;
 

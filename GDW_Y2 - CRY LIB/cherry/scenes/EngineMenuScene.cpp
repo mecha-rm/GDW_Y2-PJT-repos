@@ -1,6 +1,10 @@
 #include "EngineMenuScene.h"
 #include "..\Game.h"
 
+// used for ADS - GDW Component
+#include <chrono>
+#include <stack>
+
 // constructor
 cherry::EngineMenuScene::EngineMenuScene(std::string name)
 	: MenuScene(name)
@@ -66,7 +70,7 @@ void cherry::EngineMenuScene::OnOpen()
 
 		button->text = new Text("DEBUG SCENE", sceneName, FONT_ARIAL, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
 		// button->text->ClearText();
-		// button->text->SetText("DEBUG MENU");
+		button->text->SetText("DEBUG MENU");
 		// button->text->SetWindowChild(false);
 		button->text->SetPosition(40.0F, 0.0F, 0.0F);
 		
@@ -100,6 +104,53 @@ void cherry::EngineMenuScene::OnOpen()
 
 	}
 
+	// Algorithm Test (Algorithms and Data Structures GDW Component)
+	// for(int n = 1000; n <= 10000; n += 1000)
+	// {
+	// 	std::stack<Object*> delStack;
+	// 	
+	// 	// shader
+	// 	Shader::Sptr shader = std::make_shared<Shader>();
+	// 	shader->Load("res/shaders/shader.vs.glsl", "res/shaders/shader.fs.glsl");
+	// 
+	// 	// material
+	// 	Material::Sptr mat = std::make_shared<Material>(shader);
+	// 
+	// 	// trial
+	// 	const int N = n;
+	// 
+	// 	// adding values
+	// 	for (int i = 1; i <= N; i++)
+	// 	{
+	// 		Object* obj = new PrimitiveCube();
+	// 		obj->CreateEntity(sceneName, mat);
+	// 		
+	// 		objectList->AddObject(obj);
+	// 		delStack.push(obj);
+	// 	}
+	// 
+	// 	// Deletion
+	// 	auto start = std::chrono::high_resolution_clock::now(); // current time.
+	// 
+	// 	// while the stack isn't empty.
+	// 	while (!delStack.empty())
+	// 	{
+	// 		// this is a function that removes an object from its object list, then deletes it.
+	// 		objectList->DeleteObjectByPointer(delStack.top());
+	// 
+	// 		// pops the top of the stack.
+	// 		delStack.pop();
+	// 	}
+	// 
+	// 	auto end = std::chrono::high_resolution_clock::now(); // current time.
+	// 
+	// 	// printing
+	// 	std::cout << "\n" << "(n = " << N << ") - Time: "
+	// 		<< std::chrono::duration<double, std::milli>(end - start).count() << "\n";
+	// 
+	// }
+	// std::cout << std::endl;
+
 	game->imguiMode = true;
 
 	// calling on window resize to fix aspect ratio
@@ -113,6 +164,12 @@ void cherry::EngineMenuScene::OnClose()
 
 	MenuScene::OnClose();
 
+}
+
+// generates a new instance of the engine menu scene.
+cherry::Scene* cherry::EngineMenuScene::GenerateNewInstance() const
+{
+	return new EngineMenuScene(GetName());
 }
 
 // update loop

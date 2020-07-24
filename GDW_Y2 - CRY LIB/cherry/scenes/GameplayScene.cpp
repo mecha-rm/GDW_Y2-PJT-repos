@@ -23,6 +23,21 @@ void cherry::GameplayScene::OnOpen()
 // caled when the scene is being closed.
 void cherry::GameplayScene::OnClose()
 {
-	ObjectManager::DestroySceneObjectListByPointer(objectList);
+	ObjectManager::DestroySceneObjectListByPointer(objectList); // TODO: crashes here after 3 successful deletions.
 	LightManager::DestroySceneLightListByPointer(lightList);
+
+	// now uses shared pointers
+	// for (PostLayer* layer : layers)
+	// 	delete layer;
+
+	layers.clear();
+
+	// this is empty
+	Scene::OnClose();
+}
+
+// generates a new instance of the gameplay scene.
+cherry::Scene* cherry::GameplayScene::GenerateNewInstance() const
+{
+	return new GameplayScene(GetName());
 }

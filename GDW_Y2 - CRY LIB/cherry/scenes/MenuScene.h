@@ -57,6 +57,9 @@ namespace cherry
 		// closing the scene
 		void OnClose() override;
 
+		// generates a new instance of the menu scene.
+		virtual Scene* GenerateNewInstance() const override;
+
 		// these functions get called by the game class by default, but they can be overwritten.
 		void MouseButtonPressed(GLFWwindow* window, int button) override;
 		
