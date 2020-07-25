@@ -4,21 +4,21 @@
 
 // POINT
 // brings a point into the ostream.
-std::ostream& util::math::operator<<(std::ostream& os, const Point& p) { return os << p.toString(); }
+// std::ostream& util::math::operator<<(std::ostream& os, const Point& p) { return os << p.toString(); }
 
-// POINT 2  
+// POINT 2 
 // point
 util::math::Point2::Point2(float x, float y) : x(x), y(y) {}
 
 // converts from vec2 to Point2
 util::math::Point2::Point2(util::math::Vec2 v) : x(v.x), y(v.y) {}
 
-// istram for point2
-std::istream& util::math::operator>>(std::istream& in, Point2& p)
-{
-	in >> p.x >> p.y;
-	return in;
-}
+// istream for point2
+// std::istream& util::math::operator>>(std::istream& in, Point2& p)
+// {
+// 	in >> p.x >> p.y;
+// 	return in;
+// }
 
 // lerps between this point and the following point
 inline util::math::Point2 util::math::Point2::lerp(const Point2& p1, float t) const { return Point2::lerp(*this, p1, t); }
@@ -96,11 +96,11 @@ util::math::Point3::Point3(Point2& p2) : x(p2.x), y(p2.y), z(0.0F) {}
 util::math::Point3::Point3(util::math::Vec3 v) : x(v.x), y(v.y), z(v.z) {}
 
 // istream
-std::istream& util::math::operator>>(std::istream& in, Point3& p)
-{
-	in >> p.x >> p.y >> p.z;
-	return in;
-}
+// std::istream& util::math::operator>>(std::istream& in, Point3& p)
+// {
+// 	in >> p.x >> p.y >> p.z;
+// 	return in;
+// }
 
 // lerp for point3
 inline util::math::Point3 util::math::Point3::lerp(const Point3& p1, float t) const { return Point3::lerp(*this, p1, t); }

@@ -6,12 +6,12 @@
 
 //// VECTOR //////////////////////////////////////////////////////////////////////////////////////////
 // ostream operator
-std::ostream& util::math::operator<<(std::ostream& os, const Vec& vec) { return os << vec.toString(); }
+// std::ostream& util::math::operator<<(std::ostream& os, const Vec& vec) { return os << vec.toString(); }
 
 // calculates the length of the dot product
 template<typename T>
 float util::math::Vec::calculateDotLength(const T& v1, const T& v2, const bool projV2)
-{
+{ 
 	return v1.dot(v2) / ((projV2) ? v2.length() : v1.length());
 }
 
@@ -31,13 +31,13 @@ float util::math::Vec::calculateDotAngle(const T& v1, const T& v2, const bool in
 util::math::Vec2::Vec2(float x, float y) : x(x), y(y) {}
 
 // istream
-std::istream& util::math::operator>>(std::istream& in, Vec2& vec)
-{
-	// in.ignore(); // We use 'ignore' because if the user follows the proper format, we get a bunch of characters we don't want to use.
-
-	in >> vec.x >> vec.y;
-	return in;
-}
+// std::istream& util::math::operator>>(std::istream& in, Vec2& vec)
+// {
+// 	// in.ignore(); // We use 'ignore' because if the user follows the proper format, we get a bunch of characters we don't want to use.
+// 
+// 	in >> vec.x >> vec.y;
+// 	return in;
+// }
 
 
 // Operators
@@ -154,11 +154,11 @@ util::math::Vec3::Vec3(float x, float y, float z) : x(x), y(y), z(z) {}
 util::math::Vec3::Vec3(Vec2 vec, float z) : x(vec.x), y(vec.y), z(z) {}
 
 // istream
-std::istream& util::math::operator>>(std::istream& in, Vec3& vec)
-{
-	in >> vec.x >> vec.y >> vec.z;
-	return in;
-}
+// std::istream& util::math::operator>>(std::istream& in, Vec3& vec)
+// {
+// 	in >> vec.x >> vec.y >> vec.z;
+// 	return in;
+// }
 
 // Operators
 const float& util::math::Vec3::operator[](const int index) const // reading
@@ -200,7 +200,7 @@ util::math::Vec3 util::math::Vec3::operator-(Vec3 vec) const { return Vec3(x - v
 // negation of vector
 util::math::Vec3 util::math::Vec3::operator-() const { return 0.0f - *this; }
 
-// float minus vector
+// float minus vector 
 util::math::Vec3 util::math::operator-(const float a, const util::math::Vec3 b) { return Vec3(a - b.x, a - b.y, a - b.z); }
 
 util::math::Vec3 util::math::Vec3::operator*=(float scalar) { return *this = *this * scalar; }
@@ -282,11 +282,11 @@ util::math::Vec4::Vec4(float x, float y, float z, float w) : x(x), y(y), z(z), w
 util::math::Vec4::Vec4(Vec3 vec, float w) : x(vec.x), y(vec.y), z(vec.z), w(w) {}
 
 // istream
-std::istream& util::math::operator>>(std::istream& in, Vec4& vec)
-{
-	in >> vec.x >> vec.y >> vec.z >> vec.w;  
-	return in;
-}
+// std::istream& util::math::operator>>(std::istream& in, Vec4& vec)
+// {
+// 	in >> vec.x >> vec.y >> vec.z >> vec.w;
+// 	return in;
+// }
 
 const float& util::math::Vec4::operator[](const int index) const // reading
 {

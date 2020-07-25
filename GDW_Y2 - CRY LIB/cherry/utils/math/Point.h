@@ -13,7 +13,10 @@ namespace util
 		struct Point
 		{
 			// ostream for points
-			friend std::ostream& operator<<(std::ostream&, const Point&); // << ostream operator
+			friend std::ostream& operator<<(std::ostream& os, const Point& p) // << ostream operator
+			{
+				return os << p.toString();
+			}
 
 			// to_string operation
 			virtual std::string toString() const = 0;
@@ -28,7 +31,11 @@ namespace util
 			Point2(util::math::Vec2 v);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Point2&);
+			friend std::istream& operator>>(std::istream& in, Point2& p)
+			{
+				in >> p.x >> p.y;
+				return in;
+			}
 
 			// lerps between this point and a passed point. This point is conisdered p0.
 			// (t) will be set to 0 if it is less than 0, and 1 if it is greater than 1.
@@ -72,7 +79,11 @@ namespace util
 			Point3(util::math::Vec3 v);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Point3&);
+			friend std::istream& operator>>(std::istream& in, Point3& p)
+			{
+				in >> p.x >> p.y >> p.z;
+				return in;
+			}
 
 			// lerps between this point and a passed point. This point is conisdered p0.
 			// (t) will be set to 0 if it is less than 0, and 1 if it is greater than 1.
