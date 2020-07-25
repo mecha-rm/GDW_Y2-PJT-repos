@@ -48,6 +48,11 @@ namespace cherry
 		// if there is no current animation, a nullptr is returned.
 		cherry::Animation * GetCurrentAnimation();
 
+		// sets the current animation via a pointer to said animation.
+		// if said animation isn't found, then the animation is left as what it currently is.
+		// if the animation is not in the list, but addAnimation is true, then the animation is added to the list and set as current.
+		void SetCurrentAnimation(cherry::Animation* newAni, const bool addAnimation = false);
+
 		// sets the index for the animation.
 		// if this index is out of range, then a nullptr is returned.
 		void SetCurrentAnimation(unsigned int index);

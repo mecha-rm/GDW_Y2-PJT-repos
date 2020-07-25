@@ -122,6 +122,35 @@ namespace util
 	// caps 'val' using lowerBound and upperBound. The (<) and (>) operators must be overloaded for this function. 
 	template<typename T>
 	T clamp(T val, T lowerBound, T upperBound) { return (val < lowerBound) ? lowerBound : (val > upperBound) ? upperBound : val; };
+	
+	// adds an element to a pointer vector if it isn't already in there. 
+	template<typename T>
+	bool vectorContainsElement(std::vector<T*>& vector, T* element)
+	{
+		// goes through each index to see if the item is in it.
+		for (int i = 0; i < vector.size(); i++)
+		{
+			if (vector[i] == element)
+				return true;
+		}
+
+		return false;
+	}
+	
+	// Share Pointer Version
+	// adds an element to a pointer vector if it isn't already in there. 
+	template<typename T>
+	bool vectorContainsElement(std::vector<std::shared_ptr<T>>& vector, std::shared_ptr<T> element)
+	{
+		// goes through each index to see if the item is in it.
+		for (int i = 0; i < vector.size(); i++)
+		{
+			if (vector[i] == element)
+				return true;
+		}
+
+		return false;
+	}
 
 	// adds an element to a pointer vector if it isn't already in there. 
 	template<typename T>
@@ -185,6 +214,7 @@ namespace util
 
 		return false;
 	}
+
 }
 
 #endif // !UTILITIES_H

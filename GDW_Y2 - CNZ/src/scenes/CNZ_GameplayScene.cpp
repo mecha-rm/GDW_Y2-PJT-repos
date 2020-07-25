@@ -1270,6 +1270,12 @@ void cnz::CNZ_GameplayScene::LoadEnemyGroups()
 	}
 }
 
+// returns the player object.
+cnz::Player* const cnz::CNZ_GameplayScene::GetPlayer() const
+{
+	return playerObj;
+}
+
 // gets the visible physics bodies.
 bool cnz::CNZ_GameplayScene::GetVisiblePhysicsBodies() const { return showPBs; }
 
@@ -1457,9 +1463,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							// cs = false;
 							// cd = false;
 
-							// invincibility period
+							// invincibility period activated
 							isInvincible = true;
 							invincibleCountdown = INVINCIBLE_TIME_MAX;
+							playerObj->SetAlpha(0.5F);
 						}
 					}
 
@@ -1488,6 +1495,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				{
 					invincibleCountdown = 0.0F;
 					isInvincible = false;
+					playerObj->SetAlpha(1.0F);
 				}
 			}
 		}

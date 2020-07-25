@@ -85,6 +85,9 @@ namespace cnz
 		// loads the enemy strings
 		static void LoadEnemyGroups();
 
+		// returns the player object. Set to 'nullptr' if the player isn't available.
+		cnz::Player* const GetPlayer() const;
+
 		// returns 'true' if physics bodies are visible.
 		// do note that this checks if they are on overall; individual objects can enable their own without this returning true.
 		bool GetVisiblePhysicsBodies() const;

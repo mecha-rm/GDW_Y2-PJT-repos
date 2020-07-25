@@ -144,6 +144,37 @@ cherry::Animation * cherry::AnimationManager::GetCurrentAnimation()
 	
 }
 
+// sets the current animation based on the provided animation.
+void cherry::AnimationManager::SetCurrentAnimation(cherry::Animation* newAni, const bool addAnimation)
+{
+	// TODO: check for proper animation.
+
+	// animation provided was null.
+	if (newAni == nullptr)
+		return;
+
+	// checks for the animation
+	for (int i = 0; i < animations.size(); i++)
+	{
+		// animation has been found.
+		if (animations[i] == newAni)
+		{
+			currentAnimation = i; // saves the index.
+			return; // function finished.
+		}
+	}
+
+	// if the for loop could not find the animation, then it's not in the list.
+	// if that's the case, and addAnimation is true, then the animation is added to the list.
+	if (addAnimation)
+	{
+		// saves the current animation.
+		animations.push_back(newAni);
+		currentAnimation = animations.size() - 1;
+	}
+
+}
+
 // sets the current animation
 void cherry::AnimationManager::SetCurrentAnimation(unsigned int index)
 {
