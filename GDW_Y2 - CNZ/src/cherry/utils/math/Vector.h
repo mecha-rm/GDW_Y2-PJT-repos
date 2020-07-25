@@ -13,8 +13,11 @@ namespace util
 		class Vec
 		{
 		public:
-
-			friend std::ostream& operator<<(std::ostream&, const Vec&); // << operator
+			// << operator
+			friend std::ostream& operator<<(std::ostream& os, const Vec& vec)
+			{
+				return os << vec.toString();
+			}
 
 			// calculates the length of the vector.
 			virtual float length() const = 0;
@@ -51,7 +54,11 @@ namespace util
 			Vec2(float x, float y);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Vec2&);
+			friend std::istream& operator>>(std::istream& in, Vec2& vec)
+			{
+				in >> vec.x >> vec.y;
+				return in;
+			}
 
 			// standard operators
 			const float& operator[](const int index) const; // reading
@@ -117,7 +124,11 @@ namespace util
 			Vec3(Vec2 vec, float z = 0.0F);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Vec3&);
+			friend std::istream& operator>>(std::istream& in, Vec3& vec)
+			{
+				in >> vec.x >> vec.y >> vec.z;
+				return in;
+			}
 
 			const float& operator[](const int index) const; // reading
 			float& operator[](const int index); // editing
@@ -186,7 +197,11 @@ namespace util
 			Vec4(Vec3 vec, float w = 0.0F);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Vec4&);
+			friend std::istream& operator>>(std::istream& in, Vec4& vec)
+			{
+				in >> vec.x >> vec.y >> vec.z >> vec.w;
+				return in;
+			}
 
 			// one is for reading the value, the other is for editing
 			const float& operator[](const int index) const;

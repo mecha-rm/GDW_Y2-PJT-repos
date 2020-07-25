@@ -12,6 +12,7 @@
 #include "Matrix.h"
 #include "Quaternion.h"
 #include "Rotation.h"
+#include "Object.h"
 #include "Point.h"
 #include "Vector.h"
 

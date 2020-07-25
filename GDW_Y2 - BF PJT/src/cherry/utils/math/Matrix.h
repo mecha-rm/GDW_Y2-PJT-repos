@@ -16,7 +16,10 @@ namespace util
 		{
 		public:
 			// istream
-			friend std::ostream& operator<<(std::ostream& os, const Mat& mat);
+			friend std::ostream& operator<<(std::ostream& os, const Mat& mat)
+			{
+				return os << mat.toString();
+			}
 
 			// adds together all values along the main diagonal.
 			virtual float getTrace() const = 0;
@@ -58,7 +61,12 @@ namespace util
 			Mat2(const util::math::Vec2 row0, const util::math::Vec2 row1);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Mat2&);
+			friend std::istream& operator>>(std::istream& in, Mat2& m2)
+			{
+				in >> m2[0][0] >> m2[0][1]
+					>> m2[1][0] >> m2[1][1];
+				return in;
+			}
 
 			// accessor and modifier
 			const util::math::Vec2& operator[](const int) const;
@@ -133,7 +141,14 @@ namespace util
 			Mat3(const util::math::Vec3 row0, const util::math::Vec3 row1, const util::math::Vec3 row2);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Mat3&);
+			friend std::istream& operator>>(std::istream& in, Mat3& m2)
+			{
+				in >> m2[0][0] >> m2[0][1] >> m2[0][2]
+					>> m2[1][0] >> m2[1][1] >> m2[1][2]
+					>> m2[2][0] >> m2[2][1] >> m2[2][2];
+
+				return in;
+			}
 
 			const util::math::Vec3& operator[](const int) const;
 			util::math::Vec3& operator[](const int);
@@ -204,7 +219,15 @@ namespace util
 				float f12, float f13, float f14, float f15);
 
 			// istream
-			friend std::istream& operator>>(std::istream&, Mat4&);
+			friend std::istream& operator>>(std::istream& in, Mat4& m2)
+			{
+				in >> m2[0][0] >> m2[0][1] >> m2[0][2] >> m2[0][3]
+					>> m2[1][0] >> m2[1][1] >> m2[1][2] >> m2[1][3]
+					>> m2[2][0] >> m2[2][1] >> m2[2][2] >> m2[2][3]
+					>> m2[3][0] >> m2[3][1] >> m2[3][2] >> m2[3][3];
+
+				return in;
+			}
 
 			// accessors and readers
 			const util::math::Vec4& operator[](const int) const;

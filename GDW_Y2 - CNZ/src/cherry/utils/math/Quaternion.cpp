@@ -10,14 +10,14 @@ util::math::Quat::Quat(float w, Vec3 vec3) : w(w), x(vec3.x), y(vec3.y), z(vec3.
 util::math::Quat::Quat(Vec4 vec4) : w(vec4.w), x(vec4.x), y(vec4.y), z(vec4.z) {}
 
 // ostream operation
-std::ostream & util::math::operator<<(std::ostream & os, const math::Quat & quad) { return os << quad.toString(); }
+// std::ostream & util::math::operator<<(std::ostream & os, const math::Quat & quat) { return os << quat.toString(); }
 
 //istream operator
-std::istream & util::math::operator>>(std::istream & in, math::Quat & quad)
-{
-	in >> quad.w >> quad.x >> quad.y >> quad.z;
-	return in;
-}
+// std::istream & util::math::operator>>(std::istream & in, math::Quat & quat)
+// {
+// 	in >> quat.w >> quat.x >> quat.y >> quat.z;
+// 	return in;
+// }
 
 // reading
 const float & util::math::Quat::operator[](const int index) const { return(&w)[index]; }
@@ -26,19 +26,19 @@ const float & util::math::Quat::operator[](const int index) const { return(&w)[i
 float & util::math::Quat::operator[](const int index) { return(&w)[index]; }
 
 // Assumes (i, j, k) are all equal to '1'.
-util::math::Quat util::math::Quat::operator*(const Quat & quad) const
+util::math::Quat util::math::Quat::operator*(const Quat & quat) const
 {
-	return multiply(quad, 1.0F, 1.0F, 1.0F);
+	return multiply(quat, 1.0F, 1.0F, 1.0F);
 	/*return Quat(
-		(this->w * quad.w - this->x * quad.x - this->y * quad.y - this->z * quad.z),
-		(this->w * quad.x + this->x * quad.w + this->y * quad.z - this->z * quad.y),
-		(this->w * quad.y - this->x * quad.z + this->y * quad.w + this->z * quad.x),
-		(this->w * quad.z + this->x * quad.y - this->y * quad.x + this->z + quad.w)
+		(this->w * quat.w - this->x * quat.x - this->y * quat.y - this->z * quat.z),
+		(this->w * quat.x + this->x * quat.w + this->y * quat.z - this->z * quat.y),
+		(this->w * quat.y - this->x * quat.z + this->y * quat.w + this->z * quat.x),
+		(this->w * quat.z + this->x * quat.y - this->y * quat.x + this->z + quat.w)
 	);*/
 }
 
 // Assumes (i, j, k) are all equal to '1'.
-void util::math::Quat::operator*=(const Quat & quad) { *this = *this * quad; }
+void util::math::Quat::operator*=(const Quat & quat) { *this = *this * quat; }
 
 // gets the conjugate of the quaternion
 util::math::Quat util::math::Quat::getConjugate() const { return Quat(w, -x, -y, -z); }
@@ -47,16 +47,16 @@ util::math::Quat util::math::Quat::getConjugate() const { return Quat(w, -x, -y,
 void util::math::Quat::conjugate() { *this = getConjugate(); }
 
 // multiplies the quaternion in the object by the provided quaternion
-util::math::Quat util::math::Quat::multiply(const Quat & quad, const float I, const float J, const float K) const { return multiply(*this, quad, I, J, K); }
+util::math::Quat util::math::Quat::multiply(const Quat & quat, const float I, const float J, const float K) const { return multiply(*this, quat, I, J, K); }
 
 // multiplies two quaternions
-util::math::Quat util::math::Quat::multiply(const Quat & quad1,const Quat & quad2, const float I, const float J, const float K)
+util::math::Quat util::math::Quat::multiply(const Quat & quat1,const Quat & quat2, const float I, const float J, const float K)
 {
 	return Quat(
-		((quad1.w * quad2.w) - (quad1.x * quad2.x) - (quad1.y * quad2.y) - (quad1.z * quad2.z)),
-		((quad1.w * quad2.x) + (quad1.x * quad2.w) + (quad1.y * quad2.z) - (quad1.z * quad2.y)) * I,
-		((quad1.w * quad2.y) - (quad1.x * quad2.z) + (quad1.y * quad2.w) + (quad1.z * quad2.x)) * J,
-		((quad1.w * quad2.z) + (quad1.x * quad2.y) - (quad1.y * quad2.x) + (quad1.z * quad2.w)) * K
+		((quat1.w * quat2.w) - (quat1.x * quat2.x) - (quat1.y * quat2.y) - (quat1.z * quat2.z)),
+		((quat1.w * quat2.x) + (quat1.x * quat2.w) + (quat1.y * quat2.z) - (quat1.z * quat2.y)) * I,
+		((quat1.w * quat2.y) - (quat1.x * quat2.z) + (quat1.y * quat2.w) + (quat1.z * quat2.x)) * J,
+		((quat1.w * quat2.z) + (quat1.x * quat2.y) - (quat1.y * quat2.x) + (quat1.z * quat2.w)) * K
 	);
 }
 

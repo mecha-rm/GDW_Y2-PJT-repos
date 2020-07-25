@@ -2,7 +2,7 @@
 #include "../Array.h"
 
 // ostream operator
-std::ostream & util::math::operator<<(std::ostream & os, const Mat & mat) { return os << mat.toString(); }
+// std::ostream & util::math::operator<<(std::ostream & os, const Mat & mat) { return os << mat.toString(); }
 
 // a helper function used to calculate the values for the minor of a matrix.
 float *  util::math::Mat::getMinorValues(const float * const matArr, const unsigned int ROW_TOTAL, const unsigned int COL_TOTAL, unsigned const int ROW, unsigned const int COL) const
@@ -10,7 +10,7 @@ float *  util::math::Mat::getMinorValues(const float * const matArr, const unsig
 	float * cofactorArr = new float[(ROW_TOTAL - 1) * (COL_TOTAL - 1)]; // holds the array that will
 	int index = 0; // index of the cofactor array
 
-	// checking for valid input. If the row or column are out of bounds, thenan empty matrix is returned.
+	// checking for valid input. If the row or column are out of bounds, then an empty matrix is returned.
 	try
 	{
 		if (ROW >= ROW_TOTAL || COL >= COL_TOTAL)
@@ -56,12 +56,12 @@ util::math::Mat2::Mat2(const util::math::Vec2 row0, const util::math::Vec2 row1)
 }
 
 // istream operator
-std::istream & util::math::operator>>(std::istream & in, Mat2 & m2)
-{
-	in >> m2[0][0] >> m2[0][1] 
-	   >> m2[1][0] >> m2[1][1];
-	return in;
-}
+// std::istream & util::math::operator>>(std::istream & in, Mat2 & m2)
+// {
+// 	in >> m2[0][0] >> m2[0][1] 
+// 	   >> m2[1][0] >> m2[1][1];
+// 	return in;
+// }
 
 // reading information
 const util::math::Vec2& util::math::Mat2::operator[](const int index) const { return col[index]; }
@@ -280,14 +280,14 @@ util::math::Mat3::Mat3(const util::math::Vec3 row0, const util::math::Vec3 row1,
 }
 
 // istream operator
-std::istream & util::math::operator>>(std::istream & in, Mat3 & m2)
-{
-	in >> m2[0][0] >> m2[0][1] >> m2[0][2]
-		>> m2[1][0] >> m2[1][1] >> m2[1][2]
-		>> m2[2][0] >> m2[2][1] >> m2[2][2];
-
-	return in;
-}
+// std::istream & util::math::operator>>(std::istream & in, Mat3 & m2)
+// {
+// 	in >> m2[0][0] >> m2[0][1] >> m2[0][2]
+// 		>> m2[1][0] >> m2[1][1] >> m2[1][2]
+// 		>> m2[2][0] >> m2[2][1] >> m2[2][2];
+// 
+// 	return in;
+// }
 
 // reading values
 const util::math::Vec3& util::math::Mat3::operator[](const int index) const { return col[index]; }
@@ -578,15 +578,15 @@ util::math::Mat4::Mat4(float f0, float f1, float f2, float f3, float f4, float f
 }
 
 // istream operator
-std::istream & util::math::operator>>(std::istream & in, Mat4 & m2)
-{
-	in >> m2[0][0] >> m2[0][1] >> m2[0][2] >> m2[0][3]
-		>> m2[1][0] >> m2[1][1] >> m2[1][2] >> m2[1][3]
-		>> m2[2][0] >> m2[2][1] >> m2[2][2] >> m2[2][3]
-		>> m2[3][0] >> m2[3][1] >> m2[3][2] >> m2[3][3];
-
-	return in;
-}
+// std::istream & util::math::operator>>(std::istream & in, Mat4 & m2)
+// {
+// 	in >> m2[0][0] >> m2[0][1] >> m2[0][2] >> m2[0][3]
+// 		>> m2[1][0] >> m2[1][1] >> m2[1][2] >> m2[1][3]
+// 		>> m2[2][0] >> m2[2][1] >> m2[2][2] >> m2[2][3]
+// 		>> m2[3][0] >> m2[3][1] >> m2[3][2] >> m2[3][3];
+// 
+// 	return in;
+// }
 
 // reading
 const util::math::Vec4& util::math::Mat4::operator[](const int index) const { return col[index]; }
