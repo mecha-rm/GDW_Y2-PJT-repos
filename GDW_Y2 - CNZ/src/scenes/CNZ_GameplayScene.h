@@ -210,6 +210,11 @@ namespace cnz
 		// the amount of lives
 		int lives = 3;
 
+		// life icons
+		cherry::Image* lifeIcon_1 = nullptr;
+		cherry::Image* lifeIcon_2 = nullptr;
+		cherry::Image* lifeIcon_3 = nullptr;
+
 		// the current group
 		int curGroup = -1;
 

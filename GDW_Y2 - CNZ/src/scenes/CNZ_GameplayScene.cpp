@@ -273,6 +273,40 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		objList->GetObjectByIndex(i)->SetVisible(true);
 	}*/
 
+	// TODO: include life icon
+	{
+		// TODO: these will be toggled on and off based on how many lives the player has.
+		// offset
+		float offset = 0.06F;
+
+		// icon 1
+		lifeIcon_1 = new Image("res/images/life_icon.png", SCENE_NAME, false, false);
+		lifeIcon_1->SetWindowChild(true);
+		lifeIcon_1->SetPostProcess(false);
+		lifeIcon_1->SetPositionByWindowSize(Vec2(0.95F, 0.05F));
+		lifeIcon_1->SetScale(0.35F);
+
+		objectList->AddObject(lifeIcon_1);
+
+		// icon 2
+		lifeIcon_2 = new Image("res/images/life_icon.png", SCENE_NAME, false, false);
+		lifeIcon_2->SetWindowChild(true);
+		lifeIcon_2->SetPostProcess(false);
+		lifeIcon_2->SetPositionByWindowSize(Vec2(0.95F - offset, 0.05F));
+		lifeIcon_2->SetScale(0.35F);
+
+		objectList->AddObject(lifeIcon_2);
+
+		// icon 3
+		lifeIcon_3 = new Image("res/images/life_icon.png", SCENE_NAME, false, false);
+		lifeIcon_3->SetWindowChild(true);
+		lifeIcon_3->SetPostProcess(false);
+		lifeIcon_3->SetPositionByWindowSize(Vec2(0.95F - offset * 2, 0.05F));
+		lifeIcon_3->SetScale(0.35F);
+
+		objectList->AddObject(lifeIcon_3);
+	}
+
 	// sets if the physics bodies should be visible.
 	SetVisiblePhysicsBodies(showPBs);
 
@@ -1438,8 +1472,23 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						bool collision = cherry::PhysicsBody::Collision(pBody, eBody);
 
 						if (collision) {
-							//Player takes damage
+							// player takes damage
 							lives--;
+							
+							// life count has changed.
+							switch (lives)
+							{
+							case 2:
+								lifeIcon_3->SetVisible(false);
+								break;
+							case 1:
+								lifeIcon_2->SetVisible(false);
+								break;
+							case 0:
+								lifeIcon_1->SetVisible(false);
+								break;
+							}
+
 							playerObj->SetPosition(playerSpawn);
 
 							// resetting variables
@@ -2240,6 +2289,12 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// Pause Menu Code
 		if (restart) {
 			// Resets Everything
+			// life icons are visible now.
+			lives = 3;
+			lifeIcon_1->SetVisible(true);
+			lifeIcon_2->SetVisible(true);
+			lifeIcon_3->SetVisible(true);
+
 			kills = 0;
 			curGroup = -1;
 			curWave = 0;
