@@ -142,6 +142,15 @@ cherry::Scene* cnz::CNZ_RankingScene::GenerateNewInstance() const
 	return new CNZ_RankingScene(GetName());
 }
 
+// mouse button pressed
+void cnz::CNZ_RankingScene::MouseButtonPressed(GLFWwindow* window, int button)
+{
+	cherry::MenuScene::MouseButtonPressed(window, button);
+
+	// menu click
+	cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
+}
+
 void cnz::CNZ_RankingScene::Update(float deltaTime)
 {
 	using namespace cherry;
@@ -152,6 +161,9 @@ void cnz::CNZ_RankingScene::Update(float deltaTime)
 	// a button has been entered and the mouse has been pressed.
 	if (enteredButton == exitButton && mousePressed)
 	{
+		// menu accept.
+		AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 		game->SetCurrentScene(game->titleSceneName, true);
 	}
 }

@@ -22,6 +22,9 @@ namespace cnz
 		// generates a new instance of the ranking scene.
 		virtual Scene* GenerateNewInstance() const override;
 
+		// called when a mouse button has been pressed.
+		void MouseButtonPressed(GLFWwindow* window, int button) override;
+
 		// update loop
 		void Update(float deltaTime) override;
 

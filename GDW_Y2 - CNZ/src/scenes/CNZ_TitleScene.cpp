@@ -64,12 +64,19 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// title screen
 	{
-		Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
+		// original
+		// Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
+
+		// animated version (3600 X 250 w/ 600 X 250 cell size)
+		Image* image = new Image("res/images/codename_zero_logo_glow_ss_small.png", sceneName, 
+			Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 600, 250), 3600, 250, false), false, false);
+
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(0.5F, 0.2F);
 
 		cherry::Vec3 size = image->GetMeshBodyMaximum() - image->GetMeshBodyMinimum();
-		image->SetScale(0.8F);
+		// image->SetScale(0.8F); // original
+		image->SetScale(0.78F); // for animation
 
 		PhysicsBodyBox* pbb = new PhysicsBodyBox(Vec3(0, 0, 0), size);
 		pbb->SetVisible(false);
@@ -80,6 +87,30 @@ void cnz::CNZ_TitleScene::OnOpen()
 		entryButton->object = image;
 
 		AddButton(entryButton, false);
+
+		// animation
+		cherry::ImageAnimation* imgAnime = new ImageAnimation();
+		image->AddAnimation(imgAnime, false);
+		
+		// 6 different frames (12 frames total)
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 0, 0, 600 * 1, 250), 3600, 250, false), 1.00F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 1, 0, 600 * 2, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 2, 0, 600 * 3, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 3, 0, 600 * 4, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 4, 0, 600 * 5, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 5, 0, 600 * 6, 250), 3600, 250, false), 0.3F));
+
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 5, 0, 600 * 6, 250), 3600, 250, false), 0.3F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 4, 0, 600 * 5, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 3, 0, 600 * 4, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 2, 0, 600 * 3, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 1, 0, 600 * 2, 250), 3600, 250, false), 0.06F));
+		imgAnime->AddFrame(new cherry::ImageAnimationFrame("res/images/codename_zero_logo_glow_ss_small.png", Image::ConvertImagePixelsToUVSpace(Vec4(600 * 0, 0, 600 * 1, 250), 3600, 250, false), 1.00F));
+
+		imgAnime->SetInfiniteLoop(true);
+		imgAnime->Play();
+		image->AddAnimation(imgAnime, true);
+		image->SetVisible(true);
 	}
 
 	// ranking button

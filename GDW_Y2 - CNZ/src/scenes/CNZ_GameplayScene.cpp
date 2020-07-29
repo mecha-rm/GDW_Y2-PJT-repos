@@ -1,3 +1,7 @@
+// TODO: optimize enemy positions so that they don't spawn on top of the player.
+// TODO: redo maps 2 and 3.
+// TODO: the game breaks when certain enemies are killed sometimes.. still...
+
 #include "CNZ_GameplayScene.h"
 
 #include "..\CNZ_Game.h"
