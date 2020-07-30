@@ -26,8 +26,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 	std::string textFnt = FONT_ARIAL;
 	Vec4 textClr = Vec4(1.0F, 1.0F, 1.0F, 1.0F);
 
-	glm::vec2 startPos{ 0.9, 0.65F };
-	glm::vec2 offset{ -0.18F, 0.0F };
+	glm::vec2 startPos{ 0.74, 0.65F }; // original: {0.9, 0.65F }
+	glm::vec2 offset{ -0.24F, 0.0F }; // original: {-0.18F, 0.0F}
 
 	glm::vec3 textLocalPos{ 0.0F, -3.0F, 2.0F };
 

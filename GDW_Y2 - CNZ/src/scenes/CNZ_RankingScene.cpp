@@ -78,10 +78,21 @@ void cnz::CNZ_RankingScene::OnOpen()
 			if (splitStr.size() == 2) // name	score
 				str = util::replaceSubstring(splitStr[0], "_", " ") + spaceLine + splitStr[1];
 
+			// adding line number.
+			// TODO: replace "X" with 10.
+			if(lNum < 9)
+				str = std::to_string(lNum + 1) + ". " + str;
+			else
+				str = "X. " + str;
+
 			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 4.5F);
 			text->SetWindowChild(true);
 			// the names line up with the center, but not the scores.
-			text->SetPositionByWindowSize(Vec2(0.6F, 0.275F) + offset * lNum);
+			text->SetPositionByWindowSize(Vec2(0.72F, 0.275F) + offset * lNum);
+
+			// TODO: line 10 needs to be shifted over slightly.
+			// if(lNum == 9)
+			// 	text->SetPositionByWindowSize(Vec2(0.6F, 0.275F) + offset * lNum - 0.002F);
 
 			scores.push_back(text);
 

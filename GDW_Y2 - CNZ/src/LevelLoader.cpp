@@ -13,7 +13,7 @@ cnz::Bastion* cnz::Level::sourceBastion = nullptr;
 cnz::Mechaspider* cnz::Level::sourceSpider = nullptr;
 cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 
-// cell offset
+// cell offset (default: 6.25F)
 const float cnz::Level::cellOffset = 6.25f;
 
 cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) 
@@ -780,6 +780,12 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
+
+				// This is a TEST to see if this fixes the platform placements.
+				// Comment out if unneeded.
+				// THIS DID NOTHING.
+				//obj->SetPosition(obj->GetPosition() + Vec3(205.0F, 0.0F, 0.0F));
+
 				body->SetLocalPosition(cherry::Vec3(0, 0, 0.125));
 				body->SetVisible(false);
 
