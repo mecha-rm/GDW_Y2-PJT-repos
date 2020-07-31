@@ -127,16 +127,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	}
 	else
 	{
-		lightList->AddLight(new Light(GetName(), Vec3(0.0F, 0.0F, 45.0F), Vec3(1.0F, 0.0F, 0.73333333333F),
-			Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 9000.0F));
+		// lightList->AddLight(new Light(GetName(), Vec3(0.0F, 0.0F, 45.0F), Vec3(1.0F, 0.0F, 0.73333333333F),
+		// 	Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 9000.0F));
 	}
 
 	// player light
 	{
 		// todo: maybe make the light be out in front of the player instead, and be where they're facing.
 		// the light is okay for now, but it could be better.
-		playerLight = new Light(SCENE_NAME, Vec3(0, 0, 1.5F), Vec3(1, 1, 1), Vec3(1.0F, 0.01F, 0.01F), 0.15f, 0.12f, 10.0f, 1/75.0f);
-		playerLightOffset = Vec3(0.0F, 0.0F, 2.5F);
+		playerLight = new Light(SCENE_NAME, Vec3(0, 0, 1.5F), Vec3(1, 1, 1), Vec3(0.015F, 0.012F, 0.912F), 0.15f, 0.12f, 10.0f, 1/100.0f);
+		playerLightOffset = PLAYER_LIGHT_OFFSET_BASE;
 		lightList->AddLight(playerLight);
 	}
 
@@ -510,6 +510,29 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 			restart = true;
 		}
 		break;
+	
+	// PLAYER LIGHT CONTROLS
+	case GLFW_KEY_UP: // y+
+		playerLightDir.y = 1;
+		break;
+	case GLFW_KEY_DOWN: // y-
+		playerLightDir.y = -1;
+		break;
+	case GLFW_KEY_LEFT: // x-
+		playerLightDir.x = -1;
+		break;
+	case GLFW_KEY_RIGHT: // x+
+		playerLightDir.x = 1;
+		break;
+	case GLFW_KEY_PAGE_UP: // z+
+		playerLightDir.z = 1;
+		break;
+	case GLFW_KEY_PAGE_DOWN: // z-
+		playerLightDir.z = -1;
+		break;
+	case GLFW_KEY_PERIOD: // reset position
+		playerLightOffset = PLAYER_LIGHT_OFFSET_BASE;
+		break;
 	}
 }
 
@@ -564,6 +587,22 @@ void cnz::CNZ_GameplayScene::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_SPACE:
 		mbLR = true;
 		spaceR = true;
+		break;
+
+	// PLAYER LIGHT CONTROLS
+	case GLFW_KEY_UP: // Y
+	case GLFW_KEY_DOWN:
+		playerLightDir.y = 0;
+		break;
+
+	case GLFW_KEY_LEFT: // X
+	case GLFW_KEY_RIGHT:
+		playerLightDir.x = 0;
+		break;
+
+	case GLFW_KEY_PAGE_UP: // Z
+	case GLFW_KEY_PAGE_DOWN:
+		playerLightDir.z = 0;
 		break;
 	}
 }
@@ -2280,11 +2319,29 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// cameraTimer.Stop();
 
-		// moving the player light.
-		if (playerLight->GetLightPosition() != playerObj->GetPosition())
+		// player light offset.
+		bool lightPosChange = false;
+
+		if (LIGHT_CONTROL && playerLightDir != glm::ivec3(0, 0, 0))
 		{
-			playerLight->SetLightPositionX(playerObj->GetPositionX());
-			playerLight->SetLightPositionY(playerObj->GetPositionY());
+			playerLightOffset += glm::vec3(
+				LIGHT_OFFSET_INC.x * playerLightDir.x * deltaTime,
+				LIGHT_OFFSET_INC.y * playerLightDir.y * deltaTime,
+				LIGHT_OFFSET_INC.z * playerLightDir.z * deltaTime
+			);
+
+			lightPosChange = true;
+		}
+
+		// moving the player light.
+		if (playerLight->GetLightPosition() != playerObj->GetPosition() || lightPosChange == true)
+		{
+			playerLight->SetLightPositionX(playerObj->GetPositionX() + playerLightOffset.x);
+			playerLight->SetLightPositionY(playerObj->GetPositionY() + playerLightOffset.y);
+
+			// EX: (this should be removed)
+			playerLight->SetLightPositionZ(playerLightOffset.z);
+
 			lightList->UpdatePostLayer(); // updates the post layer.
 		}
 	}

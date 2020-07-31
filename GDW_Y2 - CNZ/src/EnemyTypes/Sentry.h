@@ -18,8 +18,10 @@ namespace cnz {
 		// copies the enemy and sets its scene.
 		Sentry(const cnz::Sentry* obj, std::string scene);
 
+		// attack
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// update
 		void Update(float dt);
 
 		cherry::MorphAnimation* walk;
@@ -29,7 +31,7 @@ namespace cnz {
 		static const glm::vec3 EMISSIVE_COLOR;
 		static const float EMISSIVE_POWER;
 
-
+		// arrow direction vector.
 		cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);
 		float arrowST = 0;
 

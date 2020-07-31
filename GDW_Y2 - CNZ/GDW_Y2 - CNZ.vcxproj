@@ -508,7 +508,6 @@
     <ClInclude Include="src\scenes\CNZ_GameplayScene.h" />
     <ClInclude Include="src\scenes\CNZ_RankingScene.h" />
     <ClInclude Include="src\scenes\CNZ_TitleScene.h" />
-    <ClInclude Include="src\ScoreManager.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\GLM\detail\func_common.inl" />

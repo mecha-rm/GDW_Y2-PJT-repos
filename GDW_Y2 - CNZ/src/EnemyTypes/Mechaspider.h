@@ -18,8 +18,10 @@ namespace cnz {
 		// copy constructor
 		Mechaspider(const cnz::Mechaspider&);
 
+		// attack
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// update
 		void Update(float dt);
 
 		cherry::MorphAnimation* walk;

@@ -19,10 +19,13 @@ namespace cnz
 		// copy constructor.
 		Projectile(const Projectile& proj);
 
-
+		// sets the direction vector using a starting point and ending point.
 		void SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos);
+
+		// sets the direction vector.
 		void SetDirVec(cherry::Vec3 dirVec);
 
+		// returns the direction vector.
 		cherry::Vec3 GetDirectionVec() { return arrowDirVec; }
 
 		// gets which group the projectile is for.

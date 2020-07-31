@@ -422,7 +422,6 @@
     <ClInclude Include="src\cherry\JsonProfiling.h" />
     <ClInclude Include="src\cherry\post\DepthOfFieldLayer.h" />
     <ClInclude Include="src\cherry\post\BloomLayer.h" />
-    <ClInclude Include="src\ScoreManager.h" />
     <ClInclude Include="src\cherry\utils\sort\BubbleSort.h" />
     <ClInclude Include="src\cherry\utils\sort\CountSort.h" />
     <ClInclude Include="src\cherry\utils\sort\InsertionSort.h" />

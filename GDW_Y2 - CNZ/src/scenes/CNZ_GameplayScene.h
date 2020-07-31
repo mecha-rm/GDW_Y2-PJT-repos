@@ -176,8 +176,23 @@ namespace cnz
 		cherry::Vec3 playerSpawn;
 
 		// the player light (follows the player)
-		cherry::Light* playerLight;
-		cherry::Vec3 playerLightOffset;
+		cherry::Light* playerLight; // player light
+		glm::vec3 playerLightOffset; // light offset from player position
+
+		/*
+		 * trial numbers
+		 *** (-0.0488586426, -2.58236694, -3.05355835)
+		 *** (0.356292725, -3.05722046, -3.05355835)
+		 *** (0.305786133, -2.34268188, -1.60046387)
+		 *** (0.356292725, -3.05722046, -6.89315796)
+		 */
+		const glm::vec3 PLAYER_LIGHT_OFFSET_BASE{ 0.356292725, -3.05722046, -6.89315796 };
+		glm::ivec3 playerLightDir; // light direction (0, 0, 0)
+
+		// allows the player to control the light.
+		const bool LIGHT_CONTROL = true;
+		const glm::vec3 LIGHT_OFFSET_INC {2.0F, 2.0F, 2.0F};
+
 
 		// player movement
 		bool w = false;

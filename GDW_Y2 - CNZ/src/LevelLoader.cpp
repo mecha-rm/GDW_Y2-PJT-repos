@@ -82,6 +82,7 @@ bool cnz::Level::LoadLegend(std::string legendPath) {
 	return true;
 }
 
+// loads the level.
 bool cnz::Level::LoadLevel(std::string levelPath) {
 	CSV levelCSV = CSV(levelPath);
 	std::vector<int> mapSize;
@@ -99,6 +100,7 @@ bool cnz::Level::LoadLevel(std::string levelPath) {
 	}
 }
 
+// gets the size of the map.
 std::vector<int> cnz::Level::GetMapSize(CSV level) {
 	std::vector<int> wh;
 	std::string temp = level.GetRow(0, 1); // this should contain a string with two ints, formatted as: int,int
