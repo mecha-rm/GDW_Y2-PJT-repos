@@ -191,7 +191,7 @@ namespace cnz
 
 		// allows the player to control the light.
 		const bool LIGHT_CONTROL = true;
-		const glm::vec3 LIGHT_OFFSET_INC {2.0F, 2.0F, 2.0F};
+		const glm::vec3 LIGHT_OFFSET_INC {4.5F, 4.5F, 4.5F};
 
 
 		// player movement
