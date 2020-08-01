@@ -1,6 +1,7 @@
 // TODO: optimize enemy positions so that they don't spawn on top of the player.
 // TODO: redo maps 2 and 3.
 // TODO: the game breaks when certain enemies are killed sometimes.. still...
+// TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
 
 #include "CNZ_GameplayScene.h"
 
@@ -28,8 +29,8 @@ cherry::Vec3 GetUnitDirVecXY(cherry::Vec2, cherry::Vec2);
 cherry::Vec3 GetUnitDirVecXY(cherry::Vec3, cherry::Vec3);
 
 // lerps between two vectors on the xy axis. Z-axis information is ignored.
-cherry::Vec3 LerpXY(cherry::Vec2, cherry::Vec2, float);
-cherry::Vec3 LerpXY(cherry::Vec3, cherry::Vec3, float);
+cherry::Vec3 CameraLerpXY(cherry::Vec2, cherry::Vec2, float);
+cherry::Vec3 CameraLerpXY(cherry::Vec3, cherry::Vec3, float);
 
 // constructor
 cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName)
@@ -249,7 +250,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		game->AddObjectToScene(indicatorObj);
 
 		//// setting up the camera 
-		myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, playerObj->GetPosition().GetZ() + 20.0f));
+		myCamera->SetPosition(glm::vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y, playerObj->GetPosition().GetZ() + CAMERA_POS_OFFSET.z));
 		
 		// sets the light to be the player position.
 		playerLight->SetLightPositionX(playerObj->GetPositionX());
@@ -2106,11 +2107,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 			}
 
+			// the enemy deletion works, but it's coded a bit weirdly.
+			// TODO: maybe see if you can optimize this?
+
 			// stacks of indexes to be removed.
 			std::stack<int> indexes;
 			
 			for (int i = 0; i < enemyList.size(); i++) {
-				if (enemyList[i]->alive == false) {
+				if (enemyList[i]->alive == false) 
+				{
 					// deletes the object.
 					bool destroyed = objectList->DeleteObjectByPointer(enemyList[i]);
 
@@ -2134,8 +2139,14 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 				enemyList.erase(enemyList.begin() + index);
 				indexes.pop(); // pops off value.
-				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
 
+				// there are four different deaths sounds. Playing the same death sound will cause the effect to start over.
+				// this is why the sound effect will only SOMETIMES play.
+				// sounds: enemy_death_01, enemy_death_02, enemy_death_03, enemy_death_04
+				//	* enemy_death is the same as enemy_death_01
+
+				// TODO: implement other enemy death sounds.
+				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
 			}
 
 			// for (int i = 0; i < enemyList.size(); i++) {
@@ -2167,8 +2178,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		else if (mbLP == true && mbLR == true) { // left mouse has been released, reset dash timer
 			playerObj->SetDashTime(0.0f);
 			//Logger::GetLogger()->info(this->dashTime);
-			this->mbLP = false;
-			this->mbLR = false;
+			mbLP = false;
+			mbLR = false;
 		}
 
 		// Path update
@@ -2176,7 +2187,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		//// update physics bodies
 		// player PB
-		playerObj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
+		// this should be unneeded.
+		// playerObj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
 		// // enemy PBs
 		// for (int i = 0; i < enemyList.size(); i++) {
 		// 	//enemyList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0,0,1));
@@ -2189,118 +2201,136 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		//// ANIMATION UPDATES
 		// Player
-		if (playerObj->GetState() == 1) { // walking
+		{
+
+			// these items cannot be declared in a case statement.
 			float angle = 0;
-			if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == 1) { // moving up right 
-				angle = 315.0f;
-			}
-			else if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == -1) { // moving up left 
-				angle = 45.0f;
-			}
-			else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == 1) { // moving down right 
-				angle = 225.0f;
-			}
-			else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == -1) { // moving down left 
-				angle = 135.0f;
-			}
-			else if (curMoveDir.GetY() == 1) { // moving up 
-				angle = 0.0f;
-			}
-			else if (curMoveDir.GetY() == -1) { // moving down 
-				angle = 180.0f;
-			}
-			else if (curMoveDir.GetX() == 1) { // moving right 
-				angle = 270.0f;
-			}
-			else if (curMoveDir.GetX() == -1) { // moving left 
-				angle = 90.0f;
-			}
-
 			float playerAngle = playerObj->GetDegreeAngle();
-			float angleDiff;
+			float angleDiff = 0;
 
-			// always get a positive difference 
-			if (playerAngle > angle) {
-				angleDiff = playerAngle - angle;
-			}
-			else if (angle > playerAngle) {
-				angleDiff = angle - playerAngle;
-			}
-			else {
-				angleDiff = 0.0f;
-			}
+			switch (playerObj->GetState())
+			{
+			case 1: // walking
+				if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == 1) { // moving up right 
+					angle = 315.0f;
+				}
+				else if (curMoveDir.GetY() == 1 && curMoveDir.GetX() == -1) { // moving up left 
+					angle = 45.0f;
+				}
+				else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == 1) { // moving down right 
+					angle = 225.0f;
+				}
+				else if (curMoveDir.GetY() == -1 && curMoveDir.GetX() == -1) { // moving down left 
+					angle = 135.0f;
+				}
+				else if (curMoveDir.GetY() == 1) { // moving up 
+					angle = 0.0f;
+				}
+				else if (curMoveDir.GetY() == -1) { // moving down 
+					angle = 180.0f;
+				}
+				else if (curMoveDir.GetX() == 1) { // moving right 
+					angle = 270.0f;
+				}
+				else if (curMoveDir.GetX() == -1) { // moving left 
+					angle = 90.0f;
+				}
 
-			angleDiff = angleDiff - 90.0f; // subrtact 90 to fix werid rotation...
+				// playerAngle = playerObj->GetDegreeAngle(); // moved to before switch statement.
 
-			// make sure we are between 0 and 360. this should never be an issue but why NOT add redundant computations? /s 
-			while (angleDiff < 0.0f) {
-				angleDiff = angleDiff + 360.0f;
-			}
-			while (angleDiff > 360.0f) {
-				angleDiff = angleDiff - 360.0f;
-			}
+				// always get a positive difference 
+				if (playerAngle > angle) {
+					angleDiff = playerAngle - angle;
+				}
+				else if (angle > playerAngle) {
+					angleDiff = angle - playerAngle;
+				}
+				else {
+					angleDiff = 0.0f;
+				}
 
-			if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation 
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					playerObj->SetCurrentAnimation(3);
+				angleDiff = angleDiff - 90.0f; // subrtact 90 to fix werid rotation...
+
+				// make sure we are between 0 and 360. this should never be an issue but why NOT add redundant computations? /s 
+				while (angleDiff < 0.0f) {
+					angleDiff = angleDiff + 360.0f;
+				}
+				while (angleDiff > 360.0f) {
+					angleDiff = angleDiff - 360.0f;
+				}
+
+				if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation 
+					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+						playerObj->SetCurrentAnimation(3);
+						playerObj->GetCurrentAnimation()->Play();
+					}
+				}
+				else if (angle > 45.0f && angle <= 135.0f) { // right walking animation 
+
+					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+						playerObj->SetCurrentAnimation(6);
+						playerObj->GetCurrentAnimation()->Play();
+					}
+				}
+				else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation 
+					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+						playerObj->SetCurrentAnimation(4);
+						playerObj->GetCurrentAnimation()->Play();
+					}
+				}
+				else if (angle > 225.0f && angle < 315.0f) { // left walking animation 
+					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+						playerObj->SetCurrentAnimation(5);
+						playerObj->GetCurrentAnimation()->Play();
+					}
+				}
+
+				break;
+
+			case 2:  // charging dash attack
+				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+					playerObj->SetCurrentAnimation(0);
 					playerObj->GetCurrentAnimation()->Play();
 				}
-			}
-			else if (angle > 45.0f && angle <= 135.0f) { // right walking animation 
+				break;
 
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					playerObj->SetCurrentAnimation(6);
-					playerObj->GetCurrentAnimation()->Play();
+			case 3: // dash charged 
+				if (playerObj->GetCurrentAnimation() != nullptr) {
+					playerObj->GetCurrentAnimation()->Stop();
 				}
-			}
-			else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation 
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					playerObj->SetCurrentAnimation(4);
-					playerObj->GetCurrentAnimation()->Play();
-				}
-			}
-			else if (angle > 225.0f && angle < 315.0f) { // left walking animation 
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					playerObj->SetCurrentAnimation(5);
-					playerObj->GetCurrentAnimation()->Play();
-				}
-			}
-		}
-		else if (playerObj->GetState() == 2) { // charging dash attack
-			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
-				playerObj->SetCurrentAnimation(0);
+				playerObj->SetCurrentAnimation(1);
 				playerObj->GetCurrentAnimation()->Play();
-			}
-		}
-		else if (playerObj->GetState() == 3) { // dash charged 
-			if (playerObj->GetCurrentAnimation() != nullptr) {
-				playerObj->GetCurrentAnimation()->Stop();
-			}
-			playerObj->SetCurrentAnimation(1);
-			playerObj->GetCurrentAnimation()->Play();
-		}
-		else if (playerObj->GetState() == 4) { // dashing 
-			if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
-				playerObj->SetCurrentAnimation(2);
-				playerObj->GetCurrentAnimation()->Play();
-			}
-		}
+				break;
 
+			case 4: // dashing 
+				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
+					playerObj->SetCurrentAnimation(2);
+					playerObj->GetCurrentAnimation()->Play();
+				}
+				break;
+			}
+
+
+		}
 		// animationTimer.Stop();
 
 
 		// cherry::ProfileTimer cameraTimer("profiling-camera_move");
 
 		// camera position update code
-		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + 5.0f) {
+		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y) {
 			if (!playerObj->IsDashing()) {
 				goto notDashing;
 			}
 
+			// I assume this is where the CameraLerp function would've been called.
 			if (camLerpPercent >= 1.0f) {
 				camLerpPercent = 0.0f;
 			}
-			camLerpPercent += 0.01f;
+
+			// this should be based on delta time.
+			// camLerpPercent += 0.01f; 
+			camLerpPercent += 0.05f * deltaTime;  // originally += 0.01f without delta time.
 
 			glm::vec3 temp;
 			glm::vec2 xyCam;
@@ -2311,21 +2341,23 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			xyCam.y = myCamera->GetPosition().y;
 
 			xyPla.x = playerObj->GetPosition().GetX();
-			xyPla.y = playerObj->GetPosition().GetY() + 5.0f;
+			xyPla.y = playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y;
 
 			xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
 
 			temp.x = xyCur.GetX();
 			temp.y = xyCur.GetY();
-			temp.z = 20.0f;
+			temp.z = CAMERA_POS_OFFSET.z;
 
 			myCamera->SetPosition(temp);
 		}
-		else {
+		else 
+		{
 			camLerpPercent = 0.0f;
 			playerObj->SetDash(false);
+
 		notDashing:
-			myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + 5.0f, 20.0f));
+			myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y, CAMERA_POS_OFFSET.z));
 		}
 
 		// cameraTimer.Stop();
@@ -2359,7 +2391,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	else 
 	{
 		// Pause Menu Code
-		if (restart) {
+		if (restart) 
+		{
 			// Resets Everything
 			// life icons are visible now.
 			lives = 3;
@@ -2509,7 +2542,7 @@ cherry::Vec3 GetUnitDirVecXY(cherry::Vec3 one, cherry::Vec3 two)
 }
 
 // lerp between two points on the xy axis.
-cherry::Vec3 LerpXY(cherry::Vec2 start, cherry::Vec2 end, float percent)
+cherry::Vec3 CameraLerpXY(cherry::Vec2 start, cherry::Vec2 end, float percent)
 {
 	// uses glm lerp
 	glm::vec2 v = glm::mix(
@@ -2523,8 +2556,12 @@ cherry::Vec3 LerpXY(cherry::Vec2 start, cherry::Vec2 end, float percent)
 
 //Lerp between two vectors in xy axis
 // todo: remove this function? Nothign calls it.
-cherry::Vec3 LerpXY(cherry::Vec3 start, cherry::Vec3 end, float percent) 
+cherry::Vec3 CameraLerpXY(cherry::Vec3 start, cherry::Vec3 end, float percent) 
 {
+	// this isn't called by the camera at all.
+	// also, this isn't part of any class.
+
+
 	glm::vec3 temp;
 	glm::vec2 xyStart;
 	glm::vec2 xyEnd;

@@ -100,7 +100,7 @@ namespace cnz
 		// setter and getter for state
 		void SetState(int newState) { this->state = newState; };
 
-		int GetState() { return this->state; };
+		int GetState() { return state; };
 
 	private:
 		bool dash = false;

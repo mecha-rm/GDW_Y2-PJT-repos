@@ -166,10 +166,11 @@ namespace cnz
 		bool mbLP = false, mbLR = false;
 
 
-		vector<int> enemyLocationi;
-		vector<int> enemyLocationj;
-
+		// camera lerp percentage.
 		float camLerpPercent = 0.0f;
+
+		// the camera's position on the z-axis. This does not change.
+		const glm::vec3 CAMERA_POS_OFFSET{ 0.0F, 5.0F, 20.0F };
 
 		// glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
 		cherry::Vec3 playerPrevPos;
