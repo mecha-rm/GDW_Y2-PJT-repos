@@ -18,12 +18,18 @@ const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of tim
 // const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
-// Get Distance Between two Vectors in xy axis
-float GetDistance(cherry::Vec3, cherry::Vec3);
-//Gets unit direction vector between two vectors
-cherry::Vec3 GetUnitDirVec(cherry::Vec3, cherry::Vec3);
-//Lerp between two vectors in xy axis
-cherry::Vec3 LERP(cherry::Vec3, cherry::Vec3, float);
+
+// get Distance Between two Vectors in xy axis. Z-axis information is ignored.
+float GetDistanceXY(cherry::Vec2, cherry::Vec2);
+float GetDistanceXY(cherry::Vec3, cherry::Vec3);
+
+// gets unit direction vector between two vectors. Z-axis information is ignored.
+cherry::Vec3 GetUnitDirVecXY(cherry::Vec2, cherry::Vec2);
+cherry::Vec3 GetUnitDirVecXY(cherry::Vec3, cherry::Vec3);
+
+// lerps between two vectors on the xy axis. Z-axis information is ignored.
+cherry::Vec3 LerpXY(cherry::Vec2, cherry::Vec2, float);
+cherry::Vec3 LerpXY(cherry::Vec3, cherry::Vec3, float);
 
 // constructor
 cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName)
@@ -382,7 +388,7 @@ void cnz::CNZ_GameplayScene::OnClose()
 
 	camLerpPercent = 0.0f;
 
-	testPlayPos = glm::vec3(0, 0, 0);
+	// testPlayPos = glm::vec3(0, 0, 0);
 	playerPrevPos = glm::vec3(0, 0, 0);;
 	playerSpawn = glm::vec3(0, 0, 0);;
 
@@ -1736,7 +1742,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		//Enemy AI
 		for (int i = 0; i < enemyList.size(); i++) {
-			if (enemyList[i]->alive == true) {
+			
+			// the enemy is alive.
+			if (enemyList[i]->alive == true) 
+			{
 				enemyCount++;
 				if (f == true && enemyList[i]->stunned == false) {
 					enemyList[i]->stunned = true;
@@ -1759,6 +1768,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 			}
 
+			// TODO: have variable to keep track of distance needed for attack to happen.
 			if (enemyList[i]->stunned == false) {
 				//Look at player
 				enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
@@ -1769,7 +1779,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				switch (enemyList[i]->GetType())
 				{
 				case cnz::sentry:
-					if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+					if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
 						// Spawn projectiles
 						enemyList[i]->attacking = true;
 
@@ -1784,7 +1794,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						proj->active = true;
 						proj->SetPosition(enemyList[i]->GetPosition());
 						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-						proj->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+						proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
 						objectList->AddObject(proj);
 
 						cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
@@ -1805,9 +1815,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							enemyList[i]->GetCurrentAnimation()->Stop();
 						}
 					}
-					else if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
+					else if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 							enemyList[i]->SetCurrentAnimation(0); // walk anim
 							enemyList[i]->GetCurrentAnimation()->Play();
@@ -1818,7 +1828,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				case cnz::marauder:
 					if (enemyList[i]->attacking == false)
 					{
-						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
 							//Attack
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1826,7 +1836,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						}
 						else {
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
 								enemyList[i]->GetCurrentAnimation()->Play();
@@ -1838,7 +1848,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				case cnz::oracle:
 					if (enemyList[i]->attacking == false)
 					{
-						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
 							//Attack
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1846,7 +1856,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						}
 						else {
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
 								enemyList[i]->GetCurrentAnimation()->Play();
@@ -1858,7 +1868,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				case cnz::bastion:
 					if (enemyList[i]->attacking == false)
 					{
-						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
 							//Attack
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1866,7 +1876,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						}
 						else {
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
 								enemyList[i]->GetCurrentAnimation()->Play();
@@ -1878,7 +1888,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				case cnz::mechaspider:
 					if (enemyList[i]->attacking == false)
 					{
-						if (GetDistance(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
 							//Attack
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1886,7 +1896,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						}
 						else {
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVec(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
 								enemyList[i]->GetCurrentAnimation()->Play();
@@ -1918,7 +1928,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		std::stack<int> indexKillList;
 
 		//Update Projectiles
-		for (int i = 0; i < projList.size(); i++) {
+		for (int i = 0; i < projList.size(); i++) 
+		{
 			if (projList[i]->active == true) {
 				projList[i]->SetPosition(projList[i]->GetPosition() + (projList[i]->GetDirectionVec() * (100.0f * deltaTime)));
 
@@ -2110,7 +2121,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					if (destroyed)
 						indexes.push(i); // the index to be removed.
 					else
-						std::cout << "WHAT" << std::endl;
+						std::cout << "Enemy Deletion Error." << std::endl;
 				}
 			}
 
@@ -2364,27 +2375,57 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			// score needs to be updated.
 			updateScore = true;
 
+			// since the enemy list gets shorter while (i) gets larger, this should be re-written.
+			// we do have i-- to change this, but that goes against the purpose of a for loop.
+
+			// OLD VERSION - this should be removed in a later push.
+
 			// kills all enemies
-			for (int i = 0; i < enemyList.size(); i++) {
-				// the physics body doesn't need to be removed for the game to be reset.
-				// enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
-				
-				cherry::Object* obj = enemyList[i];
-				util::removeFromVector(enemyList, enemyList[i]); // removes from the enemy list
-				
-				// objectList->RemoveObjectByPointer(obj);
-				objectList->DeleteObjectByPointer(obj); // deletes the object.
+			// for (int i = 0; i < enemyList.size(); i++) {
+			// 	// the physics body doesn't need to be removed for the game to be reset.
+			// 	// enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+			// 	
+			// 	cherry::Object* obj = enemyList[i];
+			// 	util::removeFromVector(enemyList, enemyList[i]); // removes from the enemy list
+			// 	
+			// 	// objectList->RemoveObjectByPointer(obj);
+			// 	objectList->DeleteObjectByPointer(obj); // deletes the object.
+			// 
+			// 	// delete obj;
+			// 	kills++;
+			// 	// cout << kills << endl;
+			// 	i--; // 
+			// }
+			// enemyList.clear();
 
-				// delete obj;
-				kills++;
-				// cout << kills << endl;
-				i--;
+
+			// while there are still enemies to kill.
+			while (enemyList.empty() == false)
+			{
+				// gets the enemy.
+				cnz::Enemy* enemy = enemyList[0];
+
+				// removes from the enemy list.
+				util::removeFromVector(enemyList, enemy); 
+				
+				// deletes object from scene.
+				bool deleted = objectList->DeleteObjectByPointer(enemy);
+
+				// enemy was not deleted properly, so it gets deleted from its proper list.
+				if (deleted == false)
+				{
+					// second attempt to delete the enemy 
+					bool del2 = cherry::ObjectManager::DeleteObjectFromSceneObjectList(enemy);
+					
+					if (del2 == false)
+						throw std::runtime_error("Object Deletion Failure. Don't put unused enemy objects in this list.");
+				}
+
+				// this is a reset, so the kill count should not be increased?
+				// kills++;
 			}
-			enemyList.clear();
 
-			//Player
-			// not needed?
-			// playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
+			// Player - Reset to Spawn Position
 			playerObj->SetPosition(playerSpawn);
 
 			paused = false;
@@ -2394,7 +2435,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		pauseMenu->SetVisible(true);
 	}
 
-	// switching the scene.
+	// GAME OVER - switching the scene.
 	if (lives <= 0)
 	{
 		// game
@@ -2430,27 +2471,60 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		cherry::ProfilingSession::End();
 }
 
-//Get Distance Between two Vectors in xy axis
-float GetDistance(cherry::Vec3 one, cherry::Vec3 two) {
+// returns the distance between two vectors on the xy axis only
+float GetDistanceXY(cherry::Vec2 one, cherry::Vec2 two)
+{
 	float x = two.GetX() - one.GetX();
 	float y = two.GetY() - one.GetY();
 
 	return sqrt(pow(x, 2) + pow(y, 2));
 }
 
-//Gets unit direction vector between two vectors
-cherry::Vec3 GetUnitDirVec(cherry::Vec3 one, cherry::Vec3 two) {
+// returns the distance between two vectors on the xy axis only. Z-axis information is discarded.
+float GetDistanceXY(cherry::Vec3 one, cherry::Vec3 two) 
+{
+	return GetDistanceXY(cherry::Vec2(one.v.x, one.v.y), cherry::Vec2(two.v.x, two.v.y));
+}
+
+// gets the unit direction vector on the xy axis.
+cherry::Vec3 GetUnitDirVecXY(cherry::Vec2 one, cherry::Vec2 two)
+{
+	cherry::Vec2 newVec = two - one;
+
+	float temp = (newVec.v.x * newVec.v.x + newVec.v.y * newVec.v.y);
+
+	return cherry::Vec3(newVec.v.x, newVec.v.y, 0.0F) / temp;
+}
+
+
+// gets the unit direction vector between two vectors on the xy axis only.
+cherry::Vec3 GetUnitDirVecXY(cherry::Vec3 one, cherry::Vec3 two) 
+{
 	cherry::Vec3 newVec = two - one;
 	newVec.SetZ(0.0f);
+
 	float temp = (newVec.GetX() * newVec.GetX() + newVec.GetY() * newVec.GetY());
 
 	return newVec / temp;
 }
 
+// lerp between two points on the xy axis.
+cherry::Vec3 LerpXY(cherry::Vec2 start, cherry::Vec2 end, float percent)
+{
+	// uses glm lerp
+	glm::vec2 v = glm::mix(
+		glm::vec2(start.v.x, start.v.y), 
+		glm::vec2(end.v.x, end.v.y),
+		percent
+	);
+
+	return cherry::Vec3(v.x, v.y, 0.0F);
+}
+
 //Lerp between two vectors in xy axis
 // todo: remove this function? Nothign calls it.
-cherry::Vec3 LERP(cherry::Vec3 start, cherry::Vec3 end, float percent) {
-
+cherry::Vec3 LerpXY(cherry::Vec3 start, cherry::Vec3 end, float percent) 
+{
 	glm::vec3 temp;
 	glm::vec2 xyStart;
 	glm::vec2 xyEnd;

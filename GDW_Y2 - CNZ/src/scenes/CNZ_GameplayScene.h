@@ -171,7 +171,7 @@ namespace cnz
 
 		float camLerpPercent = 0.0f;
 
-		glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
+		// glm::vec3 testPlayPos = glm::vec3(0, 0, 0);
 		cherry::Vec3 playerPrevPos;
 		cherry::Vec3 playerSpawn;
 

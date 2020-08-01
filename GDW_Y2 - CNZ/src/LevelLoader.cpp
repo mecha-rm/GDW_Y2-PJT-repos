@@ -165,6 +165,12 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
 	bool useCopy = false;
 
+	// the base position of the light.
+	// used to adjust light position.
+	// glm::vec3(0.0F, 0.0F, -1.60046387);
+	// glm::vec3(0, 0, -6.89315796);
+	const glm::vec3 LIGHT_POS_BASE = glm::vec3(0, 0, 0);
+
 	// object list does not exist, so it must be created.
 	if (objectList == nullptr)
 	{
@@ -375,7 +381,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				body->SetVisible(false);
 
 				// adding a light
-				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition() + LIGHT_POS_BASE, cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
 
 				// adding to the lists
@@ -427,7 +433,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				}
 				body->SetLocalPosition(cherry::Vec3(0, 0, 3));
 				body->SetVisible(false);
-				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition() + LIGHT_POS_BASE, cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
 				// adding to the lists
 				objectList->AddObject(obj);
@@ -480,7 +486,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				body->SetVisible(false);
 
 				// light
-				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition(), cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
+				lightList->AddLight(new cherry::Light(sceneName, obj->GetPosition() + LIGHT_POS_BASE, cherry::Vec3(1.0f, 1.0f, 1.0f), cherry::Vec3(0.5f, 0.5f, 0.5f), 0.1f, 0.7f, 0.6f, 1.0f / 100.0f));
 
 
 				// adding to hte lists
