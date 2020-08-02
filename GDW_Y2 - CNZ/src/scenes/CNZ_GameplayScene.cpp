@@ -454,6 +454,7 @@ void cnz::CNZ_GameplayScene::MouseButtonPressed(GLFWwindow* window, int button)
 	}
 }
 
+// mouse button has been released.
 void cnz::CNZ_GameplayScene::MouseButtonReleased(GLFWwindow* window, int button)
 {
 	// checks each button
@@ -1800,6 +1801,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 						cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
 						cherry::AudioEngine::GetInstance().PlayEvent("arrow");
+
+						
 
 						// projList.push_back(new Projectile(*arrowBase));
 						// projTimeList.push_back(0);
