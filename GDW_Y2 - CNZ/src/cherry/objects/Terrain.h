@@ -35,11 +35,57 @@ namespace cherry
 		// if the index is out of bounds, then nothing happens, and 'false' is returned.
 		// if the file cannot be found, then 'false' is once again returned.
 		// check TEXTURES_MAX to see the maximum amount of textures allowed.
-		bool SetTexture(unsigned int index, std::string filePath);
+		bool SetTexture(int index, std::string filePath);
 
-		// Texture1
-		// Texture2
-		//Texture 3
+		// sets Texture 0; returns 'true' if successful.
+		bool SetTexture0(std::string filePath);
+
+		// Texture 1; returns 'true' if successful.
+		bool SetTexture1(std::string filePath);
+
+		// Texture 2; returns 'true' if successful.
+		bool SetTexture2(std::string filePath);
+
+		// gets the texture path. 
+		// The index is clamped, so an index that's less than 0, returns index 0, and an index greater than 32 returns 2.
+		std::string GetTextureFilePath(int index);
+
+		// gets texture 0 file path.
+		std::string GetTexture0FilePath() const;
+
+		// gets texture 1 file path.
+		std::string GetTexture1FilePath() const;
+
+		// gets texture 2 file path.
+		std::string GetTexture2FilePath() const;
+
+		// gets the texture weight at the given index.
+		// the index value is clamped.
+		float GetTextureWeight(int index) const;
+
+		// sets the weight of a given texture. The weight can only be set between 0 and 1.
+		// the index is clamped so that it stays within the bounds.
+		// if the total amount of weights exceeds 1, the weights are set as a percentage of the total weight.
+		void SetTextureWeight(int index, float amnt);
+
+		// returns weight 0.
+		float GetTextureWeight0() const;
+
+		// sets weight 0 for texture 0.
+		void SetTextureWeight0(float amnt);
+
+		// returns weight 1.
+		float GetTextureWeight1() const;
+
+		// sets weight 1 for texture 1.
+		void SetTextureWeight1(float amnt);
+
+		// returns weight 2.
+		float GetTextureWeight2() const;
+
+		// sets weight 2 for texture 2.
+		void SetTextureWeight2(float amnt);
+
 
 		// update
 		void Update(float deltaTime);
@@ -50,9 +96,8 @@ namespace cherry
 	private:
 		// the height map
 		std::string heightMap = "";
-
 		
-
+		// the three textures.
 		std::string textures[3]{ "", "", "" };
 
 		// the size of the terrain
@@ -62,11 +107,10 @@ namespace cherry
 		int numSections = 0;
 
 		// the minimum and maximum height of the height max.
-		float heightMin = 0.0F;
-		float heightMax = 1.0F;
+		float heightMin = 0.0F, heightMax = 1.0F;
 
-		// the sampler used for the terrain.
-		// TextureSampler::Sptr sampler;
+		// thE default weights for the textures.
+		float weights[3] { 0.3F, 0.3F, 0.4F };
 
 	protected:
 

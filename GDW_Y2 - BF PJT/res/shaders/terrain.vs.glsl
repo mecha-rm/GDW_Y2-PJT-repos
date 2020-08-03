@@ -11,7 +11,8 @@ layout (location = 1) out vec3 outNormal;
 layout (location = 2) out vec3 outWorldPos;
 layout (location = 3) out vec2 outUV;
 layout (location = 4) out vec3 outTexWeights;
-layout (location = 5) out float outVertHeight; // vertex height from the height map
+layout (location = 5) out float outT; // time value
+layout (location = 6) out float outVertHeight; // vertex height from the height map
 
 uniform mat4 a_ModelViewProjection;
 uniform mat4 a_Model;
@@ -21,6 +22,8 @@ uniform mat3 a_NormalMatrix;
 uniform sampler2D a_TextureSampler; // height map
 uniform float a_HeightMin; // minimum height
 uniform float a_HeightMax; // maximum height
+
+// TODO: use lerp with weighting to determine the transition from one material to the next.
 
 void main() {
 	outColor = inColor;
@@ -37,7 +40,9 @@ void main() {
 	float t = texture(a_TextureSampler, inUV).r; // treats the pixel colour as the value of 't'
 	vertPos.z = (1.0f - t) * a_HeightMin + t * a_HeightMax; // lerps between the maximum and minimum height.
 
-	outVertHeight =  vertPos.z; // saving the position of the vertex
+	outT = t; // save time value.
+
+	outVertHeight = vertPos.z; // saving the position of the vertex
 
 	gl_Position = a_ModelViewProjection * vec4(vertPos, 1);
 	

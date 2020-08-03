@@ -53,7 +53,7 @@ vec4 ApplyBlur(vec4 pixel, float theta, float blurLength, int samples)
 	// determines whether to restrict uvs or not.
 	bool uvRestrict = (a_RestrictUVs > 0) ? true : false;
 
-	// incremnet for the rotation length vector
+	// increment for the rotation length vector
 	// vec2 rotLenInc = rotLen / samples * 2;
 	// vec2 rotLenInc = vec2(blurLength / samples * 2, 0);
 	vec2 rotLenInc = Rotate(vec2(blurLength, 0), theta) / samples * 2;

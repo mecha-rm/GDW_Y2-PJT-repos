@@ -21,7 +21,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 	
 	glm::ivec2 myWindowSize = Game::GetRunningGame()->GetWindowSize();
 
-	std::string sceneName = GetName();
+	const std::string SCENE_NAME = GetName();
 	std::string buttonImage = "res/images/button_beta_sml.png";
 	std::string textFnt = FONT_ARIAL;
 	Vec4 textClr = Vec4(1.0F, 1.0F, 1.0F, 1.0F);
@@ -68,7 +68,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// Image * image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
 
 		// animated version (3600 X 250 w/ 600 X 250 cell size)
-		Image* image = new Image("res/images/codename_zero_logo_glow_ss_small.png", sceneName, 
+		Image* image = new Image("res/images/codename_zero_logo_glow_ss_small.png", SCENE_NAME, 
 			Image::ConvertImagePixelsToUVSpace(Vec4(0, 0, 600, 250), 3600, 250, false), false, false);
 
 		image->SetWindowChild(true);
@@ -115,7 +115,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// ranking button
 	{
-		Image* image = new Image("res/images/ranking_button.png", sceneName, false, false);
+		Image* image = new Image("res/images/ranking_button.png", SCENE_NAME, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(0.5F, 0.83F));
@@ -143,7 +143,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 1
 	{
-		Image* image = new Image("res/images/map1_button.png", sceneName, false, false);
+		Image* image = new Image("res/images/map1_button.png", SCENE_NAME, false, false);
 		image->SetWindowChild(true);
 		// image->SetPositionByWindowSize(Vec2(0.9, 0.8F));
 		image->SetPositionByWindowSize(Vec2(startPos));
@@ -172,7 +172,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 2
 	{
-		Image* image = new Image("res/images/map2_button.png", sceneName, false, false);
+		Image* image = new Image("res/images/map2_button.png", SCENE_NAME, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x, startPos.y));
 		image->SetScale(0.2F);
@@ -200,7 +200,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 
 	// button 3
 	{
-		Image* image = new Image("res/images/map3_button.png", sceneName, false, false);
+		Image* image = new Image("res/images/map3_button.png", SCENE_NAME, false, false);
 		image->SetWindowChild(true);
 		image->SetPositionByWindowSize(Vec2(startPos.x + offset.x * 2, startPos.y));
 		image->SetScale(0.2F);
@@ -267,16 +267,33 @@ void cnz::CNZ_TitleScene::OnOpen()
 		image->SetVisible(true);
 	}
 
-	// background graphic
+	// background graphic (unused) and other background objects.
 	{
-		cherry::Image* image = new Image("res/images/title_bg.png", GetName(), false, false);
-		image->SetWindowChild(true);
-		image->SetPositionByWindowSize(Vec2(0.5F, 0.5F));
-		image->SetPositionZ(-1.0F);
-		// image->SetOrthographicObject(true);
-		image->SetVisible(false);
+		//cherry::Image* image = new Image("res/images/title_bg.png", GetName(), false, false);
+		//image->SetWindowChild(true);
+		//image->SetPositionByWindowSize(Vec2(0.5F, 0.5F));
+		//image->SetPositionZ(-1.0F);
+		//// image->SetOrthographicObject(true);
+		//image->SetVisible(false);
 
-		objectList->AddObject(image);
+		//objectList->AddObject(image);
+
+		// terrain
+		cherry::Terrain* terrain = new Terrain(SCENE_NAME, "res/images/heightmaps/city_heightmap.jpg", 60.0F, 75);
+		terrain->SetTexture(0, "res/images/city_heightmap_texture_1.jpg");
+		terrain->SetTextureWeight(0, 0.1F);
+		terrain->SetTexture(1, "res/images/city_heightmap_texture_2.jpg");
+		terrain->SetTextureWeight(1, 0.5F);
+		terrain->SetTexture(2, "res/images/city_heightmap_texture_3.jpg");
+		terrain->SetTextureWeight(2, 0.4F);
+
+		terrain->SetMinimumHeight(-10.0F);
+		terrain->SetMaximumHeight(15.0F);
+
+		terrain->SetPosition(0.0F, 0.0F, -25.0F);
+		terrain->SetVisible(true);
+
+		objectList->AddObject(terrain); 
 	}
 
 	// instructons
@@ -292,7 +309,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		controls = image;
 		objectList->AddObject(image);
 
-		cherry::Text* text = new Text("Press (I) to view controls/hide controls", sceneName, FONT_ARIAL, 
+		cherry::Text* text = new Text("Press (I) to view controls/hide controls", SCENE_NAME, FONT_ARIAL, 
 			Vec4(0.8157F, 0.9725F, 1.0F, 1.0F), 4.0F);
 		text->SetWindowChild(true);
 		text->SetPositionByWindowSize(Vec2(0.975F, 0.96F));

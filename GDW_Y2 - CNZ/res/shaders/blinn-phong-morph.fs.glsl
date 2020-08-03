@@ -40,7 +40,11 @@ uniform int a_EnabledLights; // total amount of lights
 // lights
 uniform Light a_Lights[MAX_LIGHTS];
 
-uniform sampler2D s_Albedos[3]; // now takes more than one value.
+// now takes more than one value.
+uniform sampler2D s_Albedos[3]; 
+
+// the weights of the entity.
+uniform float a_Weights[3]; 
 
 // computes the blinn-phong equation.
 vec3 ComputeBlinnPhong(Light light, vec3 normal, vec4 albedo) {    
@@ -94,8 +98,26 @@ void main() {
     vec3 normal = normalize(inNormal);
     
     // weight calculation
-    float totalWeight = dot(inTexWeights, vec3(1, 1, 1));
-	vec3 weights = inTexWeights / totalWeight;
+    // float totalWeight = dot(inTexWeights, vec3(1, 1, 1));
+	// vec3 weights = inTexWeights / totalWeight;
+
+    // gets the weights as a vector.
+	vec3 weights = vec3(a_Weights[0], a_Weights[1], a_Weights[2]);
+
+    // if no weights were provided, the weights are even.
+	if(weights == vec3(0, 0, 0))
+		weights = vec3(0.3F, 0.3F, 0.4F);
+
+	// total of starting weights.
+	float totalWeights = weights.x + weights.y + weights.z;
+
+	// if the amount of total weights exceeds 1, the weights are averaged.
+	if(totalWeights > 1.0F)
+	{
+		weights.x /= totalWeights;
+		weights.y /= totalWeights;
+		weights.z /= totalWeights;
+	}
 
      // albedo for the entity.
      vec4 albedo =

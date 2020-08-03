@@ -1309,7 +1309,7 @@ void cnz::CNZ_GameplayScene::LoadEnemyGroups()
 			vec.push_back("marauder");
 			vec.push_back("sentry");
 			vec.push_back("sentry");
-			vec.push_back("bastion");
+			vec.push_back("bastion"); 
 			vec.push_back("bastion");
 			vec.push_back("bastion");
 

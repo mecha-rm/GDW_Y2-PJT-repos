@@ -7,19 +7,36 @@ layout (location = 3) in vec2 inUV;
 
 layout (location = 0) out vec4 outColor;
 
-uniform float a_Alpha; // the overall alpha value of the entity.
+// the overall alpha value of the entity.
+uniform float a_Alpha; 
 
+// camera position
 uniform vec3 a_CameraPos;
 
-uniform vec3 a_Weights; // the weights of the entity.
+// now takes more than one value.
+uniform sampler2D s_Albedos[3]; 
 
-uniform sampler2D s_Albedos[3]; // now takes more than one value.
+// the weights of the entity.
+uniform float a_Weights[3]; 
 
 void main() {
-	vec3 weights = a_Weights;
+	// gets the weights as a vector.
+	vec3 weights = vec3(a_Weights[0], a_Weights[1], a_Weights[2]);
 
+	// if no weights were provided, the weights are even.
 	if(weights == vec3(0, 0, 0))
-		weights = vec3(1.0F / 3.0F);
+		weights = vec3(0.3F, 0.3F, 0.4F);
+
+	// total of starting weights.
+	float totalWeights = weights.x + weights.y + weights.z;
+
+	// if the amount of total weights exceeds 1, the weights are averaged.
+	if(totalWeights > 1)
+	{
+		weights.x /= totalWeights;
+		weights.y /= totalWeights;
+		weights.z /= totalWeights;
+	}
 	
 	// texture
     vec4 albedo =

@@ -56,6 +56,11 @@ cherry::Terrain::Terrain(std::string scene, std::string heightMap, float size, f
 	material->Set("s_Albedos[1]", albedo); // grass: medium terrain height
 	material->Set("s_Albedos[2]", albedo); // rocks: highest terrain (originally 'snow')
 
+	// default weights
+	material->Set("a_Weights[0]", weights[0]);
+	material->Set("a_Weights[1]", weights[1]);
+	material->Set("a_Weights[2]", weights[2]);
+
 	CreateEntity(scene, material); 
 }
 
@@ -102,9 +107,9 @@ void cherry::Terrain::SetMaximumHeight(float hgtMax)
 }
 
 // sets a texture based on the provided index.
-bool cherry::Terrain::SetTexture(unsigned int index, std::string filePath)
+bool cherry::Terrain::SetTexture(int index, std::string filePath)
 {
-	if (index > TEXTURES_MAX)
+	if (index < 0 || index >= TEXTURES_MAX)
 		return false;
 
 	std::ifstream file(filePath, std::ios::in); // opens the file
@@ -117,11 +122,111 @@ bool cherry::Terrain::SetTexture(unsigned int index, std::string filePath)
 		file.close();
 		return false;
 	}
+
 	file.close();
 
 	textures[index] = filePath;
 	material->Set("s_Albedos[" + std::to_string(index) + "]", Texture2D::LoadFromFile(filePath));
 	return true;
+}
+
+// Texture 0
+bool cherry::Terrain::SetTexture0(std::string filePath)
+{
+	return SetTexture(0, filePath);
+}
+
+// Texture 1
+bool cherry::Terrain::SetTexture1(std::string filePath)
+{
+	return SetTexture(1, filePath);
+}
+
+// Texture 2
+bool cherry::Terrain::SetTexture2(std::string filePath)
+{
+	return SetTexture(2, filePath);
+}
+
+// get the texture path.
+std::string cherry::Terrain::GetTextureFilePath(int index)
+{
+	index = std::clamp(index, 0, TEXTURES_MAX - 1);
+
+	return textures[index];
+}
+
+// gets the texture 0 file path.
+std::string cherry::Terrain::GetTexture0FilePath() const
+{
+	return textures[0];
+}
+
+// gets the texture 1 file path.
+std::string cherry::Terrain::GetTexture1FilePath() const
+{
+	return textures[1];
+}
+
+// gets the texture 2 file path.
+std::string cherry::Terrain::GetTexture2FilePath() const
+{
+	return textures[2];
+}
+
+// returns texture weight.
+float cherry::Terrain::GetTextureWeight(int index) const
+{
+	index = std::clamp(index, 0, TEXTURES_MAX - 1);
+	return weights[index];
+}
+
+// sets a texture weight.
+void cherry::Terrain::SetTextureWeight(int index, float amnt)
+{
+	// clamps the amount.
+	index = std::clamp(index, 0, TEXTURES_MAX - 1);
+	amnt = std::clamp(amnt, 0.0F, 1.0F);
+
+	// saves the weight
+	weights[index] = amnt;
+	material->Set("a_Weights[" + std::to_string(index) + "]", amnt);
+}
+
+// returns weight 0.
+float cherry::Terrain::GetTextureWeight0() const
+{
+	return weights[0];
+}
+
+// sets texture weight 0
+void cherry::Terrain::SetTextureWeight0(float amnt)
+{
+	SetTextureWeight(0, amnt);
+}
+
+// returns weight 1
+float cherry::Terrain::GetTextureWeight1() const
+{
+	return weights[1];
+}
+
+// sets texture weight 1
+void cherry::Terrain::SetTextureWeight1(float amnt)
+{
+	SetTextureWeight(1, amnt);
+}
+
+// returns weight 2
+float cherry::Terrain::GetTextureWeight2() const
+{
+	return weights[2];
+}
+
+// sets texture weight 2
+void cherry::Terrain::SetTextureWeight2(float amnt)
+{
+	SetTextureWeight(2, amnt);
 }
 
 // updates the object.
