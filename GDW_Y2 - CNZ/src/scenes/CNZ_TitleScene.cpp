@@ -36,17 +36,27 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// image options
 		// "res/images/cubemaps/checkerboard_black-grey_d.jpg"
 		// "res/images/cubemaps/blue_lightning.jpg"
+		// "res/images/cubemaps/title_skybox_top.jpg"
+		// "res/images/cubemaps/title_skybox_side.jpg"
+		// "res/images/cubemaps/title_skybox_bottom.jpg"
+
+		// cherry::Skybox skybox(
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		// );
 
 		cherry::Skybox skybox(
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_bottom.jpg",
+			"res/images/cubemaps/title_skybox_top.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg"
 		);
-
-		
 
 		skybox.AddSkyboxToScene(this);
 		Game::GetRunningGame()->SetSkyboxVisible(true);
@@ -59,7 +69,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 	// AudioEngine::GetInstance().LoadBank("Master");
 	// AudioEngine::GetInstance().LoadEvent("bgm_01");
 	// audio.LoadEvent("menu_accept");
-	// audio.LoadEvent("menu_click");
+	// audio.LoadEvent("menu_click"); 
 	// audio.PlayEvent("bgm_01"); // gets started when closing the gameplay scene.
 
 	// title screen
@@ -274,26 +284,61 @@ void cnz::CNZ_TitleScene::OnOpen()
 		//image->SetPositionByWindowSize(Vec2(0.5F, 0.5F));
 		//image->SetPositionZ(-1.0F);
 		//// image->SetOrthographicObject(true);
-		//image->SetVisible(false);
+		//image->SetVisible(false); 
 
-		//objectList->AddObject(image);
+		//objectList->AddObject(image); 
 
-		// terrain
-		cherry::Terrain* terrain = new Terrain(SCENE_NAME, "res/images/heightmaps/city_heightmap.jpg", 60.0F, 75);
-		terrain->SetTexture(0, "res/images/city_heightmap_texture_1.jpg");
-		terrain->SetTextureWeight(0, 0.1F);
-		terrain->SetTexture(1, "res/images/city_heightmap_texture_2.jpg");
-		terrain->SetTextureWeight(1, 0.5F);
-		terrain->SetTexture(2, "res/images/city_heightmap_texture_3.jpg");
-		terrain->SetTextureWeight(2, 0.4F);
+		// terrain (inner city)
+		cherry::Terrain* terrain_1 = new Terrain(SCENE_NAME, "res/images/heightmaps/city_heightmap_ver_1.jpg", 60.0F, 70);
+		terrain_1->SetTexture(0, "res/images/city_heightmap_texture_1.jpg");
+		terrain_1->SetTextureWeight(0, 0.1F);
+		terrain_1->SetTexture(1, "res/images/city_heightmap_texture_2.jpg");
+		terrain_1->SetTextureWeight(1, 0.5F);
+		terrain_1->SetTexture(2, "res/images/city_heightmap_texture_3.jpg");
+		terrain_1->SetTextureWeight(2, 0.4F);
 
-		terrain->SetMinimumHeight(-10.0F);
-		terrain->SetMaximumHeight(15.0F);
+		terrain_1->SetMinimumHeight(-10.0F);
+		terrain_1->SetMaximumHeight(12.0F);
 
-		terrain->SetPosition(0.0F, 0.0F, -25.0F);
-		terrain->SetVisible(true);
+		// TODO: adjust height map since some buildings get cut-off.
+		// terrain_1->SetPosition(0.0F, -30.0F, -50.0F);
+		terrain_1->SetPosition(0.0F, -5.0F, -50.0F);
+		terrain_1->SetVisible(true);
 
-		objectList->AddObject(terrain); 
+		objectList->AddObject(terrain_1); 
+
+		// terrain 2 (outer city bottom left)
+		cherry::Terrain* terrain_bl = new Terrain(SCENE_NAME, "res/images/heightmaps/city_heightmap_ver_2.jpg", 60.0F, 80);
+		terrain_bl->SetTexture(0, "res/images/city_heightmap_texture_1.jpg");
+		terrain_bl->SetTextureWeight(0, 0.1F);
+		terrain_bl->SetTexture(1, "res/images/city_heightmap_texture_2.jpg");
+		terrain_bl->SetTextureWeight(1, 0.5F);
+		terrain_bl->SetTexture(2, "res/images/city_heightmap_texture_3.jpg");
+		terrain_bl->SetTextureWeight(2, 0.4F);
+		
+		terrain_bl->SetMinimumHeight(-30.0F);
+		terrain_bl->SetMaximumHeight(10.0F);
+		
+		terrain_bl->SetPosition(75.0F, -60.0F, -50.0F);
+		terrain_bl->SetVisible(true);
+		
+		objectList->AddObject(terrain_bl);
+
+		// terrain 3 (outer city bottom right)
+		cherry::Terrain* terrain_br = new cherry::Terrain(*terrain_bl);
+		terrain_br->SetPosition(-75.0F, -60.0F, -50.0F);
+		objectList->AddObject(terrain_br);
+
+		// terrain 3 (outer city top left)
+		cherry::Terrain* terrain_tl = new cherry::Terrain(*terrain_bl);
+		terrain_tl->SetPosition(75.0F, 4.5F, -50.0F);
+		objectList->AddObject(terrain_tl);
+
+		// terrain 3 (outer city top right)
+		cherry::Terrain* terrain_tr = new cherry::Terrain(*terrain_bl);
+		terrain_tr->SetPosition(-75.0F, 4.5F, -50.0F);
+		objectList->AddObject(terrain_tr);
+
 	}
 
 	// instructons

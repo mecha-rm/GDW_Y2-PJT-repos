@@ -305,9 +305,16 @@ void cherry::EngineGameplayScene::OnOpen()
 		{
 			// Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/dp_test_01.jpg", 30.0f, 50, false);
 			Terrain* terrain = new Terrain(game->GetCurrentSceneName(), "res/images/heightmaps/heightmap.bmp", 45.0f, 70, false);
+			
 			terrain->SetTexture(0, "res/images/red.png");
+			terrain->SetTextureWeight(0, 0.3F);
+
 			terrain->SetTexture(1, "res/images/green.png");
+			terrain->SetTextureWeight(1, 0.3F);
+
 			terrain->SetTexture(2, "res/images/blue.png");
+			terrain->SetTextureWeight(2, 0.4F);
+
 			terrain->SetMinimumHeight(-7.0F);
 			terrain->SetMaximumHeight(5.0F);
 			terrain->SetPosition(0.0F, 0.0F, -10.0F);
@@ -1411,11 +1418,11 @@ void cherry::EngineGameplayScene::DrawGui(float deltaTime)
 	
 	// Draw widgets here
 	// ImGui::SliderFloat4("Color", &myClearColor.x, 0, 1); // Original
-	ImGui::ColorPicker4("Color", &myClearColor.x); // new version
+	ImGui::ColorPicker4("Color", &myClearColor.x); // new version 
 	// ImGui::SetWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI Colour Picker (perament)
-	// ImGui::SetNextWindowCollapsed(false);
+	// ImGui::SetNextWindowCollapsed(false);  
 	// ImGui::SetNextWindowPos(ImVec2(-225.0F, 1.0F));
-	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable)
+	ImGui::SetNextWindowSize(ImVec2(500.0F, 500.0F)); // window size for ImGUI ColorPicker (variable) 
 	if (ImGui::InputText("Title", myWindowTitle, 31))
 	{
 		glfwSetWindowTitle(myWindow, myWindowTitle);

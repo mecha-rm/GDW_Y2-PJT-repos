@@ -7,11 +7,16 @@ namespace cherry
 	class Terrain : public Object
 	{
 	public:
+		// terrain. this does NOT account for physics bodies or animations.
 		// heightMap: the file path for the height map
 		// if 'worldUvs' is set to 'true', then each face of the terrain will have its own heightmap, rather than using one overall heightmap.
-		// NOTE: terrains do not support lighting.
+		// basically, instead of repeating the texture, if worldUvs is true the texture will only be used once.
+		// NOTE: terrains do not support lighting. They also do not record how many vertices and indices are used.
 		Terrain(std::string scene, std::string heightMap, float size, float numSections, bool worldUVs = false);
 
+		// copy constructor.
+		// the terrain is re-created using information from the provided object. The materials are not shared.
+		Terrain(const cherry::Terrain&);
 
 		// gets the height map
 		const std::string& GetHeightMap() const;
@@ -106,10 +111,13 @@ namespace cherry
 		// the number of sections the terrain has.
 		int numSections = 0;
 
+		// if the entity uses world uvs or not.
+		bool worldUVs = false;
+
 		// the minimum and maximum height of the height max.
 		float heightMin = 0.0F, heightMax = 1.0F;
 
-		// thE default weights for the textures.
+		// the default weights for the textures.
 		float weights[3] { 0.3F, 0.3F, 0.4F };
 
 	protected:
