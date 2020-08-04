@@ -163,7 +163,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 
 	// TODO: optimize this, since it might be being given to an actual scene, and then being destroyed.
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
-	bool useCopy = true;
+	bool useCopy = false;
 
 	// the base position of the light.
 	// used to adjust light position.
@@ -946,7 +946,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				objects.push_back(obj);
 				obstacles.push_back(obj);
 			}
-			else if (legend[curObj] == "Wooden Box") { // wooden box
+			else if (legend[curObj] == "Wooden Box") { // wooden box 
 				if (useCopy && woodenBox != nullptr) {
 					obj = new Obstacle(woodenBox, sceneName);
 					// resetting values

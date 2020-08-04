@@ -40,24 +40,24 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// "res/images/cubemaps/title_skybox_side.jpg"
 		// "res/images/cubemaps/title_skybox_bottom.jpg"
 
-		// cherry::Skybox skybox(
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg"
-		// );
-
 		cherry::Skybox skybox(
-			"res/images/cubemaps/title_skybox_side.jpg",
-			"res/images/cubemaps/title_skybox_side.jpg",
-			"res/images/cubemaps/title_skybox_bottom.jpg",
-			"res/images/cubemaps/title_skybox_top.jpg",
-			"res/images/cubemaps/title_skybox_side.jpg",
-			"res/images/cubemaps/title_skybox_side.jpg"
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
 		);
 
+		// cherry::Skybox skybox(
+		// 	"res/images/cubemaps/title_skybox_side.jpg",
+		// 	"res/images/cubemaps/title_skybox_side.jpg",
+		// 	"res/images/cubemaps/title_skybox_bottom.jpg",
+		// 	"res/images/cubemaps/title_skybox_top.jpg",
+		// 	"res/images/cubemaps/title_skybox_side.jpg",
+		// 	"res/images/cubemaps/title_skybox_side.jpg"
+		// );
+		 
 		skybox.AddSkyboxToScene(this);
 		Game::GetRunningGame()->SetSkyboxVisible(true);
 	}
