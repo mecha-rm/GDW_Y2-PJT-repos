@@ -2,6 +2,7 @@
 // TODO: redo maps 2 and 3.
 // TODO: the game breaks when certain enemies are killed sometimes.. still...
 // TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
+// TODO: the enemy that shoots an arrow seems to be the problem>
 
 #include "CNZ_GameplayScene.h"
 

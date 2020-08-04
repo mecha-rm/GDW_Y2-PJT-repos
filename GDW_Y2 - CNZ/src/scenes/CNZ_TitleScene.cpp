@@ -278,6 +278,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 	}
 
 	// background graphic (unused) and other background objects.
+	if(false)
 	{
 		//cherry::Image* image = new Image("res/images/title_bg.png", GetName(), false, false);
 		//image->SetWindowChild(true);

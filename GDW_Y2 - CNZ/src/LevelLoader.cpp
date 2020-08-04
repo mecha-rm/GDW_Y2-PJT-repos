@@ -163,7 +163,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 
 	// TODO: optimize this, since it might be being given to an actual scene, and then being destroyed.
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
-	bool useCopy = false;
+	bool useCopy = true;
 
 	// the base position of the light.
 	// used to adjust light position.
