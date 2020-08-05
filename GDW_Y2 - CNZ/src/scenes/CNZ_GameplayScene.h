@@ -30,7 +30,7 @@ namespace cnz
 	{
 	public:
 		// constructor
-		CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName);
+		CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber);
 
 		// constructor - takes information from info provided.
 		CNZ_GameplayScene(const LevelLoadInfo& info);

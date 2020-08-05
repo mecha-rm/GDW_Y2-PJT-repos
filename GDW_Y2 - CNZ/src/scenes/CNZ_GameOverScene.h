@@ -32,9 +32,17 @@ namespace cnz
 		// ImGUI draw function.
 		void DrawGui(float deltaTime) override;
 
+		// gets the set score that will be saved if it breaks the top performers list.
+		int GetScore() const;
+
 		// sets the score for the player.
 		void SetScore(int score);
 
+		// gets the map the player was on.
+		int GetMap() const;
+
+		// sets the map the score is for.
+		void SetMapNumber(int map);
 
 		// update loop
 		void Update(float deltaTime) override;
@@ -46,9 +54,11 @@ namespace cnz
 
 		// struct for scores
 		// TODO: change limit on how many characters can be used for the name.
+		// TODO: add in value for the map that the score was gotten on.
 		struct Score
 		{
 			std::string name = "XXXXXXXXXXXXXXXX";
+			int mapNumber = 0;
 			int points = 0;
 		};
 
@@ -57,6 +67,9 @@ namespace cnz
 
 		// player
 		int playerScore = 0;
+
+		// the map that the player was on.
+		int mapNumber = 0;
 
 		// the rank of the current player.
 		int playerRank = 99;

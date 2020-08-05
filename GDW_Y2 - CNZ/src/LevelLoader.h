@@ -1,5 +1,7 @@
 #pragma once
 
+// TODO: organize variables and change accessibility parameters.
+
 // use these instead so that they can be updated with new objects easier.
 // #define ORIGIN_SYMBOL "Origin"
 // 
@@ -65,16 +67,22 @@ namespace cnz
 
 		// the name of the level's scene.
 		std::string sceneName = "";
+
+		// the map number.
+		int mapNumber = 0;
 	};
 
 	class Level {
 	public:
 		Level() = default;
 
-		Level(std::string legendPath, std::string levelPath, std::string sceneName);
+		Level(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber);
 
 		// return scene name as string
 		std::string GetSceneName() const;
+
+		// gets the number of the map
+		int GetMapNumber() const;
 
 		// load legend into map
 		bool LoadLegend(std::string legendPath);
@@ -134,11 +142,15 @@ namespace cnz
 		// player object.
 		Player* playerObj = nullptr;
 
-		std::string sceneName; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
+		std::string sceneName = ""; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
+		
 		// int obstacleNum; // a count of the obstacles in the scene. Maybe unneeded.
-		std::string levelPath; // path to the level CSV
+		std::string levelPath = ""; // path to the level CSV
 
-		std::string legendPath; // path to the legend CSV
+		std::string legendPath = ""; // path to the legend CSV
+
+		// the number of the map.
+		int mapNumber = 0;
 
 		// not really needed.
 		// bool isActiveScene; // if the scene is loaded

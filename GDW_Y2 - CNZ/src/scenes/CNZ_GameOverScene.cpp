@@ -66,15 +66,19 @@ void cnz::CNZ_GameOverScene::OnOpen()
 
 
 			// if the line is of the right length.
-			// [0] = name, [1] = score
-			if (splitStr.size() == 2)
+			// [0] = name, [1] = map, [2] = score
+			if (splitStr.size() == 3)
 			{
 				// name 
 				newScore.name = splitStr[0];
 
-				// points
+				// map number
 				if (util::isInt(splitStr[1]))
-					newScore.points = util::stringToInt(splitStr[1]);
+					newScore.mapNumber = util::stringToInt(splitStr[1]);
+
+				// points
+				if (util::isInt(splitStr[2]))
+					newScore.points = util::stringToInt(splitStr[2]);
 				else
 					newScore.points = 0;
 
@@ -204,8 +208,9 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 					entryNameStr[i] = '_';
 			}
 
-			// saves the name and points for the current player.
+			// saves the name, map, and points for the current player.
 			scores.at(playerRank - 1).name = entryNameStr;
+			scores.at(playerRank - 1).mapNumber = mapNumber;
 			scores.at(playerRank - 1).points = playerScore;
 
 			// saves the scores.
@@ -231,11 +236,29 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	Scene::DrawGui(deltaTime);
 }
 
+// gets the score.
+int cnz::CNZ_GameOverScene::GetScore() const
+{
+	return playerScore;
+}
+
 // sets the score.
 void cnz::CNZ_GameOverScene::SetScore(int score)
 {
 	// the score cannot be negative
 	playerScore = (score > 0) ? score : 0;
+}
+
+// gets the map
+int cnz::CNZ_GameOverScene::GetMap() const
+{
+	return mapNumber;
+}
+
+// sets the map the score is for.
+void cnz::CNZ_GameOverScene::SetMapNumber(int map)
+{
+	this->mapNumber = map;
 }
 
 // saves the scores in the vector.
@@ -255,13 +278,17 @@ void cnz::CNZ_GameOverScene::SaveScores()
 	// puts in all the scores.
 	for (int i = 0; i < scores.size(); i++)
 	{
-		// puts in the 10 names.
-		fw << util::replaceSubstring(scores[i].name, " ", "_") << " " << std::to_string(scores[i].points) << "\n";
+		// doing tab or space doesn't makea difference.
+		
+		// puts in the 10 names (name, map, and points)
+		fw << 
+			util::replaceSubstring(scores[i].name, " ", "_") << " " << 
+			std::to_string(scores[i].mapNumber) << " " <<
+			std::to_string(scores[i].points) << "\n";
 	}
 
 	fw.close();
 }
-
 	
 
 // update loop

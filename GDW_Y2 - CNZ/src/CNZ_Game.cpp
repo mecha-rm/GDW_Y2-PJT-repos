@@ -41,9 +41,9 @@ void cnz::CNZ_Game::LoadContent()
 	gameOverSceneName = "Game Over";
 
 	// Levels
-	map1Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map1.csv", "map1" };
-	map2Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map2.csv", "map2" };
-	map3Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map3.csv", "map3" };
+	map1Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map1.csv", "map1", 1 };
+	map2Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map2.csv", "map2", 2 };
+	map3Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map3.csv", "map3", 3 };
 	
 	// creating the scenes
 	// title

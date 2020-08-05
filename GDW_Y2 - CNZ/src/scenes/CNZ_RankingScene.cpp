@@ -1,3 +1,4 @@
+// TODO: fix score formatting.
 #include "CNZ_RankingScene.h"
 
 #include "..\CNZ_Game.h"
@@ -75,15 +76,16 @@ void cnz::CNZ_RankingScene::OnOpen()
 			std::string str = "";
 
 			// forms the line for the text.
-			if (splitStr.size() == 2) // name	score
-				str = util::replaceSubstring(splitStr[0], "_", " ") + spaceLine + splitStr[1];
+
+			// replaces underscores with spaces.
+			if (splitStr.size() == 3) // name - map - score
+				str = util::replaceSubstring(splitStr[0], "_", " ") + spaceLine + splitStr[1] + spaceLine + splitStr[2];
 
 			// adding line number.
-			// TODO: replace "X" with 10.
 			if(lNum < 9)
-				str = std::to_string(lNum + 1) + ". " + str;
+				str = "0" + std::to_string(lNum + 1) + ". " + str;
 			else
-				str = "X. " + str;
+				str = "10. " + str;
 
 			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 4.5F);
 			text->SetWindowChild(true);

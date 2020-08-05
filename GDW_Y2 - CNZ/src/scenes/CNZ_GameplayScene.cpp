@@ -4,6 +4,7 @@
 // TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
 //	Using the in-game reset and killing enemies seemed to cause it. Is this consistently the cause?
 // TODO: the enemy that shoots an arrow seems to be the problem. The hitbox is too small to hit anything.
+// TODO: change hwo the enemies are spawned in.
 
 #include "CNZ_GameplayScene.h"
 
@@ -35,11 +36,11 @@ cherry::Vec3 CameraLerpXY(cherry::Vec2, cherry::Vec2, float);
 cherry::Vec3 CameraLerpXY(cherry::Vec3, cherry::Vec3, float);
 
 // constructor
-cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName)
+cnz::CNZ_GameplayScene::CNZ_GameplayScene(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber)
 	: cherry::GameplayScene(sceneName)
 {
 	// creating the map
-	map = Level(legendPath, levelPath, sceneName);
+	map = Level(legendPath, levelPath, sceneName, mapNumber);
 }
 
 // constructor - takes information from info provided.
@@ -47,7 +48,7 @@ cnz::CNZ_GameplayScene::CNZ_GameplayScene(const LevelLoadInfo& info)
 	: cherry::GameplayScene(info.sceneName)
 {
 	// creating the map.
-	map = Level(info.legendPath, info.levelPath, info.sceneName);
+	map = Level(info.legendPath, info.levelPath, info.sceneName, info.mapNumber);
 }
 
 // LoadContent for the scene
@@ -436,12 +437,12 @@ cherry::Scene* cnz::CNZ_GameplayScene::GenerateNewInstance() const
 {
 	// creates a new instance of the gameplay scene
 	CNZ_GameplayScene* cgs;
-	cgs = new CNZ_GameplayScene(map.legendPath, map.levelPath, GetName());
+	cgs = new CNZ_GameplayScene(map.legendPath, map.levelPath, GetName(), map.mapNumber);
 
 	return cgs;
 }
 
-// mouse button has been pressed.
+// mouse button has been pressed. 
 void cnz::CNZ_GameplayScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
 	// checks each button
@@ -2496,6 +2497,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 		else // goes to game over screen.
 		{
+			gos->SetMapNumber(map.GetMapNumber());
 			gos->SetScore(score); // gives the scene the score.
 			game->SetCurrentScene(gos->GetName(), false); // game over
 		}

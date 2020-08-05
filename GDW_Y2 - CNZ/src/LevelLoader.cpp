@@ -16,8 +16,8 @@ cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 // cell offset (default: 6.25F)
 const float cnz::Level::cellOffset = 6.25f;
 
-cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName) 
-: legendPath(legendPath), levelPath(levelPath), sceneName(sceneName) 
+cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber) 
+: legendPath(legendPath), levelPath(levelPath), sceneName(sceneName), mapNumber(mapNumber)
 {
 	// this->sceneName = sceneName;
 
@@ -46,6 +46,12 @@ cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sce
 
 std::string cnz::Level::GetSceneName() const {
 	return sceneName;
+}
+
+// returns the number of the map.
+int cnz::Level::GetMapNumber() const
+{
+	return mapNumber;
 }
 
 bool cnz::Level::LoadLegend(std::string legendPath) {
