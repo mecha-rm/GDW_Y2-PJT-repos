@@ -2,7 +2,8 @@
 // TODO: redo maps 2 and 3.
 // TODO: the game breaks when certain enemies are killed sometimes.. still...
 // TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
-// TODO: the enemy that shoots an arrow seems to be the problem>
+//	Using the in-game reset and killing enemies seemed to cause it. Is this consistently the cause?
+// TODO: the enemy that shoots an arrow seems to be the problem. The hitbox is too small to hit anything.
 
 #include "CNZ_GameplayScene.h"
 
@@ -2008,7 +2009,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 
 		// removing time values from the proj time list
-		// while (!indexKillList.empty())
+		// while (!indexKillList.empty()) 
 		// {
 		// 	// removing from the time list
 		// 	// projTimeList.erase(projTimeList.begin() + indexKillList.top());

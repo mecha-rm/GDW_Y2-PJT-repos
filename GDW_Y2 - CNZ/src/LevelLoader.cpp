@@ -243,7 +243,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				}
 				else
 				{
-					wall = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", this->sceneName, true);
+					wall = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", this->sceneName, true);
 					obj = wall;
 				}
 				
@@ -606,7 +606,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				}
 				else
 				{
-					pillar = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", this->sceneName, true);
+					pillar = new Obstacle("res/objects/props/GDW_1_Y2 - Pillar.obj", this->sceneName, true);
 					obj = pillar;
 				}
 
@@ -813,7 +813,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					building = new Obstacle("res/objects/building.obj", this->sceneName, true);
+					building = new Obstacle("res/objects/props/building.obj", this->sceneName, true);
 					obj = building;
 				}
 
@@ -861,7 +861,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					concrete = new Obstacle("res/objects/floor.obj", this->sceneName, true);
+					concrete = new Obstacle("res/objects/props/floor.obj", this->sceneName, true);
 					obj = concrete;
 				}
 
@@ -909,7 +909,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					metalBox = new Obstacle("res/objects/metalbox.obj", this->sceneName, true);
+					metalBox = new Obstacle("res/objects/props/metalbox.obj", this->sceneName, true);
 					obj = metalBox;
 				}
 
@@ -957,7 +957,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					woodenBox = new Obstacle("res/objects/woodenbox.obj", this->sceneName, true);
+					woodenBox = new Obstacle("res/objects/props/woodenbox.obj", this->sceneName, true);
 					obj = woodenBox;
 				}
 
@@ -1005,7 +1005,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					floodLight = new Obstacle("res/objects/lamp.obj", this->sceneName, true);
+					floodLight = new Obstacle("res/objects/props/lamp.obj", this->sceneName, true);
 					obj = floodLight;
 				}
 
@@ -1053,7 +1053,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					concretePillar = new Obstacle("res/objects/piller.obj", this->sceneName, true);
+					concretePillar = new Obstacle("res/objects/props/piller.obj", this->sceneName, true);
 					obj = concretePillar;
 				}
 
@@ -1101,7 +1101,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					shelves = new Obstacle("res/objects/shelves.obj", this->sceneName, true);
+					shelves = new Obstacle("res/objects/props/shelves.obj", this->sceneName, true);
 					obj = shelves;
 				}
 
@@ -1149,7 +1149,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					edgeGround = new Obstacle("res/objects/edge.obj", this->sceneName, true);
+					edgeGround = new Obstacle("res/objects/props/edge.obj", this->sceneName, true);
 					obj = edgeGround;
 				}
 
@@ -1197,7 +1197,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					bench = new Obstacle("res/objects/bench.obj", this->sceneName, true);
+					bench = new Obstacle("res/objects/props/bench.obj", this->sceneName, true);
 					obj = bench;
 				}
 
@@ -1245,7 +1245,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					tent = new Obstacle("res/objects/tent.obj", this->sceneName, true);
+					tent = new Obstacle("res/objects/props/tent.obj", this->sceneName, true);
 					obj = tent;
 				}
 
@@ -1327,13 +1327,13 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 	cnz::Player* testObj = new Player("res/objects/monkey.obj", sceneName); // creates the not player.
 
 	// arena obstacles
-	Obstacle* wall1 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(10, 2, 2));
-	Obstacle* wall2 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
-	Obstacle* wall3 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
-	Obstacle* wall4 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
-	Obstacle* wall5 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
-	Obstacle* wall6 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
-	Obstacle* wall7 = new Obstacle("res/objects/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall1 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(10, 2, 2));
+	Obstacle* wall2 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall3 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall4 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall5 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall6 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
+	Obstacle* wall7 = new Obstacle("res/objects/props/GDW_1_Y2 - Wall Tile.obj", sceneName, cherry::Vec3(2, 2, 2));
 
 
 	Obstacle * bow = new Obstacle("res/objects/weapons/bow.obj", sceneName, false);
@@ -1349,7 +1349,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 	Obstacle * lamp_Corner = new Obstacle("res/objects/props/Lamp_Corner.obj", sceneName, false);
 	Obstacle * lamp_Side = new Obstacle("res/objects/props/Lamp_Side.obj", sceneName, false);
 	Obstacle * manhole = new Obstacle("res/objects/props/manhole.obj", sceneName, false);
-	Obstacle * piller = new Obstacle("res/objects/GDW_1_Y2 - Pillar.obj", sceneName, false);
+	Obstacle * piller = new Obstacle("res/objects/props/GDW_1_Y2 - Pillar.obj", sceneName, false);
 	Obstacle * road = new Obstacle("res/objects/props/Road.obj", sceneName, false);
 
 	obstacles.push_back(drum);

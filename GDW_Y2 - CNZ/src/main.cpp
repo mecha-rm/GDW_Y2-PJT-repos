@@ -12,7 +12,7 @@
  
  * Game: CODENAME: ZERO
  * Engine: CHERRY ENGINE
- * Date: 07/25/2020
+ * Date: 08/04/2020
  * Description: the game development game. The engine files are in the 'cherry' folder, but there is a dedicated engine project.
 	* For some reason, the rdk_cnz branch doesn't work.
  * References: 
