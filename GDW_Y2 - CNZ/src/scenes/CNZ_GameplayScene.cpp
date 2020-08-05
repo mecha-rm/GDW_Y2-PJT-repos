@@ -1464,7 +1464,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		cherry::Camera::Sptr myCamera = game->myCamera;
 
 		//GLenum test = glGetError();
-		this->playerPrevPos = playerObj->GetPosition(); // store previous position
+		playerPrevPos = playerObj->GetPosition(); // store previous position
 
 		// if (showPBs) { // show player and projectile physics bodies if showPBs
 		// 	playerObj->GetPhysicsBodies()[0]->SetVisible(true);
@@ -1786,14 +1786,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						// Spawn projectiles
 						enemyList[i]->attacking = true;
 
+						// creates a new projectile.
 						Projectile* proj = new Projectile(arrowBase, GetName());
 
 						// adding to lists
 						projList.push_back(proj);
 						projTimeList.push_back(0);
 
-						proj->SetWhichGroup(i);
-						//proj->SetWhichEnemy(j);
+						// proj->SetWhichGroup(i);
+						// proj->SetWhichEnemy(j);
 						proj->active = true;
 						proj->SetPosition(enemyList[i]->GetPosition());
 						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
@@ -1968,11 +1969,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				if (!deleteProj && projTimeList[i] >= 5.0F)
 					deleteProj = true;
 
+				// projectile has surpassed lifetime.
+				// if (!deleteProj && projList[i]->ReachedMaximumLifeTime())
+				// 	deleteProj = true;
+
 				if (deleteProj)
 				{
 					projKillList.push(projList[i]); // saves object to delete.
 					indexKillList.push(i); // saves index of value to delete.
 				}
+
 				// is this needed?
 				// projList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 0));
 				

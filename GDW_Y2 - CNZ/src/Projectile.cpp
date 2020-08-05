@@ -25,6 +25,15 @@ cnz::Projectile::Projectile(const Projectile & proj) : Object(proj)
 	// *this = arrow;
 	pBodySize = proj.GetPBodySize();
 	drawPBody = proj.GetDrawPBody();
+
+	arrowDirVec = proj.arrowDirVec;
+	// whichGroup = proj.whichGroup;
+	// whichEnemy = proj.whichEnemy;
+
+	active = proj.active;
+	maxLifeTime = proj.maxLifeTime;
+	currLifeTime = proj.currLifeTime;
+	ageFactor = proj.ageFactor;
 }
 
 void cnz::Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
@@ -42,16 +51,16 @@ void cnz::Projectile::SetDirVec(cherry::Vec3 dirVec) {
 }
 
 // gets which group
-int cnz::Projectile::GetWhichGroup() const { return whichGroup; }
-
-// sets which group the projectile is part of.
-void cnz::Projectile::SetWhichGroup(int i) { whichGroup = i; }
-
-// sets which enemy
-void cnz::Projectile::SetWhichEnemy(int i) { whichEnemy = i; }
-
-// gets which enemy the projectile is for.
-int cnz::Projectile::GetWhichEnemy() const { return whichEnemy; }
+// int cnz::Projectile::GetWhichGroup() const { return whichGroup; }
+// 
+// // sets which group the projectile is part of.
+// void cnz::Projectile::SetWhichGroup(int i) { whichGroup = i; }
+// 
+// // sets which enemy
+// void cnz::Projectile::SetWhichEnemy(int i) { whichEnemy = i; }
+// 
+// // gets which enemy the projectile is for.
+// int cnz::Projectile::GetWhichEnemy() const { return whichEnemy; }
 
 bool cnz::Projectile::SetDrawPBody(bool draw)
 {
@@ -94,4 +103,51 @@ float cnz::Projectile::GetPBodyHeight() const
 float cnz::Projectile::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;
+}
+
+// gets maximum life time.
+float cnz::Projectile::GetMaximumLifeTime() const
+{
+	return maxLifeTime;
+}
+
+// sets maximum life time.
+void cnz::Projectile::SetMaximumLifeTime(float mt)
+{
+	maxLifeTime = (mt >= 0) ? mt : 0;
+}
+
+// returns the current life time.
+float cnz::Projectile::GetCurrentLifeTime() const
+{
+	return currLifeTime;
+}
+
+// resets current life time.
+void cnz::Projectile::ResetCurrentLifeTime()
+{
+	currLifeTime = 0;
+}
+
+// gets the age incrementer.
+float cnz::Projectile::GetAgeFactor() const { return ageFactor; }
+
+// sets the age factor.
+void cnz::Projectile::SetAgeFactor(float ai)
+{
+	ageFactor = (ai > 0) ? ai : 1.0F;
+}
+
+// returns 'true' if maximum life time as been reached.
+bool cnz::Projectile::ReachedMaximumLifeTime()
+{
+	return currLifeTime >= maxLifeTime;
+}
+
+// update
+void cnz::Projectile::Update(float deltaTime)
+{
+	Object::Update(deltaTime);
+
+	currLifeTime += deltaTime * ageFactor;
 }

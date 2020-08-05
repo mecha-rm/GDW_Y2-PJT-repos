@@ -1539,6 +1539,8 @@ void cnz::Level::GenerateSources()
 	sourceArrow->SetEmissiveColor(cherry::Vec3(1.0F, 0.1F, 0.24F));
 	sourceArrow->SetEmissivePower(2.0F);
 
+	// maximum life time.
+	sourceArrow->SetMaximumLifeTime(5.0F);
 
 	// creating the enemy groups
 	CNZ_GameplayScene::LoadEnemyGroups();
