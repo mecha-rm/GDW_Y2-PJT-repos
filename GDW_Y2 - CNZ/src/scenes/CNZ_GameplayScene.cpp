@@ -1791,7 +1791,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 						// adding to lists
 						projList.push_back(proj);
-						projTimeList.push_back(0);
+						// projTimeList.push_back(0);
 
 						// proj->SetWhichGroup(i);
 						// proj->SetWhichEnemy(j);
@@ -1931,7 +1931,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// temporary stack of projectiles to be deleted
 		std::stack<Projectile*> projKillList;
-		std::stack<int> indexKillList;
+		// std::stack<int> indexKillList;
 
 		//Update Projectiles
 		for (int i = 0; i < projList.size(); i++) 
@@ -1963,20 +1963,20 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						break;
 				}
 
-				projTimeList[i] += deltaTime;
+				// projTimeList[i] += deltaTime; // in projectile update loop.
 
 				// no collision, but alloted time has passed.
-				if (!deleteProj && projTimeList[i] >= 5.0F)
-					deleteProj = true;
+				// if (!deleteProj && projTimeList[i] >= 5.0F)
+				// 	deleteProj = true;
 
 				// projectile has surpassed lifetime.
-				// if (!deleteProj && projList[i]->ReachedMaximumLifeTime())
-				// 	deleteProj = true;
+				if (!deleteProj && projList[i]->ReachedMaximumLifeTime())
+					deleteProj = true;
 
 				if (deleteProj)
 				{
 					projKillList.push(projList[i]); // saves object to delete.
-					indexKillList.push(i); // saves index of value to delete.
+					// indexKillList.push(i); // saves index of value to delete.
 				}
 
 				// is this needed?
@@ -1994,9 +1994,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			}
 		}
 
-		// projTimer.Stop();
+		// projTimer.Stop(); 
 
-		// removing and kills projectiles
+		// removing and kills projectiles  
 		while (!projKillList.empty())
 		{
 			Projectile* temp = projKillList.top();
@@ -2008,12 +2008,12 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		}
 
 		// removing time values from the proj time list
-		while (!indexKillList.empty())
-		{
-			// removing from the time list
-			projTimeList.erase(projTimeList.begin() + indexKillList.top());
-			indexKillList.pop(); // removing value
-		}
+		// while (!indexKillList.empty())
+		// {
+		// 	// removing from the time list
+		// 	// projTimeList.erase(projTimeList.begin() + indexKillList.top());
+		// 	indexKillList.pop(); // removing value
+		// }
 
 		//// DASH CODE
 

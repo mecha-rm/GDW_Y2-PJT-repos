@@ -154,7 +154,7 @@ namespace cnz
 		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
 
 		std::vector<Projectile*> projList; //list of projectiles
-		std::vector<float> projTimeList; //list of projectile timers
+		// std::vector<float> projTimeList; //list of projectile timers (put inside projectile objects)
 
 		// skybox object.
 		cherry::Skybox skyboxObj;

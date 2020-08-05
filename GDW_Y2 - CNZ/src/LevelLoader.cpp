@@ -1534,7 +1534,11 @@ void cnz::Level::GenerateSources()
 
 	// arrow projectile
 	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);
+	cherry::Vec3 arwBdy = sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum();
+	
+	// TODO: hitbox is way too small.
 	sourceArrow->SetPBodySize(sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum());
+
 	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize()));
 	sourceArrow->SetEmissiveColor(cherry::Vec3(1.0F, 0.1F, 0.24F));
 	sourceArrow->SetEmissivePower(2.0F);
