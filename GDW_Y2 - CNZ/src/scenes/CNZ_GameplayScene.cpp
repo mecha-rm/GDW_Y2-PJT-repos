@@ -4,7 +4,9 @@
 // TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
 //	Using the in-game reset and killing enemies seemed to cause it. Is this consistently the cause?
 // TODO: the enemy that shoots an arrow seems to be the problem. The hitbox is too small to hit anything.
-// TODO: change hwo the enemies are spawned in.
+// TODO: change how the enemies are spawned in.
+// TODO: add in new enemies mid wave after a certain point (if there is no stutter).
+// TODO: fill in the missing blocks in map1. Also add osmething under the player to fill in the skybox.
 
 #include "CNZ_GameplayScene.h"
 

@@ -62,6 +62,7 @@ namespace cnz
 		std::string gameOverSceneName = "";
 
 		// maps; do not make changes.
+		LevelLoadInfo map0Info;
 		LevelLoadInfo map1Info;
 		LevelLoadInfo map2Info;
 		LevelLoadInfo map3Info;

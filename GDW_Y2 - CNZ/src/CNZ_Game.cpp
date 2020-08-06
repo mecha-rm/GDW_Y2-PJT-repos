@@ -41,6 +41,7 @@ void cnz::CNZ_Game::LoadContent()
 	gameOverSceneName = "Game Over";
 
 	// Levels
+	map0Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map0.csv", "map0", 0 }; // debug
 	map1Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map1.csv", "map1", 1 };
 	map2Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map2.csv", "map2", 2 };
 	map3Info = LevelLoadInfo{ "res/loader/legend.csv", "res/loader/map3.csv", "map3", 3 };
@@ -62,6 +63,9 @@ void cnz::CNZ_Game::LoadContent()
 
 	// CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
 	// maps
+	CNZ_GameplayScene* map0Scene = new CNZ_GameplayScene(map0Info); // debug level
+	RegisterScene(map0Scene, false);
+
 	CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info);
 	RegisterScene(map1Scene, false);
 
