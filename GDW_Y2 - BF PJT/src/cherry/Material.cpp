@@ -1,4 +1,6 @@
 // Material - used for adding materials to meshes
+// TODO: add parameters for other components of the material, even if you don't use them.
+
 #include "Material.h"
 #include "utils/Utils.h"
 

@@ -10,7 +10,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\Spencer\\Documents\\Blender Files\\One\\Hero_Body.png
+map_Kd Hero_Body.png
 
 newmtl Hair
 Ns 225.000000
@@ -21,7 +21,7 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\Spencer\\Documents\\Blender Files\\One\\Hero_Hair.png
+map_Kd Hero_Hair.png
 
 newmtl Jacket
 Ns 225.000000
@@ -32,4 +32,4 @@ Ke 0.000000 0.000000 0.000000
 Ni 1.450000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\Spencer\\Documents\\Blender Files\\One\\Hero_Jacket.png
+map_Kd Hero_Jacket.png
