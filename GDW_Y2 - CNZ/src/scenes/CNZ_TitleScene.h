@@ -28,6 +28,9 @@ namespace cnz
 		// called when a key has been pressed.
 		void KeyPressed(GLFWwindow* window, int key) override;
 
+		// called when a key has been released.
+		void KeyReleased(GLFWwindow* window, int key) override;
+
 		// update loop
 		void Update(float deltaTime) override;
 
@@ -39,6 +42,14 @@ namespace cnz
 		cherry::Button* map1Button = nullptr;
 		cherry::Button* map2Button = nullptr;
 		cherry::Button* map3Button = nullptr;
+
+		// map 0 (debug) button combo (CTRL + SHIFT + D) 
+		// doing CTRL + SHIFT + 0 causes 0 not to go through for some reason. It seems to not happen with other numbers.
+		// either way, that's why this had to be changed.
+		std::queue<int> map0keys;
+
+		// if 'true', the debug map (map 0) is available for use.
+		bool DEBUG_MAP_OPEN = true;
 
 		// text for the loading screen, and blur for the layer
 		cherry::Text* loadingText = nullptr;

@@ -1,4 +1,5 @@
-// TODO: fix score formatting.
+// TODO: add in sound effects.
+// TODO: take another look at score formatting.
 #include "CNZ_RankingScene.h"
 
 #include "..\CNZ_Game.h"
@@ -41,6 +42,7 @@ void cnz::CNZ_RankingScene::OnOpen()
 	// 	audio.PlayEvent("bgm_01");
 	// }
 
+	// text
 	// reading in lines.
 	{
 		fileName = RANKING_FILE;
@@ -54,6 +56,9 @@ void cnz::CNZ_RankingScene::OnOpen()
 		int lNum = 0; // number of lines
 		int spaces = 10;
 		std::string spaceLine = "";
+
+		// text size for the score board text.
+		float textSize = 5.25f;
 
 		// making the texts
 		if (!file)
@@ -87,10 +92,10 @@ void cnz::CNZ_RankingScene::OnOpen()
 			else
 				str = "10. " + str;
 
-			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 4.5F);
+			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), textSize);
 			text->SetWindowChild(true);
 			// the names line up with the center, but not the scores.
-			text->SetPositionByWindowSize(Vec2(0.72F, 0.275F) + offset * lNum);
+			text->SetPositionByWindowSize(Vec2(0.85F, 0.275F) + offset * lNum);
 
 			// TODO: line 10 needs to be shifted over slightly.
 			// if(lNum == 9)
@@ -103,22 +108,43 @@ void cnz::CNZ_RankingScene::OnOpen()
 		}
 
 		file.close();
+
+		// Other Text
+
+		// TOP 10
+		{
+			Text* text = new Text("TOP 10 PLAYERS", sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+			text->SetWindowChild(true);
+			text->SetPositionByWindowSize(Vec2(0.65F, 0.1F));
+			objectList->AddObject(text);
+		}
+
+		// DESCRIPTION
+		{
+			std::string str = "";
+			str = "NAME      " + spaceLine + spaceLine + "MAP        "+ "SCORE";
+
+			Text* text = new Text(str, sceneName, font, Vec4(1.0F, 1.0F, 1.0F, 1.0F), textSize);
+			text->SetWindowChild(true);
+			text->SetPositionByWindowSize(Vec2(0.85F, 0.20F));
+			objectList->AddObject(text);
+		}
 	}
 
 	// logo
-	{
-		Image* image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
-		image->SetWindowChild(true);
-		image->SetPositionByWindowSize(Vec2(0.5F, 0.1F));
-		image->SetScale(0.4F);
-		objectList->AddObject(image);
-	}
+	// {
+	// 	Image* image = new Image("res/images/codename_zero_logo_small.png", sceneName, false, false);
+	// 	image->SetWindowChild(true);
+	// 	image->SetPositionByWindowSize(Vec2(0.5F, 0.1F));
+	// 	image->SetScale(0.4F);
+	// 	objectList->AddObject(image);
+	// }
 
 	// exit button
 	{
 		Image* image = new Image("res/images/level_select_button.png", sceneName, false, false);
 		image->SetWindowChild(true);
-		image->SetPositionByWindowSize(Vec2(0.5F, 0.85F));
+		image->SetPositionByWindowSize(Vec2(0.5F, 0.875F));
 		image->SetScale(0.4F);
 
 		// collision box

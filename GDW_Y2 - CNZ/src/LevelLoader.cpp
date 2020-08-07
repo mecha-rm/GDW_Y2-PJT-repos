@@ -1,3 +1,6 @@
+// TODO: Building Faces are facing the wrong direction. Maybe don't cull faces?
+// TODO: The full debug map does not seem to get printed.
+
 #include "LevelLoader.h"
 #include "cherry/scenes/SceneManager.h"
 #include "scenes/CNZ_GameplayScene.h"
@@ -823,6 +826,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj = building;
 				}
 
+				
+				// the building doesn't have its faces culled.
+				obj->GetMesh()->cullFaces = false;
 
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());

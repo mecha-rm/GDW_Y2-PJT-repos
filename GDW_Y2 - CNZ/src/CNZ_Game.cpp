@@ -83,6 +83,7 @@ void cnz::CNZ_Game::LoadContent()
 	{
 		SetCurrentScene(title->GetName(), false);
 		// SetCurrentScene(gameover->GetName(), false); // score entry.
+		// SetCurrentScene(map0Scene->GetName(), false); // Debug 
 	}
 	else // load level
 	{

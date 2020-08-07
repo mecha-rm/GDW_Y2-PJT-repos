@@ -1,3 +1,8 @@
+/*
+* https://www.glfw.org/docs/3.3/input_guide.html#input_key
+* https://www.glfw.org/docs/latest/group__keys.html
+*/
+
 #include "CNZ_TitleScene.h"
 #include "..\CNZ_Game.h"
 #include "..\LevelLoader.h"
@@ -40,6 +45,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// "res/images/cubemaps/title_skybox_side.jpg"
 		// "res/images/cubemaps/title_skybox_bottom.jpg"
 
+		// default
 		cherry::Skybox skybox(
 			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
 			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
@@ -49,6 +55,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
 		);
 
+		// updated.
 		// cherry::Skybox skybox(
 		// 	"res/images/cubemaps/title_skybox_side.jpg",
 		// 	"res/images/cubemaps/title_skybox_side.jpg",
@@ -278,7 +285,7 @@ void cnz::CNZ_TitleScene::OnOpen()
 	}
 
 	// background graphic (unused) and other background objects.
-	if(false)
+	// if(false)
 	{
 		//cherry::Image* image = new Image("res/images/title_bg.png", GetName(), false, false);
 		//image->SetWindowChild(true);
@@ -447,7 +454,9 @@ void cnz::CNZ_TitleScene::MouseButtonPressed(GLFWwindow* window, int button)
 // key has been pressed.
 void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
 {
-	cherry::MenuScene::KeyPressed(window, key);
+	cherry::MenuScene::KeyPressed(window, key); // parent function
+
+	std::cout << "key code: " << key << std::endl;
 
 	switch (key)
 	{
@@ -456,6 +465,39 @@ void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
 		{
 			controls->SetVisible();
 		}
+		break;
+		
+		// Debug Scene Key Combonation: CTRL + SHIFT + D
+		// Pressing CTRL and SHIFT together has it register as something different.
+		// TODO: figure out why this isn't working.
+		// the first two buttons go through, but not the third button.
+	case GLFW_KEY_LEFT_CONTROL:
+	case GLFW_KEY_RIGHT_CONTROL:
+	case GLFW_KEY_LEFT_SHIFT:
+	case GLFW_KEY_RIGHT_SHIFT:
+	case GLFW_KEY_D:
+		map0keys.push(key);
+		std::cout << "map0 - key added: " << key << std::endl;
+		break;
+	}
+}
+
+// key has been released.
+void cnz::CNZ_TitleScene::KeyReleased(GLFWwindow* window, int key)
+{
+	cherry::MenuScene::KeyReleased(window, key); // parent function
+
+	switch (key)
+	{
+	// Debug Scene Key Combonation: CTRL + SHIFT + D
+	// Removing a key from the queue. The player must start the button combination over.
+	case GLFW_KEY_LEFT_CONTROL:
+	case GLFW_KEY_RIGHT_CONTROL:
+	case GLFW_KEY_LEFT_SHIFT:
+	case GLFW_KEY_RIGHT_SHIFT:
+	case GLFW_KEY_D:
+		map0keys.pop(); // removes the oldest key in the list (i.e. the first in line).
+		std::cout << "map0 - key popped: " << key << std::endl;
 		break;
 	}
 }
@@ -541,6 +583,53 @@ void cnz::CNZ_TitleScene::Update(float deltaTime)
 				useFrameBuffers = true;
 
 				loadingText->SetVisible(true);
+			}
+		}
+		else if (DEBUG_MAP_OPEN && map0keys.size() == 3) 	// the player may be attempting to enter the debug scene
+		{
+			// copies queue 
+			std::queue<int> temp = map0keys;
+
+			// getting the keys.
+			// key 1
+			int k1 = temp.front();
+			temp.pop(); 
+
+			// key 2
+			int k2 = temp.front();
+			temp.pop();
+
+			// key 3
+			int k3 = temp.front();
+			temp.pop();
+
+			// map 0 (debug) button combo (CTRL + SHIFT + D) 
+			if (
+				(k1 == GLFW_KEY_LEFT_CONTROL || k1 == GLFW_KEY_RIGHT_CONTROL) &&
+				(k2 == GLFW_KEY_LEFT_SHIFT || k2 == GLFW_KEY_RIGHT_SHIFT) &&
+				(k3 == GLFW_KEY_D)
+				)
+			{
+				// Menu Accept Sound Effect
+				// Maybe Make an Alternate Sound since it's Debug?
+				AudioEngine::GetInstance().PlayEvent("menu_accept");
+
+				// changes the scene.
+				if (enableLoadEffect)
+				{
+					nextScene = game->map0Info.sceneName;
+
+					// this is a copy of what's in the mouse section. Maybe this should be moved outside of this if statement?
+					loading = true;
+					layers.push_back(loadLayer); // adds in the load layer 
+					useFrameBuffers = true;
+
+					loadingText->SetVisible(true);
+				}
+				else
+				{
+					game->SetCurrentScene(game->map0Info.sceneName, true);
+				}
 			}
 		}
 	}

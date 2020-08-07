@@ -2381,9 +2381,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		if (LIGHT_CONTROL && playerLightDir != glm::ivec3(0, 0, 0))
 		{
+			// the x-axis and y-axis positions are inverted due to the camera position.
 			playerLightOffset += glm::vec3(
-				LIGHT_OFFSET_INC.x * playerLightDir.x * deltaTime,
-				LIGHT_OFFSET_INC.y * playerLightDir.y * deltaTime,
+				LIGHT_OFFSET_INC.x * -playerLightDir.x * deltaTime,
+				LIGHT_OFFSET_INC.y * -playerLightDir.y * deltaTime,
 				LIGHT_OFFSET_INC.z * playerLightDir.z * deltaTime
 			);
 
