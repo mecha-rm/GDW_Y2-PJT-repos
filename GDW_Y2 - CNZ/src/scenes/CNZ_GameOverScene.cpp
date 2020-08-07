@@ -8,6 +8,8 @@
 	* https://stackoverflow.com/questions/8960087/how-to-convert-a-char-array-to-a-string
 */
 
+// TODO: change the skybox, and format the text better.
+
 #include "CNZ_GameOverScene.h"
 #include "..\CNZ_Game.h"
 #include "..\cherry/utils/sort/SelectionSort.h"
