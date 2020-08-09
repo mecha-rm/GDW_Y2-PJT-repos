@@ -20,6 +20,11 @@ namespace cherry
 		// gets the base color of the primitive.
 		cherry::Vec4 GetColor() const;
 
+		// generates a generic material for the primitive.
+		// if 'allowLighting' is 'true', the blinn-phong shader is used, which allows for lighting.
+		// if 'allowLighting' is 'false', then the lighting is not used for this primitive.
+		static cherry::Material::Sptr GenerateDefaultMaterial();
+
 		// would this work?
 		// virtual std::string ToString() = 0;
 
