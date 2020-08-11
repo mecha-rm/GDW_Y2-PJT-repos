@@ -347,12 +347,12 @@ void cnz::CNZ_TitleScene::OnOpen()
 		terrain_tr->SetPosition(-75.0F, 4.5F, -50.0F);
 		objectList->AddObject(terrain_tr);
 
-		// plane
+		// black plane (covers bottom of texture map)
+		// TODO: make the plane larger, and lower.
 		cherry::PrimitivePlane* plane = new cherry::PrimitivePlane(20.0F, 20.0F, false, cherry::Vec4(0.0F, 0.0F, 0.0F, 1.0F));
-
-		// TODO: add material to plane.
-
+		plane->CreateEntity(SCENE_NAME, Primitive::GenerateDefaultMaterial()); // provides a material unaffected by lighting.
 		plane->SetPosition(0.0F, 0.0F, -25.0F);
+		plane->SetVisible(false);
 		objectList->AddObject(plane);
 	}
 

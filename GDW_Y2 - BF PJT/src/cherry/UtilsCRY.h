@@ -27,6 +27,9 @@
 ///// SHADERS //////
 // REGULAR
 // macros for file paths for commonly used shaders
+#define MODEL_VS ("res/shaders/model.vs.glsl")
+#define MODEL_FS ("res/shaders/model.fs.glsl")
+
 #define STATIC_VS ("res/shaders/lighting.vs.glsl")
 #define STATIC_FS ("res/shaders/blinn-phong.fs.glsl")
 

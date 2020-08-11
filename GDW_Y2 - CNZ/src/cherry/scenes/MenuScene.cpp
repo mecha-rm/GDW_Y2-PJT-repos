@@ -7,6 +7,8 @@
 // collision for the mouse
 // cherry::PhysicsBodyBox* cherry::MenuScene::mouseBox = new cherry::PhysicsBodyBox(1.0F, 1.0F, 0.1F);
 
+// TODO: improve the hitboxes for the mouse buttons. Are they getting changed when in screenspace if the window is resized?
+
 // constructor
 cherry::MenuScene::MenuScene(const std::string name)
 	: Scene(name)

@@ -265,6 +265,14 @@ void cherry::EngineGameplayScene::OnOpen()
 		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);
 
 		objectList->objects.push_back(new PrimitiveUVSphere());
+
+		// generate using default material (no lighintg)
+		//objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), Primitive::GenerateDefaultMaterial());
+		
+		// generate using lighting material
+		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), Primitive::GenerateLightingMaterial());
+		// objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), Primitive::GenerateLightingMaterial(lightList));
+
 		objectList->objects.at(objectList->objects.size() - 1)->CreateEntity(game->GetCurrentSceneName(), matStatic);
 		objectList->objects.at(objectList->objects.size() - 1)->SetPosition(offset, -offset, 0.0F);
 		objectList->objects.at(objectList->objects.size() - 1)->SetVisible(true);

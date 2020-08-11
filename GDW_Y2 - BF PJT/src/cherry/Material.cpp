@@ -3,6 +3,7 @@
 
 #include "Material.h"
 #include "utils/Utils.h"
+#include "lights/LightManager.h"
 
 #include <fstream>
 
@@ -292,6 +293,142 @@ cherry::Material::Sptr cherry::Material::GenerateMtl(std::string filePath, const
 	tempMat->LoadMtl(filePath, sampler);
 
 	return tempMat;
+}
+
+// generates a default material.
+cherry::Material::Sptr cherry::Material::GenerateDefaultMaterial()
+{
+	// the material
+	Material::Sptr material;
+
+	// shaders
+	const std::string vs = MODEL_VS; // vertex
+	const std::string fs = MODEL_FS; // fragment
+	Shader::Sptr shader = std::make_shared<Shader>(); // shader
+
+	// sampler, sampler description, and albedo.
+	TextureSampler::Sptr sampler;
+	SamplerDesc description;
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png"); // texture
+
+	// description values.
+	description = SamplerDesc();
+	description.MinFilter = MinFilter::LinearMipNearest;
+	description.MagFilter = MagFilter::Linear;
+	description.WrapS = description.WrapT = WrapMode::Repeat;
+
+	// sampler value.
+	sampler = std::make_shared<TextureSampler>(description);
+
+	// loads the shader and creates the material.
+	shader->Load(vs.c_str(), fs.c_str()); // the shader
+	material = std::make_shared<Material>(shader); // loads in the shader.
+
+	// albedo values
+	material->Set("s_Albedos[0]", albedo, sampler);
+	material->Set("s_Albedos[1]", albedo, sampler);
+	material->Set("s_Albedos[2]", albedo, sampler);
+
+	// returns the material
+	return material;
+}
+
+// generates a static lighting material. This material can't be animated.
+cherry::Material::Sptr cherry::Material::GenerateLightingMaterialStatic()
+{
+	return GenerateLightingMaterial(STATIC_VS, STATIC_FS, nullptr);
+}
+
+// generates a static lighting material with a light list. This material can't be animated.
+cherry::Material::Sptr cherry::Material::GenerateLightingMaterialStatic(cherry::LightList* ll)
+{
+	return GenerateLightingMaterial(STATIC_VS, STATIC_FS, ll);
+}
+
+// generates a static lighting material. This material can be animated using morph targets.
+cherry::Material::Sptr cherry::Material::GenerateLightingMaterialDynamic()
+{
+	return GenerateLightingMaterial(DYNAMIC_VS, DYNAMIC_FS, nullptr);
+}
+
+
+// generates a static lighting material with a light list. This material can be animated using morph targets.
+cherry::Material::Sptr cherry::Material::GenerateLightingMaterialDynamic(cherry::LightList* ll)
+{
+	return GenerateLightingMaterial(DYNAMIC_VS, DYNAMIC_FS, ll);
+}
+
+// generates a lighting material.
+cherry::Material::Sptr cherry::Material::GenerateLightingMaterial(const std::string vs, const std::string fs, cherry::LightList* ll)
+{
+	// shader validity check.
+	// the shader upon compilation would catch this. And either way this is a private function anyway.
+	// if (util::fileAccessible(vs) == false || util::fileAccessible(fs) == false)
+	// 	throw std::runtime_error("Shader file paths invalid.");
+
+	// the material
+	Material::Sptr material;
+
+	// shaders
+	// const std::string vs = STATIC_VS; // vertex
+	// const std::string fs = STATIC_FS; // fragment
+
+	Shader::Sptr shader = std::make_shared<Shader>(); // shader
+
+	// sampler, sampler description, and albedo.
+	TextureSampler::Sptr sampler;
+	SamplerDesc description;
+	Texture2D::Sptr albedo = Texture2D::LoadFromFile("res/images/default.png"); // texture
+
+	// total amount of lights
+	int lightCount = 0;
+
+	// if a light list was provided, the light count is found.
+	if (ll != nullptr)
+		lightCount = (ll->lights.size() > MAX_LIGHTS) ? MAX_LIGHTS : ll->lights.size();
+
+	// description values.
+	description = SamplerDesc();
+	description.MinFilter = MinFilter::LinearMipNearest;
+	description.MagFilter = MagFilter::Linear;
+	description.WrapS = description.WrapT = WrapMode::Repeat;
+
+	// sampler value.
+	sampler = std::make_shared<TextureSampler>(description);
+
+	// loads the shader and creates the material.
+	shader->Load(vs.c_str(), fs.c_str()); // the shader
+	material = std::make_shared<Material>(shader); // loads in the shader.
+
+	// enabled lights.
+	material->Set("a_EnabledLights", lightCount);
+
+	// goes through each light, getting the values.
+	for (int i = 0; i < lightCount; i++)
+	{
+		glm::vec3 temp = ll->lights.at(i)->GetAmbientColorGLM();
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientColor", { temp[0], temp[1], temp[2] }); // ambient colour
+
+		material->Set("a_Lights[" + std::to_string(i) + "].ambientPower", ll->lights.at(i)->GetAmbientPower()); // ambient power
+		material->Set("a_Lights[" + std::to_string(i) + "].specularPower", ll->lights.at(i)->GetLightSpecularPower()); // specular power
+
+		temp = ll->lights.at(i)->GetLightPositionGLM();
+		material->Set("a_Lights[" + std::to_string(i) + "].position", { temp[0], temp[1], temp[2] }); // position
+
+		temp = ll->lights.at(i)->GetLightColorGLM();
+		material->Set("a_Lights[" + std::to_string(i) + "].color", { temp[0], temp[1], temp[2] }); // light colour
+
+		material->Set("a_Lights[" + std::to_string(i) + "].shininess", ll->lights.at(i)->GetLightShininess()); // shininess
+		material->Set("a_Lights[" + std::to_string(i) + "].attenuation", ll->lights.at(i)->GetLightAttenuation()); // attenuation
+	}
+
+	// albedo values
+	material->Set("s_Albedos[0]", albedo, sampler);
+	material->Set("s_Albedos[1]", albedo, sampler);
+	material->Set("s_Albedos[2]", albedo, sampler);
+
+	// returns the material
+	return material;
 }
 
 // parses a string to get all the values from it as data type (T).
