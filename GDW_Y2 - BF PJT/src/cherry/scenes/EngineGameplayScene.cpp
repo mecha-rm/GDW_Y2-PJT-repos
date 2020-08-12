@@ -287,23 +287,23 @@ void cherry::EngineGameplayScene::OnOpen()
 		// objectList->objects.at(objectList->objects.size() - 1)->SetPosition(0.0F, 3.0F, -20.0F);
 		// objectList->objects.at(objectList->objects.size() - 1)->SetScale(45.0F); 
 
-	   // liquid
+		// liquid - this interferes with the layering of objects.
 		{
 			Liquid* water = new Liquid(game->GetCurrentSceneName(), 20.0f, 100);
 			water->SetEnabledWaves(3);
 			water->SetGravity(9.81F);
-
+		
 			water->SetWave(0, 1.0f, 0.0f, 0.50f, 6.0f);
 			water->SetWave(1, 0.0f, 1.0f, 0.25f, 3.1f);
 			water->SetWave(2, 1.0f, 1.4f, 0.20f, 1.8f);
-
+		
 			water->SetColor(0.5f, 0.5f, 0.95f, 0.75f);
 			water->SetClarity(0.9f);
-
+		
 			water->SetFresnelPower(0.5f);
 			water->SetRefractionIndex(1.0f, 1.34f);
 			water->SetEnvironment(game->GetCurrentScene()->Skybox);
-
+		
 			water->SetPosition(0.0F, 0.0F, -70.0F);
 			water->SetVisible(true);
 			game->AddObjectToScene(water);

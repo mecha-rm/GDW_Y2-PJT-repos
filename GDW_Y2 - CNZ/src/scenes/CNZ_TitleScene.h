@@ -69,6 +69,9 @@ namespace cnz
 		// this is only used if the loading screen is active.
 		std::string nextScene = "";
 
+		// hides the bottom of the city terrains.
+		// cherry::PrimitivePlane* darkPlane;
+
 	protected:
 	};
 }

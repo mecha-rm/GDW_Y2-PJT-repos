@@ -46,24 +46,24 @@ void cnz::CNZ_TitleScene::OnOpen()
 		// "res/images/cubemaps/title_skybox_bottom.jpg"
 
 		// default
-		cherry::Skybox skybox(
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
-		);
+		// cherry::Skybox skybox(
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		// );
 
 		// updated.
-		// cherry::Skybox skybox(
-		// 	"res/images/cubemaps/title_skybox_side.jpg",
-		// 	"res/images/cubemaps/title_skybox_side.jpg",
-		// 	"res/images/cubemaps/title_skybox_bottom.jpg",
-		// 	"res/images/cubemaps/title_skybox_top.jpg",
-		// 	"res/images/cubemaps/title_skybox_side.jpg",
-		// 	"res/images/cubemaps/title_skybox_side.jpg"
-		// );
+		cherry::Skybox skybox(
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_bottom.jpg",
+			"res/images/cubemaps/title_skybox_top.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg",
+			"res/images/cubemaps/title_skybox_side.jpg"
+		);
 		 
 		skybox.AddSkyboxToScene(this);
 		Game::GetRunningGame()->SetSkyboxVisible(true);
@@ -305,8 +305,8 @@ void cnz::CNZ_TitleScene::OnOpen()
 		terrain_1->SetTexture(2, "res/images/city_heightmap_texture_3.jpg");
 		terrain_1->SetTextureWeight(2, 0.4F);
 
-		terrain_1->SetMinimumHeight(-10.0F);
-		terrain_1->SetMaximumHeight(12.0F);
+		terrain_1->SetMinimumHeight(-30.0F);
+		terrain_1->SetMaximumHeight(25.0F);
 
 		// TODO: adjust height map since some buildings get cut-off.
 		// terrain_1->SetPosition(0.0F, -30.0F, -50.0F);
@@ -348,12 +348,14 @@ void cnz::CNZ_TitleScene::OnOpen()
 		objectList->AddObject(terrain_tr);
 
 		// black plane (covers bottom of texture map)
-		// TODO: make the plane larger, and lower.
-		cherry::PrimitivePlane* plane = new cherry::PrimitivePlane(20.0F, 20.0F, false, cherry::Vec4(0.0F, 0.0F, 0.0F, 1.0F));
+		cherry::PrimitivePlane* plane = new cherry::PrimitivePlane(175.0F, 150.0F, false, cherry::Vec4(0.0F, 0.0F, 0.0F, 1.0F));
 		plane->CreateEntity(SCENE_NAME, Primitive::GenerateDefaultMaterial()); // provides a material unaffected by lighting.
-		plane->SetPosition(0.0F, 0.0F, -25.0F);
-		plane->SetVisible(false);
+		plane->SetPosition(0.0F, -65.0F, -79.5F); // the planes are placed at (-50.0F) on the z-axis, and have a maximum of -30.0F.
+		plane->SetVisible(true);
 		objectList->AddObject(plane);
+
+		// used for moving dark plane.
+		// darkPlane = plane;
 	}
 
 	// instructons
@@ -484,8 +486,16 @@ void cnz::CNZ_TitleScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_RIGHT_SHIFT:
 	case GLFW_KEY_D:
 		map0keys.push(key);
-		std::cout << "map0 - key added: " << key << std::endl;
+		// std::cout << "map0 - key added: " << key << std::endl;
 		break;
+
+		// temporary - used for moving dark plane.
+	// case GLFW_KEY_DOWN:
+	// 	darkPlane->SetPositionZ(darkPlane->GetPositionZ() - 1.0F);
+	// 	break;
+	// case GLFW_KEY_UP:
+	// 	darkPlane->SetPositionZ(darkPlane->GetPositionZ() + 1.0F);
+	// 	break;
 	}
 }
 

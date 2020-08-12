@@ -42,8 +42,7 @@ void cnz::CNZ_RankingScene::OnOpen()
 	// 	audio.PlayEvent("bgm_01");
 	// }
 
-	// text
-	// reading in lines.
+	// text - reading in lines.
 	{
 		fileName = RANKING_FILE;
 
@@ -164,6 +163,31 @@ void cnz::CNZ_RankingScene::OnOpen()
 		AddButton(exitButton, false);
 		// UpdateButton(exitButton);
 	}
+
+	// liquid
+	// if(false)
+	// {
+	// 	// the liquid doesn't appear anything else.
+	// 	Liquid* liquid = new Liquid(sceneName, 150.0F, 100.0F);
+	// 	
+	// 	liquid->SetEnabledWaves(3);
+	// 	liquid->SetWave(0, 1.0f, 0.0f, 0.50f, 6.0f);
+	// 	liquid->SetWave(1, 0.0f, 1.0f, 0.25f, 3.1f);
+	// 	liquid->SetWave(2, 1.0f, 1.4f, 0.20f, 1.8f);
+	// 
+	// 	liquid->SetGravity(9.81F);
+	// 	liquid->SetColor(0.1F, 0.0F, 9.0F);
+	// 	liquid->SetClarity(0.90F);
+	// 
+	// 	liquid->SetFresnelPower(0.5f);
+	// 	liquid->SetRefractionIndex(1.0f, 1.34f);
+	// 	liquid->SetEnvironment(Game::GetRunningGame()->GetCurrentScene()->Skybox);
+	// 
+	// 	liquid->SetPosition(0.0F, 0.0F, -45.0F);
+	// 	// liquid->SetAlpha(0.45F);
+	// 	// liquid->SetVisible(true);
+	// 	objectList->AddObject(liquid);
+	// }
 }
 
 void cnz::CNZ_RankingScene::OnClose()
