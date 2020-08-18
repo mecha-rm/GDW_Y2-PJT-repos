@@ -389,8 +389,8 @@ void cnz::CNZ_GameplayScene::OnClose()
 	// setting variables back to original values
 	curWave = 0; //Current enemy wave
 
-	mbLP = false;
-	mbLR = false;
+	mouseLeft = false;
+	mouseRight = false;
 
 	camLerpPercent = 0.0f;
 
@@ -450,11 +450,14 @@ void cnz::CNZ_GameplayScene::MouseButtonPressed(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
-		//this->mbLP = true;
+		mouseLeft = true;
 		break;
+
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
+
 	case GLFW_MOUSE_BUTTON_RIGHT:
+		mouseRight = true;
 		break;
 	}
 }
@@ -465,11 +468,14 @@ void cnz::CNZ_GameplayScene::MouseButtonReleased(GLFWwindow* window, int button)
 	// checks each button
 	switch (button) {
 	case GLFW_MOUSE_BUTTON_LEFT:
-		//this->mbLR = true;
+		mouseLeft = false;
 		break;
+
 	case GLFW_MOUSE_BUTTON_MIDDLE:
 		break;
+
 	case GLFW_MOUSE_BUTTON_RIGHT:
+		mouseRight = false;
 		break;
 	}
 }
@@ -482,7 +488,7 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_SPACE:
 		//myCamera->SwitchViewMode();
 		spaceP = true;
-		mbLP = true;
+		mouseLeft = true;
 		break;
 
 	case GLFW_KEY_W: // up
@@ -598,7 +604,7 @@ void cnz::CNZ_GameplayScene::KeyReleased(GLFWwindow* window, int key)
 		ls = false;
 		break;
 	case GLFW_KEY_SPACE:
-		mbLR = true;
+		mouseRight = true;
 		spaceR = true;
 		break;
 
@@ -1556,8 +1562,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							f = false;
 							ls = false;
 
-							mbLP = false;
-							mbLR = false;
+							mouseLeft = false;
+							mouseRight = false;
 							spaceP = false;
 							spaceR = false;
 
@@ -2038,7 +2044,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			indicatorObj->SetVisible(false);
 		}
 
-		if (playerObj->GetDashTime() >= 1.0f && mbLR == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
+		if (playerObj->GetDashTime() >= 1.0f && mouseRight == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
 		{
 			if (!cherry::AudioEngine::GetInstance().isEventPlaying("dash")) { // if dash sound is NOT playing, play it
 				cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
@@ -2178,7 +2184,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			// }
 
 		}
-		else if (mbLP == true && mbLR == false) // before dash, while left mouse is being held
+		else if (mouseLeft == true && mouseRight == false) // before dash, while left mouse is being held
 		{
 			if (playerObj->GetDashTime() >= 1.0f) {
 				playerObj->SetState(3); // charged 
@@ -2189,11 +2195,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
 			//std::cout << playerObj->GetDashTime() << std::endl;
 		}
-		else if (mbLP == true && mbLR == true) { // left mouse has been released, reset dash timer
+		else if (mouseLeft == true && mouseRight == true) { // left mouse has been released, reset dash timer
 			playerObj->SetDashTime(0.0f);
 			//Logger::GetLogger()->info(this->dashTime);
-			mbLP = false;
-			mbLR = false;
+			mouseLeft = false;
+			mouseRight = false;
 		}
 
 		// Path update

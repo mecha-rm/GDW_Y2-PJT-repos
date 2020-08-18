@@ -163,7 +163,9 @@ namespace cnz
 		cherry::Object* indArrow;
 
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
-		bool mbLP = false, mbLR = false;
+		
+		// mouse buttons - left and right
+		bool mouseLeft = false, mouseRight = false;
 
 
 		// camera lerp percentage.
