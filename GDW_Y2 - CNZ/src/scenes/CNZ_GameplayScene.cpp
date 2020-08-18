@@ -7,6 +7,7 @@
 // TODO: change how the enemies are spawned in.
 // TODO: add in new enemies mid wave after a certain point (if there is no stutter).
 // TODO: fill in the missing blocks in map1. Also add osmething under the player to fill in the skybox.
+// TODO: the dash releases immediately, which shouldn't be happening. You may need to make the dashTrigger a global variable.
 
 #include "CNZ_GameplayScene.h"
 
@@ -241,8 +242,12 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// indicatorObj = new Object("res/objects/Arrow_End.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
 
 		// new file with merged objects
-		indicatorObj = new Object("res/objects/indicator_arrow.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
+		// indicatorObj = new Object("res/objects/indicator_arrow.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
 		
+		// the arrow, except it's flat.
+		indicatorObj = new Object("res/objects/indicator_arrow_flat.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
+
+
 		indicatorObj->SetRotationXDegrees(90); // uncomment if using 3D model
 
 		// indicatorObj = new Image("res/images/indicator_arrow.png", GetName(), false, false);
@@ -405,8 +410,7 @@ void cnz::CNZ_GameplayScene::OnClose()
 	d = false;
 	f = false;
 	ls = false;
-	spaceP = false;
-	spaceR = false;
+	spaceBar = false;
 
 	// stops the player from moving through solid objects.
 	cw = true;
@@ -486,9 +490,7 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 	switch (key) // checks the keys
 	{
 	case GLFW_KEY_SPACE:
-		//myCamera->SwitchViewMode();
-		spaceP = true;
-		mouseLeft = true;
+		spaceBar = true;
 		break;
 
 	case GLFW_KEY_W: // up
@@ -603,9 +605,9 @@ void cnz::CNZ_GameplayScene::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = false;
 		break;
+
 	case GLFW_KEY_SPACE:
-		mouseRight = true;
-		spaceR = true;
+		spaceBar = false;
 		break;
 
 	// PLAYER LIGHT CONTROLS
@@ -1465,6 +1467,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	if(PROFILE)
 		cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
 
+	// boolean for triggering the dash.
+	// if the dash trigger is false, either the dash hasn't been triggrered, or was just released.
+	bool dashTrigger = (mouseLeft || spaceBar); // left mouse button and space bar trigger the dash.
+
 	// if 'true', the score text gets updated.
 	bool updateScore = false;
 
@@ -1564,8 +1570,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 							mouseLeft = false;
 							mouseRight = false;
-							spaceP = false;
-							spaceR = false;
+							spaceBar = false;
 
 							// stops the player from moving through solid objects.
 							// taken out because the player kept getting stuck.
@@ -2029,6 +2034,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// cherry::ProfileTimer dashProfiler("profiling-dash_timer");
 
+
+
 		// Dash indicator - ready to dash but hasn't released chargey button yet
 		if (playerObj->GetDashTime() >= 1.0f) 
 		{ 
@@ -2044,7 +2051,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			indicatorObj->SetVisible(false);
 		}
 
-		if (playerObj->GetDashTime() >= 1.0f && mouseRight == true) // if dash timer is above 1.0 and left mouse has been released, do the dash
+		// if (playerObj->GetDashTime() >= 1.0f && mouseRight == true)
+		if (playerObj->GetDashTime() >= 1.0f && dashTrigger) // if dash timer is above 1.0 and left mouse has been released, do the dash
 		{
 			if (!cherry::AudioEngine::GetInstance().isEventPlaying("dash")) { // if dash sound is NOT playing, play it
 				cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
@@ -2184,8 +2192,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			// }
 
 		}
-		else if (mouseLeft == true && mouseRight == false) // before dash, while left mouse is being held
+		else if (dashTrigger == true) // before dash, while left mouse is being held
 		{
+			// else if (mouseLeft == true && mouseRight == false)
 			if (playerObj->GetDashTime() >= 1.0f) {
 				playerObj->SetState(3); // charged 
 			}
@@ -2195,11 +2204,13 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
 			//std::cout << playerObj->GetDashTime() << std::endl;
 		}
-		else if (mouseLeft == true && mouseRight == true) { // left mouse has been released, reset dash timer
+		// else if (mouseLeft == true && mouseRight == true) { // left mouse has been released, reset dash timer
+		else if (dashTrigger == false) { 
 			playerObj->SetDashTime(0.0f);
 			//Logger::GetLogger()->info(this->dashTime);
 			mouseLeft = false;
 			mouseRight = false;
+			spaceBar = false;
 		}
 
 		// Path update

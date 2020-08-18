@@ -455,33 +455,7 @@ void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double y
 	glm::quat rotation = glm::quat(this->worldAngle);
 }
 
-void cnz::Player::Update(float deltaTime) {
-	// Object::Update(deltaTime);
-	if (this == nullptr) {
-		return;
-	}
 
-	// TODO: remove this for the final version.
-	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
-	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
-	
-	// already in Object update.
-	// runs the path and sets the new position
-	//if (followPath)
-	//	position = path.Run(deltaTime);
-
-	//// if the animation is playing
-	//if (animations.GetCurrentAnimation() != nullptr) {
-	//	animations.GetCurrentAnimation()->isPlaying();
-	//	animations.GetCurrentAnimation()->Update(deltaTime);
-	//}
-
-	//// updating the physics bodies
-	//for (cherry::PhysicsBody* body : bodies)
-	//	body->Update(deltaTime);
-
-	Object::Update(deltaTime);
-}
 
 // sets the angle
 void cnz::Player::SetAngle(float angle, bool isDegrees) {
@@ -545,4 +519,41 @@ float cnz::Player::GetPBodyHeight() const
 float cnz::Player::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;
+}
+
+// gets the state
+int cnz::Player::GetState() const
+{
+	return state;
+}
+
+// sets the state
+void cnz::Player::SetState(int newState)
+{
+	state = newState;
+}
+
+void cnz::Player::Update(float deltaTime) {
+	// Object::Update(deltaTime);
+
+	// TODO: remove this for the final version.
+	// rotation.SetX(rotation.GetX() + 15.0F * deltaTime);
+	// rotation.SetZ(rotation.GetZ() + 90.0F * deltaTime);
+
+	// already in Object update.
+	// runs the path and sets the new position
+	//if (followPath)
+	//	position = path.Run(deltaTime);
+
+	//// if the animation is playing
+	//if (animations.GetCurrentAnimation() != nullptr) {
+	//	animations.GetCurrentAnimation()->isPlaying();
+	//	animations.GetCurrentAnimation()->Update(deltaTime);
+	//}
+
+	//// updating the physics bodies
+	//for (cherry::PhysicsBody* body : bodies)
+	//	body->Update(deltaTime);
+
+	Object::Update(deltaTime);
 }

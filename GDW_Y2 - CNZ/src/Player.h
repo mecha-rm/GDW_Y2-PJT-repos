@@ -66,8 +66,7 @@ namespace cnz
 		// Update function to get new angle based on mouse position
 		void UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height);
 
-		// Update
-		void Update(float deltaTime) override;
+
 
 		// sets object angle in degrees or radians. bool is true if degrees, false, if radians
 		void SetAngle(float angle, bool isDegrees);
@@ -91,16 +90,23 @@ namespace cnz
 		cherry::Vec3 GetPBodySize() const;
 
 		// get pbody width, height and depth.
+		// gets the width of the pbody.
 		float GetPBodyWidth() const;
 
+		// gets the height of the pbody.
 		float GetPBodyHeight() const;
 
+		// gets the depth of the pbody.
 		float GetPBodyDepth() const;
 
-		// setter and getter for state
-		void SetState(int newState) { this->state = newState; };
+		// gets the state
+		int GetState() const;
 
-		int GetState() { return state; };
+		// setter and getter for state
+		void SetState(int newState);
+
+		// update
+		void Update(float deltaTime) override;
 
 	private:
 		bool dash = false;

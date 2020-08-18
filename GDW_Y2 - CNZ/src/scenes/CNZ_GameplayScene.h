@@ -160,13 +160,7 @@ namespace cnz
 		cherry::Skybox skyboxObj;
 
 		// indicator arrow for the dash.
-		cherry::Object* indArrow;
-
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
-		
-		// mouse buttons - left and right
-		bool mouseLeft = false, mouseRight = false;
-
 
 		// camera lerp percentage.
 		float camLerpPercent = 0.0f;
@@ -196,6 +190,8 @@ namespace cnz
 		const bool LIGHT_CONTROL = true;
 		const glm::vec3 LIGHT_OFFSET_INC {6.0F, 6.0F, 6.0F};
 
+		//
+
 
 		// player movement
 		bool w = false;
@@ -204,8 +200,11 @@ namespace cnz
 		bool d = false;
 		bool f = false;
 		bool ls = false;
-		bool spaceP = false;
-		bool spaceR = false;
+
+		// dash trigger
+		// mouse buttons - left and right
+		bool mouseLeft = false, mouseRight = false;
+		bool spaceBar = false;
 
 		// stops the player from moving through solid objects.
 		bool cw = true;
