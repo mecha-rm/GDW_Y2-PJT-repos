@@ -13,6 +13,7 @@
 #include "CNZ_GameOverScene.h"
 #include "..\CNZ_Game.h"
 #include "..\cherry/utils/sort/SelectionSort.h"
+#include "..\cherry/utils/math/Rotation.h"
 
 #include <toolkit/Logging.h>
 #include <imgui/imgui.h>
@@ -53,7 +54,7 @@ void cnz::CNZ_GameOverScene::OnOpen()
 		// adds dummy scores
 		for (int i = 0; i < RANKING_SCORES; i++)
 			scores.push_back(Score{});
-		
+
 	}
 	else
 	{
@@ -145,6 +146,32 @@ void cnz::CNZ_GameOverScene::OnOpen()
 		exitButton->object = image;
 		AddButton(exitButton);
 	}
+
+	// Extras
+	//{
+	//	// path values
+	//	cherry::Path path; // path
+	//	const float RADIUS = 50.0F;
+	//	const int NODE_COUNT = 10; // number of nodes
+
+	//	// path
+	//	// making nodes to travel between
+	//	for (int i = 0; i < NODE_COUNT; i++)
+	//	{
+	//		util::math::Vec2 rotVec{ 0.0F, RADIUS };
+
+	//		rotVec = util::math::rotate(rotVec, 360.0F / NODE_COUNT * i, true);
+	//		path.AddNode(rotVec.x, rotVec.y, 0.0F);
+	//	}
+	//	
+	//	// TODO: make path adjustments so different objects can have different starting points.
+
+	//	cherry::Object * obj = new cherry::PrimitiveCube(10.0F);
+	//	obj->SetPath(path);
+	//	obj->UsePath(true);
+
+	//	objectList->AddObject(obj);
+	//}
 }
 
 // on close

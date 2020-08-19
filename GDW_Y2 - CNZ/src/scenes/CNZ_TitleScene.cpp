@@ -507,7 +507,7 @@ void cnz::CNZ_TitleScene::KeyReleased(GLFWwindow* window, int key)
 	switch (key)
 	{
 	// Debug Scene Key Combonation: CTRL + SHIFT + D
-	// Removing a key from the queue. The player must start the button combination over.
+	// Removing a key from the queue. The player must start the button combination over. 
 	case GLFW_KEY_LEFT_CONTROL:
 	case GLFW_KEY_RIGHT_CONTROL:
 	case GLFW_KEY_LEFT_SHIFT:

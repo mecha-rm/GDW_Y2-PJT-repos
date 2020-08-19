@@ -1,5 +1,7 @@
 // TODO: Building Faces are facing the wrong direction. Maybe don't cull faces?
 // TODO: The full debug map does not seem to get printed.
+// TODO: tiles that are placed in the same spot do not render. Only the first tile in the list does.
+// TODO: copy seems to cause crashes.
 
 #include "LevelLoader.h"
 #include "cherry/scenes/SceneManager.h"
@@ -172,7 +174,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 
 	// TODO: optimize this, since it might be being given to an actual scene, and then being destroyed.
 	// if 'true', the copy system is used. This is unstable, so it may not be best to enable this.
-	bool useCopy = false;
+	bool useCopy = false; // seems like this doesn't work too well.
 
 	// the base position of the light.
 	// used to adjust light position.
@@ -199,9 +201,9 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	obstacles.clear();
 
 	// put objects into list
-	for (int y = 0; y < this->map.size(); y++) {
-		for (int x = 0; x < this->map[0].size(); x++) {
-			std::string curObj = this->map[y][x].substr(0, 1);
+	for (int y = 0; y < map.size(); y++) {
+		for (int x = 0; x < map[0].size(); x++) {
+			std::string curObj = map[y][x].substr(0, 1);
 			
 			Obstacle* obj;
 			cherry::PhysicsBody * body;

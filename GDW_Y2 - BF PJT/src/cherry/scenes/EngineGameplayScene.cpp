@@ -423,15 +423,14 @@ void cherry::EngineGameplayScene::OnOpen()
 			text->SetScale(5.0F);
 			text->SetVisible(true);
 			objectList->AddObject(text); 
-		}
+		} 
 
 		// version 1 (finds .mtl file automatically)
 		objectList->objects.push_back(new Object("res/objects/charactoereee.obj", game->GetCurrentSceneName(),
 			lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler), true, true));
-
+		 
 		// objectList->objects.push_back(new Object("res/objects/charactoereee.obj", currentScene,
 		// LightManager::GetSceneLightsMerged(currentScene)->GenerateMaterial(sampler), true, true));
-
 
 		objectList->objects.at(objectList->objects.size() - 1)->SetScale(10.0F);
 		hitBoxIndex = objectList->objects.size() - 1;

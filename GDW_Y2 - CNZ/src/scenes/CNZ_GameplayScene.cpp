@@ -8,6 +8,8 @@
 // TODO: add in new enemies mid wave after a certain point (if there is no stutter).
 // TODO: fill in the missing blocks in map1. Also add osmething under the player to fill in the skybox.
 // TODO: the dash releases immediately, which shouldn't be happening. You may need to make the dashTrigger a global variable.
+// TODO: add means of stopping the player from exiting the barrier. Maybe add an emeny to kill the player if they exit the barrier.
+// TODO: music cuts out if exsting the arena
 
 #include "CNZ_GameplayScene.h"
 
