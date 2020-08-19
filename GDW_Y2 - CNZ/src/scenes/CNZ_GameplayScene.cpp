@@ -14,6 +14,7 @@
 #include "..\CNZ_Game.h"
 #include "..\cherry/Instrumentation.h"
 #include "CNZ_GameOverScene.h"
+#include "..\cherry\utils\math\Interpolation.h"
 
 #include <stack>
 
@@ -1467,6 +1468,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	if(PROFILE)
 		cherry::ProfilingSession::Start("profiling-cnz_gameplay_scene-update.json");
 
+	// TODO: make it so that the dash can't be triggered if the camera hasn't caught up?
 	// boolean for triggering the dash.
 	// if the dash trigger is false, either the dash hasn't been triggrered, or was just released.
 	bool dashTrigger = (mouseLeft || spaceBar); // left mouse button and space bar trigger the dash.
@@ -2034,53 +2036,77 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// cherry::ProfileTimer dashProfiler("profiling-dash_timer");
 
+		// NEW
+		// TODO: reduce the amount of function calls by pulling these values once.
 
+		// the dash charge was just triggered, so the player update will start charging things up.
+		if (dashTrigger == true && playerObj->IsChargingDash() == false)
+		{
+			playerObj->SetChargingDash(true);
+			playerObj->SetState(2); // charge animation
 
-		// Dash indicator - ready to dash but hasn't released chargey button yet
-		if (playerObj->GetDashTime() >= 1.0f) 
-		{ 
-			//Display indicator
-			//indArrowAnim->Play();
+		}
+		// the das button is still being held, but the dash has been fully charged, so the arrow should be visible.
+		// the isChargingDash() function should not need to be checked.
+		else if (dashTrigger == true && playerObj->IsDashFullyCharged() == true)
+		{
+			// repositioning indicator.
 			indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 0.001f));
 			indicatorObj->SetVisible(true);
 			indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
-		}
-		else // dash timer is below 1.0f 
-		{ 
-			//Hide indicator
-			indicatorObj->SetVisible(false);
-		}
 
-		// if (playerObj->GetDashTime() >= 1.0f && mouseRight == true)
-		if (playerObj->GetDashTime() >= 1.0f && dashTrigger) // if dash timer is above 1.0 and left mouse has been released, do the dash
+			// charged animation.
+			playerObj->SetState(3); 
+		}
+		// the dash button has been let go, but the dash was not fully charged, so nothing happens.
+		else if(dashTrigger == false && playerObj->IsChargingDash() == true && playerObj->IsDashFullyCharged() == false)
 		{
-			if (!cherry::AudioEngine::GetInstance().isEventPlaying("dash")) { // if dash sound is NOT playing, play it
-				cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
-				cherry::AudioEngine::GetInstance().PlayEvent("dash");
-			}
+			playerObj->SetChargingDash(false);
+			playerObj->SetState(0);
+		}
+		// the dash button has been let go, and the dash has finished charging, so a successful dash is pulled off.
+		else if (dashTrigger == false && playerObj->IsChargingDash() == true && playerObj->IsDashFullyCharged() == true)
+		{
+			// TODO: maybe try adding a blur effect.
+			playerObj->SetChargingDash(false); // the dash is no longer being charged.
+			camLerping = true; // the camera should lerp to the player.
+			camLerpStartPos = myCamera->GetPosition(); // gets the starting position of the camera.
 
+			indicatorObj->SetVisible(false); // hide indicator object.
+			playerObj->SetState(4); // dash animation
+
+			// the position sound shouldn't need to be changed since the player is always has the same screen position.
+			// cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
+
+			// play dash sound
+			cherry::AudioEngine::GetInstance().PlayEvent("dash");
+
+			// Attack Calculations
+			// dash vector
 			cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
 			float tempDist = dashVec.GetLength();
-			playerObj->SetDash(true);
-			playerObj->SetState(4); // set state to dashing
-			playerObj->SetDashTime(0.0f);
 
+			// gets closest obstacle
 			cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
 
-			if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
-				for (int i = 0; i < enemyList.size(); i++) {
-					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
+			// if there is no obstacle intersecting the dash vector, dash the full length
+			if (closestObstacle == nullptr) 
+			{ 
+				// kills enemies that are in the dash path.
+				for (int i = 0; i < enemyList.size(); i++) 
+				{
+					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) // kill enemies in the dash vector
+					{ 
 						enemyList[i]->alive = false;
 						score += enemyList[i]->GetPoints();
 						updateScore = true;
-						cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
-						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
 					}
 				}
+
 				playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
 			}
-
-			else {
+			else // not sure what this is...
+			{
 				cherry::Vec3 dP = closestObstacle->GetLocalPosition() - playerObj->GetPosition();
 				cherry::Vec3 dPN;
 
@@ -2091,7 +2117,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					obstMeshBody = (closestObstacle->GetObject()->GetMeshBodyMaximum() - closestObstacle->GetObject()->GetMeshBodyMinimum());
 
 				if (dP.GetLength() < tempDist) {
-					if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
+					if (fabsf(dP.GetX()) > fabsf(dP.GetY())) 
+					{
 						float tempX = 0;
 						if (dP.GetX() < 0) {
 							tempX = dP.GetX() + ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
@@ -2104,7 +2131,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						dPN.SetX(tempX);
 						dPN.SetY(tempY);
 					}
-					else {
+					else 
+					{
 						float tempY = 0;
 						if (dP.GetY() < 0) {
 							tempY = dP.GetY() + ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
@@ -2118,15 +2146,18 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						dPN.SetY(tempY);
 					}
 
-					for (int i = 0; i < enemyList.size(); i++) {
+					for (int i = 0; i < enemyList.size(); i++) 
+					{
 						if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
 							enemyList[i]->alive = false;
 						}
 					}
+
 					playerObj->SetPosition(playerObj->GetPosition() + dPN);
 				}
 				else {
-					for (int i = 0; i < enemyList.size(); i++) {
+					for (int i = 0; i < enemyList.size(); i++) 
+					{
 						if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
 							enemyList[i]->alive = false;
 						}
@@ -2140,9 +2171,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			// stacks of indexes to be removed.
 			std::stack<int> indexes;
-			
+
 			for (int i = 0; i < enemyList.size(); i++) {
-				if (enemyList[i]->alive == false) 
+				if (enemyList[i]->alive == false)
 				{
 					// deletes the object.
 					bool destroyed = objectList->DeleteObjectByPointer(enemyList[i]);
@@ -2173,6 +2204,12 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				// sounds: enemy_death_01, enemy_death_02, enemy_death_03, enemy_death_04
 				//	* enemy_death is the same as enemy_death_01
 
+				// moved from 'ClosestObstacle' section above.
+				// TODO: the death sound keeps starting over, hence why it's not playing. Fix that.
+				// cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
+				// cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
+
+
 				// TODO: implement other enemy death sounds.
 				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
 			}
@@ -2190,28 +2227,189 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			// 		i--;
 			// 	}
 			// }
+		}
+		
 
-		}
-		else if (dashTrigger == true) // before dash, while left mouse is being held
-		{
-			// else if (mouseLeft == true && mouseRight == false)
-			if (playerObj->GetDashTime() >= 1.0f) {
-				playerObj->SetState(3); // charged 
-			}
-			else {
-				playerObj->SetState(2); // set state to dash charging 
-			}
-			playerObj->SetDashTime(playerObj->GetDashTime() + 1.25f * deltaTime);
-			//std::cout << playerObj->GetDashTime() << std::endl;
-		}
-		// else if (mouseLeft == true && mouseRight == true) { // left mouse has been released, reset dash timer
-		else if (dashTrigger == false) { 
-			playerObj->SetDashTime(0.0f);
-			//Logger::GetLogger()->info(this->dashTime);
-			mouseLeft = false;
-			mouseRight = false;
-			spaceBar = false;
-		}
+		/////////////////////////////////////////////////////
+		/// OLD
+
+		// this has been changed from before.
+		// Dash indicator - ready to dash but hasn't released chargey button yet
+		// if (playerObj->GetCurrentDashTime() >= 1.0f) 
+		// { 
+		// 	//Display indicator
+		// 	//indArrowAnim->Play();
+		// 	indicatorObj->SetPosition(playerObj->GetPosition() + cherry::Vec3(0, 0, 0.001f));
+		// 	indicatorObj->SetVisible(true);
+		// 	indicatorObj->SetRotationZDegrees(playerObj->GetRotationZDegrees() + 180);
+		// }
+		// else // dash timer is below 1.0f 
+		// { 
+		// 	//Hide indicator
+		// 	indicatorObj->SetVisible(false);
+		// }
+		// 
+		// // if (playerObj->GetDashTime() >= 1.0f && mouseRight == true)
+		// if (playerObj->GetCurrentDashTime() >= 1.0f && dashTrigger) // if dash timer is above 1.0 and left mouse has been released, do the dash
+		// {
+		// 	if (!cherry::AudioEngine::GetInstance().isEventPlaying("dash")) { // if dash sound is NOT playing, play it
+		// 		cherry::AudioEngine::GetInstance().SetEventPosition("dash", playerObj->GetPositionGLM());
+		// 		cherry::AudioEngine::GetInstance().PlayEvent("dash");
+		// 	}
+		// 
+		// 	cherry::Vec3 dashVec = playerObj->GetDash(playerObj->GetDashDist());
+		// 	float tempDist = dashVec.GetLength();
+		// 	playerObj->SetChargingDash(true);
+		// 	playerObj->SetState(4); // set state to dashing
+		// 	playerObj->SetCurrentDashTime(0.0f);
+		// 
+		// 	cherry::PhysicsBody* closestObstacle = GetClosestObstacle();
+		// 
+		// 	if (closestObstacle == nullptr) { // if there is no obstacle intersecting the dash vector, dash the full length
+		// 		for (int i = 0; i < enemyList.size(); i++) {
+		// 			if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) { // kill enemies in the dash vector
+		// 				enemyList[i]->alive = false;
+		// 				score += enemyList[i]->GetPoints();
+		// 				updateScore = true;
+		// 				cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
+		// 				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
+		// 			}
+		// 		}
+		// 		playerObj->SetPosition(playerObj->GetPosition() + dashVec); // move the player
+		// 	}
+		// 	else 
+		// 	{
+		// 		cherry::Vec3 dP = closestObstacle->GetLocalPosition() - playerObj->GetPosition();
+		// 		cherry::Vec3 dPN;
+		// 
+		// 		cherry::Vec3 plyrMeshBody = (playerObj->GetMeshBodyMaximum() - playerObj->GetMeshBodyMinimum());
+		// 		cherry::Vec3 obstMeshBody{};
+		// 
+		// 		if (closestObstacle->GetObject() != nullptr) // checking for nullptr.
+		// 			obstMeshBody = (closestObstacle->GetObject()->GetMeshBodyMaximum() - closestObstacle->GetObject()->GetMeshBodyMinimum());
+		// 
+		// 		if (dP.GetLength() < tempDist) {
+		// 			if (fabsf(dP.GetX()) > fabsf(dP.GetY())) {
+		// 				float tempX = 0;
+		// 				if (dP.GetX() < 0) {
+		// 					tempX = dP.GetX() + ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
+		// 				}
+		// 				else {
+		// 					tempX = dP.GetX() - ((plyrMeshBody.GetX() / 4) + (obstMeshBody.GetX() / 4));
+		// 				}
+		// 				float angle = GetXYAngle(dP);
+		// 				float tempY = tempX / tanf(angle);
+		// 				dPN.SetX(tempX);
+		// 				dPN.SetY(tempY);
+		// 			}
+		// 			else {
+		// 				float tempY = 0;
+		// 				if (dP.GetY() < 0) {
+		// 					tempY = dP.GetY() + ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
+		// 				}
+		// 				else {
+		// 					tempY = dP.GetY() - ((plyrMeshBody.GetY() / 4) + (obstMeshBody.GetY() / 4));
+		// 				}
+		// 				float angle = GetXYAngle(dP);
+		// 				float tempX = tempY * tanf(angle);
+		// 				dPN.SetX(tempX);
+		// 				dPN.SetY(tempY);
+		// 			}
+		// 
+		// 			for (int i = 0; i < enemyList.size(); i++) {
+		// 				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+		// 					enemyList[i]->alive = false;
+		// 				}
+		// 			}
+		// 			playerObj->SetPosition(playerObj->GetPosition() + dPN);
+		// 		}
+		// 		else {
+		// 			for (int i = 0; i < enemyList.size(); i++) {
+		// 				if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) {
+		// 					enemyList[i]->alive = false;
+		// 				}
+		// 			}
+		// 			playerObj->SetPosition(playerObj->GetPosition() + dashVec);
+		// 		}
+		// 	}
+		// 
+		// 	// the enemy deletion works, but it's coded a bit weirdly.
+		// 	// TODO: maybe see if you can optimize this?
+		// 
+		// 	// stacks of indexes to be removed.
+		// 	std::stack<int> indexes;
+		// 	
+		// 	for (int i = 0; i < enemyList.size(); i++) {
+		// 		if (enemyList[i]->alive == false) 
+		// 		{
+		// 			// deletes the object.
+		// 			bool destroyed = objectList->DeleteObjectByPointer(enemyList[i]);
+		// 
+		// 			// kill count
+		// 			kills++;
+		// 
+		// 			// if the object was sucessfully destroyed.
+		// 			if (destroyed)
+		// 				indexes.push(i); // the index to be removed.
+		// 			else
+		// 				std::cout << "Enemy Deletion Error." << std::endl;
+		// 		}
+		// 	}
+		// 
+		// 	// dashProfiler.Stop();
+		// 
+		// 	// while the stack is not empty.
+		// 	while (!indexes.empty())
+		// 	{
+		// 		int index = indexes.top(); // gets the top value
+		// 
+		// 		enemyList.erase(enemyList.begin() + index);
+		// 		indexes.pop(); // pops off value.
+		// 
+		// 		// there are four different deaths sounds. Playing the same death sound will cause the effect to start over.
+		// 		// this is why the sound effect will only SOMETIMES play.
+		// 		// sounds: enemy_death_01, enemy_death_02, enemy_death_03, enemy_death_04
+		// 		//	* enemy_death is the same as enemy_death_01
+		// 
+		// 		// TODO: implement other enemy death sounds.
+		// 		cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
+		// 	}
+		// 
+		// 	// for (int i = 0; i < enemyList.size(); i++) {
+		// 	// 	if (enemyList[i]->alive == false) {
+		// 	// 		// TODO: the destructor already removes the phyiscs body. So this is probably unneeded.
+		// 	// 		enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
+		// 	// 		cherry::Object* obj = enemyList[i];
+		// 	// 		util::removeFromVector(enemyList, enemyList[i]);
+		// 	// 		objectList->RemoveObjectByPointer(obj);
+		// 	// 		delete obj;
+		// 	// 		kills++;
+		// 	// 		cout << kills << endl;
+		// 	// 		i--;
+		// 	// 	}
+		// 	// }
+		// 
+		// }
+		// else if (dashTrigger == true) // before dash, while left mouse is being held
+		// {
+		// 	// else if (mouseLeft == true && mouseRight == false)
+		// 	if (playerObj->GetCurrentDashTime() >= 1.0f) {
+		// 		playerObj->SetState(3); // charged 
+		// 	}
+		// 	else {
+		// 		playerObj->SetState(2); // set state to dash charging 
+		// 	}
+		// 	playerObj->SetCurrentDashTime(playerObj->GetCurrentDashTime() + 1.25f * deltaTime);
+		// 	//std::cout << playerObj->GetDashTime() << std::endl;
+		// }
+		// // else if (mouseLeft == true && mouseRight == true) { // left mouse has been released, reset dash timer
+		// else if (dashTrigger == false) { 
+		// 	playerObj->SetCurrentDashTime(0.0f);
+		// 	//Logger::GetLogger()->info(this->dashTime);
+		// 	mouseLeft = false;
+		// 	mouseRight = false;
+		// 	spaceBar = false;
+		// }
 
 		// Path update
 		// testObj->Update(deltaTime);
@@ -2350,30 +2548,46 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// camera position update code
 		if (myCamera->GetPosition().x != playerObj->GetPosition().GetX() || myCamera->GetPosition().y != playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y) {
-			if (!playerObj->IsDashing()) {
+			// the player is not charging their dash
+			// if (!playerObj->IsChargingDash()) // TODO: have a tracker to indicate that the dash has happened.
+			if (!camLerping)
+			{
 				goto notDashing;
 			}
 
-			// I assume this is where the CameraLerp function would've been called.
-			if (camLerpPercent >= 1.0f) {
-				camLerpPercent = 0.0f;
-			}
+			/// <summary>
+			/// So the way this worked is that it would lerp from the camera's current position to the player's position/
+			/// This kind of created the easing effect that the camera had before.
+			///  Now it goes based on the camera's position when the lerping started.
+			/// </summary>
+
 
 			// this should be based on delta time.
 			// camLerpPercent += 0.01f; 
-			camLerpPercent += 0.05f * deltaTime;  // originally += 0.01f without delta time.
+			camLerpPercent += CAM_LERP_INC * deltaTime;  // originally += 0.01f without delta time. Now set to 0.05F
 
+			// I assume this is where the CameraLerp function would've been called.
+			// This has also been moved to be after the camera percentage change.
+			if (camLerpPercent >= 1.0f)
+			{
+				camLerpPercent = 1.0f; // original set back to 0. Now it just sets back to 1.0F
+			}
+
+			// variables used for saving values.
 			glm::vec3 temp;
 			glm::vec2 xyCam;
 			glm::vec2 xyPla;
 			cherry::Vec2 xyCur;
 
-			xyCam.x = myCamera->GetPosition().x;
-			xyCam.y = myCamera->GetPosition().y;
+			// xyCam.x = myCamera->GetPosition().x;
+			// xyCam.y = myCamera->GetPosition().y;
+			xyCam.x = camLerpStartPos.x;
+			xyCam.y = camLerpStartPos.y;
 
 			xyPla.x = playerObj->GetPosition().GetX();
 			xyPla.y = playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y;
 
+			// lerp (it moves fast enough that easing doesn't seem to be needed)
 			xyCur = cherry::Vec2::Lerp(xyCam, xyPla, camLerpPercent);
 
 			temp.x = xyCur.GetX();
@@ -2381,11 +2595,21 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			temp.z = CAMERA_POS_OFFSET.z;
 
 			myCamera->SetPosition(temp);
+
+			// the camera has reached the end of the line.
+			if (camLerpPercent == 1.0f)
+			{
+				// the camera is no longer lerping, and thus the lerp percentage is set back to 0.
+				camLerping = false;
+				camLerpPercent = 0.0F;
+			}
 		}
 		else 
 		{
+			// these writes may be unneeded.
 			camLerpPercent = 0.0f;
-			playerObj->SetDash(false);
+			// playerObj->SetChargingDash(false);
+			camLerping = false;
 
 		notDashing:
 			myCamera->SetPosition(cherry::Vec3(playerObj->GetPosition().GetX(), playerObj->GetPosition().GetY() + CAMERA_POS_OFFSET.y, CAMERA_POS_OFFSET.z));

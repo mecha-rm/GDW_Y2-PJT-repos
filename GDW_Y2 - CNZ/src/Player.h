@@ -40,18 +40,33 @@ namespace cnz
 		// generates and returns the default player character.
 		static Player* GenerateDefault(std::string scene, cherry::Vec3 position = cherry::Vec3());
 
-		// returns whether the player is currently dashing. The function getDash() does the same thing.
-		bool IsDashing() const;
+		// returns whether the player is currently charging their dash.
+		bool IsChargingDash() const;
 
-		// sets whether the player is dashing.
-		void SetDash(bool dash);
+		// sets whether the player is charging their dash.
+		// this also sets the current dash time to 0.0F if it is going from 'true' to 'false'.
+		void SetChargingDash(bool dash);
 
-		// returns the dash time.
-		float GetDashTime() const;
+		// returns 'true' if the dash is fully charged, false otherwise.
+		bool IsDashFullyCharged() const;
 
-		// sets dash time
-		void SetDashTime(float dashTime);
+		// gets the maximum dash charge time
+		float GetMaximumDashChargeTime() const;
 
+		// sets the maximum dash charge time
+		void SetMaximumDashChargeTime(float mdt);
+
+		// returns the current time of the 
+		float GetCurrentDashChargeTime() const;
+
+		// sets the current dash charge time. It cannot be negative.
+		void SetCurrentDashChargeTime(float dct);
+
+		// returns the charging factor for the dash.
+		float GetDashChargeFactor() const;
+
+		// sets the dash charge factor. If a factor of 0.0F or less is passed, then it is set to 1.0F.
+		void SetDashChargeFactor(float dcf);
 
 		// Holdovers from the Object class.
 		// gets object angle in screen space in degrees
@@ -102,16 +117,34 @@ namespace cnz
 		// gets the state
 		int GetState() const;
 
-		// setter and getter for state
+		/*
+		* sets the player state, which determines the current animation.
+		* it should be noted that this currently does NOT change the actual animation.
+		* 0 -> idle/no anim
+		* 1 -> walking
+		* 2 -> charging dash
+		* 3 -> dash charged 
+		* 4 -> dashing
+		*/
 		void SetState(int newState);
 
 		// update
 		void Update(float deltaTime) override;
 
+		// if set to 'true', then the dahs is being charged.
+		bool chargingDash = false;
+
 	private:
-		bool dash = false;
+		// dash distance
 		float dashDist = 0.1f;
-		float dashTime = 0.0F;
+		
+		// the maximum charge time for the dash (maximum charge)
+		float dashChargeFactor = 1.0F; // factor
+		float dashChargeTimeMax = 1.0F; // desired time
+		float dashChargeTimeCurr = 0.0F; // current time
+
+		// if 'true', then the dash is being charged.
+		bool dashCharging = false;
 
 		// bool cT, cB, cL, cR;
 
@@ -139,6 +172,7 @@ namespace cnz
 		3 -> charged 
 		4 -> dashing
 		TODO: include other anims such as dashing, dodging and special attack
+		TODO: add objects to keep track of which animation is what for easier switching.
 		*/
 		int state = 0;
 

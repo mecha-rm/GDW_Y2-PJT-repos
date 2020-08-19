@@ -162,8 +162,11 @@ namespace cnz
 		// indicator arrow for the dash.
 		cherry::Object* indicatorObj = nullptr; // object for the dash indicator.
 
-		// camera lerp percentage.
+		// camera lerp bool, percentage, incrementer, and camera starting position.
+		bool camLerping = false; // if the camera is lerping and not just snapping to the player.
 		float camLerpPercent = 0.0f;
+		const float CAM_LERP_INC = 5.0F; // originally 0.05F
+		glm::vec3 camLerpStartPos = glm::vec3(0); // the camera's start position when lerping.
 
 		// the camera's position on the z-axis. This does not change.
 		const glm::vec3 CAMERA_POS_OFFSET{ 0.0F, 5.0F, 20.0F };

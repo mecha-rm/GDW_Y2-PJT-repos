@@ -125,6 +125,9 @@ void cnz::CNZ_Game::LoadContent()
 		audio.SetEventPosition("bgm_01", glm::vec3(0.0F, 0.0F, glm::mix(15.0F, 0.0F, 0.5F)));
 		audio.SetEventPosition("bgm_02", glm::vec3(0.0F, 0.0F, glm::mix(15.0F, 0.0F, 0.5F)));
 
+		// sound effects audio balancing
+		audio.SetEventPosition("dash", glm::vec3(0.0F, 0.0F, glm::mix(15.0F, 0.0F, 0.8F)));
+
 		// plays the event.
 		audio.PlayEvent("bgm_01");
 	}

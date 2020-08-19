@@ -37,12 +37,18 @@ cnz::Player::Player(Player* player, std::string sceneName)
 	SetScene(sceneName);
 }
 
+// copy constructor
 cnz::Player::Player(const Player& obj) : Object(obj) 
 {
+	// values
 	position = obj.GetPosition();
-	dash = obj.dash;
+	chargingDash = obj.chargingDash;
 	dashDist = obj.dashDist;
-	dashTime = obj.dashTime;
+
+	// charge values
+	dashChargeFactor = obj.dashChargeFactor;
+	dashChargeTimeMax = obj.dashChargeTimeMax;
+	dashChargeTimeCurr = obj.dashChargeTimeCurr;
 
 	// cT = obj.cT;
 	// cB = obj.cB;
@@ -86,7 +92,45 @@ cnz::Player::Player(const Player& obj) : Object(obj)
 
 
 // sets dash for the player
-void cnz::Player::SetDash(bool dash) { this->dash = dash; }
+void cnz::Player::SetChargingDash(bool dash) 
+{
+	this->chargingDash = dash; 
+	
+	// no longer dashing, so the current charge time is set to 0.
+	if (dash == false)
+		dashChargeTimeCurr = 0.0F;
+}
+
+// is dash fully charged.
+bool cnz::Player::IsDashFullyCharged() const
+{
+	return (dashChargeTimeCurr >= dashChargeTimeMax);
+}
+
+// returns the maximum dash charge time.
+float cnz::Player::GetMaximumDashChargeTime() const
+{
+	return dashChargeTimeMax;
+}
+
+// sets the maximum dash charge time.
+void cnz::Player::SetMaximumDashChargeTime(float mdt)
+{
+	// the maximum dash time cannot be negative.
+	dashChargeTimeMax = (mdt >= 0.0F) ? mdt : 0.0F;
+}
+
+// gets the current dash charge time.
+float cnz::Player::GetCurrentDashChargeTime() const
+{
+	return dashChargeTimeCurr;
+}
+
+// sets the current dash charge time.
+void cnz::Player::SetCurrentDashChargeTime(float dct)
+{
+	dashChargeTimeCurr = (dct >= 0.0F) ? dct : 0.0F;
+}
 
 // generates the default character.
 cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 position)
@@ -103,6 +147,10 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	// setting emissive colour and power
 	plyr->SetEmissiveColor(Vec3(0.0F, 1.0F, 1.0F));
 	plyr->SetEmissivePower(0.10F);
+
+	// dash values
+	plyr->SetDashChargeFactor(1.25F);
+	plyr->SetMaximumDashChargeTime(1.0F);
 
 	// animation 1
 	// if(false) // commenting out
@@ -396,23 +444,33 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 }
 
 // gets whether the player is currently dashing.
-bool cnz::Player::IsDashing() const { return dash; }
+bool cnz::Player::IsChargingDash() const { return chargingDash; }
 
-// gets the dash time.
-float cnz::Player::GetDashTime() const { return dashTime; }
+// get dash charge factor
+float cnz::Player::GetDashChargeFactor() const
+{
+	return dashChargeFactor;
+}
 
-// sets dash time for the player
-void cnz::Player::SetDashTime(float dashTime) { this->dashTime = dashTime; }
+// sets the dash charge factor
+void cnz::Player::SetDashChargeFactor(float dcf)
+{
+	dashChargeFactor = (dcf > 0.0F) ? dcf : 1.0F;
+}
 
-
-// TODO: holdovers from object class. May not be needed?
+// TODO: maybe these can be taken out? Degrees and radians are just different representations of the same thing.
+// gets degree angle
 float cnz::Player::GetDegreeAngle() const { return degreeAngle; }
 
+// gets radian angle
 float cnz::Player::GetRadianAngle() const { return radianAngle; }
 
+// gets the vector 3 angle.
 glm::vec3 cnz::Player::GetVec3Angle() const { return this->worldAngle; }
 
-void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height) {
+// updates the angle
+void cnz::Player::UpdateAngle(cherry::Camera::Sptr camera, double xpos, double ypos, unsigned int width, unsigned int height) 
+{
 
 	float a = atanf((float)ypos / (float)xpos);
 
@@ -484,33 +542,38 @@ glm::vec3 cnz::Player::GetDash(float dist) const {
 	return dash;
 }
 
+// sets the dra pbody
 bool cnz::Player::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
-		this->drawPBody = false;
+		drawPBody = false;
 		return false;
 	}
 	else {
-		this->drawPBody = true;
+		drawPBody = true;
 		return true;
 	}
 }
 
+// gets the draw pbody.
 bool cnz::Player::GetDrawPBody() const
 {
-	return this->drawPBody;
+	return drawPBody;
 }
 
+// gets pbody size
 cherry::Vec3 cnz::Player::GetPBodySize() const
 {
-	return this->pBodySize;
+	return pBodySize;
 }
 
+// gets pbody weight
 float cnz::Player::GetPBodyWidth() const
 {
 	return this->GetPBodySize().GetX() / 2;
 }
 
+// gets pbody height
 float cnz::Player::GetPBodyHeight() const
 {
 	return this->GetPBodySize().GetY() / 2;
@@ -533,6 +596,7 @@ void cnz::Player::SetState(int newState)
 	state = newState;
 }
 
+// player update
 void cnz::Player::Update(float deltaTime) {
 	// Object::Update(deltaTime);
 
@@ -554,6 +618,17 @@ void cnz::Player::Update(float deltaTime) {
 	//// updating the physics bodies
 	//for (cherry::PhysicsBody* body : bodies)
 	//	body->Update(deltaTime);
+
+	// if the dash is being charged.
+	if (chargingDash)
+	{
+		// increments time
+		dashChargeTimeCurr += dashChargeFactor * deltaTime;
+
+		// maximum time reached.
+		if (dashChargeTimeCurr > dashChargeTimeMax)
+			dashChargeTimeCurr = dashChargeTimeMax;
+	}
 
 	Object::Update(deltaTime);
 }
