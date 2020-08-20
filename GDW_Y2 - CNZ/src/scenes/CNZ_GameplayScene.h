@@ -225,6 +225,19 @@ namespace cnz
 		float invincibleCountdown = 0.0F;
 		static const float INVINCIBLE_TIME_MAX;
 
+		// used for freezing enemies.
+		// counts down to 0 when freeze is activated, and counts up to maximum when cooldown is active.
+		float timeStopTimer = 0.0F;
+		bool timeStopActive = false; // the time stop effect is active.
+
+		// the time decrement rate and increment rate.
+		float timeDecRate = 1.0F; // used for counting down time
+		float timeIncRate = 1.0F; // used for charging
+
+		// time stop maximum value and cooldown maximum.
+		// the chage happens automatically.
+		static const float TIME_STOP_MAX;
+
 		// number of kills
 		int kills = 0;
 

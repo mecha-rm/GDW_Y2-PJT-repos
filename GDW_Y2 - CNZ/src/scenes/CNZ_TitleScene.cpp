@@ -514,7 +514,7 @@ void cnz::CNZ_TitleScene::KeyReleased(GLFWwindow* window, int key)
 	case GLFW_KEY_RIGHT_SHIFT:
 	case GLFW_KEY_D:
 		map0keys.pop(); // removes the oldest key in the list (i.e. the first in line).
-		std::cout << "map0 - key popped: " << key << std::endl;
+		// std::cout << "map0 - key popped: " << key << std::endl;
 		break;
 	}
 }

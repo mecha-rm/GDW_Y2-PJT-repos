@@ -24,7 +24,11 @@
 std::vector<std::vector<string>> cnz::CNZ_GameplayScene::enemyGroups;
 bool cnz::CNZ_GameplayScene::groupsLoaded = false;
 
-const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F; // amount of time the player is invincible for.
+// amount of time the player is invincible for.
+const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F;
+
+// time stop maximum value.
+const float cnz::CNZ_GameplayScene::TIME_STOP_MAX = 100.0F;
 // const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
@@ -1479,6 +1483,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	// if 'true', the score text gets updated.
 	bool updateScore = false;
 
+	// tells the game to active the time stop effect if possible.
+	bool stopTime = f;
+
 	if (paused == false) {
 		pauseMenu->SetVisible(false);
 		CNZ_Game* game = (CNZ_Game*)cherry::Game::GetRunningGame();
@@ -1504,7 +1511,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 		// cherry::ProfileTimer colTimer = cherry::ProfileTimer("profiling-player_collisions");
 
-		// goes through each physics body for hte player
+		// goes through each physics body for the player
 		for (cherry::PhysicsBody* pBody : playerBodies)
 		{
 			// find all obstacles the player is colliding with.
@@ -1760,6 +1767,48 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// if (f && (!cherry::AudioEngine::GetInstance().isEventPlaying("timestop"))) {
 		// 	cherry::AudioEngine::GetInstance().PlayEvent("timestop");
 		// }
+
+		// TIME EFFECT //
+		// if (timeStopActive && timeStopTimer > 0.0F) // effect is active, and has not run out.
+		// {
+		// 	timeStopTimer -= timeDecRate * deltaTime;
+		// 
+		// 	if (timeStopTimer < 0.0F) // capping
+		// 		timeStopTimer = 0.0F;
+		// 
+		// 	// effect has run out.
+		// 	if (timeStopTimer == 0.0F)
+		// 	{
+		// 		timeStopActive = false; // no longer in effect
+		// 
+		// 		if (postProcess) // remove post processing layer
+		// 		{
+		// 			util::removeFromVector(layers, edgeDetect.GetPostLayer());
+		// 		}
+		// 	}
+		// 	
+		// }
+		// else if (!timeStopActive && timeStopTimer < TIME_STOP_MAX) // effect is not active, and has not charged yet.
+		// {
+		// 	timeStopTimer += timeIncRate * deltaTime;
+		// 
+		// 	if (timeStopTimer > TIME_STOP_MAX) // capping
+		// 		timeStopTimer = TIME_STOP_MAX;
+		// }
+		// else if(!timeStopActive && timeStopTimer == TIME_STOP_MAX && stopTime) // user can and has activated time slow.
+		// {
+		// 	if (postProcess) // add post processing layer
+		// 	{
+		// 		// plays the sound effect if the layer has just been added.
+		// 		if (util::addToVector(layers, edgeDetect.GetPostLayer()))
+		// 			cherry::AudioEngine::GetInstance().PlayEvent("timestop");
+		// 	}
+		// 
+		// 	// activate time effect.
+		// 	timeStopActive = true;
+		// }
+		// 
+		// // //
 
 		int enemyCount = 0;
 

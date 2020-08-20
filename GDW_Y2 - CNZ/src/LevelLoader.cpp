@@ -260,8 +260,6 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				// if there are no more entities, continue the loop. 
 				if (entities.empty())
 					continue;
-				if (entities[0].size() > 1) // TODO: comment out when not testing
-					std::cout << "Test" << std::endl;
 
 				// keep getting the first object, and removing it. Basically it acts like a queue. 
 				// curObj = entities[0].substr(0, 1);
@@ -1677,7 +1675,7 @@ void cnz::Level::GenerateSources()
 	// TODO: hitbox is way too small.
 	sourceArrow->SetPBodySize(sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum());
 
-	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize()));
+	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize() * 2));
 	sourceArrow->SetEmissiveColor(cherry::Vec3(1.0F, 0.1F, 0.24F));
 	sourceArrow->SetEmissivePower(2.0F);
 
