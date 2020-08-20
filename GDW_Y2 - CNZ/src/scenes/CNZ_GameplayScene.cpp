@@ -250,7 +250,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// the arrow, except it's flat.
 		indicatorObj = new Object("res/objects/indicator_arrow_flat.obj", GetName(), matStatic, false, false); // creates indicator for dash being ready
 
-
+		// the indicator shouldn't be visible at first.
+		indicatorObj->SetVisible(false);
 		indicatorObj->SetRotationXDegrees(90); // uncomment if using 3D model
 
 		// indicatorObj = new Image("res/images/indicator_arrow.png", GetName(), false, false);

@@ -154,7 +154,7 @@ namespace cnz
 		// since this is static, groups only need to be loaded once.
 		static bool groupsLoaded;
 
-		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group]
+		std::vector<Enemy*> enemyList; //2D Vector of enemy groups [which group][what enemy in the group] 
 
 		std::vector<Projectile*> projList; //list of projectiles
 		// std::vector<float> projTimeList; //list of projectile timers (put inside projectile objects)
@@ -194,9 +194,7 @@ namespace cnz
 
 		// allows the player to control the light.
 		const bool LIGHT_CONTROL = true;
-		const glm::vec3 LIGHT_OFFSET_INC {6.0F, 6.0F, 6.0F};
-
-		//
+		const glm::vec3 LIGHT_OFFSET_INC {9.0F, 9.0F, 9.0F};
 
 
 		// player movement

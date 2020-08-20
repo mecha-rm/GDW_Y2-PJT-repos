@@ -142,7 +142,8 @@ namespace cnz
 		// player object.
 		Player* playerObj = nullptr;
 
-		std::string sceneName = ""; // optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
+		// optional scene ID. Should be set automatically by the game if it is not set by the level itself. If not set by level, set to ""
+		std::string sceneName = "";
 		
 		// int obstacleNum; // a count of the obstacles in the scene. Maybe unneeded.
 		std::string levelPath = ""; // path to the level CSV
@@ -216,5 +217,9 @@ namespace cnz
 
 		// initialization in cpp file.
 		static const float cellOffset;
+
+		// symbols
+		static const std::string DIVIDER_SYM;
+		static const std::string TFORM_SYM;
 	};
 }

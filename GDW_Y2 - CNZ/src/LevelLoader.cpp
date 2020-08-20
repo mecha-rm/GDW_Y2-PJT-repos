@@ -22,6 +22,21 @@ cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 // cell offset (default: 6.25F)
 const float cnz::Level::cellOffset = 6.25f;
 
+// symbols for the level map.
+const std::string cnz::Level::DIVIDER_SYM = "|";
+const std::string cnz::Level::TFORM_SYM = "~";
+
+// checks to see if the provided character is a letter.
+bool IsLetter(const char chr)
+{
+	// A = 65, Z = 90, a = 97, z = 122
+	if ((chr >= 65 && chr <= 90) || (chr >= 97 && chr <= 122))
+		return true;
+	else
+		return false;
+}
+
+// Level
 cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber) 
 : legendPath(legendPath), levelPath(levelPath), sceneName(sceneName), mapNumber(mapNumber)
 {
@@ -144,7 +159,7 @@ std::vector<int> cnz::Level::GetMapSize(CSV level) {
  [5,6,7,8,9]]
 */
 
-
+// gets the map
 std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 	std::vector<std::vector<std::string>> tempMap;
 	std::vector<int> size = GetMapSize(level);
@@ -165,6 +180,10 @@ std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 std::vector<cherry::Object*> cnz::Level::GenerateObjects() 
 {
 	using namespace cherry;
+
+	// makes a copy of the map. The map will be restored back to normal at the end of this function.
+	// this allows for multiple objects being in the same spot.
+	std::vector<std::vector<std::string>> mapCpy = map;
 
 	int offsetX = 0, offsetY = 0;
 	cherry::Vec3 objBodySize;
@@ -206,27 +225,96 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	{
 		for (int x = 0; x < map[0].size(); x++) 
 		{
-		// 	// TODO: optimize this for singles
-		// 
-		// 	// gets all the entities in a given index
-		// 	std::vector<std::string> entities;
-		// 	
-		// 	// splits up the entities
-		// 	std::string temp = map[y][x];
-		// 	entities = util::splitString(temp, "|");
-		// 	
-		// 	// if there are no entities, go to the list line.
-		// 	if (entities.empty())
-		// 		continue;
-		// 
-		// 	// label to add all objects part of a given group
-		// objectGroup:
-		// 	// gets the first element, and erases it from the entities list.
-		// 	// when there are no entities, the next index is gone to.
-		// 	std::string curObj = entities[0];
-		// 	entities.erase(entities.begin());
+			// the current object.
+			std::string curObj = "";
 
-			std::string curObj = map[y][x].substr(0, 1);
+			// entities in the given spot
+			std::vector<std::string> entities;
+
+			// multiple objects share this spot
+			bool sharedSpace = false;
+
+			// if multiple objects are in the same spot.
+			if (map[y][x].find("|") != std::string::npos)
+			{
+				// multiple objects in this spot
+				sharedSpace = true;
+
+				// splits up the entities
+				std::string temp = map[y][x];
+				entities = util::splitString(temp, "|");
+			}
+			// one element in this index
+			else
+			{
+				sharedSpace = false;
+			}
+		
+			// comment out to allow for multiple spaces
+			// sharedSpace = false;
+
+			// label to add all objects part of a given group
+		objectGroup:
+			if (sharedSpace) // if the space is shared.
+			{
+				// if there are no more entities, continue the loop. 
+				if (entities.empty())
+					continue;
+				if (entities[0].size() > 1) // TODO: comment out when not testing
+					std::cout << "Test" << std::endl;
+
+				// keep getting the first object, and removing it. Basically it acts like a queue. 
+				// curObj = entities[0].substr(0, 1);
+				
+				// getting the object's symbol.
+				curObj = "";
+
+				// gets the line
+				std::string line = entities[0];
+
+				// getting the symbol, which is either a letter or series of letters
+				for (int i = 0; i < line.size(); i++)
+				{
+					// if a symbol that is not a letter is found, then the symbol has been received.
+					if (IsLetter(line[i]))
+						curObj += line.substr(i, 1);
+					else
+						break;
+				}
+				
+				entities.erase(entities.begin());
+
+				// in order to work properly, the transformation information from the current object must be removed.
+				// as such, the map object is being edited, hence why a copy was made.
+				
+				// erases the element in the map string, and the divider.
+				if(map[y][x].find("|") != std::string::npos)
+					map[y][x].erase(map[y][x].find("|") + 1);
+				
+			}
+			else // only one item
+			{
+				// curObj = map[y][x].substr(0, 1);
+
+				// gets the object symbol. 
+				// object symbols only use letters, so the first instance of a non-alphabetic character cuts it off.
+
+				// gets the line
+				std::string line = map[y][x];
+				
+				// getting the current object.
+				curObj = "";
+
+				// getting the symbol, which is either a letter or series of letters
+				for(int i = 0; i < line.size(); i++)
+				{
+					// if a symbol that is not a letter is found, then the symbol has been received.
+					if (IsLetter(line[i]))
+						curObj += line.substr(i, 1);
+					else
+						break;
+				}
+			}
 
 			Obstacle* obj;
 			cherry::PhysicsBody * body;
@@ -1090,7 +1178,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					obj->DeleteAllPhysicsBodies();
 				}
 				else {
-					concretePillar = new Obstacle("res/objects/props/piller.obj", this->sceneName, true);
+					concretePillar = new Obstacle("res/objects/props/pillar.obj", this->sceneName, true);
 					obj = concretePillar;
 				}
 
@@ -1141,7 +1229,7 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 					shelves = new Obstacle("res/objects/props/shelves.obj", this->sceneName, true);
 					obj = shelves;
 				}
-
+				
 
 				obj->SetPBodySize(UnFlipVec3((obj->GetMeshBodyMaximum() - obj->GetMeshBodyMinimum())));
 				body = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), obj->GetPBodySize());
@@ -1319,8 +1407,21 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				objects.push_back(obj);
 				obstacles.push_back(obj);
 			}
+
+			// if the space is shared, check and see if there are items left.
+			if (sharedSpace)
+			{
+				// if there are items left, jump back to the group label.
+				if (!entities.empty())
+				{
+					goto objectGroup;
+				}
+			}
 		}
 	}
+
+	// restores the map back to normal
+	map = mapCpy;
 
 	// if the player object has not been made yet.
 	if (playerObj == nullptr)
