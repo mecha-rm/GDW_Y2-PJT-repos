@@ -96,12 +96,19 @@ namespace cherry
 		std::vector<cherry::Object*> & GetObjects();
 
 		// finds and returns an object via its index. Returns a nullptr if no object is found.
-		cherry::Object* GetObjectByIndex(unsigned int index);
+		cherry::Object* GetObjectByIndex(unsigned int index) const;
 
 		// TODO: add 'get object index'?
 		
 		// gets the first object found with the provided name.
-		cherry::Object* GetObjectByName(std::string name);
+		cherry::Object* GetObjectByName(std::string name) const;
+
+		// gets the first object in the list. A nullptr is returned if there is no first object.
+		cherry::Object* GetFirstObjectInList() const;
+
+		// gets the last object in the list. A nullptr is returned if there is no last object.
+		cherry::Object* GetLastObjectInList() const;
+
 
 
 		// adds an object to the list
