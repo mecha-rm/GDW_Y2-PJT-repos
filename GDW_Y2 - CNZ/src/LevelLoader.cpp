@@ -8,6 +8,7 @@
 #include "scenes/CNZ_GameplayScene.h"
 #include <toolkit/Logging.h>
 #include "cherry/Instrumentation.h"
+#include <stack>
 
 // sources TODO: remove nullptr initialiation?
 cnz::Player* cnz::Level::sourcePlayer = nullptr;
@@ -201,10 +202,32 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	obstacles.clear();
 
 	// put objects into list
-	for (int y = 0; y < map.size(); y++) {
-		for (int x = 0; x < map[0].size(); x++) {
+	for (int y = 0; y < map.size(); y++) 
+	{
+		for (int x = 0; x < map[0].size(); x++) 
+		{
+		// 	// TODO: optimize this for singles
+		// 
+		// 	// gets all the entities in a given index
+		// 	std::vector<std::string> entities;
+		// 	
+		// 	// splits up the entities
+		// 	std::string temp = map[y][x];
+		// 	entities = util::splitString(temp, "|");
+		// 	
+		// 	// if there are no entities, go to the list line.
+		// 	if (entities.empty())
+		// 		continue;
+		// 
+		// 	// label to add all objects part of a given group
+		// objectGroup:
+		// 	// gets the first element, and erases it from the entities list.
+		// 	// when there are no entities, the next index is gone to.
+		// 	std::string curObj = entities[0];
+		// 	entities.erase(entities.begin());
+
 			std::string curObj = map[y][x].substr(0, 1);
-			
+
 			Obstacle* obj;
 			cherry::PhysicsBody * body;
 
@@ -1590,7 +1613,7 @@ const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const { return playerSpa
 
 std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	std::vector<float> properties;
-	std::string cell = this->map[y][x];
+	std::string cell = map[y][x];
 	int strLen = cell.size();
 	int firstDash = cell.find("~");
 	int secondDash = cell.find("~", firstDash + 1); // find first period after index firstDash. Should return second dash.

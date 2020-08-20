@@ -114,6 +114,9 @@ namespace cnz
 		// the pause menu
 		cherry::Image* pauseMenu = nullptr;
 
+		// TODO: add in exit key, back key, and change pausee button.
+		// cherry::Text* pauseMenuLine1;
+
 		// the GameplayScene already has the object list and light list.
 		// these should probably be removed, but it was kept in for ease of use.
 		// cherry::ObjectList* objList = nullptr;

@@ -54,6 +54,16 @@ namespace util
 		return vec; // returns the vector
 	}
 
+	/*
+	 * splits a string into a vector based on the provided divider.
+	 * this breaks down the string manually, and thus does not offer automatic data type conversion.
+	 * Regarding instances of (""), which occur if two dividers are placed side by side
+		* if includeBlanks is set to true (which it is by default), then instances of ("") will be included.
+		* if includeBlanks is set to false, then instances of ("") will be ignored and not added to the list.
+	 * keep in mind that this is case sensitive. 
+	*/
+	std::vector<std::string> splitString(const std::string str, const std::string divider, const bool includeBlanks = true);
+
 
 	// checks to see if a string is an integer; this is improved from isNum.
 	bool isInt(std::string str);

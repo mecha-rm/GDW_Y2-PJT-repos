@@ -47,6 +47,9 @@ RIGHT ARROW - rotate camera to the right
 Page Up - rotate camera clockwise
 Page Down - rotate camera counter-clockwise
 
+(<) Turn Down Music (Gameplay Scene only)
+(>) Turn Up Music (Gameplay Scene only)
+
 (L) - look at world origin
 
 (0) - Delete Item
