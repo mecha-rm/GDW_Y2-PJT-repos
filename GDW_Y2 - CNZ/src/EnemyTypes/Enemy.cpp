@@ -22,6 +22,9 @@ cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 	degreeAngle = emy.GetDegreeAngle();
 	radianAngle = emy.GetRadianAngle();
 	worldAngle = emy.GetVec3Angle();
+
+	points = emy.points;
+	speedMult = emy.speedMult;
 }
 
 // copies the enemy and provides it with the values.
@@ -52,7 +55,7 @@ cnz::Enemy::Enemy(std::string modelPath, std::string scene, cherry::Material::Sp
 	: Enemy(modelPath, scene, material, cherry::Vec3())
 {}
 
-// creates the Enemy in hte provided scene
+// creates the Enemy in the provided scene
 cnz::Enemy::Enemy(std::string modelPath, std::string scene, cherry::Material::Sptr material, cherry::Vec3 pos)
 	: Object(modelPath, scene, material, false, true)
 {
@@ -184,4 +187,24 @@ void cnz::Enemy::SetState(int newState)
 int cnz::Enemy::GetPoints() const 
 { 
 	return points; 
+}
+
+
+
+// sets the points for killing the enemy.
+void cnz::Enemy::SetPoints(int pnts)
+{
+	points = (pnts > 0) ? pnts : points;
+}
+
+// gets the speed of multiplier
+float cnz::Enemy::GetSpeedMultiplier() const
+{
+	return speedMult;
+}
+
+// sets the speed multipier
+void cnz::Enemy::SetSpeedMultiplier(float speed)
+{
+	speedMult = (speed > 0.0F) ? speed : speedMult;
 }

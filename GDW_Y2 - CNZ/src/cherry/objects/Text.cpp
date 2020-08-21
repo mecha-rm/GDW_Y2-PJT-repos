@@ -201,11 +201,33 @@ void cherry::Text::ClearText()
 	text = "";
 }
 
+// sets a new color
+void cherry::Text::SetColor(cherry::Vec3 newColor)
+{
+	SetColor(newColor.v.x, newColor.v.y, newColor.v.z, 1.0F);
+}
+
 // set a new colour for the text
 void cherry::Text::SetColor(cherry::Vec4 newColor)
 {
-	// gets the new color
-	color = glm::vec4(newColor.v.x, newColor.v.y, newColor.v.z, newColor.v.w);
+	SetColor(newColor.v.x, newColor.v.y, newColor.v.z, newColor.v.w);
+}
+
+// sets the material color
+void cherry::Text::SetColor(float r, float g, float b)
+{
+	SetColor(r, g, b, 1.0F);
+}
+
+// sets the color
+void cherry::Text::SetColor(float r, float g, float b, float a)
+{
+	// saves the new color.
+	color = glm::vec4(
+		glm::clamp(r, 0.0F, 1.0F), 
+		glm::clamp(g, 0.0F, 1.0F),
+		glm::clamp(b, 0.0F, 1.0F),
+		glm::clamp(a, 0.0F, 1.0F));
 
 	// char material
 	if (knownCharMaterial != nullptr)

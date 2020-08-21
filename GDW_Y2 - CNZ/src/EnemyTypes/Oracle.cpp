@@ -11,6 +11,8 @@ cnz::Oracle::Oracle(std::string scene)
 {
 	type = cnz::oracle;
 	description = "Oracle";
+	SetPoints(1);
+	SetSpeedMultiplier(10.5F);
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);

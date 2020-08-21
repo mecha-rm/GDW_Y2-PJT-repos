@@ -114,6 +114,13 @@ namespace cnz
 		// gets the amount of points for killing the enemy.
 		int GetPoints() const;
 
+		// gets the multiplier applied to the enemy's movement.
+		float GetSpeedMultiplier() const;
+
+		// sets the speed multiplier for the enemy. It cannot be below or equal to 0.
+		// set to 10.0F by default.
+		void SetSpeedMultiplier(float speed);
+
 		// the enemy's description.
 		std::string description = "Enemy";
 
@@ -152,6 +159,12 @@ namespace cnz
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
 
+		// the speed multiplier of the enemy
+		float speedMult = 10.0F;
+
+		// the points recieved for killing the enemy
+		int points = 1;
+
 	protected:
 		
 		// sets the type of this enemy.
@@ -160,12 +173,12 @@ namespace cnz
 		// loads in all animations. This is a pure virtual function since all enemies need animations.
 		virtual void LoadAnimations() = 0;
 
+		// sets the amount of points the enemy provides. This cannot be negative.
+		void SetPoints(int pnts);
+
 		// becomes 'true' if the animations have been loaded.
 		// TODO: add this
 		// bool animsLoaded = false;
-
-		// the points recieved for killing the enemy
-		int points = 1;
 
 		// the enemy type (as an enum)
 		cnz::enemy_t type = null;

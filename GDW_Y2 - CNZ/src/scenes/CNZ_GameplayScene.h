@@ -98,6 +98,9 @@ namespace cnz
 		// updates the player's score string
 		void UpdateScore();
 
+		// updates the time stop string
+		void UpdateTimeStop();
+
 		// update loop
 		void Update(float deltaTime) override;
 
@@ -231,13 +234,18 @@ namespace cnz
 		bool timeStopActive = false; // the time stop effect is active.
 
 		// the time decrement rate and increment rate.
-		float timeDecRate = 1.0F; // used for counting down time
-		float timeIncRate = 1.0F; // used for charging
+		float timeDecRate = 5.0F; // used for counting down time
+		float timeIncRate = 2.5F; // used for charging
 
 		// time stop maximum value and cooldown maximum.
 		// the chage happens automatically.
 		static const float TIME_STOP_MAX;
+		static const int TIME_STOP_DISPLAY_DIGITS_MAX;
 
+		// time stop text, and bool for showing it.
+		cherry::Text* timeStopText;
+		bool showTimeStopText = true; // the game might run poorly if this is used, so maybe comment it out?
+		
 		// number of kills
 		int kills = 0;
 

@@ -12,6 +12,8 @@ cnz::Marauder::Marauder(std::string scene)
 {
 	type = cnz::marauder;
 	description = "Marauder";
+	SetPoints(1);
+	SetSpeedMultiplier(10.0F);
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);

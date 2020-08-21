@@ -12,6 +12,8 @@ cnz::Mechaspider::Mechaspider(std::string scene)
 {
 	type = cnz::mechaspider;
 	description = "Mechaspider";
+	SetPoints(3);
+	SetSpeedMultiplier(12.5F);
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);

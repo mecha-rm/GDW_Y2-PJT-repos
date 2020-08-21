@@ -12,6 +12,8 @@ cnz::Sentry::Sentry(std::string scene)
 {
 	type = cnz::sentry;
 	description = "Sentry";
+	SetPoints(2);
+	SetSpeedMultiplier(10.8F);
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);

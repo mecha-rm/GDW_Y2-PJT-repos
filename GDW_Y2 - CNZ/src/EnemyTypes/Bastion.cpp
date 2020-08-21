@@ -13,6 +13,8 @@ cnz::Bastion::Bastion(std::string scene)
 {
 	type = cnz::bastion;
 	description = "Bastion";
+	SetPoints(3);
+	SetSpeedMultiplier(13.0F);
 
 	SetEmissiveColor(EMISSIVE_COLOR);
 	SetEmissivePower(EMISSIVE_POWER);

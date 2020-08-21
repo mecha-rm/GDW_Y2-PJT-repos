@@ -27,8 +27,9 @@ bool cnz::CNZ_GameplayScene::groupsLoaded = false;
 // amount of time the player is invincible for.
 const float cnz::CNZ_GameplayScene::INVINCIBLE_TIME_MAX = 5.0F;
 
-// time stop maximum value.
-const float cnz::CNZ_GameplayScene::TIME_STOP_MAX = 100.0F;
+// time stop maximum value, and amount of digits for text.
+const float cnz::CNZ_GameplayScene::TIME_STOP_MAX = 30.0F;
+const int cnz::CNZ_GameplayScene::TIME_STOP_DISPLAY_DIGITS_MAX = 8;
 // const int cnz::CNZ_GameplayScene::DIGITS_MAX = 8; // maximum integer value is 2147483647.
 
 // Forward Declares
@@ -173,6 +174,21 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		scoreText->SetScale(0.8F);
 
 		objectList->AddObject(scoreText);
+	}
+
+	// time stop
+	{
+		std::string tempStr = "";
+		tempStr.resize(TIME_STOP_DISPLAY_DIGITS_MAX, '0');
+
+		timeStopText = new cherry::Text(tempStr, GetName(), FONT_ARIAL, cherry::Vec4(1.0F, 1.0F, 1.0F, 1.0F), 10.0F);
+		timeStopText->SetWindowChild(true);
+		timeStopText->SetPostProcess(false);
+		timeStopText->SetPositionByWindowSize(Vec2(0.958F, 0.945F));
+		timeStopText->SetVisible(showTimeStopText);
+		timeStopText->SetScale(0.8F);
+
+		objectList->AddObject(timeStopText);
 	}
 	
 	// default materials
@@ -517,15 +533,15 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_F: // right
 		f = true;
 
-		if (postProcess) // add post processing layer
-		{
-			// layers.clear();
-
-			// plays the sound effect if the layer has just been added.
-			if(util::addToVector(layers, edgeDetect.GetPostLayer()))
-				cherry::AudioEngine::GetInstance().PlayEvent("timestop");
-			
-		}
+		// if (postProcess) // add post processing layer
+		// {
+		// 	// layers.clear();
+		// 
+		// 	// plays the sound effect if the layer has just been added.
+		// 	if(util::addToVector(layers, edgeDetect.GetPostLayer()))
+		// 		cherry::AudioEngine::GetInstance().PlayEvent("timestop");
+		// 	
+		// }
 		break;
 	case GLFW_KEY_LEFT_SHIFT:
 		ls = true;
@@ -1422,6 +1438,23 @@ void cnz::CNZ_GameplayScene::UpdateScore()
 	// scoreText->SetPositionByWindowSize(cherry::Vec2(0.95F, 0.05F), cherry::Game::GetRunningGame()->GetWindowSize());
 }
 
+// updates the time stop
+void cnz::CNZ_GameplayScene::UpdateTimeStop()
+{
+	// gets the value, showing it as being 1 out of 100.
+	float val = timeStopTimer / TIME_STOP_MAX * 100.0F;
+
+	// gets the value as a string.
+	std::string valStr = std::to_string(val);
+
+	// truncate the values
+	valStr.resize(TIME_STOP_DISPLAY_DIGITS_MAX);
+
+	// fixes the time stop.
+	timeStopText->SetText(valStr);
+
+}
+
 // TODO: maybe move the gameplay loop here.
 
 // gameplay update
@@ -1769,225 +1802,250 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// }
 
 		// TIME EFFECT //
-		// if (timeStopActive && timeStopTimer > 0.0F) // effect is active, and has not run out.
-		// {
-		// 	timeStopTimer -= timeDecRate * deltaTime;
-		// 
-		// 	if (timeStopTimer < 0.0F) // capping
-		// 		timeStopTimer = 0.0F;
-		// 
-		// 	// effect has run out.
-		// 	if (timeStopTimer == 0.0F)
-		// 	{
-		// 		timeStopActive = false; // no longer in effect
-		// 
-		// 		if (postProcess) // remove post processing layer
-		// 		{
-		// 			util::removeFromVector(layers, edgeDetect.GetPostLayer());
-		// 		}
-		// 	}
-		// 	
-		// }
-		// else if (!timeStopActive && timeStopTimer < TIME_STOP_MAX) // effect is not active, and has not charged yet.
-		// {
-		// 	timeStopTimer += timeIncRate * deltaTime;
-		// 
-		// 	if (timeStopTimer > TIME_STOP_MAX) // capping
-		// 		timeStopTimer = TIME_STOP_MAX;
-		// }
-		// else if(!timeStopActive && timeStopTimer == TIME_STOP_MAX && stopTime) // user can and has activated time slow.
-		// {
-		// 	if (postProcess) // add post processing layer
-		// 	{
-		// 		// plays the sound effect if the layer has just been added.
-		// 		if (util::addToVector(layers, edgeDetect.GetPostLayer()))
-		// 			cherry::AudioEngine::GetInstance().PlayEvent("timestop");
-		// 	}
-		// 
-		// 	// activate time effect.
-		// 	timeStopActive = true;
-		// }
-		// 
-		// // //
-
-		int enemyCount = 0;
-
-		//Enemy AI
-		for (int i = 0; i < enemyList.size(); i++) {
-			
-			// the enemy is alive.
-			if (enemyList[i]->alive == true) 
+		if (timeStopActive && timeStopTimer > 0.0F) // effect is active, and has not run out.
+		{
+			timeStopTimer -= timeDecRate * deltaTime;
+		
+			if (timeStopTimer < 0.0F) // capping
+				timeStopTimer = 0.0F;
+		
+			// effect has run out.
+			if (timeStopTimer == 0.0F)
 			{
-				enemyCount++;
-				if (f == true && enemyList[i]->stunned == false) {
-					enemyList[i]->stunned = true;
-					enemyList[i]->stunTimer = 0;
+				if (postProcess) // remove post processing layer
+				{
+					util::removeFromVector(layers, edgeDetect.GetPostLayer());
 				}
-				else if (enemyList[i]->stunned == true) {
-					// TODO: maybe make this static so that all enemies stop getting stunned at the same time
-					if (enemyList[i]->stunTimer >= 5.0f) {
-						enemyList[i]->stunned = false;
 
-						if (postProcess) // removes edge detection layer
-						{
-							util::removeFromVector(layers, edgeDetect.GetPostLayer());
-							// util::addToVector(layers, lightList->GetPostLayer());
-						}
-					}
-					else {
-						enemyList[i]->stunTimer += deltaTime;
-					}
-				}
+				timeStopText->SetColor(1.0F, 0.075F, 0.101F, 1.0F); // text is made light red
+				timeStopActive = false; // no longer in effect
 			}
 
-			// TODO: have variable to keep track of distance needed for attack to happen.
-			if (enemyList[i]->stunned == false) {
-				//Look at player
-				enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
-				enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
+			// if the time stop text should be shown.
+			if(showTimeStopText)
+				UpdateTimeStop();
+			
+		}
+		else if (!timeStopActive && timeStopTimer < TIME_STOP_MAX) // effect is not active, and has not charged yet.
+		{
+			timeStopTimer += timeIncRate * deltaTime;
+		
+			// stop stop now available
+			if (timeStopTimer > TIME_STOP_MAX) // capping
+				timeStopTimer = TIME_STOP_MAX;
+
+			// time stop is now available.
+			if (timeStopTimer == TIME_STOP_MAX)
+				timeStopText->SetColor(1.0F, 1.0F, 1.0F, 1.0F); // text is made white.
+
+			// if the time stop text should be shown.
+			if (showTimeStopText)
+			{
+				UpdateTimeStop();
+			}
+		}
+		else if(!timeStopActive && timeStopTimer == TIME_STOP_MAX && stopTime) // user can and has activated time slow.
+		{
+			if (postProcess) // add post processing layer
+			{
+				// plays the sound effect if the layer has just been added.
+				if (util::addToVector(layers, edgeDetect.GetPostLayer()))
+					cherry::AudioEngine::GetInstance().PlayEvent("timestop");
+			}
+		
+			// activate time effect.
+			timeStopActive = true;
+		}
+		// //
+
+		// int enemyCount = 0;
+
+		//Enemy AI
+		// if the time stop is not active, then update the enemies in the list.
+		if (timeStopActive == false)
+		{
+			for (int i = 0; i < enemyList.size(); i++) {
+
+				// the enemy is alive.
+				// if (enemyList[i]->alive == true)
+				// {
+				// 	enemyCount++;
+				// 	// if (f == true && enemyList[i]->stunned == false) {
+				// 	// 	enemyList[i]->stunned = true;
+				// 	// 	enemyList[i]->stunTimer = 0;
+				// 	// }
+				// 	// else if (enemyList[i]->stunned == true) {
+				// 	// 	// TODO: maybe make this static so that all enemies stop getting stunned at the same time
+				// 	// 	if (enemyList[i]->stunTimer >= 5.0f) {
+				// 	// 		enemyList[i]->stunned = false;
+				// 	// 
+				// 	// 		if (postProcess) // removes edge detection layer
+				// 	// 		{
+				// 	// 			util::removeFromVector(layers, edgeDetect.GetPostLayer());
+				// 	// 			// util::addToVector(layers, lightList->GetPostLayer());
+				// 	// 		}
+				// 	// 	}
+				// 	// 	else {
+				// 	// 		enemyList[i]->stunTimer += deltaTime;
+				// 	// 	}
+				// 	// }
+				// }
+				// 
+				// TODO: have variable to keep track of distance needed for attack to happen.
+				if (enemyList[i]->stunned == false) {
+					//Look at player
+					enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
+					enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
 
-				// TODO: replace the function calls so that you have the position.
-				switch (enemyList[i]->GetType())
-				{
-				case cnz::sentry:
-					if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
-						// Spawn projectiles
-						enemyList[i]->attacking = true;
-
-						// creates a new projectile.
-						Projectile* proj = new Projectile(arrowBase, GetName());
-
-						// adding to lists
-						projList.push_back(proj);
-						// projTimeList.push_back(0);
-
-						// proj->SetWhichGroup(i);
-						// proj->SetWhichEnemy(j);
-						proj->active = true;
-						proj->SetPosition(enemyList[i]->GetPosition());
-						proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-						proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-						objectList->AddObject(proj);
-
-						cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
-						cherry::AudioEngine::GetInstance().PlayEvent("arrow");
-
-						
-
-						// projList.push_back(new Projectile(*arrowBase));
-						// projTimeList.push_back(0);
-						// projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
-						// projList[projList.size() - 1]->SetWhichGroup(i);
-						// //projList[projList.size() - 1]->SetWhichEnemy(j);
-						// projList[projList.size() - 1]->active = true;
-						// projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
-						// projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-						// projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
-						// game->AddObjectToScene(projList[projList.size() - 1]);
-
-						if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-							enemyList[i]->GetCurrentAnimation()->Stop();
-						}
-					}
-					else if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
-						//Move towards player				
-						enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-						if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-							enemyList[i]->SetCurrentAnimation(0); // walk anim
-							enemyList[i]->GetCurrentAnimation()->Play();
-						}
-					}
-					break;
-
-				case cnz::marauder:
-					if (enemyList[i]->attacking == false)
+					// TODO: replace the function calls so that you have the position.
+					switch (enemyList[i]->GetType())
 					{
-						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-							//Attack
+					case cnz::sentry:
+						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+							// Spawn projectiles
+							enemyList[i]->attacking = true;
+
+							// creates a new projectile.
+							Projectile* proj = new Projectile(arrowBase, GetName());
+
+							// adding to lists
+							projList.push_back(proj);
+							// projTimeList.push_back(0);
+
+							// proj->SetWhichGroup(i);
+							// proj->SetWhichEnemy(j);
+							proj->active = true;
+							proj->SetPosition(enemyList[i]->GetPosition());
+							proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+							proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+							objectList->AddObject(proj);
+
+							cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
+							cherry::AudioEngine::GetInstance().PlayEvent("arrow");
+
+
+
+							// projList.push_back(new Projectile(*arrowBase));
+							// projTimeList.push_back(0);
+							// projList[projList.size() - 1]->AddPhysicsBody(new cherry::PhysicsBodyBox(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), projList[projList.size() - 1]->GetPBodySize()));
+							// projList[projList.size() - 1]->SetWhichGroup(i);
+							// //projList[projList.size() - 1]->SetWhichEnemy(j);
+							// projList[projList.size() - 1]->active = true;
+							// projList[projList.size() - 1]->SetPosition(enemyList[i]->GetPosition());
+							// projList[projList.size() - 1]->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
+							// projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+							// game->AddObjectToScene(projList[projList.size() - 1]);
+
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
 							}
 						}
-						else {
+						else if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
 								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 						}
-					}
-					break;
+						break;
 
-				case cnz::oracle:
-					if (enemyList[i]->attacking == false)
-					{
-						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
-							//Attack
-							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-								enemyList[i]->GetCurrentAnimation()->Stop();
+					case cnz::marauder:
+						if (enemyList[i]->attacking == false)
+						{
+							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+								//Attack
+								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+									enemyList[i]->GetCurrentAnimation()->Stop();
+								}
 							}
-						}
-						else {
-							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-								enemyList[i]->SetCurrentAnimation(0); // walk anim
-								enemyList[i]->GetCurrentAnimation()->Play();
-							}
-						}
-					}
-					break;
+							else {
+								//Move towards player				
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
-				case cnz::bastion:
-					if (enemyList[i]->attacking == false)
-					{
-						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
-							//Attack
-							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-								enemyList[i]->GetCurrentAnimation()->Stop();
+								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->GetCurrentAnimation()->Play();
+								}
 							}
 						}
-						else {
-							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-								enemyList[i]->SetCurrentAnimation(0); // walk anim
-								enemyList[i]->GetCurrentAnimation()->Play();
-							}
-						}
-					}
-					break;
+						break;
 
-				case cnz::mechaspider:
-					if (enemyList[i]->attacking == false)
-					{
-						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
-							//Attack
-							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-								enemyList[i]->GetCurrentAnimation()->Stop();
+					case cnz::oracle:
+						if (enemyList[i]->attacking == false)
+						{
+							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+								//Attack
+								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+									enemyList[i]->GetCurrentAnimation()->Stop();
+								}
 							}
-						}
-						else {
-							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * 10.0f * deltaTime));
-							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-								enemyList[i]->SetCurrentAnimation(0); // walk anim
-								enemyList[i]->GetCurrentAnimation()->Play();
-							}
-						}
-					}
-					break;
+							else {
+								//Move towards player				
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
+								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->GetCurrentAnimation()->Play();
+								}
+							}
+						}
+						break;
+
+					case cnz::bastion:
+						if (enemyList[i]->attacking == false)
+						{
+							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+								//Attack
+								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+									enemyList[i]->GetCurrentAnimation()->Stop();
+								}
+							}
+							else {
+								//Move towards player				
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+
+								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->GetCurrentAnimation()->Play();
+								}
+							}
+						}
+						break;
+
+					case cnz::mechaspider:
+						if (enemyList[i]->attacking == false)
+						{
+							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+								//Attack
+								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+									enemyList[i]->GetCurrentAnimation()->Stop();
+								}
+							}
+							else {
+								//Move towards player				
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+
+								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->GetCurrentAnimation()->Play();
+								}
+							}
+						}
+						break;
+
+					}
+					// TODO: why is this being called here? It errors out.
+					// enemyList[i]->Update(deltaTime);
 				}
-				// TODO: why is this being called here? It errors out.
-				// enemyList[i]->Update(deltaTime);
 			}
 		}
 
 		// Spawn new wave when all enemies are dead
-		if (enemyCount == 0) {
+		// if (enemyCount == 0) {
+		if (enemyList.empty()) {
 			SpawnEnemyGroup();
 			// if (!cherry::AudioEngine::GetInstance().isEventPlaying("new_wave")) {
 			// 	cherry::AudioEngine::GetInstance().SetEventPosition("new_wave", glm::vec3(25, 25, 0));
@@ -2150,7 +2208,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					if (GetEnemiesInDash(dashVec, enemyList[i], playerObj)) // kill enemies in the dash vector
 					{ 
 						enemyList[i]->alive = false;
-						score += enemyList[i]->GetPoints();
+						score += enemyList[i]->GetPoints(); // adds the points from the given enemy.
 						updateScore = true;
 					}
 				}
