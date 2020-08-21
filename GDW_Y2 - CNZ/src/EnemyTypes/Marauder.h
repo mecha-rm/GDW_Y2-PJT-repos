@@ -22,8 +22,6 @@ namespace cnz {
 
 		void Update(float dt);
 
-		cherry::MorphAnimation* walk;
-
 	private:
 		// emissive colour and power
 		static const glm::vec3 EMISSIVE_COLOR;

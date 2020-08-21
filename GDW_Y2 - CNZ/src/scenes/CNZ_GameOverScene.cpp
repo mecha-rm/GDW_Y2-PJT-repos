@@ -115,7 +115,7 @@ void cnz::CNZ_GameOverScene::OnOpen()
 	{
 		cherry::Text* text = new cherry::Text("GAME OVER", GetName(), FONT_ARIAL, WHITE, 25.0F);
 		text->SetWindowChild(true);
-		text->SetPositionByWindowSize(0.80F, 0.7F);
+		text->SetPositionByWindowSize(0.80F, 0.40F);
 
 		objectList->AddObject(text);
 	}
@@ -124,7 +124,7 @@ void cnz::CNZ_GameOverScene::OnOpen()
 	{
 		cherry::Text* text = new cherry::Text("FINAL SCORE: " + std::to_string(playerScore), SCENE_NAME, FONT_ARIAL, WHITE, 25.0F);
 		text->SetWindowChild(true);
-		text->SetPositionByWindowSize(0.82F, 0.40F);
+		text->SetPositionByWindowSize(0.82F, 0.7F);
 
 		objectList->AddObject(text);
 	}

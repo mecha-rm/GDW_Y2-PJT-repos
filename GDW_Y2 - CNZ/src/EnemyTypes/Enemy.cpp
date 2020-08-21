@@ -29,6 +29,28 @@ cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 
 	points = emy.points;
 	speedMult = emy.speedMult;
+
+	// tracking animations
+	{
+		int index = 0;
+
+		// the entity has a walk animation
+		index = emy.GetWalkAnimationIndex();
+		if (index != -1)
+		{
+			aniWalk.index = index;
+			aniWalk.animation = GetAnimation(index);
+		}
+
+
+		// the entity has an attack animation
+		index = emy.GetAttackAnimationIndex();
+		if (index != -1)
+		{
+			aniAttack.index = index;
+			aniAttack.animation = GetAnimation(index);
+		}
+	}
 }
 
 // copies the enemy and provides it with the values.
@@ -82,11 +104,6 @@ cnz::Enemy::Enemy(std::string modelPath, std::string scene, bool loadMtl, cherry
 	position = pos;
 }
 
-// update loop
-void cnz::Enemy::Update(float dt) {
-	Object::Update(dt);
-}
-
 // attack function
 void cnz::Enemy::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
@@ -94,17 +111,32 @@ void cnz::Enemy::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 }
 
 // returns the enemy type.
-cnz::enemy_t cnz::Enemy::GetType() const { return type; }
+cnz::enemy_t cnz::Enemy::GetType() const 
+{ 
+	return type; 
+}
 
 // returns the enemy type.
-void cnz::Enemy::SetType(cnz::enemy_t et) { type = et; }
+void cnz::Enemy::SetType(cnz::enemy_t et) 
+{ 
+	type = et; 
+}
 
 // TODO: holdovers from object class. May not be needed?
-float cnz::Enemy::GetDegreeAngle() const { return degreeAngle; }
+float cnz::Enemy::GetDegreeAngle() const 
+{ 
+	return degreeAngle; 
+}
 
-float cnz::Enemy::GetRadianAngle() const { return radianAngle; }
+float cnz::Enemy::GetRadianAngle() const 
+{ 
+	return radianAngle; 
+}
 
-glm::vec3 cnz::Enemy::GetVec3Angle() const { return this->worldAngle; }
+glm::vec3 cnz::Enemy::GetVec3Angle() const 
+{ 
+	return worldAngle; 
+}
 
 //Update Angle given enemy position and what they should look at
 void cnz::Enemy::UpdateAngle(cherry::Vec3 one, cherry::Vec3 two) {
@@ -133,7 +165,32 @@ void cnz::Enemy::SetAngle(float angle, const bool isDegrees) {
 	// add code here to convert from screenspace to world space
 }
 
+// sets the angle
 void cnz::Enemy::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
+
+// gets the walk animation
+cherry::Animation* cnz::Enemy::GetWalkAnimation() const
+{
+	return aniWalk.animation;
+}
+
+// gets the walk animation
+int cnz::Enemy::GetWalkAnimationIndex() const
+{
+	return aniWalk.index;
+}
+
+// gets the attack animation
+cherry::Animation* cnz::Enemy::GetAttackAnimation() const
+{
+	return aniAttack.animation;
+}
+
+// gets the attack animation index
+int cnz::Enemy::GetAttackAnimationIndex() const
+{
+	return aniAttack.index;
+}
 
 // gets the primary physics body of the enemy.
 cherry::PhysicsBody* cnz::Enemy::GetPrimaryPhysicsBody() const
@@ -229,4 +286,10 @@ float cnz::Enemy::GetSpeedMultiplier() const
 void cnz::Enemy::SetSpeedMultiplier(float speed)
 {
 	speedMult = (speed > 0.0F) ? speed : speedMult;
+}
+
+// update loop
+void cnz::Enemy::Update(float dt) 
+{
+	Object::Update(dt);
 }

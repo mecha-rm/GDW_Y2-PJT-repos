@@ -487,6 +487,9 @@ namespace cherry
 		// gets the animation manager for the object
 		cherry::AnimationManager& GetAnimationManager();
 
+		// gets the amount of animations
+		int GetAnimationCount() const;
+
 		// adds an animation to the object. This comes the object for the animation if it isn't already.
 		bool AddAnimation(Animation * anime, bool current = false);
 
@@ -498,7 +501,10 @@ namespace cherry
 		cherry::Animation * GetCurrentAnimation();
 
 		// sets the current animation
-		void SetCurrentAnimation(unsigned int index);
+		void SetCurrentAnimationByIndex(unsigned int index);
+
+		// sets the current animation by pointer. If the animation is not in the list, nothing happens.
+		void SetCurrentAnimationByPointer(cherry::Animation * ani);
 
 		// clears out all animations. This does not delete the data itself.
 		void ClearAllAnimations();

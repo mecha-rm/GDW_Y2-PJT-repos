@@ -17,6 +17,7 @@
 #include "..\cherry/Instrumentation.h"
 #include "CNZ_GameOverScene.h"
 #include "..\cherry\utils\math\Interpolation.h"
+#include "..\cherry\utils\math\Rotation.h"
 
 #include <stack>
 
@@ -759,8 +760,22 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 	using namespace cherry;
 
 	std::string sceneName = GetName();
+	// TODO: check for deletion
 	enemyList.clear();
 	curWave++;
+
+	// gets the player position
+	cherry::Vec3 plyrPos = (playerObj != nullptr)
+		? playerObj->GetPosition() : cherry::Vec3(0.0F, 0.0F, 0.0F);
+
+	// tells the game to use the player as a position base
+	bool plyrBase = (playerObj != nullptr) ? true : false;
+	plyrBase = false; // revert to old
+
+	// rotation factor and radius
+	// this helps form a vector based on the player's current position and how far away they should be.
+	const int OPS = 5;
+	float dists[OPS] = { 25.0F, 30.0F, 35.0F, 40.0F, 45.0F };
 
 	int percent = rand() % 100;
 
@@ -867,8 +882,32 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 				break;
 			}
 
+			// recommended to have the player near the middle of the arena
+			// if the player is being used as a base
+			if(plyrBase)
+			{
+				// gets a random rotation factor for placing the enemy.
+				float rotDeg = rand() % 360;
+
+				// gets the distance from the player (radius)
+				float d = dists[rand() % OPS];
+
+				// rotation vector
+				util::math::Vec2 rotVec{ rotDeg, 0.0F };
+				rotVec = util::math::rotate(rotVec, rotDeg, true);
+
+				// sets the position of the enemy
+				enemy->SetPosition(
+					plyrPos.v.x + rotVec.x, 
+					plyrPos.v.y + rotVec.y,
+					0.0F);
+			}
+			else // original
+			{
+				enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
+			}
+
 			enemy->SetRotation(cherry::Vec3(0, 0, 0), true);
-			enemy->SetPosition(cherry::Vec3(25 + eNum * 5, 25 - 10 + abs(eNum) * -5, 0));
 			enemy->alive = true;
 			enemy->SetRotationXDegrees(90);
 
@@ -1958,13 +1997,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 								enemyList[i]->GetCurrentAnimation()->Stop();
 							}
+
+							enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+							enemyList[i]->GetCurrentAnimation()->Play();
 						}
 						else if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 							//Move towards player				
 							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-								enemyList[i]->SetCurrentAnimation(0); // walk anim
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
 								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 						}
@@ -1977,14 +2019,18 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 								//Attack
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
+
 								}
+
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
 									enemyList[i]->GetCurrentAnimation()->Play();
 								}
 							}
@@ -1999,13 +2045,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
 								}
+
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
 									enemyList[i]->GetCurrentAnimation()->Play();
 								}
 							}
@@ -2020,13 +2069,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
 								}
+
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
 									enemyList[i]->GetCurrentAnimation()->Play();
 								}
 							}
@@ -2034,6 +2086,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						break;
 
 					case cnz::mechaspider:
+						// TODO: the animation change is being checked every frame when it shouldn't be.
 						if (enemyList[i]->attacking == false)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 6.0f) {
@@ -2041,14 +2094,20 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
 								}
+
+ 								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimation(0); // walk anim
+									
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
 									enemyList[i]->GetCurrentAnimation()->Play();
+									// enemyList[i]->SetCurrentAnimationByIndex(0); // walk anim
+									// enemyList[i]->GetCurrentAnimation()->Play();
 								}
 							}
 						}
@@ -2618,26 +2677,26 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 				if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation 
 					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimation(3);
+						playerObj->SetCurrentAnimationByIndex(3);
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 45.0f && angle <= 135.0f) { // right walking animation 
 
 					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimation(6);
+						playerObj->SetCurrentAnimationByIndex(6);
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation 
 					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimation(4);
+						playerObj->SetCurrentAnimationByIndex(4);
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 225.0f && angle < 315.0f) { // left walking animation 
 					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimation(5);
+						playerObj->SetCurrentAnimationByIndex(5);
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
@@ -2646,7 +2705,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			case 2:  // charging dash attack
 				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
-					playerObj->SetCurrentAnimation(0);
+					playerObj->SetCurrentAnimationByIndex(0);
 					playerObj->GetCurrentAnimation()->Play();
 				}
 				break;
@@ -2655,13 +2714,13 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				if (playerObj->GetCurrentAnimation() != nullptr) {
 					playerObj->GetCurrentAnimation()->Stop();
 				}
-				playerObj->SetCurrentAnimation(1);
+				playerObj->SetCurrentAnimationByIndex(1);
 				playerObj->GetCurrentAnimation()->Play();
 				break;
 
 			case 4: // dashing 
 				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
-					playerObj->SetCurrentAnimation(2);
+					playerObj->SetCurrentAnimationByIndex(2);
 					playerObj->GetCurrentAnimation()->Play();
 				}
 				break;
@@ -2774,7 +2833,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	else 
 	{
-		// Pause Menu Code
+		// Pause Menu Code (this needs to be fixed)
 		if (restart) 
 		{
 			// Resets Everything

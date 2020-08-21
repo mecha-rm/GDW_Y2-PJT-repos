@@ -21,8 +21,6 @@ namespace cnz {
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
 		void Update(float dt);
-
-		cherry::MorphAnimation* walk;
 		
 	private:
 		// emissive colour and power

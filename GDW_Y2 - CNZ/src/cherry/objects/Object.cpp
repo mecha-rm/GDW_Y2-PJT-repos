@@ -1091,7 +1091,16 @@ bool cherry::Object::IsDynamicObject() const { return dynamicObject; }
 bool cherry::Object::IsStaticObject() const { return !dynamicObject; }
 
 // returns the animation manager for the object
-cherry::AnimationManager& cherry::Object::GetAnimationManager() { return animations; }
+cherry::AnimationManager& cherry::Object::GetAnimationManager() 
+{ 
+	return animations; 
+}
+
+// gets the amount of animations
+int cherry::Object::GetAnimationCount() const
+{
+	return animations.GetAnimationsTotal();
+}
 
 // adds an animation
 bool cherry::Object::AddAnimation(Animation * anime, bool current)
@@ -1140,7 +1149,15 @@ cherry::Animation * cherry::Object::GetAnimation(unsigned int index) { return an
 cherry::Animation * cherry::Object::GetCurrentAnimation() { return animations.GetCurrentAnimation(); }
 
 // sets the current animation
-void cherry::Object::SetCurrentAnimation(unsigned int index) { animations.SetCurrentAnimation(index); }
+void cherry::Object::SetCurrentAnimationByIndex(unsigned int index) { 
+	animations.SetCurrentAnimation(index); 
+}
+
+// sets the current animation by its pointer.
+void cherry::Object::SetCurrentAnimationByPointer(cherry::Animation* ani)
+{
+	animations.SetCurrentAnimation(ani, false);
+}
 
 // clears all animations.
 void cherry::Object::ClearAllAnimations() { animations.ClearAllAnimations(); }

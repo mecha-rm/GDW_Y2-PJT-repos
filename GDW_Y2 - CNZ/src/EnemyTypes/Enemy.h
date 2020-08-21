@@ -55,9 +55,6 @@ namespace cnz
 		// loads in the Enemy using a default model. The Enemy takes this model's information.
 		// Enemy(const cherry::Primitive * model);
 
-		// the enemy's update
-		virtual void Update(float dt);
-
 		// the enemy's attack
 		virtual void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
@@ -86,6 +83,18 @@ namespace cnz
 
 		// sets object angle in vec3
 		void SetAngle(glm::vec3 angle);
+		
+		// gets the walking animation
+		cherry::Animation* GetWalkAnimation() const;
+
+		// gets the index of the walking animation.
+		int GetWalkAnimationIndex() const;
+
+		// gets the attack animation
+		cherry::Animation* GetAttackAnimation() const;
+
+		// gets the index of the attack animation.
+		int GetAttackAnimationIndex() const;
 
 		// gets the primary physics body for the enemy
 		// if no primary body is set, then the first body in the list is returned. If there are no bodies, it returns nullptr.
@@ -124,6 +133,9 @@ namespace cnz
 		// sets the speed multiplier for the enemy. It cannot be below or equal to 0.
 		// set to 10.0F by default.
 		void SetSpeedMultiplier(float speed);
+
+		// the enemy's update
+		virtual void Update(float dt);
 
 		// the enemy's description.
 		std::string description = "Enemy";
@@ -170,6 +182,13 @@ namespace cnz
 		int points = 1;
 
 	protected:
+
+		// cnz animation
+		struct CNZ_Animation
+		{
+			cherry::Animation* animation = nullptr;
+			int index = -1;
+		};
 		
 		// sets the type of this enemy.
 		void SetType(cnz::enemy_t et);
@@ -186,6 +205,12 @@ namespace cnz
 
 		// the enemy type (as an enum)
 		cnz::enemy_t type = null;
+
+		// walk animation
+		CNZ_Animation aniWalk;
+
+		// attack animation
+		CNZ_Animation aniAttack;
 
 		// the primary physics body.
 		cherry::PhysicsBody* primaryBody = nullptr;
