@@ -20,6 +20,7 @@ cnz::Oracle::Oracle(std::string scene)
 	// physics body
 	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
 	AddPhysicsBody(pb);
+	primaryBody = pb; // saving as primary physics body
 
 	LoadAnimations();
 }
@@ -37,6 +38,7 @@ cnz::Oracle::Oracle(std::string scene, cherry::Material::Sptr mat)
 	// physics body
 	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
 	AddPhysicsBody(pb);
+	primaryBody = pb; // saving as primary physics body
 
 	LoadAnimations();
 }

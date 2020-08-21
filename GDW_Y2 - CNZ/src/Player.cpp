@@ -57,7 +57,11 @@ cnz::Player::Player(const Player& obj) : Object(obj)
 
 	pBodySize = obj.pBodySize;
 	drawPBody = obj.drawPBody;
-	
+
+	// since the physics bodies are remade, the player gets its own physics body as the primary.
+	if (GetPhysicsBodyCount() > 0)
+		primaryBody = GetPhysicsBody(0);
+
 	degreeAngle = obj.degreeAngle;
 	radianAngle = obj.radianAngle;
 
@@ -142,7 +146,11 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	Player* plyr = new Player("res/objects/hero_ver.2/One_T.obj", scene, position);
 
 	Vec3 dmns = plyr->GetMeshBodyMaximum() - plyr->GetMeshBodyMinimum();
-	plyr->AddPhysicsBody(new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3)));
+	
+	// collision body
+	cherry::PhysicsBodyBox* body = new PhysicsBodyBox(dmns / 2.0F, Vec3(2, 2, 3));
+	plyr->AddPhysicsBody(body);
+	plyr->primaryBody = body;
 
 	// setting emissive colour and power
 	plyr->SetEmissiveColor(Vec3(0.0F, 1.0F, 1.0F));
@@ -531,6 +539,7 @@ void cnz::Player::SetAngle(float angle, bool isDegrees) {
 
 void cnz::Player::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
 
+// gets the dash distance
 glm::vec3 cnz::Player::GetDash(float dist) const {
 	glm::vec3 dash;
 	// glm is backwards so both need to be negative to dash in the correct direction.
@@ -540,6 +549,21 @@ glm::vec3 cnz::Player::GetDash(float dist) const {
 	dash.z = 0.0f;
 
 	return dash;
+}
+
+// gets the primary phyiscs body of the player
+cherry::PhysicsBody* cnz::Player::GetPrimaryPhysicsBody() const
+{
+	// gets the primary body if it is not set to nullptr.
+	if (primaryBody != nullptr)
+	{
+		return primaryBody;
+	}
+	else // returns the first physics body in the list.
+	{
+		// will return nullptr if there are no bodies
+		return GetPhysicsBody(0);
+	}
 }
 
 // sets the dra pbody

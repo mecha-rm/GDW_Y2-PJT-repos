@@ -93,7 +93,11 @@ namespace cnz
 		glm::vec3 GetDash(float dist) const;
 
 		// get dash dist
-		float GetDashDist() const { return this->dashDist; };
+		float GetDashDist() const { return dashDist; };
+
+		// gets the primary physics body of the player.
+		// if no primary body is set, then the first body in the list is returned. If there are no bodies, it returns nullptr.
+		cherry::PhysicsBody* GetPrimaryPhysicsBody() const;
 
 		// set draw pbody
 		bool SetDrawPBody(bool draw);
@@ -161,7 +165,9 @@ namespace cnz
 		//current update move vector
 		cherry::Vec3 playerCurMovement;
 
-
+		// gets the primary physics body of the player.
+		cherry::PhysicsBody* primaryBody = nullptr;
+		
 		// std::vector<cherry::PhysicsBody*> bodies;
 
 		/*

@@ -1062,6 +1062,16 @@ void cherry::Object::DeleteAllPhysicsBodies()
 // gets the amount of physics bodies
 unsigned int cherry::Object::GetPhysicsBodyCount() const { return bodies.size(); }
 
+// gets the physics body at the provided index.
+cherry::PhysicsBody* cherry::Object::GetPhysicsBody(unsigned int index) const
+{
+	// if the index is equal to or beyond the body size, then return nullptr.
+	if (index >= bodies.size())
+		return nullptr;
+	else
+		return bodies[index];
+}
+
 // returns hte physics bodies
 std::vector<cherry::PhysicsBody*> cherry::Object::GetPhysicsBodies() const { return bodies; }
 

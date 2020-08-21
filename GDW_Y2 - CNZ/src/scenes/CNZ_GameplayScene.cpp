@@ -1864,7 +1864,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// if the time stop is not active, then update the enemies in the list.
 		if (timeStopActive == false)
 		{
-			for (int i = 0; i < enemyList.size(); i++) {
+			// gets the player position, primary phyiscs body, and player boy's world position.
+			const cherry::Vec3 plyrPos = playerObj->GetPosition();
+			const cherry::PhysicsBody* plyrBody = playerObj->GetPrimaryPhysicsBody();
+			const cherry::Vec3 plyrBodyWorldPos = (plyrBody != nullptr) ? plyrBody->GetWorldPosition() : plyrPos;
+
+			for (int i = 0; i < enemyList.size(); i++) 
+			{
+				// gets the primary physics body of the enemy. This one is used for changing the angle.
+				const cherry::PhysicsBody* enemyBody = enemyList[i]->GetPrimaryPhysicsBody();
+				const cherry::Vec3 enemyBodyWorldPos = (enemyBody != nullptr) ? enemyBody->GetWorldPosition() : enemyList[i]->GetPosition();
 
 				// the enemy is alive.
 				// if (enemyList[i]->alive == true)
@@ -1894,7 +1903,18 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				// TODO: have variable to keep track of distance needed for attack to happen.
 				if (enemyList[i]->stunned == false) {
 					//Look at player
-					enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
+					
+					// for some reason it only works if done like this.
+					// enemyList[i]->UpdateAngle(enemyList[i]->GetPhysicsBodies()[0]->GetWorldPosition(), playerObj->GetPhysicsBodies()[0]->GetWorldPosition());
+					// enemyList[i]->UpdateAngle(enemyBody->GetWorldPosition(), plyrBodyWorldPos);
+					// enemyList[i]->UpdateAngle(enemyList[i]->GetPrimaryPhysicsBody()->GetWorldPosition(), plyrBodyWorldPos);
+					enemyList[i]->UpdateAngle(enemyBodyWorldPos, plyrBodyWorldPos);
+
+					// enemyList[i]->UpdateAngle(
+					// 	enemyList[i]->GetPrimaryPhysicsBody()->GetWorldPosition(), 
+					// 	playerObj->GetPrimaryPhysicsBody()->GetWorldPosition()
+					// );
+					
 					enemyList[i]->SetRotation(cherry::Vec3(90.0f, 0.0f, enemyList[i]->GetDegreeAngle()), true);
 
 
@@ -1902,7 +1922,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					switch (enemyList[i]->GetType())
 					{
 					case cnz::sentry:
-						if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+						if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
 							// Spawn projectiles
 							enemyList[i]->attacking = true;
 
@@ -1918,13 +1938,11 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							proj->active = true;
 							proj->SetPosition(enemyList[i]->GetPosition());
 							proj->SetRotationDegrees(enemyList[i]->GetRotationDegrees());
-							proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
+							proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), plyrPos));
 							objectList->AddObject(proj);
 
 							cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
 							cherry::AudioEngine::GetInstance().PlayEvent("arrow");
-
-
 
 							// projList.push_back(new Projectile(*arrowBase));
 							// projTimeList.push_back(0);
@@ -1941,9 +1959,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 								enemyList[i]->GetCurrentAnimation()->Stop();
 							}
 						}
-						else if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
+						else if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 							//Move towards player				
-							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 								enemyList[i]->SetCurrentAnimation(0); // walk anim
@@ -1955,7 +1973,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					case cnz::marauder:
 						if (enemyList[i]->attacking == false)
 						{
-							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 2.0f) {
 								//Attack
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1963,7 +1981,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							}
 							else {
 								//Move towards player				
-								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 									enemyList[i]->SetCurrentAnimation(0); // walk anim
@@ -1976,7 +1994,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					case cnz::oracle:
 						if (enemyList[i]->attacking == false)
 						{
-							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 5.0f) {
+							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 5.0f) {
 								//Attack
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
@@ -1984,7 +2002,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							}
 							else {
 								//Move towards player				
-								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 									enemyList[i]->SetCurrentAnimation(0); // walk anim
@@ -1997,7 +2015,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					case cnz::bastion:
 						if (enemyList[i]->attacking == false)
 						{
-							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 2.0f) {
+							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 2.0f) {
 								//Attack
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
@@ -2005,7 +2023,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							}
 							else {
 								//Move towards player				
-								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 									enemyList[i]->SetCurrentAnimation(0); // walk anim
@@ -2018,7 +2036,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					case cnz::mechaspider:
 						if (enemyList[i]->attacking == false)
 						{
-							if (GetDistanceXY(playerObj->GetPosition(), enemyList[i]->GetPosition()) < 6.0f) {
+							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 6.0f) {
 								//Attack
 								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
 									enemyList[i]->GetCurrentAnimation()->Stop();
@@ -2026,7 +2044,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							}
 							else {
 								//Move towards player				
-								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), playerObj->GetPosition()) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
 								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
 									enemyList[i]->SetCurrentAnimation(0); // walk anim

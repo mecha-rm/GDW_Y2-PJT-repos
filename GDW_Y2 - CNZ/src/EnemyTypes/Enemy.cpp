@@ -13,6 +13,10 @@ cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 	description = emy.description; // enemy description (name)
 	attacking = emy.attacking;
 
+	// since the physics bodies are remade, the enemy gets its own physics body as the primary.
+	if (GetPhysicsBodyCount() > 0)
+		primaryBody = GetPhysicsBody(0);
+	
 	alive = emy.alive;
 	stunned = emy.alive;
 	stunTimer = emy.stunTimer;
@@ -46,8 +50,11 @@ cnz::Enemy::Enemy(std::string modelPath, float posX, float posY, float posZ)
 cnz::Enemy::Enemy(std::string modelFile, cherry::Vec3 pos) : Object(modelFile, false, true)
 {
 	position = pos;
+
 	// TODO: replace with a more accurate hitbox
-	AddPhysicsBody(new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F));
+	cherry::PhysicsBody* body = new cherry::PhysicsBodyBox(3.5F, 3.5F, 3.5F);
+	AddPhysicsBody(body);
+	primaryBody = body;
 }
 
 // creates the Enemy at the world's origin
@@ -127,6 +134,21 @@ void cnz::Enemy::SetAngle(float angle, const bool isDegrees) {
 }
 
 void cnz::Enemy::SetAngle(glm::vec3 angle) { this->worldAngle = angle; }
+
+// gets the primary physics body of the enemy.
+cherry::PhysicsBody* cnz::Enemy::GetPrimaryPhysicsBody() const
+{
+	// gets the primary body if it is not set to nullptr.
+	if (primaryBody != nullptr)
+	{
+		return primaryBody;
+	}
+	else // returns the first physics body in the list.
+	{
+		// will return nullptr if there are no bodies
+		return GetPhysicsBody(0);
+	}
+}
 
 // sets the draw pbody
 bool cnz::Enemy::SetDrawPBody(bool draw)

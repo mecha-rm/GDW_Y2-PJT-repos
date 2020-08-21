@@ -463,6 +463,9 @@ namespace cherry
 		// gets the amount of physics bodies
 		unsigned int GetPhysicsBodyCount() const;
 
+		// gets the physics body at the provided index. Returns nullptr otherwise. 
+		cherry::PhysicsBody* GetPhysicsBody(unsigned int index) const;
+
 		// gets the physics bodies
 		std::vector<cherry::PhysicsBody *> GetPhysicsBodies() const;
 		

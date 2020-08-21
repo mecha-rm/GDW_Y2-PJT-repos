@@ -87,6 +87,10 @@ namespace cnz
 		// sets object angle in vec3
 		void SetAngle(glm::vec3 angle);
 
+		// gets the primary physics body for the enemy
+		// if no primary body is set, then the first body in the list is returned. If there are no bodies, it returns nullptr.
+		cherry::PhysicsBody* GetPrimaryPhysicsBody() const;
+
 		// set draw pbody
 		bool SetDrawPBody(bool draw);
 
@@ -182,5 +186,8 @@ namespace cnz
 
 		// the enemy type (as an enum)
 		cnz::enemy_t type = null;
+
+		// the primary physics body.
+		cherry::PhysicsBody* primaryBody = nullptr;
 	};
 }
