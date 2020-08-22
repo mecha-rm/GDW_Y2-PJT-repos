@@ -76,10 +76,22 @@ W: upward movement
 S: downward movement
 A: leftward movement
 D: rightward movement
-Left Mouse Click: charge dash
+Left Mouse Click/Space: charge dash
 	- Let go of mouse click to dash.
-ESC: pause
+
+P: pause (originally ESC)
+ESC: close game
 F: Freeze Screen
+R: reset (when paused)
+
+** MOVE LIGHT **
+UP Arrow: Y+
+DOWN Arrow: Y-
+LEFT Arrow: X-
+RIGHT Arrow: X+
+Page Up: Z+
+Period (.): reset light to base position
+Page Down: Z-
 
 **********************************
 CHERRY LIBRARY - GDW_Y2 - CRY LIB

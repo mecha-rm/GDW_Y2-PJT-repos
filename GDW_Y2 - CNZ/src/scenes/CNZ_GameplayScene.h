@@ -206,7 +206,7 @@ namespace cnz
 		bool s = false;
 		bool d = false;
 		bool f = false;
-		bool ls = false;
+		bool leftShift = false;
 
 		// dash trigger
 		// mouse buttons - left and right

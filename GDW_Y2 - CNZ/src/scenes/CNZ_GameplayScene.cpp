@@ -434,7 +434,7 @@ void cnz::CNZ_GameplayScene::OnClose()
 	s = false;
 	d = false;
 	f = false;
-	ls = false;
+	leftShift = false;
 	spaceBar = false;
 
 	// stops the player from moving through solid objects.
@@ -509,6 +509,7 @@ void cnz::CNZ_GameplayScene::MouseButtonReleased(GLFWwindow* window, int button)
 	}
 }
 
+// TODO: add button to go back to main menu, and button to exit game.
 // key pressed
 void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 {
@@ -545,15 +546,17 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 		// }
 		break;
 	case GLFW_KEY_LEFT_SHIFT:
-		ls = true;
+		leftShift = true;
 		break;
 	case GLFW_KEY_ESCAPE:
 		paused = !paused;
 		cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
 		break;
 	case GLFW_KEY_R:
-		if (paused) {
+		if (paused) 
+		{
 			restart = true;
+			// TODO: add in menu confirmation sound
 		}
 		break;
 	
@@ -628,7 +631,7 @@ void cnz::CNZ_GameplayScene::KeyReleased(GLFWwindow* window, int key)
 		break;
 
 	case GLFW_KEY_LEFT_SHIFT:
-		ls = false;
+		leftShift = false;
 		break;
 
 	case GLFW_KEY_SPACE:
@@ -1690,7 +1693,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							s = false;
 							d = false;
 							f = false;
-							ls = false;
+							leftShift = false;
 
 							mouseLeft = false;
 							mouseRight = false;
@@ -1847,7 +1850,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		playerObj->SetRotation(cherry::Vec3(90.0f, 0.0f, playerObj->GetDegreeAngle() - 90), true);
 
 		// dodge code
-		if (ls) 
+		if (leftShift) 
 		{
 			cherry::Vec3 temp;
 			if (w && cw) 
@@ -1869,7 +1872,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			playerObj->SetPosition(playerObj->GetPosition() + temp * 2);
 
-			ls = false;
+			leftShift = false;
 		}
 
 		// colBehaviourTimer.Stop();
@@ -2064,7 +2067,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						break;
 
 					case cnz::marauder:
-						if (enemyList[i]->attacking == false)
+						// if (enemyList[i]->attacking == false)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 2.0f) {
 								//Attack
@@ -2095,7 +2098,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						break;
 
 					case cnz::oracle:
-						if (enemyList[i]->attacking == false)
+						// if (enemyList[i]->attacking == false)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 5.0f) {
 								//Attack
@@ -2981,11 +2984,29 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			kills = 0;
 			curGroup = -1;
+			wave = 0;
 			curWave = 0;
 			score = 0;
 
+			// reset player light to base position
+			playerLightOffset = PLAYER_LIGHT_OFFSET_BASE;
+
+			// invincibility
+			isInvincible = false;
+			invincibleCountdown = 0.0F;
+			playerObj->SetAlpha(1.0F); // player has max opacity.
+
+			// time stop
+			timeStopTimer = 0.0F;
+			timeStopActive = false;
+
+			// remove layer from list if it's in there
+			if(postProcess)
+				util::removeFromVector(layers, edgeDetect.GetPostLayer());
+
 			// score needs to be updated.
 			updateScore = true;
+
 
 			// since the enemy list gets shorter while (i) gets larger, this should be re-written.
 			// we do have i-- to change this, but that goes against the purpose of a for loop.
@@ -3036,6 +3057,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				// this is a reset, so the kill count should not be increased?
 				// kills++;
 			}
+
+			// DELETE PROJECTILES
 
 			// Player - Reset to Spawn Position
 			playerObj->SetPosition(playerSpawn);
