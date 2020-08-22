@@ -100,6 +100,7 @@ void cnz::Marauder::LoadAnimations()
 		//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000031.obj", 0.04181f));
 		walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Walk_Forward/Mar_WF_000032.obj", 0.04181f));
 
+		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
 	}
@@ -115,6 +116,7 @@ void cnz::Marauder::LoadAnimations()
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Attack/Mar_Attack_000027.obj", 0.054f));
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Marauder/Mar_Attack/Mar_Attack_000036.obj", 0.054f));
 
+		attack->SetInfiniteLoop(true);
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}

@@ -103,6 +103,7 @@ void cnz::Oracle::LoadAnimations()
 		//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Oracle/Oracle_Walk_Forward/Oracle_WF_000027.obj", 0.04172f));
 		walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Oracle/Oracle_Walk_Forward/Oracle_WF_000028.obj", 0.04172f));
 
+		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
 	}
@@ -118,6 +119,7 @@ void cnz::Oracle::LoadAnimations()
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Oracle/Oracle_Attack/Oracle_Attack_000024.obj", 0.0138f));
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Oracle/Oracle_Attack/Oracle_Attack_000032.obj", 0.0138f));
 
+		attack->SetInfiniteLoop(true);
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}

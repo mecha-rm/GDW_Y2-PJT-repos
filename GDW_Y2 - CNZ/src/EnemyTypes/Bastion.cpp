@@ -98,6 +98,7 @@ void cnz::Bastion::LoadAnimations()
 		//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Bastion/Walk Forwards/Bastion_WF_000027.obj", 0.04172f));
 		walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Bastion/Walk Forwards/Bastion_WF_000028.obj", 0.04172f));
 
+		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
 	}
@@ -112,6 +113,7 @@ void cnz::Bastion::LoadAnimations()
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Bastion/Hit/Bastion_Hit_000008.obj", 0.054f));
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Bastion/Hit/Bastion_Hit_000012.obj", 0.054f));
 
+		attack->SetInfiniteLoop(true);
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}

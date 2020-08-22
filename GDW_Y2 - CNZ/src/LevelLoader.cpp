@@ -20,7 +20,7 @@ cnz::Mechaspider* cnz::Level::sourceSpider = nullptr;
 cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 
 // cell offset (default: 6.25F)
-const float cnz::Level::cellOffset = 6.25f;
+const float cnz::Level::CELL_OFFSET = 6.25f;
 
 // symbols for the level map.
 const std::string cnz::Level::DIVIDER_SYM = "|";
@@ -120,9 +120,19 @@ bool cnz::Level::LoadLevel(std::string levelPath) {
 	if (mapSize.size() != 2) {
 		return false;
 	}
-
-	else {
+	else 
+	{
+		// gets the map.
 		this->map = GetMap(levelCSV);
+		
+		// calculates the map minimum and maximum of the map.
+		mapMinimum = glm::vec2(0, 0);
+
+		mapMaximum.x = (!map.empty()) ? CELL_OFFSET * map[0].size() : 0; // x
+		mapMaximum.y = CELL_OFFSET * map.size(); // y
+
+		// check to make sure this is correct.
+
 		return true;
 	}
 }
@@ -174,6 +184,40 @@ std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 	}
 
 	return tempMap;
+}
+
+// gets the row count
+int cnz::Level::GetMapRowCount() const
+{
+	return map.size();
+}
+
+// gets the map column count
+int cnz::Level::GetMapColumnCount() const
+{
+	// gets the column count.
+	if (!map.empty())
+		return map[0].size();
+	else
+		return 0;
+}
+
+// returns map minimum
+const glm::vec2 cnz::Level::GetMapMinimumLimit() const
+{
+	return mapMinimum;
+}
+
+// gets the map maximum
+const glm::vec2 cnz::Level::GetMapMaximumLimit() const
+{
+	return mapMaximum;
+}
+
+// gets the map limits
+const glm::vec4 cnz::Level::GetMapLimits() const
+{
+	return glm::vec4(mapMinimum, mapMaximum);
 }
 
 // generates objects
@@ -335,9 +379,10 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				// heroes
 				// playerObj = new cnz::Player("res/objects/hero/charactoereee.obj", this->sceneName); // creates the player.
 				
-				
-				playerObj->SetPosition(glm::vec3(cellOffset * (x), cellOffset * (y), 0));
-				playerSpawn = cherry::Vec3(cellOffset * (x), cellOffset * (y), 0); // player spawn point
+				// player spawn
+				playerSpawnIndex = glm::ivec2{y, x};
+				playerSpawn = cherry::Vec3(CELL_OFFSET * (x), CELL_OFFSET * (y), 0); // player spawn point
+				playerObj->SetPosition(playerSpawn);
 
 				// new
 				// cnz::Player* playerObj = cnz::Player::GenerateDefault(sceneName, 
@@ -375,20 +420,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 
@@ -427,20 +472,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -479,20 +524,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
@@ -534,20 +579,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
@@ -585,20 +630,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(0, 0, 0)); // add rot to PB
 				}
@@ -638,20 +683,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -688,20 +733,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -738,20 +783,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -788,20 +833,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -839,20 +884,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -891,20 +936,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -948,20 +993,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -996,20 +1041,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1044,20 +1089,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1092,20 +1137,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1140,20 +1185,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1188,20 +1233,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1236,20 +1281,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1284,20 +1329,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1332,20 +1377,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1380,20 +1425,20 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 				std::vector<float> properties = GetObjectProps(y, x);
 				cherry::Vec3 posOffset, rot;
 				if (properties.size() == 0) { // no modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0)); // no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0)); // no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 1) { // rotation modifier
-					obj->SetPosition(glm::vec3(cellOffset * x, cellOffset * y, 0));// no position offset, so just use map position * cell offset.
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x, CELL_OFFSET * y, 0));// no position offset, so just use map position * cell offset.
 					obj->SetRotation(cherry::Vec3(90, 0, properties[0]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
 				else if (properties.size() == 3) { // position modifier
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, 0), true); // no rotation data, use default rotation
 				}
 				else if (properties.size() == 4) { // rotation and position modifiers
-					obj->SetPosition(glm::vec3(cellOffset * x + properties[0], cellOffset * y + properties[1], 0 + properties[2])); // add position offsets
+					obj->SetPosition(glm::vec3(CELL_OFFSET * x + properties[0], CELL_OFFSET * y + properties[1], 0 + properties[2])); // add position offsets
 					obj->SetRotation(cherry::Vec3(90, 0, properties[3]), true); // add rotation offset
 					body->SetLocalRotationDegrees(cherry::Vec3(90, 0, 0)); // add rot to PB
 				}
@@ -1708,7 +1753,16 @@ cnz::Player* cnz::Level::GetPlayerObject() const
 }
 
 // gets the player's spawn position.
-const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const { return playerSpawn; }
+const cherry::Vec3 cnz::Level::GetPlayerSpawnPosition() const 
+{ 
+	return playerSpawn; 
+}
+
+// returns the player spawn index
+const glm::ivec2 cnz::Level::GetPlayerSpawnIndex() const
+{
+	return playerSpawnIndex;
+}
 
 std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	std::vector<float> properties;

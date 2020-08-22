@@ -97,6 +97,7 @@ void cnz::Sentry::LoadAnimations()
 		//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000027.obj", 0.04034f));
 		walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Walk Forward/Sentry_WF_000028.obj", 0.04034f));
 
+		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
 	}
@@ -112,6 +113,7 @@ void cnz::Sentry::LoadAnimations()
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Attack/Sentry_Attack_000036.obj", 0.075f));
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Sentry/Attack/Sentry_Attack_000042.obj", 0.075f));
 
+		attack->SetInfiniteLoop(true);
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}

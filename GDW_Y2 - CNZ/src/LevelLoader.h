@@ -96,6 +96,20 @@ namespace cnz
 		// get level symbols loaded into 2d vector called map
 		std::vector<std::vector<std::string>> GetMap(CSV level);
 
+		// gets the map row count (y-axis)
+		int GetMapRowCount() const;
+
+		// gets the map column count (x-axis)
+		int GetMapColumnCount() const;
+
+		// gets the map minimum limit
+		const glm::vec2 GetMapMinimumLimit() const;
+
+		// gets the map maximum limit
+		const glm::vec2 GetMapMaximumLimit() const;
+
+		// gets the map limits
+		const glm::vec4 GetMapLimits() const;
 
 		// generates the objects for the level, and returns them.
 		// if objects have already been generated, the list is cleared.
@@ -127,6 +141,9 @@ namespace cnz
 		// gets the player's spawn position
 		const cherry::Vec3 GetPlayerSpawnPosition() const;
 
+		// gets the index in the map array that has the player's spawn position
+		const glm::ivec2 GetPlayerSpawnIndex() const;
+
 		// return properties of object at specific location on map
 		std::vector<float> GetObjectProps(int y, int x);
 
@@ -150,8 +167,15 @@ namespace cnz
 
 		std::string legendPath = ""; // path to the legend CSV
 
+		// the minimum and maximum of the map.
+		glm::vec2 mapMinimum;
+		glm::vec2 mapMaximum;
+
 		// the number of the map.
 		int mapNumber = 0;
+
+		// initialization in cpp file.
+		static const float CELL_OFFSET;
 
 		// not really needed.
 		// bool isActiveScene; // if the scene is loaded
@@ -189,7 +213,8 @@ namespace cnz
 		cherry::Material::Sptr matDynamic; // the dynamic material
 
 		// the player's spawn point
-		cherry::Vec3 playerSpawn;
+		cherry::Vec3 playerSpawn{};
+		glm::ivec2 playerSpawnIndex{};
 
 		// TODO: I don't think these are being used properly.
 		// Obstacles
@@ -214,9 +239,6 @@ namespace cnz
 		Obstacle* edgeGround = nullptr;
 		Obstacle* bench = nullptr;
 		Obstacle* tent = nullptr;
-
-		// initialization in cpp file.
-		static const float cellOffset;
 
 		// symbols
 		static const std::string DIVIDER_SYM;

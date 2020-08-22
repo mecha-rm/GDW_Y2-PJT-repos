@@ -93,6 +93,24 @@ void cnz::CNZ_GameOverScene::OnOpen()
 		file.close();
 	}
 
+	// new instances allowed
+	SetAllowingNewInstances(true);
+
+	// skybox
+	{
+		cherry::Skybox skybox(
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		);
+
+		skybox.AddSkyboxToScene(this);
+		cherry::Game::GetRunningGame()->SetSkyboxVisible(true);
+	}
+
 	// going through all the scores, from last to first.
 	// this gets the rank of the player.
 	for (int i = scores.size() - 1; i >= 0; i--)
@@ -304,8 +322,8 @@ void cnz::CNZ_GameOverScene::SaveScores()
 	// 	newFile << "Blank" << std::endl;
 	// 	newFile.close();
 
-	// puts in all the scores.
-	for (int i = 0; i < scores.size(); i++)
+	// puts in all scores based on a fixed number of scores that can be saved.
+	for (int i = 0; i < scores.size() && i < RANKING_SCORES; i++)
 	{
 		// doing tab or space doesn't makea difference.
 		

@@ -768,14 +768,29 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 	cherry::Vec3 plyrPos = (playerObj != nullptr)
 		? playerObj->GetPosition() : cherry::Vec3(0.0F, 0.0F, 0.0F);
 
+	// gets the player spawn index
+	const glm::ivec2 PLYR_SPAWN_INDEX = map.GetPlayerSpawnIndex();
+
 	// tells the game to use the player as a position base
 	bool plyrBase = (playerObj != nullptr) ? true : false;
-	plyrBase = false; // revert to old
+	// plyrBase = false; // revert to old
 
 	// rotation factor and radius
 	// this helps form a vector based on the player's current position and how far away they should be.
-	const int OPS = 5;
-	float dists[OPS] = { 25.0F, 30.0F, 35.0F, 40.0F, 45.0F };
+	// const int OPS = 5;
+	// float dists[OPS] = { 25.0F, 30.0F, 35.0F, 40.0F, 45.0F };
+
+	// gets the map limits, and the map dimensions
+	const glm::vec4 MAP_LIMITS = map.GetMapLimits();
+	glm::ivec2 MAP_DIMENS{ map.GetMapRowCount(), map.GetMapColumnCount() };
+
+	// subtracts from the map dimensions if there are enough rows and columns
+	glm::ivec2 mapDimensSub{};
+	if (MAP_DIMENS.x >= 5 && MAP_DIMENS.y >= 5)
+	{
+		mapDimensSub.x = 3;
+		mapDimensSub.y = 3;
+	}
 
 	int percent = rand() % 100;
 
@@ -886,21 +901,46 @@ void cnz::CNZ_GameplayScene::SpawnEnemyGroup(int i)
 			// if the player is being used as a base
 			if(plyrBase)
 			{
-				// gets a random rotation factor for placing the enemy.
-				float rotDeg = rand() % 360;
+				// // gets a random rotation factor for placing the enemy.
+				// float rotDeg = rand() % 360;
+				// 
+				// // gets the distance from the player (radius)
+				// float d = dists[rand() % OPS];
+				// 
+				// // rotation vector
+				// util::math::Vec2 rotVec{ rotDeg, 0.0F };
+				// rotVec = util::math::rotate(rotVec, rotDeg, true);
+				// 
+				// // sets the position of the enemy
+				// enemy->SetPosition(
+				// 	plyrPos.v.x + rotVec.x, 
+				// 	plyrPos.v.y + rotVec.y,
+				// 	0.0F);
 
-				// gets the distance from the player (radius)
-				float d = dists[rand() % OPS];
+				// gets the row and column
+				int x = 0, y = 0;
 
-				// rotation vector
-				util::math::Vec2 rotVec{ rotDeg, 0.0F };
-				rotVec = util::math::rotate(rotVec, rotDeg, true);
+				// if the map is big enough, the enemies are placed one cell in.
+				x = (rand() % (MAP_DIMENS.x - mapDimensSub.x)) + mapDimensSub.x / 2;
+				y = (rand() % (MAP_DIMENS.y - mapDimensSub.y)) + mapDimensSub.y / 2;
 
-				// sets the position of the enemy
-				enemy->SetPosition(
-					plyrPos.v.x + rotVec.x, 
-					plyrPos.v.y + rotVec.y,
-					0.0F);
+				// if the enemy would be placed right on top of the player
+				if (x == PLYR_SPAWN_INDEX.x && y == PLYR_SPAWN_INDEX.y)
+				{
+					// forces the enemy two spaces away.
+					int x2 = rand() % 3 + 2;
+					int y2 = rand() % 3 + 2;
+
+					// positive or negative
+					x2 *= ((rand() % 2) > 0) ? 1 : -1;
+					y2 *= ((rand() % 2) > 0) ? 1 : -1;
+
+					x += x2;
+					y += y2;
+				}
+
+				// sets the enemy position based on the randomized map dimensions.
+				enemy->SetPosition(x * Level::CELL_OFFSET, y * Level::CELL_OFFSET, 0.0F);
 			}
 			else // original
 			{
@@ -1994,20 +2034,27 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							// projList[projList.size() - 1]->SetDirVec(GetUnitDirVec(projList[projList.size() - 1]->GetPosition(), playerObj->GetPosition()));
 							// game->AddObjectToScene(projList[projList.size() - 1]);
 
-							if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-								enemyList[i]->GetCurrentAnimation()->Stop();
-							}
+							if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAttackAnimation()) {
+								if (enemyList[i]->GetCurrentAnimation() != nullptr)
+									enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation 
 
-							enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
-							enemyList[i]->GetCurrentAnimation()->Play();
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex()); // change animation
+								enemyList[i]->GetCurrentAnimation()->Play(); // play animation 
+
+							}
 						}
 						else if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) > 0.001f) { // changed due to glitch
 							//Move towards player				
 							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
-							if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
-								enemyList[i]->GetCurrentAnimation()->Play();
+							// walk animation is not active.
+							if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) {
+								if (enemyList[i]->GetCurrentAnimation() != nullptr)
+									enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation
+
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex()); // change animation
+								enemyList[i]->GetCurrentAnimation()->Play(); // play animation
+
 							}
 						}
 						break;
@@ -2017,21 +2064,27 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 2.0f) {
 								//Attack
-								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-									enemyList[i]->GetCurrentAnimation()->Stop();
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAttackAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation 
+
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation 
 
 								}
-
-								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
-								enemyList[i]->GetCurrentAnimation()->Play();
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
-								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
-									enemyList[i]->GetCurrentAnimation()->Play();
+								// walk animation is not active.
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation
+
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation
+
 								}
 							}
 						}
@@ -2042,75 +2095,154 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 5.0f) {
 								//Attack
-								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-									enemyList[i]->GetCurrentAnimation()->Stop();
-								}
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAttackAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation 
 
-								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
-								enemyList[i]->GetCurrentAnimation()->Play();
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation 
+
+								}
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
-								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
-									enemyList[i]->GetCurrentAnimation()->Play();
+								// walk animation is not active.
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation
+
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation
+
 								}
 							}
 						}
 						break;
 
 					case cnz::bastion:
-						if (enemyList[i]->attacking == false)
+						// if (enemyList[i]->attacking == false)
 						{
 							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 2.0f) {
 								//Attack
-								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-									enemyList[i]->GetCurrentAnimation()->Stop();
-								}
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAttackAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation 
 
-								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
-								enemyList[i]->GetCurrentAnimation()->Play();
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation 
+
+								}
 							}
 							else {
 								//Move towards player				
 								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
 
-								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
-									enemyList[i]->GetCurrentAnimation()->Play();
+								// walk animation is not active.
+								if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) {
+									if (enemyList[i]->GetCurrentAnimation() != nullptr)
+										enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation
+
+									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex()); // change animation
+									enemyList[i]->GetCurrentAnimation()->Play(); // play animation
+
 								}
 							}
 						}
 						break;
 
 					case cnz::mechaspider:
-						// TODO: the animation change is being checked every frame when it shouldn't be.
-						if (enemyList[i]->attacking == false)
-						{
-							if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 6.0f) {
-								//Attack
-								if (enemyList[i]->GetCurrentAnimation() != nullptr) {
-									enemyList[i]->GetCurrentAnimation()->Stop();
-								}
+						// starts the attack animation
+						if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 6.0f) {
+							// if the attack animation hasn't started playing yet, play it.
+							// if (enemyList[i]->attacking == false)
+							// {
+							// 	if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+							// 		enemyList[i]->GetCurrentAnimation()->Stop();
+							// 	}
+							// 
+							// 	enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+							// 	enemyList[i]->GetCurrentAnimation()->Play();
+							// 
+							// 	enemyList[i]->attacking = true;
+							// }
 
- 								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
-								enemyList[i]->GetCurrentAnimation()->Play();
-							}
-							else {
-								//Move towards player				
-								enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+							// attack animation is not active.
+							if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAttackAnimation()) {
+								if (enemyList[i]->GetCurrentAnimation() != nullptr)
+									enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation 
+								
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex()); // change animation
+								enemyList[i]->GetCurrentAnimation()->Play(); // play animation 
 
-								if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
-									
-									enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
-									enemyList[i]->GetCurrentAnimation()->Play();
-									// enemyList[i]->SetCurrentAnimationByIndex(0); // walk anim
-									// enemyList[i]->GetCurrentAnimation()->Play();
-								}
 							}
+
 						}
+						else // walk animation
+						{
+							//Move towards player				
+							enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+
+							// // changes the animation if the enemy is in its attack animation, or if no animation is playing
+							// if (
+							// 	(enemyList[i]->attacking == true && enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) ||
+							// 	(enemyList[i]->GetCurrentAnimation() == nullptr)
+							// 	)
+							// {
+							// 	enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
+							// 	enemyList[i]->GetCurrentAnimation()->Play();
+							// 
+							// 	// if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+							// 	// 
+							// 	// 	enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
+							// 	// 	enemyList[i]->GetCurrentAnimation()->Play();
+							// 	// 	// enemyList[i]->SetCurrentAnimationByIndex(0); // walk anim
+							// 	// 	// enemyList[i]->GetCurrentAnimation()->Play();
+							// 	// }
+							// 
+							// 	// not attacking
+							// 	enemyList[i]->attacking = false;
+							// }
+
+							// walk animation is not active.
+							if (enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetWalkAnimation()) {
+								if(enemyList[i]->GetCurrentAnimation() != nullptr)
+									enemyList[i]->GetCurrentAnimation()->Stop(); // stop current animation
+								
+								enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex()); // change animation
+								enemyList[i]->GetCurrentAnimation()->Play(); // play animation
+
+							}
+
+						}
+
+
+						//// TODO: the animation change is being checked every frame when it shouldn't be.
+						//if (enemyList[i]->attacking == false)
+						//{
+						//	if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 6.0f) {
+						//		//Attack
+						//		if (enemyList[i]->GetCurrentAnimation() != nullptr) {
+						//			enemyList[i]->GetCurrentAnimation()->Stop();
+						//		}
+
+ 					//			enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetAttackAnimationIndex());
+						//		enemyList[i]->GetCurrentAnimation()->Play();
+						//	}
+						//	else {
+						//		//Move towards player				
+						//		enemyList[i]->SetPosition(enemyList[i]->GetPosition() + (GetUnitDirVecXY(enemyList[i]->GetPosition(), plyrPos) * enemyList[i]->GetSpeedMultiplier() * deltaTime));
+
+						//		if (enemyList[i]->GetCurrentAnimation() == nullptr || enemyList[i]->GetCurrentAnimation() != enemyList[i]->GetAnimation(0)) {
+						//			
+						//			enemyList[i]->SetCurrentAnimationByIndex(enemyList[i]->GetWalkAnimationIndex());
+						//			enemyList[i]->GetCurrentAnimation()->Play();
+						//			// enemyList[i]->SetCurrentAnimationByIndex(0); // walk anim
+						//			// enemyList[i]->GetCurrentAnimation()->Play();
+						//		}
+						//	}
+						//}
 						break;
 
 					}

@@ -93,6 +93,7 @@ void cnz::Mechaspider::LoadAnimations()
 		//walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Spider Mine/Walk/Spider_Walk_000023.obj", 0.04f));
 		walk->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Spider Mine/Walk/Spider_Walk_000024.obj", 0.04f));
 
+		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
 	}
@@ -108,6 +109,7 @@ void cnz::Mechaspider::LoadAnimations()
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Spider Mine/Burrow/Spider_Plant_000009.obj", 0.025f));
 		attack->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/enemy/Spider Mine/Burrow/Spider_Plant_000013.obj", 0.025f));
 
+		attack->SetInfiniteLoop(true);
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}
