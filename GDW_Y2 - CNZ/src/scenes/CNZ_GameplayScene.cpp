@@ -2001,9 +2001,10 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					switch (enemyList[i]->GetType())
 					{
 					case cnz::sentry:
-						if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+						// if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->attacking == false) {
+						if (GetDistanceXY(plyrPos, enemyList[i]->GetPosition()) < 10.0f && enemyList[i]->GetProjectileAvailable()) {
 							// Spawn projectiles
-							enemyList[i]->attacking = true;
+							// enemyList[i]->attacking = true;
 
 							// creates a new projectile.
 							Projectile* proj = new Projectile(arrowBase, GetName());
@@ -2022,6 +2023,9 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 							cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
 							cherry::AudioEngine::GetInstance().PlayEvent("arrow");
+
+							// projectile has been fired.
+							enemyList[i]->ProjectileFired();
 
 							// projList.push_back(new Projectile(*arrowBase));
 							// projTimeList.push_back(0);

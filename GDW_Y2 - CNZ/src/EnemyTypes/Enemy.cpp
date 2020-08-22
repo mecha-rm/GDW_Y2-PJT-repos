@@ -27,6 +27,11 @@ cnz::Enemy::Enemy(const Enemy& emy) : Object(emy)
 	radianAngle = emy.GetRadianAngle();
 	worldAngle = emy.GetVec3Angle();
 
+	// projectiles - does not copy the current amount charged.
+	useProjs = emy.useProjs;
+	projChargeTimeMax = emy.projChargeTimeMax;
+	projTimerFactor = emy.projTimerFactor;
+
 	points = emy.points;
 	speedMult = emy.speedMult;
 
@@ -262,13 +267,74 @@ void cnz::Enemy::SetState(int newState)
 	state = newState;
 }
 
+// returns 'true' if the enemy uses projectiles.
+bool cnz::Enemy::IsUsingProjectiles() const
+{
+	return useProjs;
+}
+
+// set using projectiles
+void cnz::Enemy::SetUsingProjectiles(bool use)
+{
+	useProjs = use;
+}
+
+// gets if a projectile is available.
+bool cnz::Enemy::GetProjectileAvailable() const
+{
+	// if using projectiles
+	if (useProjs)
+		return projChargeTimer >= projChargeTimeMax;
+	else
+		return false;
+}
+
+// returns the alloted charge time 
+float cnz::Enemy::GetCurrentProjectileCharge() const
+{
+	return projChargeTimer;
+}
+
+// get maximum projectile charge time.
+float cnz::Enemy::GetMaximumProjectileChargeTime() const
+{
+	return projChargeTimeMax;
+}
+
+// sets the maximum projectile charge time
+void cnz::Enemy::SetMaximumProjectileChargeTime(float maxTime)
+{
+	if (maxTime > 0.0F)
+		projChargeTimeMax = maxTime;
+}
+
+// return projectile charge factor
+float cnz::Enemy::GetProjectileChargeFactor() const
+{
+	return projTimerFactor;
+}
+
+// set projectile charge factor
+void cnz::Enemy::SetProjectileChargeFactor(float factor)
+{
+	// the factor only gets changed if it's above 0
+	if (factor > 0.0F)
+		projTimerFactor = factor;
+}
+
+// projectile fired.
+void cnz::Enemy::ProjectileFired()
+{
+	projChargeTimer = 0.0F;
+}
+
+
+
 // gets the amount of points for killing the enemy.
 int cnz::Enemy::GetPoints() const 
 { 
 	return points; 
 }
-
-
 
 // sets the points for killing the enemy.
 void cnz::Enemy::SetPoints(int pnts)
@@ -292,4 +358,13 @@ void cnz::Enemy::SetSpeedMultiplier(float speed)
 void cnz::Enemy::Update(float dt) 
 {
 	Object::Update(dt);
+
+	// if the enemy uses projectiles, charge the enemy if it can't use them yet.
+	if (useProjs)
+	{
+		projChargeTimer += projTimerFactor * dt;
+
+		if (projChargeTimer > projChargeTimeMax)
+			projChargeTimer = projChargeTimeMax;
+	}
 }

@@ -124,6 +124,25 @@ namespace cnz
 		// setting the state
 		void SetState(int newState);
 
+		// returns 'true' if the enemy uses projectiles.
+		bool IsUsingProjectiles() const;
+
+		// returns 'true' if a projectile can be fired.
+		bool GetProjectileAvailable() const;
+
+		// returns the alloted charge time for the projectile.
+		float GetCurrentProjectileCharge() const;
+
+		// returns the maximum charge time for the projectile.
+		float GetMaximumProjectileChargeTime() const;
+
+		// returns the factor applied when charging up a projectile.
+		float GetProjectileChargeFactor() const;
+
+		// called when a projectile is fired.
+		// this resets the clock regardless of if the projectile was fully charged or not.
+		void ProjectileFired();
+
 		// gets the amount of points for killing the enemy.
 		int GetPoints() const;
 
@@ -175,6 +194,15 @@ namespace cnz
 		// object angle in world space (vec3, so 3d angle)
 		glm::vec3 worldAngle;
 
+		// counts up to charge a projectile.
+		float projChargeTimer = 0.0F;
+
+		// maximum charge time for a projectile.
+		float projChargeTimeMax = 1.0F;
+		
+		// used for charging up to a projectile
+		float projTimerFactor = 1.0F;
+
 		// the speed multiplier of the enemy
 		float speedMult = 10.0F;
 
@@ -196,6 +224,15 @@ namespace cnz
 		// loads in all animations. This is a pure virtual function since all enemies need animations.
 		virtual void LoadAnimations() = 0;
 
+		// sets whether to use projectiles or not.
+		void SetUsingProjectiles(bool use);
+
+		// set the maximum projectile charge time
+		void SetMaximumProjectileChargeTime(float maxTime);
+
+		// sets the projectile charge factor. It cannot be negative, or zero.
+		void SetProjectileChargeFactor(float factor);
+
 		// sets the amount of points the enemy provides. This cannot be negative.
 		void SetPoints(int pnts);
 
@@ -205,6 +242,9 @@ namespace cnz
 
 		// the enemy type (as an enum)
 		cnz::enemy_t type = null;
+
+		// set to 'true' if projectiles are used.
+		bool useProjs = false;
 
 		// walk animation
 		CNZ_Animation aniWalk;

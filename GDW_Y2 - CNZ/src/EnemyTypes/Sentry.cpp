@@ -23,6 +23,11 @@ cnz::Sentry::Sentry(std::string scene)
 	AddPhysicsBody(pb);
 	primaryBody = pb; // saving the primary physics body.
 
+	// projectile information
+	useProjs = true;
+	SetProjectileChargeFactor(2.5F);
+	SetMaximumProjectileChargeTime(2.0F);
+
 	LoadAnimations();
 }
 
@@ -40,6 +45,11 @@ cnz::Sentry::Sentry(std::string scene, cherry::Material::Sptr mat)
 	cherry::PhysicsBody* pb = new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 1), GetPBodySize());
 	AddPhysicsBody(pb);
 	primaryBody = pb; // saving as primary physics body
+
+	// projectile information
+	useProjs = true;
+	SetProjectileChargeFactor(2.5F);
+	SetMaximumProjectileChargeTime(2.0F);
 
 	LoadAnimations();
 }
