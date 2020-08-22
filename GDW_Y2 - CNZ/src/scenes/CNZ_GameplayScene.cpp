@@ -1862,16 +1862,16 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		if (!((w && cw) || (s && cs) || (a && ca) || (d && cd))) // if the player is not moving 
 		{ 
 			playerObj->SetState(0);
-			if (cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is playing, stop it since we are idle
-				cherry::AudioEngine::GetInstance().StopEvent("footstep");
-			}
+			// if (cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is playing, stop it since we are idle
+			// 	cherry::AudioEngine::GetInstance().StopEvent("footstep");
+			// }
 		}
 		else { // if the player is walking
 			playerObj->SetState(1);
-			if (!cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is NOT being played
-				cherry::AudioEngine::GetInstance().SetEventPosition("footstep", playerObj->GetPositionGLM());
-				cherry::AudioEngine::GetInstance().PlayEvent("footstep");
-			}
+			// if (!cherry::AudioEngine::GetInstance().isEventPlaying("footstep")) { // if footstep noise is NOT being played
+			// 	cherry::AudioEngine::GetInstance().SetEventPosition("footstep", playerObj->GetPositionGLM());
+			// 	cherry::AudioEngine::GetInstance().PlayEvent("footstep");
+			// }
 		}
 
 		playerObj->UpdateAngle(myCamera, game->GetCursorViewPositionX(), game->GetCursorViewPositionY(), game->GetWindowWidth(), game->GetWindowHeight());
@@ -2792,6 +2792,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			float playerAngle = playerObj->GetDegreeAngle();
 			float angleDiff = 0;
 
+			// changes the playe based on the state.
+			// TODO: this should really be in the player class, but it's being left in the GameplayScene for now.
 			switch (playerObj->GetState())
 			{
 			case 1: // walking
@@ -2844,27 +2846,71 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				}
 
 				if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation 
-					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimationByIndex(3);
+					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+					// 	playerObj->SetCurrentAnimationByIndex(3);
+					// 	playerObj->GetCurrentAnimation()->Play();
+					// }
+
+					// play the animation
+					if (playerObj->GetCurrentAnimation() != playerObj->GetRunFAnimation())
+					{
+						// if an animation is currently playing
+						if (playerObj->GetCurrentAnimation() != nullptr)
+							playerObj->GetCurrentAnimation()->Stop();
+
+						playerObj->SetCurrentAnimationByIndex(playerObj->GetRunFAnimationIndex());
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 45.0f && angle <= 135.0f) { // right walking animation 
 
-					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimationByIndex(6);
+					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+					// 	playerObj->SetCurrentAnimationByIndex(6);
+					// 	playerObj->GetCurrentAnimation()->Play();
+					// }
+
+					// play the animation
+					if (playerObj->GetCurrentAnimation() != playerObj->GetRunRAnimation())
+					{
+						// if an animation is currently playing
+						if (playerObj->GetCurrentAnimation() != nullptr)
+							playerObj->GetCurrentAnimation()->Stop();
+
+						playerObj->SetCurrentAnimationByIndex(playerObj->GetRunRAnimationIndex());
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation 
-					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimationByIndex(4);
+					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+					// 	playerObj->SetCurrentAnimationByIndex(4);
+					// 	playerObj->GetCurrentAnimation()->Play();
+					// }
+
+					// play the animation
+					if (playerObj->GetCurrentAnimation() != playerObj->GetRunBAnimation())
+					{
+						// if an animation is currently playing
+						if (playerObj->GetCurrentAnimation() != nullptr)
+							playerObj->GetCurrentAnimation()->Stop();
+
+						playerObj->SetCurrentAnimationByIndex(playerObj->GetRunBAnimationIndex());
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
 				else if (angle > 225.0f && angle < 315.0f) { // left walking animation 
-					if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-						playerObj->SetCurrentAnimationByIndex(5);
+					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
+					// 	playerObj->SetCurrentAnimationByIndex(5);
+					// 	playerObj->GetCurrentAnimation()->Play();
+					// }
+
+					// play the animation
+					if (playerObj->GetCurrentAnimation() != playerObj->GetRunLAnimation())
+					{
+						// if an animation is currently playing
+						if (playerObj->GetCurrentAnimation() != nullptr)
+							playerObj->GetCurrentAnimation()->Stop();
+
+						playerObj->SetCurrentAnimationByIndex(playerObj->GetRunLAnimationIndex());
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
@@ -2872,23 +2918,56 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				break;
 
 			case 2:  // charging dash attack
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
-					playerObj->SetCurrentAnimationByIndex(0);
+				// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
+				// 	playerObj->SetCurrentAnimationByIndex(0);
+				// 	playerObj->GetCurrentAnimation()->Play();
+				// }
+
+				// play the animation
+				if (playerObj->GetCurrentAnimation() != playerObj->GetChargingAnimation())
+				{
+					// if an animation is currently playing
+					if (playerObj->GetCurrentAnimation() != nullptr)
+						playerObj->GetCurrentAnimation()->Stop();
+
+					playerObj->SetCurrentAnimationByIndex(playerObj->GetChargingAnimationIndex());
 					playerObj->GetCurrentAnimation()->Play();
 				}
 				break;
 
 			case 3: // dash charged 
-				if (playerObj->GetCurrentAnimation() != nullptr) {
-					playerObj->GetCurrentAnimation()->Stop();
+				// if (playerObj->GetCurrentAnimation() != nullptr) {
+				// 	playerObj->GetCurrentAnimation()->Stop();
+				// }
+				// playerObj->SetCurrentAnimationByIndex(1);
+				// playerObj->GetCurrentAnimation()->Play();
+				
+				// play the animation
+				if (playerObj->GetCurrentAnimation() != playerObj->GetChargedAnimation())
+				{
+					// if an animation is currently playing
+					if (playerObj->GetCurrentAnimation() != nullptr)
+						playerObj->GetCurrentAnimation()->Stop();
+
+					playerObj->SetCurrentAnimationByIndex(playerObj->GetChargedAnimationIndex());
+					playerObj->GetCurrentAnimation()->Play();
 				}
-				playerObj->SetCurrentAnimationByIndex(1);
-				playerObj->GetCurrentAnimation()->Play();
 				break;
 
 			case 4: // dashing 
-				if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
-					playerObj->SetCurrentAnimationByIndex(2);
+				// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
+				// 	playerObj->SetCurrentAnimationByIndex(2);
+				// 	playerObj->GetCurrentAnimation()->Play();
+				// }
+
+				// play the animation
+				if (playerObj->GetCurrentAnimation() != playerObj->GetDashingAnimation())
+				{
+					// if an animation is currently playing
+					if (playerObj->GetCurrentAnimation() != nullptr)
+						playerObj->GetCurrentAnimation()->Stop();
+
+					playerObj->SetCurrentAnimationByIndex(playerObj->GetDashingAnimationIndex());
 					playerObj->GetCurrentAnimation()->Play();
 				}
 				break;

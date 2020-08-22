@@ -192,6 +192,13 @@ cnz::Player::Player(const Player& obj) : Object(obj)
 			aniBash.index = index;
 			aniBash.animation = GetAnimation(index);
 		}
+
+		// DEFAULT ANIMATION
+		if (aniRun_F.index != -1)
+		{
+			SetCurrentAnimationByIndex(aniRun_F.index);
+			aniRun_F.animation->Play();
+		}
 	}
 
 }
@@ -544,6 +551,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000023.obj", 1.0f));
 
 			// saves the animation and its index
+			playerRun_F.anim->SetInfiniteLoop(true);
 			plyr->aniRun_F.animation = playerRun_F.anim;
 			plyr->aniRun_F.index = plyr->GetAnimationCount() - 1;
 		}
@@ -560,6 +568,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000023.obj", 1.0f));
 
 			// saves the animation and its index
+			playerRun_B.anim->SetInfiniteLoop(true);
 			plyr->aniRun_B.animation = playerRun_B.anim;
 			plyr->aniRun_B.index = plyr->GetAnimationCount() - 1;
 		}
@@ -577,6 +586,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000023.obj", 1.0f));
 
 			// saves the animation and its index
+			playerRun_L.anim->SetInfiniteLoop(true);
 			plyr->aniRun_L.animation = playerRun_L.anim;
 			plyr->aniRun_L.index = plyr->GetAnimationCount() - 1;
 		}
@@ -594,6 +604,7 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000023.obj", 1.0f));
 
 			// saves the animation and its index
+			playerRun_R.anim->SetInfiniteLoop(true);
 			plyr->aniRun_R.animation = playerRun_R.anim;
 			plyr->aniRun_R.index = plyr->GetAnimationCount() - 1;
 		}
