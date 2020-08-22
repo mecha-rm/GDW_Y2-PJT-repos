@@ -99,6 +99,93 @@ namespace cnz
 		// if no primary body is set, then the first body in the list is returned. If there are no bodies, it returns nullptr.
 		cherry::PhysicsBody* GetPrimaryPhysicsBody() const;
 
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetChargingAnimation() const;
+		
+		// get the index of the animation. (-1) if not in list.
+		int GetChargingAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetChargedAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetChargedAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDashingAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDashingAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetRunFAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetRunFAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetRunBAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetRunBAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetRunLAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetRunLAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetRunRAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetRunRAnimationIndex() const;
+		
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDodgeFAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDodgeFAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDodgeBAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDodgeBAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDodgeLAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDodgeLAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDodgeRAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDodgeRAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetDeathAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetDeathAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetSpecialAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetSpecialAnimationIndex() const;
+
+		// get the animation. Nullptr if not set.
+		cherry::Animation* GetBashAnimation() const;
+
+		// get the index of the animation. (-1) if not in list.
+		int GetBashAnimationIndex() const;
+
+
+
 		// set draw pbody
 		bool SetDrawPBody(bool draw);
 
@@ -182,7 +269,32 @@ namespace cnz
 		*/
 		int state = 0;
 
+		// anims
+
 	protected:
+		// cnz animation
+		struct CNZ_Animation
+		{
+			cherry::Animation* animation = nullptr;
+			int index = -1;
+		};
+
+		// player animations
+		// most go unused.
+		CNZ_Animation aniCharging;
+		CNZ_Animation aniCharged;
+		CNZ_Animation aniDashing;
+		CNZ_Animation aniRun_F;
+		CNZ_Animation aniRun_B;
+		CNZ_Animation aniRun_L;
+		CNZ_Animation aniRun_R;
+		CNZ_Animation aniDodge_F;
+		CNZ_Animation aniDodge_B;
+		CNZ_Animation aniDodge_L;
+		CNZ_Animation aniDodge_R;
+		CNZ_Animation aniDeath;
+		CNZ_Animation aniSpecial;
+		CNZ_Animation aniBash;
 
 	};
 }

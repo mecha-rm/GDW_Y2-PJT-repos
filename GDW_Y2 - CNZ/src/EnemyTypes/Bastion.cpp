@@ -50,6 +50,13 @@ cnz::Bastion::Bastion(cnz::Bastion* obj, std::string scene) : cnz::Enemy(obj, sc
 {
 	type = cnz::bastion;
 	description = "Bastion";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // copy constructor
@@ -57,6 +64,13 @@ cnz::Bastion::Bastion(const cnz::Bastion& emy) : cnz::Enemy(emy)
 {
 	type = cnz::bastion;
 	description = "Bastion";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // loads all animations
@@ -101,6 +115,10 @@ void cnz::Bastion::LoadAnimations()
 		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
+
+		// play the walk animation
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
 	}
 
 	// Attack Animation

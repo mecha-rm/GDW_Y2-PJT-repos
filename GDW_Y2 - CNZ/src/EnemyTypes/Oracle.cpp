@@ -48,12 +48,26 @@ cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 {
 	type = cnz::oracle;
 	description = "Oracle";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 cnz::Oracle::Oracle(cnz::Oracle* obj, std::string scene) : cnz::Enemy(obj, scene) 
 { 
 	type = cnz::oracle;
 	description = "Oracle"; 
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 void cnz::Oracle::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
@@ -106,6 +120,10 @@ void cnz::Oracle::LoadAnimations()
 		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
+
+		// play the walk animation
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
 	}
 
 	// Attack Animation

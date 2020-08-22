@@ -70,6 +70,130 @@ cnz::Player::Player(const Player& obj) : Object(obj)
 	playerCurMovement = obj.playerCurMovement;
 	state = obj.state;
 
+	// // setting start animation
+	// if(aniSpecial.index)
+	// plyr->SetCurrentAnimationByPointer(playerSpecial.anim);
+	// plyr->SetCurrentAnimationByIndex(plyr->aniSpecial.index);
+	// // todo: you need to have this animation playing on the copied object.
+	// playerSpecial.anim->Play();
+	
+	// getting the animations
+	{
+		int index = 0;
+	
+		// charging animation
+		index = obj.GetChargingAnimationIndex();
+		if (index != -1)
+		{
+			aniCharging.index = index;
+			aniCharging.animation = GetAnimation(index);
+		}
+
+		// charged animation
+		index = obj.GetChargedAnimationIndex();
+		if (index != -1)
+		{
+			aniCharged.index = index;
+			aniCharged.animation = GetAnimation(index);
+		}
+
+		// dashing animation
+		index = obj.GetDashingAnimationIndex();
+		if (index != -1)
+		{
+			aniDashing.index = index;
+			aniDashing.animation = GetAnimation(index);
+		}
+
+		// run (F) animation
+		index = obj.GetRunFAnimationIndex();
+		if (index != -1)
+		{
+			aniRun_F.index = index;
+			aniRun_F.animation = GetAnimation(index);
+		}
+
+		// run (B) animation
+		index = obj.GetRunBAnimationIndex();
+		if (index != -1)
+		{
+			aniRun_B.index = index;
+			aniRun_B.animation = GetAnimation(index);
+		}
+
+		// run (L) animation
+		index = obj.GetRunLAnimationIndex();
+		if (index != -1)
+		{
+			aniRun_L.index = index;
+			aniRun_L.animation = GetAnimation(index);
+		}
+
+		// run (R) animation
+		index = obj.GetRunRAnimationIndex();
+		if (index != -1)
+		{
+			aniRun_R.index = index;
+			aniRun_R.animation = GetAnimation(index);
+		}
+
+		// dodge (F) animation
+		index = obj.GetDodgeFAnimationIndex();
+		if (index != -1)
+		{
+			aniDodge_F.index = index;
+			aniDodge_F.animation = GetAnimation(index);
+		}
+
+		// dodge (B) animation
+		index = obj.GetDodgeBAnimationIndex();
+		if (index != -1)
+		{
+			aniDodge_B.index = index;
+			aniDodge_B.animation = GetAnimation(index);
+		}
+
+		// dodge (L) animation
+		index = obj.GetDodgeLAnimationIndex();
+		if (index != -1)
+		{
+			aniDodge_L.index = index;
+			aniDodge_L.animation = GetAnimation(index);
+		}
+
+		// dodge (R) animation
+		index = obj.GetDodgeRAnimationIndex();
+		if (index != -1)
+		{
+			aniDodge_R.index = index;
+			aniDodge_R.animation = GetAnimation(index);
+		}
+
+		// death animation
+		index = obj.GetDeathAnimationIndex();
+		if (index != -1)
+		{
+			aniDeath.index = index;
+			aniDeath.animation = GetAnimation(index);
+		}
+
+		// special animation
+		index = obj.GetSpecialAnimationIndex();
+		if (index != -1)
+		{
+			aniSpecial.index = index;
+			aniSpecial.animation = GetAnimation(index);
+		}
+
+		// bash animation
+		index = obj.GetBashAnimationIndex();
+		if (index != -1)
+		{
+			aniBash.index = index;
+			aniBash.animation = GetAnimation(index);
+		}
+	}
+
 }
 
 // TODO: either fix this, or remove it.
@@ -311,141 +435,285 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 	// loading animations (ver. 2)
 	{
 		// TODO: some meshes were NOT triangluated. Check the walking mesh since it seems like it could be the problem.
+		// TODO: remove animations that are not being used.
 		// full
 		// these take WAY to long to add, but they work.
 		// animations
-		cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
-		
-		// this seems to be a leftover from an earlier build
-		cnz::AnimStruct playerCharged = { 26, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
-		
-		cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerRun_F = { 24, "res/objects/anims/player/Run_F/One_RF_0000", 1.0f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDodge_F = { 12, "res/objects/anims/player/Dodge_F/One_DF_0000", 0.46f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDodge_B = { 12, "res/objects/anims/player/Dodge_B/One_DB_0000", 0.46f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerSpecial = { 37, "res/objects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
-		cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerCharging = { 26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
+		// 
+		// // this seems to be a leftover from an earlier build
+		// cnz::AnimStruct playerCharged = { 26, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
+		// 
+		// cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerRun_F = { 24, "res/objects/anims/player/Run_F/One_RF_0000", 1.0f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerDodge_F = { 12, "res/objects/anims/player/Dodge_F/One_DF_0000", 0.46f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerDodge_B = { 12, "res/objects/anims/player/Dodge_B/One_DB_0000", 0.46f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerSpecial = { 37, "res/objects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+		// cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
 
 		// add animations to player.
+		// the bool determines whether to load the animation or not.
+		bool loadCharging = true;
+		bool loadCharged = true;
+		bool loadDashing = true;
+		bool loadRun_F = true;
+		bool loadRun_B = true;
+		bool loadRun_L = true;
+		bool loadRun_R = true;
+		bool loadDodge_F = true;
+		bool loadDodge_B = true;
+		bool loadDodge_L = true;
+		bool loadDodge_R = true;
+		bool loadDeath = true;
+		bool loadSpecial = true;
+		bool loadBash = true;
 
 		// charging - 26 total frames
 		// pretty sure this animation was never set.
-		plyr->AddAnimation(playerCharging.anim);
-		playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 1.08f));
-		playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 1.08f));
-		playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 1.08f));
-		playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 1.08f));
-		playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 1.08f));
+		
+		// player charging
+		if(loadCharging)
+		{
+			cnz::AnimStruct playerCharging = { 
+				26, "res/objects/anims/player/Attack_Charge/One_Charge_0000", 1.08f, new cherry::MorphAnimation() };
+
+			plyr->AddAnimation(playerCharging.anim);
+
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000000.obj", 1.08f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000006.obj", 1.08f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000012.obj", 1.08f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000018.obj", 1.08f));
+			playerCharging.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charge/One_Charge_000025.obj", 1.08f));
+
+			// saves the animation and its index
+			plyr->aniCharging.animation = playerCharging.anim;
+			plyr->aniCharging.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// seems like this was a leftover.
 		// attack charged animation - 26 frames
-		plyr->AddAnimation(playerCharged.anim);
-		playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000000.obj", 0.01f));
-		// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000006.obj", 0.01f));
-		// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000012.obj", 0.01f));
-		// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000018.obj", 0.01f));
-		// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000025.obj", 0.01f));
+		if(loadCharged)
+		{
+			cnz::AnimStruct playerCharged = { 26, "res/objects/anims/player/Attack_Charged/One_Charge_0000", 0.01f, new cherry::MorphAnimation() };
+
+			plyr->AddAnimation(playerCharged.anim);
+			playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000000.obj", 0.01f));
+			// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000006.obj", 0.01f));
+			// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000012.obj", 0.01f));
+			// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000018.obj", 0.01f));
+			// playerCharged.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Charged/One_Charge_000025.obj", 0.01f));
+		
+			// saves the animation and its index
+			plyr->aniCharged.animation = playerCharged.anim;
+			plyr->aniCharged.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// dashing animation - 26 frames
-		plyr->AddAnimation(playerDashing.anim);
-		playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000000.obj", 0.27f));
-		playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000006.obj", 0.27f));
-		playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000012.obj", 0.27f));
-		playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000018.obj", 0.27f));
-		playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000025.obj", 0.27f));
-		
+		if(loadDashing)
+		{
+			cnz::AnimStruct playerDashing = { 26, "res/objects/anims/player/Attack_Dash/One_Dash_0000", 0.27f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerDashing.anim);
+
+			playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000000.obj", 0.27f));
+			playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000006.obj", 0.27f));
+			playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000012.obj", 0.27f));
+			playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000018.obj", 0.27f));
+			playerDashing.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Attack_Dash/One_Dash_000025.obj", 0.27f));
+
+			// saves the animation and its index
+			plyr->aniDashing.animation = playerDashing.anim;
+			plyr->aniDashing.index = plyr->GetAnimationCount() - 1;
+		}
+
 		// running animation forward - 24 frames
-		plyr->AddAnimation(playerRun_F.anim);
-		playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000000.obj", 1.0f));
-		playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000006.obj", 1.0f));
-		playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000012.obj", 1.0f));
-		playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000018.obj", 1.0f));
-		playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000023.obj", 1.0f));
+		if(loadRun_F)
+		{
+			cnz::AnimStruct playerRun_F = { 24, "res/objects/anims/player/Run_F/One_RF_0000", 1.0f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerRun_F.anim);
+
+			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000000.obj", 1.0f));
+			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000006.obj", 1.0f));
+			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000012.obj", 1.0f));
+			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000018.obj", 1.0f));
+			playerRun_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_F/One_RF_000023.obj", 1.0f));
+
+			// saves the animation and its index
+			plyr->aniRun_F.animation = playerRun_F.anim;
+			plyr->aniRun_F.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// running animation backward - 24 frames
-		plyr->AddAnimation(playerRun_B.anim);
-		playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000000.obj", 1.0f));
-		playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000006.obj", 1.0f));
-		playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000012.obj", 1.0f));
-		playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000018.obj", 1.0f));
-		playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000023.obj", 1.0f));
+		if (loadRun_B)
+		{
+			cnz::AnimStruct playerRun_B = { 24, "res/objects/anims/player/Run_B/One_RB_0000", 1.0f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerRun_B.anim);
+			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000000.obj", 1.0f));
+			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000006.obj", 1.0f));
+			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000012.obj", 1.0f));
+			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000018.obj", 1.0f));
+			playerRun_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_B/One_RB_000023.obj", 1.0f));
+
+			// saves the animation and its index
+			plyr->aniRun_B.animation = playerRun_B.anim;
+			plyr->aniRun_B.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// running animation left - 24 frames
-		plyr->AddAnimation(playerRun_L.anim);
-		playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000000.obj", 1.0f));
-		playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000006.obj", 1.0f));
-		playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000012.obj", 1.0f));
-		playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000018.obj", 1.0f));
-		playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000023.obj", 1.0f));
+		if (loadRun_L)
+		{
+			cnz::AnimStruct playerRun_L = { 24, "res/objects/anims/player/Run_L/One_RL_0000", 1.0f, new cherry::MorphAnimation() };
+
+			plyr->AddAnimation(playerRun_L.anim);
+			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000000.obj", 1.0f));
+			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000006.obj", 1.0f));
+			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000012.obj", 1.0f));
+			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000018.obj", 1.0f));
+			playerRun_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_L/One_RL_000023.obj", 1.0f));
+
+			// saves the animation and its index
+			plyr->aniRun_L.animation = playerRun_L.anim;
+			plyr->aniRun_L.index = plyr->GetAnimationCount() - 1;
+		}
 		
 		// running animation right - 24 frames
-		plyr->AddAnimation(playerRun_R.anim);
-		playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000000.obj", 1.0f));
-		playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000006.obj", 1.0f));
-		playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000012.obj", 1.0f));
-		playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000018.obj", 1.0f));
-		playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000023.obj", 1.0f));
-		
+		if (loadRun_R)
+		{
+			cnz::AnimStruct playerRun_R = { 24, "res/objects/anims/player/Run_R/One_RR_0000", 1.0f, new cherry::MorphAnimation() };
+
+			plyr->AddAnimation(playerRun_R.anim);
+			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000000.obj", 1.0f));
+			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000006.obj", 1.0f));
+			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000012.obj", 1.0f));
+			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000018.obj", 1.0f));
+			playerRun_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Run_R/One_RR_000023.obj", 1.0f));
+
+			// saves the animation and its index
+			plyr->aniRun_R.animation = playerRun_R.anim;
+			plyr->aniRun_R.index = plyr->GetAnimationCount() - 1;
+		}
+
 		// dodge animation forward - 12 frames
-		plyr->AddAnimation(playerDodge_F.anim);
-		playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000000.obj", 0.46f));
-		playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000004.obj", 0.46f));
-		playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000008.obj", 0.46f));
-		playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000011.obj", 0.46f));
+		if (loadDodge_F)
+		{
+			cnz::AnimStruct playerDodge_F = { 12, "res/objects/anims/player/Dodge_F/One_DF_0000", 0.46f, new cherry::MorphAnimation() };
+
+			plyr->AddAnimation(playerDodge_F.anim);
+			playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000000.obj", 0.46f));
+			playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000004.obj", 0.46f));
+			playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000008.obj", 0.46f));
+			playerDodge_F.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_F/One_DF_000011.obj", 0.46f));
+
+			// saves the animation and its index
+			plyr->aniDodge_F.animation = playerDodge_F.anim;
+			plyr->aniDodge_F.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// dodge animation backward - 12 frames
-		plyr->AddAnimation(playerDodge_B.anim);
-		playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000000.obj", 0.46f));
-		playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000004.obj", 0.46f));
-		playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000008.obj", 0.46f));
-		playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000011.obj", 0.46f));
+		if (loadDodge_B)
+		{
+			cnz::AnimStruct playerDodge_B = { 12, "res/objects/anims/player/Dodge_B/One_DB_0000", 0.46f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerDodge_B.anim);
+
+			playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000000.obj", 0.46f));
+			playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000004.obj", 0.46f));
+			playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000008.obj", 0.46f));
+			playerDodge_B.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_B/One_DB_000011.obj", 0.46f));
+
+			// saves the animation and its index
+			plyr->aniDodge_B.animation = playerDodge_B.anim;
+			plyr->aniDodge_B.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// dodge animation left - 12 frames
-		plyr->AddAnimation(playerDodge_L.anim);
-		playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000000.obj", 0.46f));
-		playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000004.obj", 0.46f));
-		playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000008.obj", 0.46f));
-		playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000011.obj", 0.46f));
+		if (loadDodge_L)
+		{
+			cnz::AnimStruct playerDodge_L = { 12, "res/objects/anims/player/Dodge_L/One_DL_0000", 0.46f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerDodge_L.anim);
+
+			playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000000.obj", 0.46f));
+			playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000004.obj", 0.46f));
+			playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000008.obj", 0.46f));
+			playerDodge_L.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_L/One_DL_000011.obj", 0.46f));
+
+			// saves the animation and its index
+			plyr->aniDodge_L.animation = playerDodge_L.anim;
+			plyr->aniDodge_L.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// dodge animation right - 12 frames
-		plyr->AddAnimation(playerDodge_R.anim);
-		playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000000.obj", 0.46f));
-		playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000004.obj", 0.46f));
-		playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000008.obj", 0.46f));
-		playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000011.obj", 0.46f));
+		if (loadDodge_R)
+		{
+			cnz::AnimStruct playerDodge_R = { 12, "res/objects/anims/player/Dodge_R/One_DR_0000", 0.46f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerDodge_R.anim);
+			
+			playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000000.obj", 0.46f));
+			playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000004.obj", 0.46f));
+			playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000008.obj", 0.46f));
+			playerDodge_R.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Dodge_R/One_DR_000011.obj", 0.46f));
+
+			// saves the animation and its index
+			plyr->aniDodge_R.animation = playerDodge_R.anim;
+			plyr->aniDodge_R.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// player death - 52 frames
-		plyr->AddAnimation(playerDeath.anim);
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000000.obj", 0.46f));
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000010.obj", 0.46f));
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000020.obj", 0.46f));
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000030.obj", 0.46f));
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000040.obj", 0.46f));
-		playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000050.obj", 0.46f));
+		if (loadDeath)
+		{
+			cnz::AnimStruct playerDeath = { 52, "res/objects/anims/player/Took_Damage/One_Die_0000", 2.16f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerDeath.anim);
+
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000000.obj", 0.46f));
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000010.obj", 0.46f));
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000020.obj", 0.46f));
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000030.obj", 0.46f));
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000040.obj", 0.46f));
+			playerDeath.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Took_Damage/One_Die_000050.obj", 0.46f));
+
+			// saves the animation and its index
+			plyr->aniDeath.animation = playerDeath.anim;
+			plyr->aniDeath.index = plyr->GetAnimationCount() - 1;
+		}
 
 		// player special - 37 frames
-		plyr->AddAnimation(playerSpecial.anim);
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000000.obj", 1.54f));
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000007.obj", 1.54f));
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000014.obj", 1.54f));
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000021.obj", 1.54f));
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000028.obj", 1.54f));
-		playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000035.obj", 1.54f));
+		if (loadSpecial)
+		{
+			cnz::AnimStruct playerSpecial = { 37, "res/objects/anims/player/Special_Attack/Special_Attack_0000", 1.54f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerSpecial.anim);
+
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000000.obj", 1.54f));
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000007.obj", 1.54f));
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000014.obj", 1.54f));
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000021.obj", 1.54f));
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000028.obj", 1.54f));
+			playerSpecial.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Special_Attack/Special_Attack_000035.obj", 1.54f));
 		
+			// saves the animation and its index
+			plyr->aniSpecial.animation = playerSpecial.anim;
+			plyr->aniSpecial.index = plyr->GetAnimationCount() - 1;
+		}
+
 		// player bash - 16 frames
-		plyr->AddAnimation(playerBash.anim);
-		playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000000.obj", 0.63f));
-		playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000004.obj", 0.63f));
-		playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000008.obj", 0.63f));
-		playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000012.obj", 0.63f));
-		playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000015.obj", 0.63f));
-	
+		if (loadBash)
+		{
+			cnz::AnimStruct playerBash = { 16, "res/objects/anims/player/Bash/One_Bash_0000", 0.63f, new cherry::MorphAnimation() };
+			plyr->AddAnimation(playerBash.anim);
+
+			playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000000.obj", 0.63f));
+			playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000004.obj", 0.63f));
+			playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000008.obj", 0.63f));
+			playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000012.obj", 0.63f));
+			playerBash.anim->AddFrame(new cherry::MorphAnimationFrame("res/objects/anims/player/Bash/One_Bash_000015.obj", 0.63f));
+
+			// saves the animation and its index
+			plyr->aniBash.animation = playerBash.anim;
+			plyr->aniBash.index = plyr->GetAnimationCount() - 1;
+		}
 	}
 
 	return plyr;
@@ -564,6 +832,148 @@ cherry::PhysicsBody* cnz::Player::GetPrimaryPhysicsBody() const
 		// will return nullptr if there are no bodies
 		return GetPhysicsBody(0);
 	}
+}
+
+// gets the charging animation
+cherry::Animation* cnz::Player::GetChargingAnimation() const
+{
+	return aniCharging.animation;
+}
+
+int cnz::Player::GetChargingAnimationIndex() const
+{
+	return aniCharging.index;
+}
+
+cherry::Animation* cnz::Player::GetChargedAnimation() const
+{
+	return aniCharged.animation;
+}
+
+int cnz::Player::GetChargedAnimationIndex() const
+{
+	return aniCharged.index;
+}
+
+cherry::Animation* cnz::Player::GetDashingAnimation() const
+{
+	return aniDashing.animation;
+}
+
+int cnz::Player::GetDashingAnimationIndex() const
+{
+	return aniDashing.index;
+}
+
+cherry::Animation* cnz::Player::GetRunFAnimation() const
+{
+	return aniRun_F.animation;
+}
+
+int cnz::Player::GetRunFAnimationIndex() const
+{
+	return aniRun_F.index;
+}
+
+cherry::Animation* cnz::Player::GetRunBAnimation() const
+{
+	return aniRun_B.animation;
+}
+
+int cnz::Player::GetRunBAnimationIndex() const
+{
+	return aniRun_B.index;
+}
+
+cherry::Animation* cnz::Player::GetRunLAnimation() const
+{
+	return aniRun_L.animation;
+}
+
+int cnz::Player::GetRunLAnimationIndex() const
+{
+	return aniRun_L.index;
+}
+
+cherry::Animation* cnz::Player::GetRunRAnimation() const
+{
+	return aniRun_R.animation;
+}
+
+int cnz::Player::GetRunRAnimationIndex() const
+{
+	return aniRun_R.index;
+}
+
+cherry::Animation* cnz::Player::GetDodgeFAnimation() const
+{
+	return aniDodge_F.animation;
+}
+
+int cnz::Player::GetDodgeFAnimationIndex() const
+{
+	return aniDodge_F.index;
+}
+
+cherry::Animation* cnz::Player::GetDodgeBAnimation() const
+{
+	return aniDodge_B.animation;;
+}
+
+int cnz::Player::GetDodgeBAnimationIndex() const
+{
+	return aniDodge_B.index;
+}
+
+cherry::Animation* cnz::Player::GetDodgeLAnimation() const
+{
+	return aniDodge_L.animation;
+}
+
+int cnz::Player::GetDodgeLAnimationIndex() const
+{
+	return aniDodge_L.index;
+}
+
+cherry::Animation* cnz::Player::GetDodgeRAnimation() const
+{
+	return aniDodge_R.animation;
+}
+
+int cnz::Player::GetDodgeRAnimationIndex() const
+{
+	return aniDodge_R.index;
+}
+
+cherry::Animation* cnz::Player::GetDeathAnimation() const
+{
+	return aniDeath.animation;
+}
+
+int cnz::Player::GetDeathAnimationIndex() const
+{
+	return aniDeath.index;
+}
+
+cherry::Animation* cnz::Player::GetSpecialAnimation() const
+{
+	return aniSpecial.animation;
+}
+
+int cnz::Player::GetSpecialAnimationIndex() const
+{
+	return aniSpecial.index;
+}
+
+
+cherry::Animation* cnz::Player::GetBashAnimation() const
+{
+	return aniBash.animation;
+}
+
+int cnz::Player::GetBashAnimationIndex() const
+{
+	return aniBash.index;
 }
 
 // sets the dra pbody

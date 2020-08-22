@@ -199,7 +199,6 @@ namespace cnz
 		const bool LIGHT_CONTROL = true;
 		const glm::vec3 LIGHT_OFFSET_INC {9.0F, 9.0F, 9.0F};
 
-
 		// player movement
 		bool w = false;
 		bool a = false;
@@ -219,9 +218,10 @@ namespace cnz
 		bool cs = true;
 		bool cd = true;
 
-		// paused bool, and restart bool.
-		bool paused = false;
-		bool restart = false;
+		// paused bool, restart bool, and exit bool
+		bool paused = false; // pause game
+		bool restart = false; // restart game
+		bool exitMap = false; // returns back to main menu
 
 		// becomes 'true' when the player is invincible.
 		bool isInvincible = false;

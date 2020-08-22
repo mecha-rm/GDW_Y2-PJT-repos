@@ -84,11 +84,19 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
 	const std::string SCENE_NAME = GetName();
 
+	{
+		// pauseMenu = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName());
+		// pauseMenu->SetWindowChild(true);
+		// pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
+		// pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.25f));
 
-	pauseMenu = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName());
-	pauseMenu->SetWindowChild(true);
-	pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
-	pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.25f));
+		pauseMenu = new Image("res/images/pause_menu_image.png", game->GetCurrentSceneName());
+		pauseMenu->SetWindowChild(true);
+		// pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
+		pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.5f));
+		pauseMenu->SetPostProcess(false);
+		objectList->AddObject(pauseMenu);
+	}
 
 	description = SamplerDesc();
 
@@ -548,15 +556,35 @@ void cnz::CNZ_GameplayScene::KeyPressed(GLFWwindow* window, int key)
 	case GLFW_KEY_LEFT_SHIFT:
 		leftShift = true;
 		break;
-	case GLFW_KEY_ESCAPE:
+	case GLFW_KEY_P: // PAUSE
 		paused = !paused;
 		cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
 		break;
-	case GLFW_KEY_R:
-		if (paused) 
+	case GLFW_KEY_B: // RETURN TO MENU
+		if (paused)  // return to main menu
+		{
+			exitMap = true;
+			cherry::AudioEngine::GetInstance().PlayEvent("menu_accept");
+		}
+
+		break;
+
+	case GLFW_KEY_R: // RESTART
+		if (paused) // if pasued, restart the game
 		{
 			restart = true;
-			// TODO: add in menu confirmation sound
+			cherry::AudioEngine::GetInstance().PlayEvent("menu_accept");
+		}
+		break;
+	case GLFW_KEY_ESCAPE: // close the game
+		if (paused) // if paused, close the game.
+		{
+			cherry::Game::GetRunningGame()->CloseWindow();
+		}
+		else // if not paused, pause the game.
+		{
+			paused = true;
+			cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
 		}
 		break;
 	
@@ -2024,7 +2052,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 							proj->SetDirVec(GetUnitDirVecXY(projList[projList.size() - 1]->GetPosition(), plyrPos));
 							objectList->AddObject(proj);
 
-							cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
+							// TODO: change arrow volume
+							// cherry::AudioEngine::GetInstance().SetEventPosition("arrow", proj->GetPositionGLM());
 							cherry::AudioEngine::GetInstance().PlayEvent("arrow");
 
 							// projectile has been fired.
@@ -2757,7 +2786,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		//// ANIMATION UPDATES
 		// Player
 		{
-
+			// TODO: move this to state section
 			// these items cannot be declared in a case statement.
 			float angle = 0;
 			float playerAngle = playerObj->GetDegreeAngle();
@@ -2972,8 +3001,15 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 	}
 	else 
 	{
-		// Pause Menu Code (this needs to be fixed)
-		if (restart) 
+		if (exitMap) // if the map should be exited.
+		{
+			// Codeanme Zero Game
+			cnz::CNZ_Game* const game = (CNZ_Game*)cherry::Game::GetRunningGame();
+
+			game->SetCurrentScene(game->titleSceneName, true); // return to main menu
+			return;
+		}
+		else if (restart) // Pause Menu Code (this needs to be fixed)
 		{
 			// Resets Everything
 			// life icons are visible now.
@@ -2997,7 +3033,7 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 			playerObj->SetAlpha(1.0F); // player has max opacity.
 
 			// time stop
-			timeStopTimer = 0.0F;
+			timeStopTimer = TIME_STOP_MAX;
 			timeStopActive = false;
 
 			// remove layer from list if it's in there

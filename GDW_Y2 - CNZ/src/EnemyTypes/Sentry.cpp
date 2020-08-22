@@ -60,6 +60,13 @@ cnz::Sentry::Sentry(const cnz::Sentry& sentry)
 {
 	type = cnz::sentry;
 	description = "Sentry";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // copies the enemy and replaces its scene.
@@ -67,6 +74,13 @@ cnz::Sentry::Sentry(const cnz::Sentry* obj, std::string scene) : cnz::Enemy(obj,
 {
 	type = cnz::sentry;
 	description = "Sentry";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // load aniamtions

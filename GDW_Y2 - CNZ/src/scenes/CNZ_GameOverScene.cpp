@@ -266,6 +266,7 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 			// the imgui window can be turned off now.
 			useImgui = false;
 			game->imguiMode = false;
+			ImGui::CloseCurrentPopup();
 		}
 	}
 	// if (ImGui::Button("Wireframe/Fill Toggle"))

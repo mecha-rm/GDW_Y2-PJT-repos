@@ -48,6 +48,13 @@ cnz::Marauder::Marauder(cnz::Marauder* obj, std::string scene) : cnz::Enemy(obj,
 {
 	type = cnz::marauder;
 	description = "Marauder";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // copy constructor
@@ -55,6 +62,13 @@ cnz::Marauder::Marauder(const cnz::Marauder& enemy) : Enemy(enemy)
 {
 	type = cnz::marauder;
 	description = "Marauder";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // loads all animations
@@ -103,6 +117,10 @@ void cnz::Marauder::LoadAnimations()
 		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
+
+		// play the walk animation
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
 	}
 
 	// Attack Animation

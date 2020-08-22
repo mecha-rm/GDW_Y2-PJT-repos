@@ -49,6 +49,13 @@ cnz::Mechaspider::Mechaspider(cnz::Mechaspider* obj, std::string scene) : Enemy(
 {
 	type = cnz::mechaspider;
 	description = "Mechaspider";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // copy constructor
@@ -56,6 +63,13 @@ cnz::Mechaspider::Mechaspider(const cnz::Mechaspider& enemy) : Enemy(enemy)
 {
 	type = cnz::mechaspider;
 	description = "Mechaspider";
+
+	// play the walk animation if its available
+	if (aniWalk.animation != nullptr)
+	{
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
+	}
 }
 
 // loads animations
@@ -96,6 +110,10 @@ void cnz::Mechaspider::LoadAnimations()
 		walk->SetInfiniteLoop(true);
 		aniWalk.animation = walk;
 		aniWalk.index = GetAnimationCount() - 1;
+
+		// play the walk animation
+		SetCurrentAnimationByIndex(aniWalk.index);
+		aniWalk.animation->Play();
 	}
 
 
