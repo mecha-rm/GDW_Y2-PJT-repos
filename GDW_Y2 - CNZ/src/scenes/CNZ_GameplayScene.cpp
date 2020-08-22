@@ -2546,27 +2546,52 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			// dashProfiler.Stop();
 
-			// while the stack is not empty.
-			while (!indexes.empty())
 			{
-				int index = indexes.top(); // gets the top value
+				// tracks amount of deaths to use for triggering death sounds
+				int deaths = 0;
 
-				enemyList.erase(enemyList.begin() + index);
-				indexes.pop(); // pops off value.
+				// while the stack is not empty.
+				while (!indexes.empty())
+				{
+					int index = indexes.top(); // gets the top value
 
-				// there are four different deaths sounds. Playing the same death sound will cause the effect to start over.
-				// this is why the sound effect will only SOMETIMES play.
-				// sounds: enemy_death_01, enemy_death_02, enemy_death_03, enemy_death_04
-				//	* enemy_death is the same as enemy_death_01
+					enemyList.erase(enemyList.begin() + index);
+					indexes.pop(); // pops off value.
 
-				// moved from 'ClosestObstacle' section above.
-				// TODO: the death sound keeps starting over, hence why it's not playing. Fix that.
-				// cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
-				// cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
+					// there are four different deaths sounds. Playing the same death sound will cause the effect to start over.
+					// this is why the sound effect will only SOMETIMES play.
+					// sounds: enemy_death_01, enemy_death_02, enemy_death_03, enemy_death_04
+					//	* enemy_death is the same as enemy_death_01
+
+					// moved from 'ClosestObstacle' section above.
+					// TODO: the death sound keeps starting over, hence why it's not playing. Fix that.
+					// cherry::AudioEngine::GetInstance().SetEventPosition("enemy_death", enemyList[i]->GetPositionGLM());
+					// cherry::AudioEngine::GetInstance().PlayEvent("enemy_death"); // play death noise
 
 
-				// TODO: implement other enemy death sounds.
-				cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
+					// TODO: implement other enemy death sounds.
+					deaths++;
+
+					switch (deaths)
+					{
+					case 0: // death default (should never be played
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death");
+						break;
+					case 1: // death sound 1 (same as enemy_death)
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death_01");
+						break;
+					case 2: // death sound 2
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death_02");
+						break;
+					case 3: // death sound 3
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death_03");
+						break;
+					case 4: // death sound 4
+						cherry::AudioEngine::GetInstance().PlayEvent("enemy_death_04");
+						break;
+					}
+					
+				}
 			}
 
 			// for (int i = 0; i < enemyList.size(); i++) {
@@ -3173,7 +3198,28 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				// kills++;
 			}
 
-			// DELETE PROJECTILES
+			// deleting projectiles
+			while (!projList.empty())
+			{
+				// gets the enemy.
+				cnz::Projectile* proj = projList[0];
+
+				// removes from the enemy list.
+				util::removeFromVector(projList, proj);
+
+				// deletes object from scene.
+				bool deleted = objectList->DeleteObjectByPointer(proj);
+
+				// enemy was not deleted properly, so it gets deleted from its proper list.
+				if (deleted == false)
+				{
+					// second attempt to delete the enemy 
+					bool del2 = cherry::ObjectManager::DeleteObjectFromSceneObjectList(proj);
+
+					if (del2 == false)
+						throw std::runtime_error("Object Deletion Failure. Don't put unused enemy objects in this list.");
+				}
+			}
 
 			// Player - Reset to Spawn Position
 			playerObj->SetPosition(playerSpawn);

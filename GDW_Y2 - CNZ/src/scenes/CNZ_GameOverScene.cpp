@@ -98,13 +98,24 @@ void cnz::CNZ_GameOverScene::OnOpen()
 
 	// skybox
 	{
+		// default
+		// cherry::Skybox skybox(
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		// );
+
+		// actual
 		cherry::Skybox skybox(
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+			"res/images/cubemaps/checkerboard_black-red.jpg",
+			"res/images/cubemaps/checkerboard_black-red.jpg",
+			"res/images/cubemaps/checkerboard_black-red.jpg",
+			"res/images/cubemaps/checkerboard_black-red.jpg",
+			"res/images/cubemaps/checkerboard_black-red.jpg",
+			"res/images/cubemaps/checkerboard_black-red.jpg"
 		);
 
 		skybox.AddSkyboxToScene(this);
@@ -131,18 +142,18 @@ void cnz::CNZ_GameOverScene::OnOpen()
 
 	// GAME OVER
 	{
-		cherry::Text* text = new cherry::Text("GAME OVER", GetName(), FONT_ARIAL, WHITE, 25.0F);
+		cherry::Text* text = new cherry::Text("GAME OVER", GetName(), FONT_ARIAL, WHITE, 20.0F);
 		text->SetWindowChild(true);
-		text->SetPositionByWindowSize(0.80F, 0.40F);
+		text->SetPositionByWindowSize(0.87F, 0.40F);
 
 		objectList->AddObject(text);
 	}
 
 	// Final Score
 	{
-		cherry::Text* text = new cherry::Text("FINAL SCORE: " + std::to_string(playerScore), SCENE_NAME, FONT_ARIAL, WHITE, 25.0F);
+		cherry::Text* text = new cherry::Text("FINAL SCORE: " + std::to_string(playerScore), SCENE_NAME, FONT_ARIAL, WHITE, 20.0F);
 		text->SetWindowChild(true);
-		text->SetPositionByWindowSize(0.82F, 0.7F);
+		text->SetPositionByWindowSize(0.92F, 0.7F);
 
 		objectList->AddObject(text);
 	}
@@ -207,6 +218,8 @@ cherry::Scene* cnz::CNZ_GameOverScene::GenerateNewInstance() const
 void cnz::CNZ_GameOverScene::MouseButtonPressed(GLFWwindow* window, int button)
 {
 	cherry::MenuScene::MouseButtonPressed(window, button);
+
+	cherry::AudioEngine::GetInstance().PlayEvent("menu_click");
 }
 
 // draw gui for entering in a new score.
@@ -355,6 +368,8 @@ void cnz::CNZ_GameOverScene::Update(float deltaTime)
 		// if the entered button is the contnue button, and imGui is off.
 		if (enteredButton == exitButton) // exit button
 		{
+			AudioEngine::GetInstance().PlayEvent("menu_accept");
+
 			// leaves and goes back to the title scene.
 			game->SetCurrentScene(game->titleSceneName, false);
 

@@ -23,13 +23,24 @@ void cnz::CNZ_RankingScene::OnOpen()
 
 	// set skybox 
 	{
+		// default
+		// cherry::Skybox skybox(
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg",
+		// 	"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+		// );
+
+		// main
 		cherry::Skybox skybox(
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg",
-			"res/images/cubemaps/checkerboard_black-grey_d.jpg"
+			"res/images/cubemaps/checkerboard_black-blue.jpg",
+			"res/images/cubemaps/checkerboard_black-blue.jpg",
+			"res/images/cubemaps/checkerboard_black-blue.jpg",
+			"res/images/cubemaps/checkerboard_black-blue.jpg",
+			"res/images/cubemaps/checkerboard_black-blue.jpg",
+			"res/images/cubemaps/checkerboard_black-blue.jpg"
 		);
 
 		skybox.AddSkyboxToScene(this);

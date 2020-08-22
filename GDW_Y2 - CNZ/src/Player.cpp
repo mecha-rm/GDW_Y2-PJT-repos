@@ -473,13 +473,13 @@ cnz::Player* cnz::Player::GenerateDefault(std::string scene, cherry::Vec3 positi
 		bool loadRun_B = true;
 		bool loadRun_L = true;
 		bool loadRun_R = true;
-		bool loadDodge_F = true;
-		bool loadDodge_B = true;
-		bool loadDodge_L = true;
-		bool loadDodge_R = true;
-		bool loadDeath = true;
-		bool loadSpecial = true;
-		bool loadBash = true;
+		bool loadDodge_F = false;
+		bool loadDodge_B = false;
+		bool loadDodge_L = false;
+		bool loadDodge_R = false;
+		bool loadDeath = false;
+		bool loadSpecial = false;
+		bool loadBash = false;
 
 		// charging - 26 total frames
 		// pretty sure this animation was never set.

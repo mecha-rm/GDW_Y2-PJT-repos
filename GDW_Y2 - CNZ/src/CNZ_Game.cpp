@@ -126,7 +126,15 @@ void cnz::CNZ_Game::LoadContent()
 		audio.SetEventPosition("bgm_02", glm::vec3(0.0F, 0.0F, glm::mix(15.0F, 0.0F, 0.5F)));
 
 		// sound effects audio balancing
-		audio.SetEventPosition("dash", glm::vec3(0.0F, 0.0F, glm::mix(15.0F, 0.0F, 0.8F)));
+		audio.SetEventPosition("dash", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+		audio.SetEventPosition("arrow", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+
+		// enemy death sounds
+		audio.SetEventPosition("enemy_death", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+		audio.SetEventPosition("enemy_death_01", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+		audio.SetEventPosition("enemy_death_02", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+		audio.SetEventPosition("enemy_death_03", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
+		audio.SetEventPosition("enemy_death_04", glm::vec3(0.0F, 0.0F, glm::mix(20.0F, 0.0F, 0.82F)));
 
 		// plays the event.
 		audio.PlayEvent("bgm_01");

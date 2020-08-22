@@ -88,6 +88,8 @@ Left Mouse Click: charge dash
 ESC: pause
 F: Freeze Screen
 
+CTRL + SHIFT + D: Load Debug Menu
+
 **********************************
 CHERRY LIBRARY - GDW_Y2 - CRY LIB
 **********************************

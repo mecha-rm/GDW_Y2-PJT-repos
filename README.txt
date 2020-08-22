@@ -93,6 +93,8 @@ Page Up: Z+
 Period (.): reset light to base position
 Page Down: Z-
 
+CTRL + SHIFT + D: Load Debug Menu
+
 **********************************
 CHERRY LIBRARY - GDW_Y2 - CRY LIB
 **********************************

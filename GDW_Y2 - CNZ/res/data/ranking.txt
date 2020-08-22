@@ -1,5 +1,5 @@
-Joker___________ 2 21
-Beepo___________ 1 6
+Ghost___________ 3 28
+Two_____________ 2 23
 3_XXXXXXXXXXXXXX 0 0
 4_XXXXXXXXXXXXXX 0 0
 5_XXXXXXXXXXXXXX 0 0
