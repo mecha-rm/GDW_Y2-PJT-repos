@@ -1,6 +1,7 @@
 /*
-* https://www.glfw.org/docs/3.3/input_guide.html#input_key
-* https://www.glfw.org/docs/latest/group__keys.html
+ * References:
+ 	* https://www.glfw.org/docs/3.3/input_guide.html#input_key
+ 	* https://www.glfw.org/docs/latest/group__keys.html
 */
 
 #include "CNZ_TitleScene.h"

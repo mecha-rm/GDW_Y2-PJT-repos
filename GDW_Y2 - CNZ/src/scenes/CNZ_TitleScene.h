@@ -7,6 +7,7 @@
 
 namespace cnz
 {
+	// Title Class
 	class CNZ_TitleScene : public cherry::MenuScene
 	{
 	public:
@@ -35,10 +36,13 @@ namespace cnz
 		void Update(float deltaTime) override;
 
 	private:
+		// entry button (logo) - no longer does anything
 		cherry::Button* entryButton = nullptr;
+
+		// ranking button
 		cherry::Button* rankButton = nullptr;
 
-		// buttons 
+		// buttons for map selection
 		cherry::Button* map1Button = nullptr;
 		cherry::Button* map2Button = nullptr;
 		cherry::Button* map3Button = nullptr;

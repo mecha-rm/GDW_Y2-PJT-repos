@@ -72,10 +72,13 @@ namespace cnz
 		int mapNumber = 0;
 	};
 
+	// Level Class
 	class Level {
 	public:
+		// default constructor
 		Level() = default;
 
+		// constructor
 		Level(std::string legendPath, std::string levelPath, std::string sceneName, int mapNumber);
 
 		// return scene name as string
@@ -212,12 +215,11 @@ namespace cnz
 		cherry::Material::Sptr matStatic; // the static material
 		cherry::Material::Sptr matDynamic; // the dynamic material
 
-		// the player's spawn point
+		// the player's spawn point, and its index in the map array
 		cherry::Vec3 playerSpawn{};
 		glm::ivec2 playerSpawnIndex{};
 
-		// TODO: I don't think these are being used properly.
-		// Obstacles
+		// Obstacles Variables - used for copying existing objects if enabled.
 		Obstacle* wall = nullptr;
 		Obstacle* dumpster = nullptr;
 		Obstacle* lampPost = nullptr;

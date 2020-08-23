@@ -1,7 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
-//Mechaspider class
+// Mechaspider Class
 namespace cnz {
 	class Mechaspider : public cnz::Enemy
 	{

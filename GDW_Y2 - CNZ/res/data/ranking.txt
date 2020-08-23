@@ -1,7 +1,7 @@
 Ghost___________ 3 28
-Two_____________ 2 23
-3_XXXXXXXXXXXXXX 0 0
-4_XXXXXXXXXXXXXX 0 0
+Jerry___________ 1 28
+Bing____________ 1 18
+Carlos__________ 2 7
 5_XXXXXXXXXXXXXX 0 0
 6_XXXXXXXXXXXXXX 0 0
 7_XXXXXXXXXXXXXX 0 0

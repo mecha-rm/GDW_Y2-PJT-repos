@@ -26,6 +26,7 @@ cnz::Marauder::Marauder(std::string scene)
 	LoadAnimations();
 }
 
+// constructor
 cnz::Marauder::Marauder(std::string scene, cherry::Material::Sptr mat)
 	: Enemy("res/objects/enemies/Marauder.obj", scene, mat)
 {
@@ -140,11 +141,12 @@ void cnz::Marauder::LoadAnimations()
 	}
 }
 
-
+// attack function
 void cnz::Marauder::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 }
 
+// update function
 void cnz::Marauder::Update(float dt)
 {
 	Enemy::Update(dt);

@@ -140,31 +140,6 @@ void cnz::CNZ_Game::LoadContent()
 		audio.PlayEvent("bgm_01");
 	}
 
-	// Title Scene
-	// if(loadMenu)
-	// {
-	// 	CNZ_TitleScene* title = new CNZ_TitleScene("Title Screen");
-	// 
-	// 	// loads in the first map
-	// 	CNZ_GameplayScene* map1Scene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
-	// 	title->destScene = map1Scene->GetName(); // destination
-	// 
-	// 	RegisterScene(title, true);
-	// 	// RegisterScene(map1Scene, true); // this is the current scene.
-	// 	RegisterScene(map1Scene, false); // this is the current scene. 
-	// }
-	// else
-	// {
-	// 	// loads in the first map
-	// 	// map 1
-	// 	// CNZ_GameplayScene* mapScene = new CNZ_GameplayScene(map1Info.legendPath, map1Info.levelPath, map1Info.sceneName);
-	// 
-	// 	// map 2
-	// 	CNZ_GameplayScene* mapScene = new CNZ_GameplayScene(map2Info.legendPath, map2Info.levelPath, map2Info.sceneName);
-	// 
-	// 	RegisterScene(mapScene, true);
-	// }
-
 	// profiling enabled
 	if (PROFILE)
 		cherry::ProfilingSession::End();

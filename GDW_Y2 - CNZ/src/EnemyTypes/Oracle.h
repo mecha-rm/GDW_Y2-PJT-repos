@@ -1,7 +1,7 @@
 #pragma once
 #include "Enemy.h"
 
-//Oracle class
+// Oracle class
 namespace cnz {
 	class Oracle : public cnz::Enemy
 	{
@@ -15,11 +15,13 @@ namespace cnz {
 		// copy constuctor
 		Oracle(const cnz::Oracle&);
 
-		// faux copy constructor
+		// faux copy constructor (applies scene)
 		Oracle(cnz::Oracle* obj, std::string scene);
 
+		// attack function
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// update function
 		void Update(float dt);
 		
 	private:
@@ -28,6 +30,7 @@ namespace cnz {
 		static const float EMISSIVE_POWER;
 
 	protected:
+		// loads animations
 		void LoadAnimations() override;
 	};
 }

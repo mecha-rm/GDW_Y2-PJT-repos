@@ -1,8 +1,8 @@
 #pragma once
 #include "Enemy.h"
 
+// Bastion Class
 
-//Bastion class
 namespace cnz {
 	class Bastion : public cnz::Enemy
 	{
@@ -19,12 +19,14 @@ namespace cnz {
 		// copy constructor
 		Bastion(const cnz::Bastion&);
 
+		// attack
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// update loop
 		void Update(float dt);
 
 	private:
-		// loads all aniamtions
+		// loads all animations
 		void LoadAnimations() override;
 
 		// emissive colour and power

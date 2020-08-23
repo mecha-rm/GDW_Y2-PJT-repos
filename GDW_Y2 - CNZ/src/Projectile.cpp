@@ -1,9 +1,11 @@
 #include "Projectile.h"
 
+// constructor
 cnz::Projectile::Projectile(std::string modelFile, std::string sceneName) : Projectile(modelFile, sceneName, cherry::Vec3())
 {
 }
 
+// constructor
 cnz::Projectile::Projectile(std::string modelFile, std::string sceneName, cherry::Vec3 pos)
 	: Object(modelFile, sceneName, true)
 {
@@ -36,6 +38,7 @@ cnz::Projectile::Projectile(const Projectile & proj) : Object(proj)
 	ageFactor = proj.ageFactor;
 }
 
+// set direction vector
 void cnz::Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
 {
 	arrowDirVec = endPos - startPos;
@@ -46,6 +49,7 @@ void cnz::Projectile::SetDirVec(cherry::Vec3 startPos, cherry::Vec3 endPos)
 	arrowDirVec.SetZ(arrowDirVec.GetZ() / temp);
 }
 
+// set direction vector
 void cnz::Projectile::SetDirVec(cherry::Vec3 dirVec) {
 	arrowDirVec = dirVec;
 }
@@ -62,6 +66,7 @@ void cnz::Projectile::SetDirVec(cherry::Vec3 dirVec) {
 // // gets which enemy the projectile is for.
 // int cnz::Projectile::GetWhichEnemy() const { return whichEnemy; }
 
+// set draw pbody
 bool cnz::Projectile::SetDrawPBody(bool draw)
 {
 	if (this->GetPhysicsBodyCount() == 0) {
@@ -74,6 +79,7 @@ bool cnz::Projectile::SetDrawPBody(bool draw)
 	}
 }
 
+// get draw pbody
 bool cnz::Projectile::GetDrawPBody() const
 {
 	return this->drawPBody;
@@ -85,21 +91,25 @@ void cnz::Projectile::SetPBodySize(cherry::Vec3 size)
 	pBodySize = size;
 }
 
+// get pbody size
 cherry::Vec3 cnz::Projectile::GetPBodySize() const
 {
 	return this->pBodySize;
 }
 
+// get pbody width
 float cnz::Projectile::GetPBodyWidth() const
 {
 	return this->GetPBodySize().GetX() / 2;
 }
 
+// get pbody height
 float cnz::Projectile::GetPBodyHeight() const
 {
 	return this->GetPBodySize().GetY() / 2;
 }
 
+// get pbody depth
 float cnz::Projectile::GetPBodyDepth() const
 {
 	return this->GetPBodySize().GetZ() / 2;

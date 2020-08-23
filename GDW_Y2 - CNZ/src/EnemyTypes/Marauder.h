@@ -18,8 +18,10 @@ namespace cnz {
 		// copy constructor.
 		Marauder(const cnz::Marauder&);
 
+		// attack function
 		void Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos);
 
+		// update function
 		void Update(float dt);
 
 	private:

@@ -1,14 +1,6 @@
-// TODO: optimize enemy positions so that they don't spawn on top of the player.
-// TODO: redo maps 2 and 3.
-// TODO: the game breaks when certain enemies are killed sometimes.. still...
-// TODO: there's a glitch where the player's attack won't happen if holding space when they die. Fix it.
-//	Using the in-game reset and killing enemies seemed to cause it. Is this consistently the cause?
+// the game breaks when certain enemies are killed sometimes... But it happens less frequently now. I don't know how to fix it.
 // TODO: the enemy that shoots an arrow seems to be the problem. The hitbox is too small to hit anything.
-// TODO: change how the enemies are spawned in.
-// TODO: add in new enemies mid wave after a certain point (if there is no stutter).
-// TODO: fill in the missing blocks in map1. Also add osmething under the player to fill in the skybox.
-// TODO: the dash releases immediately, which shouldn't be happening. You may need to make the dashTrigger a global variable.
-// TODO: add means of stopping the player from exiting the barrier. Maybe add an emeny to kill the player if they exit the barrier.
+// TODO: the player should be stopped from straying too far out of the arena.
 // TODO: music cuts out if exsting the arena
 
 #include "CNZ_GameplayScene.h"
@@ -84,12 +76,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	glm::ivec2 myWindowSize = game->GetWindowSize(); // the current window size.
 	const std::string SCENE_NAME = GetName();
 
+	// pause menu
 	{
-		// pauseMenu = new Image("res/images/codename_zero_logo.png", game->GetCurrentSceneName());
-		// pauseMenu->SetWindowChild(true);
-		// pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
-		// pauseMenu->SetPositionByWindowSize(cherry::Vec2(0.5f, 0.25f));
-
 		pauseMenu = new Image("res/images/pause_menu_image.png", game->GetCurrentSceneName());
 		pauseMenu->SetWindowChild(true);
 		// pauseMenu->SetScale(cherry::Vec3(0.25f, 0.25f, 1.0f));
@@ -116,24 +104,8 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// Audio
 	{
 		// ProfileTimer audioLoad = ProfileTimer("gameplay-on_open-audio_loading");
-		// get instance
+		// get instance of audio
 		AudioEngine& audio = AudioEngine::GetInstance();
-
-		// loaded in the CNZ_Game file now.
-		// audio.LoadBank("Master");
-		// audio.LoadEvent("dash");
-		// audio.LoadEvent("footstep");
-		// audio.LoadEvent("bgm_01");
-		// audio.LoadEvent("arrow");
-		// audio.LoadEvent("enemy_death");
-		// audio.LoadEvent("menu_accept");
-		// audio.LoadEvent("menu_click");
-		// audio.LoadEvent("new_wave");
-		// audio.LoadEvent("shield_hit");
-		// audio.LoadEvent("timestop");
-
-		// audio loading finished.
-		// audioLoad.Stop();
 
 		// switching bgms
 		audio.StopEvent("bgm_01");
@@ -143,7 +115,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 	// if 'true', then the level loading will be completed.
 	bool levelLoading = true;
 
-	// default lights if no level has been loaded.
+	// default lights if no level has been loaded. These defaults are not used due to the movable light.
 	if (!levelLoading)
 	{
 		lightList->AddLight(new Light(GetName(), Vec3(-7.0F, 0.0F, 0.0F), Vec3(1.0F, 0.1F, 0.1F),
@@ -161,16 +133,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		// 	Vec3(0.002F, 0.001F, 0.2153F), 1.5F, 0.8F, 80.0F, 1.0F / 9000.0F));
 	}
 
-	// player light
+	// Player Light
 	{
-		// todo: maybe make the light be out in front of the player instead, and be where they're facing.
+		// TODO: maybe make the light be out in front of the player instead, and be where they're facing.
 		// the light is okay for now, but it could be better.
 		playerLight = new Light(SCENE_NAME, Vec3(0, 0, 1.5F), Vec3(1, 1, 1), Vec3(0.015F, 0.012F, 0.912F), 0.15f, 0.12f, 10.0f, 1/100.0f);
 		playerLightOffset = PLAYER_LIGHT_OFFSET_BASE;
 		lightList->AddLight(playerLight);
 	}
 
-	// score
+	// Player Score
 	{
 		std::string tempStr = "";
 		tempStr.resize(SCORE_DIGIT_LIMIT, '0');
@@ -185,7 +157,7 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		objectList->AddObject(scoreText);
 	}
 
-	// time stop
+	// Time Stop
 	{
 		std::string tempStr = "";
 		tempStr.resize(TIME_STOP_DISPLAY_DIGITS_MAX, '0');
@@ -200,17 +172,16 @@ void cnz::CNZ_GameplayScene::OnOpen()
 		objectList->AddObject(timeStopText);
 	}
 	
-	// default materials
-	// TODO: I think I found where the problem is. These are shared pointers that do NOT get deleted when the scene is closed.
+	// Default Materials
 	// This is because a reference to these materails still exist in memory. When these scenes are opened again, they try to...
 	// rebuild these materials for a second time, getting rid of these references. This may be the problem.
-	// TODO: shift arrow in image upwards.
 	matStatic = lightList->GenerateMaterial(STATIC_VS, STATIC_FS, sampler); // error caused here.
 	matDynamic = lightList->GenerateMaterial(DYNAMIC_VS, DYNAMIC_FS, sampler);
 
 
-	// load all levels here, set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
-	if (levelLoading) {
+	// load all levels here, and set main menu scene here. Change scenes in Update based on certain conditions where the level should change.
+	if (levelLoading) 
+	{
 		// ProfileTimer levelLoad = ProfileTimer("gameplay-on_open-level_load");
 
 		//// LOAD LEVELS
@@ -2794,17 +2765,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 		// Path update
 		// testObj->Update(deltaTime);
 
-		//// update physics bodies
-		// player PB
-		// this should be unneeded.
-		// playerObj->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0, 0, 1));
-		// // enemy PBs
-		// for (int i = 0; i < enemyList.size(); i++) {
-		// 	//enemyList[i]->GetPhysicsBodies()[0]->SetLocalPosition(cherry::Vec3(0,0,1));
-		// }
-		// test PB
-		//testObj->GetPhysicsBodies()[0]->SetLocalPosition(testObj->GetPosition());
-
 
 		// cherry::ProfileTimer animationTimer("profiling-animation-change");
 
@@ -2850,10 +2810,12 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				// playerAngle = playerObj->GetDegreeAngle(); // moved to before switch statement.
 
 				// always get a positive difference 
-				if (playerAngle > angle) {
+				if (playerAngle > angle) 
+				{
 					angleDiff = playerAngle - angle;
 				}
-				else if (angle > playerAngle) {
+				else if (angle > playerAngle) 
+				{
 					angleDiff = angle - playerAngle;
 				}
 				else {
@@ -2863,19 +2825,17 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				angleDiff = angleDiff - 90.0f; // subrtact 90 to fix werid rotation...
 
 				// make sure we are between 0 and 360. this should never be an issue but why NOT add redundant computations? /s 
-				while (angleDiff < 0.0f) {
+				while (angleDiff < 0.0f) 
+				{
 					angleDiff = angleDiff + 360.0f;
 				}
-				while (angleDiff > 360.0f) {
+				while (angleDiff > 360.0f) 
+				{
 					angleDiff = angleDiff - 360.0f;
 				}
 
-				if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) { // forward walking animation 
-					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(3) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					// 	playerObj->SetCurrentAnimationByIndex(3);
-					// 	playerObj->GetCurrentAnimation()->Play();
-					// }
-
+				if ((angle <= 45.0f && angle >= 0.0f) || (angle <= 360.0f && angle >= 315.0f)) // forward walking animation 
+				{
 					// play the animation
 					if (playerObj->GetCurrentAnimation() != playerObj->GetRunFAnimation())
 					{
@@ -2887,13 +2847,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 						playerObj->GetCurrentAnimation()->Play();
 					}
 				}
-				else if (angle > 45.0f && angle <= 135.0f) { // right walking animation 
-
-					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(6) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					// 	playerObj->SetCurrentAnimationByIndex(6);
-					// 	playerObj->GetCurrentAnimation()->Play();
-					// }
-
+				else if (angle > 45.0f && angle <= 135.0f) // right walking animation 
+				{
 					// play the animation
 					if (playerObj->GetCurrentAnimation() != playerObj->GetRunRAnimation())
 					{
@@ -2906,11 +2861,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					}
 				}
 				else if (angle > 135.0f && angle <= 225.0f) { // backwards walking animation 
-					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(4) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					// 	playerObj->SetCurrentAnimationByIndex(4);
-					// 	playerObj->GetCurrentAnimation()->Play();
-					// }
-
 					// play the animation
 					if (playerObj->GetCurrentAnimation() != playerObj->GetRunBAnimation())
 					{
@@ -2923,11 +2873,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 					}
 				}
 				else if (angle > 225.0f && angle < 315.0f) { // left walking animation 
-					// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(5) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing 
-					// 	playerObj->SetCurrentAnimationByIndex(5);
-					// 	playerObj->GetCurrentAnimation()->Play();
-					// }
-
 					// play the animation
 					if (playerObj->GetCurrentAnimation() != playerObj->GetRunLAnimation())
 					{
@@ -2943,11 +2888,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				break;
 
 			case 2:  // charging dash attack
-				// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(0) != playerObj->GetCurrentAnimation())) { // check if charge anim is already playing
-				// 	playerObj->SetCurrentAnimationByIndex(0);
-				// 	playerObj->GetCurrentAnimation()->Play();
-				// }
-
 				// play the animation
 				if (playerObj->GetCurrentAnimation() != playerObj->GetChargingAnimation())
 				{
@@ -2961,12 +2901,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				break;
 
 			case 3: // dash charged 
-				// if (playerObj->GetCurrentAnimation() != nullptr) {
-				// 	playerObj->GetCurrentAnimation()->Stop();
-				// }
-				// playerObj->SetCurrentAnimationByIndex(1);
-				// playerObj->GetCurrentAnimation()->Play();
-				
 				// play the animation
 				if (playerObj->GetCurrentAnimation() != playerObj->GetChargedAnimation())
 				{
@@ -2980,11 +2914,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				break;
 
 			case 4: // dashing 
-				// if ((playerObj->GetCurrentAnimation() == nullptr) || (playerObj->GetAnimation(2) != playerObj->GetCurrentAnimation())) {
-				// 	playerObj->SetCurrentAnimationByIndex(2);
-				// 	playerObj->GetCurrentAnimation()->Play();
-				// }
-
 				// play the animation
 				if (playerObj->GetCurrentAnimation() != playerObj->GetDashingAnimation())
 				{
@@ -2998,10 +2927,8 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 				break;
 			}
 
-
 		}
 		// animationTimer.Stop();
-
 
 		// cherry::ProfileTimer cameraTimer("profiling-camera_move");
 
@@ -3146,30 +3073,6 @@ void cnz::CNZ_GameplayScene::Update(float deltaTime)
 
 			// score needs to be updated.
 			updateScore = true;
-
-
-			// since the enemy list gets shorter while (i) gets larger, this should be re-written.
-			// we do have i-- to change this, but that goes against the purpose of a for loop.
-
-			// OLD VERSION - this should be removed in a later push.
-
-			// kills all enemies
-			// for (int i = 0; i < enemyList.size(); i++) {
-			// 	// the physics body doesn't need to be removed for the game to be reset.
-			// 	// enemyList[i]->RemovePhysicsBody(enemyList[i]->GetPhysicsBodies()[0]);
-			// 	
-			// 	cherry::Object* obj = enemyList[i];
-			// 	util::removeFromVector(enemyList, enemyList[i]); // removes from the enemy list
-			// 	
-			// 	// objectList->RemoveObjectByPointer(obj);
-			// 	objectList->DeleteObjectByPointer(obj); // deletes the object.
-			// 
-			// 	// delete obj;
-			// 	kills++;
-			// 	// cout << kills << endl;
-			// 	i--; // 
-			// }
-			// enemyList.clear();
 
 
 			// while there are still enemies to kill.

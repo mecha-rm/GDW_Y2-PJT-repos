@@ -1,5 +1,3 @@
-// TODO: add in sound effects.
-// TODO: take another look at score formatting.
 #include "CNZ_RankingScene.h"
 
 #include "..\CNZ_Game.h"

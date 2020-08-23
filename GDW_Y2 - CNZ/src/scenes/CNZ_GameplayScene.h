@@ -19,13 +19,6 @@
 
 namespace cnz
 {
-	// struct AnimStruct { // easier to batch add frames with a morphanim this way.
-	// 	int numFrames;
-	// 	std::string basePath;
-	// 	float animTime;
-	// 	cherry::MorphAnimation* anim;
-	// };
-
 	class CNZ_GameplayScene : public cherry::GameplayScene
 	{
 	public:
@@ -116,14 +109,6 @@ namespace cnz
 
 		// the pause menu
 		cherry::Image* pauseMenu = nullptr;
-
-		// TODO: add in exit key, back key, and change pausee button.
-		// cherry::Text* pauseMenuLine1;
-
-		// the GameplayScene already has the object list and light list.
-		// these should probably be removed, but it was kept in for ease of use.
-		// cherry::ObjectList* objList = nullptr;
-		// cherry::LightList* tempList = nullptr;
 
 		// default material
 		cherry::SamplerDesc description; // texture description 

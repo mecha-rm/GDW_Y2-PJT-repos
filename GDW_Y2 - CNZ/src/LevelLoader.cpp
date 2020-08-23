@@ -1,7 +1,6 @@
-// TODO: Building Faces are facing the wrong direction. Maybe don't cull faces?
-// TODO: The full debug map does not seem to get printed.
-// TODO: tiles that are placed in the same spot do not render. Only the first tile in the list does.
-// TODO: copy seems to cause crashes.
+// TODO: map2 and map3 do not get completed (the row/col numbers may be wrong)
+// TODO: no maps after 3 are implemented into the code.
+// TODO: copy seems to cause crashes. Either leave it off, or fix it.
 
 #include "LevelLoader.h"
 #include "cherry/scenes/SceneManager.h"
@@ -10,7 +9,7 @@
 #include "cherry/Instrumentation.h"
 #include <stack>
 
-// sources TODO: remove nullptr initialiation?
+// source objects
 cnz::Player* cnz::Level::sourcePlayer = nullptr;
 cnz::Sentry* cnz::Level::sourceSentry = nullptr;
 cnz::Oracle* cnz::Level::sourceOracle = nullptr;
@@ -22,11 +21,11 @@ cnz::Projectile* cnz::Level::sourceArrow = nullptr;
 // cell offset (default: 6.25F)
 const float cnz::Level::CELL_OFFSET = 6.25f;
 
-// symbols for the level map.
+// symbols for the level map. The (|) is used to seperate objects that go in the same spot, while (~) is used for transformation data.
 const std::string cnz::Level::DIVIDER_SYM = "|";
 const std::string cnz::Level::TFORM_SYM = "~";
 
-// checks to see if the provided character is a letter.
+// checks to see if the provided character is a letter. Used for pulling object symbol.
 bool IsLetter(const char chr)
 {
 	// A = 65, Z = 90, a = 97, z = 122
@@ -42,16 +41,19 @@ cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sce
 {
 	// this->sceneName = sceneName;
 
-	if (!LoadLegend(legendPath)) { // wasn't valid
+	if (!LoadLegend(legendPath)) // wasn't valid
+	{ 
 		LOG_ERROR("Legend CSV is NOT VALID. Exiting.");
-		// TODO: not have a call to exit() in the final build.
+		// TODO: do not have a call to exit() in the final build.
 		exit(1);
 	}
-
-	else {
+	else 
+	{
 		LOG_TRACE("Legend valid.");
 
-		if (!LoadLevel(levelPath)) {
+		// loads level
+		if (!LoadLevel(levelPath)) 
+		{
 			LOG_ERROR("Level CSV is NOT VALID. Exiting.");
 			// TODO: not have a call to exit() in the final build.
 			exit(1);
@@ -65,7 +67,9 @@ cnz::Level::Level(std::string legendPath, std::string levelPath, std::string sce
 	}
 }
 
-std::string cnz::Level::GetSceneName() const {
+// gets the scene name
+std::string cnz::Level::GetSceneName() const 
+{
 	return sceneName;
 }
 
@@ -75,6 +79,7 @@ int cnz::Level::GetMapNumber() const
 	return mapNumber;
 }
 
+// loads the level legend
 bool cnz::Level::LoadLegend(std::string legendPath) {
 	std::vector<std::string> names;
 	std::vector<std::string> symbols;
@@ -117,7 +122,8 @@ bool cnz::Level::LoadLevel(std::string levelPath) {
 	//sceneName = levelCSV.GetRow(0, 0); // Don't do this, rather pass scene name as a string in constructor for easier use of scene manager
 	mapSize = GetMapSize(levelCSV);
 
-	if (mapSize.size() != 2) {
+	if (mapSize.size() != 2) 
+	{
 		return false;
 	}
 	else 
@@ -186,7 +192,7 @@ std::vector<std::vector<std::string>> cnz::Level::GetMap(CSV level) {
 	return tempMap;
 }
 
-// gets the row count
+// gets the map row count
 int cnz::Level::GetMapRowCount() const
 {
 	return map.size();
@@ -229,8 +235,8 @@ std::vector<cherry::Object*> cnz::Level::GenerateObjects()
 	// this allows for multiple objects being in the same spot.
 	std::vector<std::vector<std::string>> mapCpy = map;
 
+	// these variables
 	int offsetX = 0, offsetY = 0;
-	cherry::Vec3 objBodySize;
 
 	// gets the scene object list and light object list
 	cherry::ObjectList* objectList = cherry::ObjectManager::GetSceneObjectListByName(sceneName);
@@ -1577,7 +1583,6 @@ std::vector<cherry::Object*> cnz::Level::GenerateDefaults()
 
 	// scale. if needed.
 
-
 	// attach pbody
 	// TODO: outdated size
 	playerObj->AddPhysicsBody(new cherry::PhysicsBodyBox(playerObj->GetPosition(), playerObj->GetPBodySize()));
@@ -1717,7 +1722,7 @@ void cnz::Level::GenerateSources()
 	sourceArrow = new Projectile("res/objects/weapons/arrow.obj", sceneName);
 	cherry::Vec3 arwBdy = sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum();
 	
-	// TODO: hitbox is way too small.
+	// TODO: hitbox is way too small. Fix that.
 	sourceArrow->SetPBodySize(sourceArrow->GetMeshBodyMaximum() - sourceArrow->GetMeshBodyMinimum());
 
 	sourceArrow->AddPhysicsBody(new cherry::PhysicsBodyBox(cherry::Vec3(0, 0, 0), sourceArrow->GetPBodySize() * 2));
@@ -1764,6 +1769,7 @@ const glm::ivec2 cnz::Level::GetPlayerSpawnIndex() const
 	return playerSpawnIndex;
 }
 
+// get objects props
 std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	std::vector<float> properties;
 	std::string cell = map[y][x];
@@ -1842,7 +1848,7 @@ std::vector<float> cnz::Level::GetObjectProps(int y, int x) {
 	}
 }
 
-
+// unflip vector3
 cherry::Vec3 cnz::Level::UnFlipVec3(cherry::Vec3 vecToFlip) {
 	cherry::Vec3 flippedVec;
 	flippedVec.SetX(vecToFlip.GetX());

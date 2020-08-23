@@ -137,11 +137,12 @@ void cnz::Bastion::LoadAnimations()
 	}
 }
 
-
+// attack function
 void cnz::Bastion::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 }
 
+// update function
 void cnz::Bastion::Update(float dt)
 {
 	Enemy::Update(dt);

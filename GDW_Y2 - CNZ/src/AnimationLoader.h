@@ -1,3 +1,4 @@
+// struct to streamline loading animation. It is not used.
 #pragma once
 #include <cherry\animate\MorphAnimation.h>
 
@@ -11,5 +12,6 @@ namespace cnz
 		cherry::MorphAnimation* anim;
 	};
 
+	// loads animation
 	cnz::AnimStruct& LoadAnimation(AnimStruct& anim);
 }

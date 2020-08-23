@@ -44,14 +44,20 @@ namespace cnz
 		// set pbody size - We use this when getting the size after loading the object based on its mesh mins and maxes.
 		void SetPBodySize(cherry::Vec3 newSize);
 
-		// get pbody width, height and depth.
+		// get pbody width
 		float GetPBodyWidth() const;
+
+		// get pbody height
 		float GetPBodyHeight() const;
+
+		// get pbody depth
 		float GetPBodyDepth() const;
 
 	private:
-		// pbody stuff. self explanatory
+		// pbody size
 		cherry::Vec3 pBodySize = cherry::Vec3(4, 4, 4);
+
+		// bool for if a pbody should be drawn
 		bool drawPBody = false;
 
 		// TODO: possibly delete these variables? Object has its own rotation now.

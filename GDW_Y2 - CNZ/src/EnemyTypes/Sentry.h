@@ -34,6 +34,7 @@ namespace cnz {
 		float arrowST = 0;
 
 	protected:
+		// loads animations
 		void LoadAnimations() override;
 	};
 }

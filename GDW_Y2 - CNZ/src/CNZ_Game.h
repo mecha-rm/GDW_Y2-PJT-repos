@@ -1,6 +1,6 @@
 /*
  * Name: Bonus Fruit
- * Date: 07/20/2020
+ * Date: 08/22/2020
  * Description: game file for Codename: ZERO
  * References:
 */
@@ -61,7 +61,8 @@ namespace cnz
 		// game over scene name.
 		std::string gameOverSceneName = "";
 
-		// maps; do not make changes.
+		// maps level info; do not make changes.
+		// these are referenced for swithcing scenes.
 		LevelLoadInfo map0Info;
 		LevelLoadInfo map1Info;
 		LevelLoadInfo map2Info;

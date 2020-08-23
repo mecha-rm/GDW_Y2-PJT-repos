@@ -4,6 +4,7 @@
 
 namespace cnz
 {
+	// projectile class
 	class Projectile : public cherry::Object
 	{
 	public:
@@ -91,9 +92,11 @@ namespace cnz
 		bool active = false;
 
 	private:
+		// pbody sizes
 		cherry::Vec3 pBodySize = cherry::Vec3(0.1f, 0.1f, 0.1f);
 		bool drawPBody = false;
 
+		// arrow direction vector
 		cherry::Vec3 arrowDirVec = cherry::Vec3(0, 0, 0);
 		// int whichGroup = -1;
 		// int whichEnemy = -1;

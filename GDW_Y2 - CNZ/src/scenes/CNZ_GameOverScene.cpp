@@ -223,6 +223,7 @@ void cnz::CNZ_GameOverScene::MouseButtonPressed(GLFWwindow* window, int button)
 }
 
 // draw gui for entering in a new score.
+// TODO: sometimes the imgui window doesn't disappear.
 void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 {
 	cherry::Game* game = cherry::Game::GetRunningGame();

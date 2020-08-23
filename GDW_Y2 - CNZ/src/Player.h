@@ -265,7 +265,6 @@ namespace cnz
 		3 -> charged 
 		4 -> dashing
 		TODO: include other anims such as dashing, dodging and special attack
-		TODO: add objects to keep track of which animation is what for easier switching.
 		*/
 		int state = 0;
 

@@ -1,6 +1,8 @@
 #include "CSV.h"
 
-CSV::CSV(std::string csvPath) {
+// constructor
+CSV::CSV(std::string csvPath) 
+{
 	std::ifstream file = std::ifstream(csvPath);
 	std::string line;
 
@@ -18,13 +20,14 @@ CSV::CSV(std::string csvPath) {
 	}
 }
 
+// gets the row
 std::string CSV::GetRow(int num, int num2) {
 	if (num >= rows.size()) {
-		std::cout << "y value too big" << std::endl;
+		std::cout << "row number/y-value too large" << std::endl;
 	}
 	else {
 		if (num2 >= rows[num].size()) {
-			std::cout << "x value too big" << std::endl;
+			std::cout << "col number/x-value too large" << std::endl;
 			return "";
 		}
 	}
@@ -32,10 +35,12 @@ std::string CSV::GetRow(int num, int num2) {
 	return rows[num][num2];
 }
 
+// [] operator
 std::vector<std::string> const& CSV::operator[](std::size_t index) const {
 	return rows[index];
 }
 
+// size
 std::size_t CSV::Size() const {
 	return rows.size();
 }

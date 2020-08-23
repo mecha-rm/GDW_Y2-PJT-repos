@@ -57,6 +57,7 @@ cnz::Oracle::Oracle(const cnz::Oracle& enemy) : Enemy(enemy)
 	}
 }
 
+// faux copy constructor
 cnz::Oracle::Oracle(cnz::Oracle* obj, std::string scene) : cnz::Enemy(obj, scene) 
 { 
 	type = cnz::oracle;
@@ -70,15 +71,7 @@ cnz::Oracle::Oracle(cnz::Oracle* obj, std::string scene) : cnz::Enemy(obj, scene
 	}
 }
 
-void cnz::Oracle::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
-{
-}
-
-void cnz::Oracle::Update(float dt)
-{
-	Enemy::Update(dt);
-}
-
+// load animations
 void cnz::Oracle::LoadAnimations()
 {
 	// Walk Animation
@@ -141,4 +134,15 @@ void cnz::Oracle::LoadAnimations()
 		aniAttack.animation = attack;
 		aniAttack.index = GetAnimationCount() - 1;
 	}
+}
+
+// attack function
+void cnz::Oracle::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
+{
+}
+
+// update function
+void cnz::Oracle::Update(float dt)
+{
+	Enemy::Update(dt);
 }

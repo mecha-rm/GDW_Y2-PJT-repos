@@ -133,11 +133,12 @@ void cnz::Mechaspider::LoadAnimations()
 	}
 }
 
-
+// attack function
 void cnz::Mechaspider::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 }
 
+// update function
 void cnz::Mechaspider::Update(float dt)
 {
 	Enemy::Update(dt);

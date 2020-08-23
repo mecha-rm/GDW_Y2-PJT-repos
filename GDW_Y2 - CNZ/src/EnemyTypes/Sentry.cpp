@@ -86,6 +86,7 @@ cnz::Sentry::Sentry(const cnz::Sentry* obj, std::string scene) : cnz::Enemy(obj,
 // load aniamtions
 void cnz::Sentry::LoadAnimations()
 {
+	// Walk Animation
 	{
 		cherry::MorphAnimation* walk = new cherry::MorphAnimation();
 		AddAnimation(walk);
@@ -143,6 +144,7 @@ void cnz::Sentry::LoadAnimations()
 	}
 }
 
+// attack functions
 void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 {
 	arrowDirVec = aimPos - startPos;
@@ -157,6 +159,7 @@ void cnz::Sentry::Attack(cherry::Vec3 startPos, cherry::Vec3 aimPos)
 	attacking = true;
 }
 
+// update functions
 void cnz::Sentry::Update(float dt)
 {
 	Enemy::Update(dt);
