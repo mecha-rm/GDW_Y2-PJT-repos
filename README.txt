@@ -48,6 +48,8 @@ NOTES
 		- if at its maximum value, the player can activate the time stop. When the effect is activated, the timer counts down.
 		- when it reaches 0, the effect stops. It then counts up to when it can be used again.
 			- the text turns red when this happens. It becomes white once the time stop has been fully charged.
+- so as it turns out, the cherry.lib file is too large to be uploaded to the git repo. So while the library project can be built, the end result cannot be pushed.
+	- this is fine, as we don't use the lib file anyway. But I just wanted to make a note of this.
 
 **********************************
 CHERRY ENGINE - GDW_Y2 - BF PJT
