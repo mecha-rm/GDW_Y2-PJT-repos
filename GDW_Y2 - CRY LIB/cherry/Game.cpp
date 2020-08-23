@@ -198,22 +198,46 @@ const std::string cherry::Game::GetWindowTitle() const
 }
 
 // gets the length of the window title.
-int cherry::Game::GetWindowTitleLength() const { return GetWindowTitle().size(); }
+int cherry::Game::GetWindowTitleLength() const 
+{ 
+	return GetWindowTitle().size(); 
+}
 
 // gets the GLFW window.
-GLFWwindow* cherry::Game::GetWindow() const { return myWindow; }
+GLFWwindow* cherry::Game::GetWindow() const 
+{ 
+	return myWindow; 
+}
 
 // gets the window width
-int cherry::Game::GetWindowWidth() const { return myWindowSize.x; }
+int cherry::Game::GetWindowWidth() const 
+{ 
+	return myWindowSize.x; 
+}
 
 // gets the window height
-int cherry::Game::GetWindowHeight() const { return myWindowSize.y; }
+int cherry::Game::GetWindowHeight() const 
+{ 
+	return myWindowSize.y; 
+}
 
 // gets the window size
-glm::ivec2 cherry::Game::GetWindowSize() const { return myWindowSize; }
+glm::ivec2 cherry::Game::GetWindowSize() const 
+{ 
+	return myWindowSize; 
+}
 
 // shows whether the window is in full screen or not
-bool cherry::Game::IsFullScreen() const { return fullScreen; }
+bool cherry::Game::IsFullScreen() const 
+{ 
+	return fullScreen; 
+}
+
+// forces the window to close, ending the game.
+void cherry::Game::CloseWindow()
+{
+	glfwSetWindowShouldClose(myWindow, !glfwWindowShouldClose(myWindow));
+}
 
 // gets whether the cursor is in the window content or not.
 bool cherry::Game::GetCursorInWindow() const { return mouseEnter; }

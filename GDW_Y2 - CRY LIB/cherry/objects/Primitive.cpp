@@ -1,4 +1,5 @@
 #include "Primitive.h"
+#include "..\lights\LightManager.h"
 
 // constructor
 cherry::Primitive::Primitive() : cherry::Object()
@@ -20,6 +21,26 @@ cherry::Primitive::~Primitive()
 
 // gets the base colour of the primitive.
 cherry::Vec4 cherry::Primitive::GetColor() const { return color; }
+
+// generates a default material that has no lighting.
+cherry::Material::Sptr cherry::Primitive::GenerateDefaultMaterial()
+{
+	return Material::GenerateDefaultMaterial();
+}
+
+// generates the default lighting material for the primitive.
+cherry::Material::Sptr cherry::Primitive::GenerateLightingMaterial()
+{
+	// generates with no light list to fill in values.
+	return Material::GenerateLightingMaterialStatic(nullptr);
+}
+
+// generates the default lighting material for the primitive.
+cherry::Material::Sptr cherry::Primitive::GenerateLightingMaterial(cherry::LightList* ll)
+{
+	// generates with light list to fill in values.
+	return Material::GenerateLightingMaterialStatic(ll);
+}
 
 // calculates the normals of the primitive.
 void cherry::Primitive::CalculateNormals()

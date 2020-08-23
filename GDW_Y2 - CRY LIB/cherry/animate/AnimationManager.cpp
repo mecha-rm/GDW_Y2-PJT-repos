@@ -126,7 +126,7 @@ cherry::Animation * cherry::AnimationManager::GetAnimation(unsigned int index)
 	}
 	else // in bounds
 	{
-		animations.at(index);
+		return animations.at(index);
 	}
 }
 

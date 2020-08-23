@@ -2,6 +2,8 @@
  * Date: 05/03/2020
  * References:
 	* https://stackoverflow.com/questions/16605967/set-precision-of-stdto-string-when-converting-floating-point-values
+	* http://www.cplusplus.com/reference/string/string/substr/
+	* http://www.cplusplus.com/reference/string/string/erase/
 */
 
 #include "Utils.h"
@@ -91,6 +93,45 @@ std::string util::replaceSubstring(std::string str, std::string oldSubstr, std::
 	}
 
 	return str;
+}
+
+// splits a string into a vector of strings
+std::vector<std::string> util::splitString(const std::string str, const std::string divider, const bool includeBlanks)
+{
+	// the string vector
+	std::vector<std::string> vec;
+
+	// copies the string
+	std::string strCpy = str;
+
+	// while there are still instances of the divider
+	while (strCpy.find(divider) != std::string::npos)
+	{
+		// gets the index
+		int index = strCpy.find(divider);
+
+		// gets the section of the string.
+		std::string temp = strCpy.substr(0, index);
+
+		// if blanks are included, or if blanks are not included but the string is not blank, it gets added to the list
+		if ((includeBlanks) || (!includeBlanks && temp != ""))
+		{
+			// pushes back string and removes it from the strCpy
+			vec.push_back(temp);
+		}
+		
+		// this works by deleting a range of characters upto but not including the last character [first, last)
+		// as such, the index of the divider must be increased the amount of characters in the divider.
+		strCpy.erase(0, index + divider.size()); // erases the string
+	}
+
+	// if there's anything left in the string, then that's added as the final element in the vector.
+	if (!strCpy.empty())
+	{
+		vec.push_back(strCpy);
+	}
+
+	return vec;
 }
 
 // checks if a string is an integer.

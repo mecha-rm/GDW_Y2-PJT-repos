@@ -1,4 +1,10 @@
-// References: https://learnopengl.com/Getting-started/Coordinate-Systems
+/*
+* References:
+	* https://learnopengl.com/Getting-started/Coordinate-Systems
+	* https://www.glfw.org/docs/3.3/window_guide.html
+	* https://www.glfw.org/docs/latest/group__window.html
+*/
+
 
 #pragma once
 // GAME CLASS (HEADER)
@@ -71,6 +77,9 @@ namespace cherry
 
 		// gets whether the window is full-screen or not. 
 		bool IsFullScreen() const;
+
+		// forces the window to close. Since there is only one window, it forces the game to end.
+		void CloseWindow();
 
 		// resize has been moved to the bottom of the code to be accurate to where it is in the framework
 

@@ -1062,6 +1062,16 @@ void cherry::Object::DeleteAllPhysicsBodies()
 // gets the amount of physics bodies
 unsigned int cherry::Object::GetPhysicsBodyCount() const { return bodies.size(); }
 
+// gets the physics body at the provided index.
+cherry::PhysicsBody* cherry::Object::GetPhysicsBody(unsigned int index) const
+{
+	// if the index is equal to or beyond the body size, then return nullptr.
+	if (index >= bodies.size())
+		return nullptr;
+	else
+		return bodies[index];
+}
+
 // returns hte physics bodies
 std::vector<cherry::PhysicsBody*> cherry::Object::GetPhysicsBodies() const { return bodies; }
 
@@ -1081,7 +1091,16 @@ bool cherry::Object::IsDynamicObject() const { return dynamicObject; }
 bool cherry::Object::IsStaticObject() const { return !dynamicObject; }
 
 // returns the animation manager for the object
-cherry::AnimationManager& cherry::Object::GetAnimationManager() { return animations; }
+cherry::AnimationManager& cherry::Object::GetAnimationManager() 
+{ 
+	return animations; 
+}
+
+// gets the amount of animations
+int cherry::Object::GetAnimationCount() const
+{
+	return animations.GetAnimationsTotal();
+}
 
 // adds an animation
 bool cherry::Object::AddAnimation(Animation * anime, bool current)
@@ -1130,7 +1149,15 @@ cherry::Animation * cherry::Object::GetAnimation(unsigned int index) { return an
 cherry::Animation * cherry::Object::GetCurrentAnimation() { return animations.GetCurrentAnimation(); }
 
 // sets the current animation
-void cherry::Object::SetCurrentAnimation(unsigned int index) { animations.SetCurrentAnimation(index); }
+void cherry::Object::SetCurrentAnimationByIndex(unsigned int index) { 
+	animations.SetCurrentAnimation(index); 
+}
+
+// sets the current animation by its pointer.
+void cherry::Object::SetCurrentAnimationByPointer(cherry::Animation* ani)
+{
+	animations.SetCurrentAnimation(ani, false);
+}
 
 // clears all animations.
 void cherry::Object::ClearAllAnimations() { animations.ClearAllAnimations(); }

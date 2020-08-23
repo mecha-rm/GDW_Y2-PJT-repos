@@ -268,7 +268,7 @@ int cherry::ObjectList::GetObjectCount() const { return objects.size(); }
 std::vector<cherry::Object*>& cherry::ObjectList::GetObjects() { return objects; }
 
 // gets the object at the provided index.
-cherry::Object* cherry::ObjectList::GetObjectByIndex(unsigned int index)
+cherry::Object* cherry::ObjectList::GetObjectByIndex(unsigned int index) const
 {
 	if (index >= objects.size()) // out of bounds
 		return nullptr;
@@ -277,7 +277,7 @@ cherry::Object* cherry::ObjectList::GetObjectByIndex(unsigned int index)
 }
 
 // gets an object using its name.
-cherry::Object* cherry::ObjectList::GetObjectByName(std::string name)
+cherry::Object* cherry::ObjectList::GetObjectByName(std::string name) const
 {
 	for (Object* obj : objects) // finds object by name
 	{
@@ -286,6 +286,24 @@ cherry::Object* cherry::ObjectList::GetObjectByName(std::string name)
 	}
 
 	return nullptr;
+}
+
+// gets the first object in the list.
+cherry::Object* cherry::ObjectList::GetFirstObjectInList() const
+{
+	if (objects.size() > 0)
+		return objects[0];
+	else
+		return nullptr;
+}
+
+// gets the last object in the list.
+cherry::Object* cherry::ObjectList::GetLastObjectInList() const
+{
+	if (objects.size() > 0)
+		return objects[objects.size() - 1];
+	else
+		return nullptr;
 }
 
 // adds an object to the list.

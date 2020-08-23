@@ -80,8 +80,17 @@
          // clears all characters.
          void ClearText();
 
-         // sets a new color. If the alpha value has been changed, SetAlpha is called.
+         // sets a new color. The alpha of the color is set to 1.0
+         void SetColor(cherry::Vec3 newColor);
+
+         // sets a new color. The alpha value for the color is multiplied by the overall alpha.
          void SetColor(cherry::Vec4 newColor);
+
+         // sets the color in a [0, 1] range. The alpha of the color is set at 1.0.
+         void SetColor(float r, float g, float b);
+
+         // sets the color in a [0, 1] range. The alpha value for the color is multiplied by the overall alpha.
+         void SetColor(float r, float g, float b, float a);
 
          // gets the file path for the txt file that specifies the font name, font image, and characters.
          const std::string& GetFilePath() const override;

@@ -231,7 +231,7 @@ void cnz::CNZ_GameOverScene::DrawGui(float deltaTime)
 	const int NAME_LEN_LIMIT = NAME_CHAR_LIMIT;
 
 	// entry text for player name
-	char entryNameChr[NAME_LEN_LIMIT]; // array version
+	char entryNameChr[NAME_LEN_LIMIT]; // array version 
 
 	entryNameStr.resize(NAME_LEN_LIMIT, '\0'); // fill rest of string with null termination character.
 	memcpy(entryNameChr, entryNameStr.c_str(), NAME_LEN_LIMIT);

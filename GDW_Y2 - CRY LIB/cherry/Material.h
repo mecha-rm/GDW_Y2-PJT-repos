@@ -17,6 +17,9 @@ Represents settings for a shader
 
 namespace cherry
 {
+	// forward declare
+	class LightList;
+	
 	class Material {
 	public:
 		bool HasTransparency; // states if a material has transparency
@@ -61,10 +64,27 @@ namespace cherry
 		// pass the sampler if you so choose. This also takes in a vertex shader and fragment shader
 		static cherry::Material::Sptr GenerateMtl(std::string filePath, const TextureSampler::Sptr& sampler = nullptr, std::string vs = STATIC_VS, std::string fs = STATIC_FS);
 
+		// generate default material (model.vs.glsl and model.fs.glsl). This material does not support lighting.
+		static cherry::Material::Sptr GenerateDefaultMaterial();
+
+		// generates a standard material that has lighting. The shader for this material does not support morph targets.
+		static cherry::Material::Sptr GenerateLightingMaterialStatic();
+
+		// generates a material using a primitive and gets values from the light list.
+		static cherry::Material::Sptr GenerateLightingMaterialStatic(cherry::LightList* ll);
+
+		// generates a standard material that has lighting. The shader for this material supports morph targets.
+		static cherry::Material::Sptr GenerateLightingMaterialDynamic();
+
+		// generates a material using a primitive and gets values from the light list.
+		static cherry::Material::Sptr GenerateLightingMaterialDynamic(cherry::LightList* ll);
 
 	private:
 
-		// TODO: put this function in its own dedicated file.
+		// generates a lighting material.
+		static cherry::Material::Sptr GenerateLightingMaterial(const std::string vs, const std::string fs, cherry::LightList* ll = nullptr);
+
+		// TODO: put this function in its own dedicated file. Plus, it doesn't need to be a class function.
 		// parses the line, gets the values as data type T, and stores them in a vector.
 		// containsSymbol: tells the function if the string passed still contains the symbol at the start. If so, it is removed before the parsing begins.
 		// *** the symbol at the start is what's used to determine what the values in a given line of a .obj are for.
